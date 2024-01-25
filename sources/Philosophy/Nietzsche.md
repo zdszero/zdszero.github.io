@@ -1,4 +1,4 @@
-% Nietzsche
+% Friedrich Nietzsche
 
 __太阳神精神和酒神精神__
 
@@ -8,33 +8,51 @@ __太阳神精神和酒神精神__
 
 __经典语录__
 
+[goodreads Nietzsche quotes](https://www.goodreads.com/author/quotes/1938.Friedrich_Nietzsche)
+
+> I cannot believe in a God who wants to be praised all the time.
+>
 > 对于那种每天只想被人们赞美、被人们供奉的上帝，我不能相信。
 
 如果任何一个领导或者一个人物，把自己当成神，让大家以完美的方式去赞美他，这种人一般都是恶魔中的恶魔。
 
-> Is man merely a mistake of God\'s? Or God merely a mistake of man?
+> Is man merely a mistake of God's? Or God merely a mistake of man?
 >
-> 人们常常说人类是上帝犯得一个错，有没有可能上帝（这个理念）是人类犯的一个错。
->
-> 我的哲学就是让人们对现状感到不满。
+> 人们常常说人类是上帝犯得一个错，有没有可能上帝是人类犯的一个错。
 
 尼采要人类放弃对于上帝虚幻的想象，可以有这样的理念，但也仅此而已了。
 
+> There cannot be a God because if there were one, I could not believe that I was not He.
+>
 > 如果上帝存在，我很难相信自己不是那个上帝。
 
 精神病院里一个人对周围的人说：我是拿破仑。然后有人问他，你怎么知道你是拿破仑，然后那个人回答：是上帝告诉我的。他说完这句话，话音未落，隔壁房间一个人马上跳出来说：我可没告诉你。
 
-> convictions are more dangerous foes of truth than lies.
+> No one can construct for you the bridge upon which precisely you must cross the stream of life, no one but you yourself alone.
+>
+> 人生如溪流，没有可以为你修建精确地渡河之桥，你有你自己可以。
+
+自己为自己负责，不要指望虚幻的上帝。
+
+> Convictions are more dangerous foes of truth than lies.
 >
 > 对于真理来说，坚信不疑比谎言更加危险。
 
 很多人拒绝接受真相，就是不想让头脑中的illusion被打破。
 
 > Fool me once, shame on you. Fool me twice, shame on me
+>
+> 欺骗我一次，为你感到羞耻；欺骗我两次，为我感到羞耻。
 
 当一个政权失去信任的时候，就算它说真话的时候，也没有相信了，政权就要开始完蛋了。
 
 > And those who were seen dancing were thought to be insane by those who could not hear the music.
+>
+> 那些听不见音乐的人认为那些跳舞的人疯了。
+>
+> Sometimes people don't want to hear the truth because they don't want their illusions destroyed.
+>
+> 很多人不愿意看到现实，是因为他们不愿意自己的幻想被打破。
 
 防火墙里的人，看到墙外的人的一些理念、对时局的评估，然后他会觉得：这些人疯了，我在国内岁月静好，日子过得好好的。
 
@@ -44,6 +62,8 @@ __经典语录__
 
 人类已经灭绝了世界上90%的大型动物了。
 
+> The surest way to corrupt a youth is to instruct him to hold in higher esteem those who think alike than those who think differently.
+>
 > 腐蚀一个年轻人最好的方式，是让他尊重那些与他想法相同的人，而不是尊重那些与他想法不同的人。
 
 群体思维、统一思想、统一行动、统一信念，一起做中国梦。

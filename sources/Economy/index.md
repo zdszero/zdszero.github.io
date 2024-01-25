@@ -1,5 +1,7 @@
 % Economy
 
+[Terms](./Terms.md)
+
 [Classical](./Classical.md)
 
 [Austrian](./Austrian.md)

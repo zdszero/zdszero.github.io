@@ -6,8 +6,10 @@
     - [fate](./fate.md)
     - [knowledge](./knowledge.md)
     - [identity](./identity.md)
+    - [morality](./morality.md)
     - [stoicism](./stoicism.md)
 - philosopher
+    - [Plato](./Plato.md)
     - [Aristotle](./Aristotle.md)
     - [Hume](./Hume.md)
     - [Kant](./Kant.md)
