@@ -1,11 +1,11 @@
 % Markdown Syntax Test
 % Here lists all the themes for wiki
 
-[bootstrap](./bootstrap.md)
+[bootstrap](/Computer/Markdown_Syntax_Test/bootstrap.md)
 
-[bamboo](./bamboo.md)
+[bamboo](/Computer/Markdown_Syntax_Test/bamboo.md)
 
-[marx](./marx.md)
+[marx](/Computer/Markdown_Syntax_Test/marx.md)
 
 [latex](./latex.md)
 
