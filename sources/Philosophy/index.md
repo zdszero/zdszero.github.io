@@ -7,6 +7,7 @@
     - [knowledge](./knowledge.md)
     - [identity](./identity.md)
     - [morality](./morality.md)
+    - [science](./science.md)
     - [stoicism](./stoicism.md)
 - philosopher
     - [Plato](./Plato.md)
