@@ -12,8 +12,13 @@
 - philosopher
     - [Plato](./Plato.md)
     - [Aristotle](./Aristotle.md)
+    - [Marcus Aurelius](./Marcus_Aurelius.md)
+    - [Seneca](./Seneca.md)
     - [Hume](./Hume.md)
     - [Kant](./Kant.md)
     - [Nietzsche](./Nietzsche.md)
     - [Camus](./Camus.md)
     - [Chuang Tzu](./Chuang_Tzu.md)
+- contemporary
+    - [Taleb](./Taleb.md)
+    - [Naval](./Naval.md)

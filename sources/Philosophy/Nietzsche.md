@@ -1,4 +1,7 @@
-% Friedrich Nietzsche
+---
+title: Friedrich Nietzsche
+theme: bootstrap
+---
 
 __太阳神精神和酒神精神__
 

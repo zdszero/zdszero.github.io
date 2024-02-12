@@ -1,0 +1,94 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="../WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="../WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="../WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="../WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="../WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="../WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="../WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="../WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="../WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    Structure and Implementation of Computer Programs
+  </title>
+    <link rel="stylesheet" href="../WikiTheme/theme/latex.css"  />
+        </head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">Structure and Implementation of Computer
+Programs</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="container">
+    <div class="row">
+            <div id="TOC" class="span3">
+        <div class="well toc">
+          <ul>
+          <li><a href="#recursive-vs-iterative"
+          id="toc-recursive-vs-iterative">Recursive vs
+          Iterative</a></li>
+          </ul>
+        </div>
+      </div>
+            <div class="span9">
+                <h3 id="recursive-vs-iterative">Recursive vs
+                Iterative</h3>
+                <pre><code>(factorial 6)
+(* 6 (factorial 5))
+(* 6 (* 5 (factorial 4)))
+(* 6 (* 5 (* 4 (factorial 3))))
+(* 6 (* 5 (* 4 (* 3 (factorial 2)))))
+(* 6 (* 5 (* 4 (* 3 (* 2 (factorial 1))))))
+(* 6 (* 5 (* 4 (* 3 (* 2 1)))))
+(* 6 (* 5 (* 4 (* 3 2))))
+(* 6 (* 5 (* 4 6)))
+(* 6 (* 5 24))
+(* 6 120)
+720</code></pre>
+                <p><b><u>recursive</u></b></p>
+                <ul>
+                <li>symbol expansion and contraction</li>
+                <li>right hand side computation</li>
+                <li>a chain of <em>deferred operation</em> tracked by
+                interpreter</li>
+                </ul>
+                <pre><code>(factorial 6)
+(fact-iter 1 1 6)
+(fact-iter 1 2 6)
+(fact-iter 2 3 6)
+(fact-iter 6 4 6)
+(fact-iter 24 5 6)
+(fact-iter 120 6 6)
+(fact-iter 720 7 6)</code></pre>
+                <p><b><u>iterative</u></b></p>
+                <ul>
+                <li>state summarizd by fixed number of state
+                variables</li>
+                <li>fixed rule that describes state shift</li>
+                </ul>
+              </div>
+    </div>
+  </div>
+</body>
+
+</html>

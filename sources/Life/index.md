@@ -1,11 +1,13 @@
 % Life
 
-[Behavior](./Behavior.md)
+[Study Principles](./Learn.md)
 
-[Value](./Value.md)
+[Health Principles](./Body.md)
 
-[Body](./Body.md)
+[Behavior Patterns](./Behavior.md)
 
-[evolutionary psychology](./evolutionary_psychology.md)
+[Human Mind Patterns](./Human_Mind.md)
 
-[China beings](./China_beings.md)
+[Values & Beliefs](./Value.md)
+
+[Evolutionary Psychology](./evolutionary_psychology.md)
