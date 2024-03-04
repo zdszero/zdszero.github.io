@@ -11,5 +11,3 @@
 [Life](./Life/index.md)
 
 [Books](./Books/index.md)
-
-[Miscellaneous](./Miscellaneous/index.md)

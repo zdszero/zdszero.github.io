@@ -12,6 +12,7 @@
 - Zen
     - [The Wisdom of Insecurity](./The_Wisdom_of_Insecurity.md)
 - Taleb
+    - [black swan](./black_swan.md)
     - [antifragile](./antifragile.md)
     - [fooled by randomness](./fooled_by_randomness.md)
     - [skin in the game](./skin_in_the_game.md)
@@ -19,3 +20,4 @@
 - [the dice man](./the_dice_man.md)
 - [how to read a book](./how_to_read_a_book.md)
 - [influence](./influence.md)
+- [why we get sick](./why_we_get_sick.md)
