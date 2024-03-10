@@ -16,8 +16,12 @@
     - [antifragile](./antifragile.md)
     - [fooled by randomness](./fooled_by_randomness.md)
     - [skin in the game](./skin_in_the_game.md)
+- Richard Dawkins
+    - [the blind watch maker](./the_blind_watch_maker.md)
+- [human bias](./human_bias.md)
 - [thiking fast and slow](./thiking_fast_and_slow.md)
 - [the dice man](./the_dice_man.md)
 - [how to read a book](./how_to_read_a_book.md)
 - [influence](./influence.md)
 - [why we get sick](./why_we_get_sick.md)
+- [meandering thoughts](./meandering_thoughts.md)

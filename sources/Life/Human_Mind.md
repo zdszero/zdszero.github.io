@@ -1,36 +1,61 @@
-% Human Mind
+% Humanity
 
-### [享乐适应](https://fourweekmba.com/hedonic-treadmill/)
+[Reference](https://fourweekmba.com/bandwagon-effect/)
 
-也叫做享乐跑步机（hedonic treadmill），它说明人类这样一个天然的心理现象：即使经历积极或消极的外在事件，人的身体也会调节你的快乐水平到一个基准线（happiness baseline），并且维持相对稳定。
+### Hedonic Treadmill
 
-__例子__
+The Hedonic Treadmill, also known as the Hedonic Adaptation, is a psychological phenomenon that refers to the tendency of humans to __return to a relatively stable level of happiness__ or __baseline emotional state__ after experiencing positive or negative life events. It suggests that major life changes or windfalls do not permanently impact happiness.
 
-- 中彩票开始让人很爽，但是新奇感消失后，个人往往会恢复到以前的基准线。
-- 那些因事故或其他原因失去肢体的人会经历巨大的身体和情感痛苦。 尽管他们留下了永久性残疾，但大多数人都会恢复到以前的幸福水平。
-- 爱情让人愉悦，但是习惯了这段关系，进入婚姻关系后，体验会趋于普通，甚至会经历很多负面情绪。
+### Bounded Rationality
 
-__影响__
+When people make decisions, they're limited by __human cognitive abilities__. Poeple often __simplify complex system__ and use __heuristics__ due to __cogntive constraints__ such as time, information and cognitive capacity.
 
-- 人会高估某些事情给自己带来的快乐程度以及悲伤程度
-- 小鼠转轮的游戏符合人类的这一特征：人们总是欲求不满，追求新的消费欲望，但是新的消费带给人们的快乐也会随着享乐适应逐渐趋于普通。
+One key concept: __satisficing__, a a portmanteau of “satisfy” and “suffice.” Satisficing means that individuals often seek solutions or make choices that are __good enough__ or __satisfactory__, rather than trying to find the __optimal__ or perfect solution. This helps save time and mental effort.
 
-### [有限理性](https://fourweekmba.com/bounded-rationality/)
+I think it has some evolutionary wisdom:
 
-bounded rationality 表明人们受制于认知系统的局限性，经常 简化复杂的决策 并使用 启发式的决策方法 （心理捷径）。
+- We don't live in a small world.
+- Enough information is not possible, and the optimal could hardly be achieved.
+- Biases are not errors but heuristics that work in most cases to make us avoid screw-ups.
 
-该概念与 bounded willpower 有异曲同工之妙，抵制诱惑 和 做出“自律”选择 的能力是有限度的。
+### Occam Razor
 
-人类的天性是不喜欢模糊的东西、不喜欢难以理解的东西，我们需求简单的理论以追求确定性。对于复杂系统，我们常常犯理性主义的错误，被那些看起来很有道理的理论蒙蔽了双眼，进而反对经验主义。
+A problem-solving and scientific principle that suggests choosing the simplest explanation or solution that adequately explains the phenomenon or problem at hand.
 
-### [奥坎剃刀](https://fourweekmba.com/occams-razor/)
+When faced with complex system, the simple solutions which requires less information are sometimes better.
 
-Occam Razor 是一条逻辑学法则。如果关于同一个问题有许多种理论，每一种都能作出同样准确的预言，那么应该挑选其中使用假定最少的。尽管越复杂的方法通常能做出越好的预言，但是在不考虑预言能力（即结果大致相同）的情况下，假设越少越好。
+### Dunning-Kruger Effect
 
-复杂的并不一定是最好的，简单的方案往往效果更佳。
+The tendency of individuals with low ability or knowledge in a particular domain to overestimate their competence and believe they are more skilled or knowledgeable than they truly are. Conversely, those with higher competence may underestimate their abilities.
 
-### [邓宁-克鲁格效应](https://fourweekmba.com/dunning-kruger-effect/)
+人在不了解的领域往往会大放厥词，过分自信，高估自己的能力。掌握的知识更多，反而更加谦虚。
 
-虚幻的优越感是一种认知偏见，个人高估了自己与他人相比的能力和技能。 这种偏见可能发生在与以下相关的各个领域 商业 例如智力、创造力和社交技能。
+### Lindy Effect
 
-就像邓宁-克鲁格效应一样，研究表明，在人们缺乏专业知识或知识的领域，虚幻的优越感往往更为明显。
+The Lindy Effect is a concept suggesting that the longer a non-perishable idea, technology, or cultural artifact survives, the longer its expected remaining lifespan. In other words, the longer something has been around, the longer it is likely to continue to exist.
+
+### [Antifragile](/Books/antifragile.md) 
+
+![antifragile](../../docs/WikiImage/antifragile.png)
+
+### IDEA Effect
+
+The IKEA effect is a cognitive bias that describes consumers’ tendency to __value something more__ if they have made it themselves. That is why brands often use the IKEA effect to have customizations for final products, as they help the consumer relate to it more and therefore appending to it more value.
+
+### Jealous
+
+嫉妒具有某种进化论上的意义。
+
+妒忌会驱使我们去战斗。当其他生物抢占着食物时，远古时代的猎人和狩猎者如果不去妒忌，那他们便会被群体所排斥，在极端的情况还会被活活饿死。
+
+嫉妒还有一个很有意思的现象：你会嫉妒周围的人，那些年龄、职业、生活方式和你类似的人，而不是那些不在你生活
+
+我们在原始社会只能以群居的方式生存下来。因此在人类进化的过程中，我们 __对其他人如何思考、如何感觉已经形成了精细的感受__ （潜意识中可以捕捉他人的行为，女性尤甚），科学上称之为“心智理论”。
+
+人类不喜欢冰冷的数据和理性的现实，人类倾向于故事。
+
+### Procrastination
+
+拖延也具有某种进化论上的意义。
+
+人类会颂扬那种 “敢想敢做、知行合一、不拖延” 的人的行为，但是我们没有意识到的是，这种基因大多数都被自然界淘汰掉了，只有少数被遗留下来，这种偏好其实也许是某种幸存者偏差。

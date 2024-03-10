@@ -1,6 +1,6 @@
 % Life
 
-[Study Principles](./Learn.md)
+[Decision Making](./Learn.md)
 
 [Health Principles](./Body.md)
 

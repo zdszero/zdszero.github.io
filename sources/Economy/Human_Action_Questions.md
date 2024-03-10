@@ -484,13 +484,15 @@ Only in one respect can acting be constant: in preferring the more valuable to t
 
 ### 1. 不确定性与行动
 
+行为学不断言人的行为是否是自由的，我们只是证实如下事实：我们不知道如何用自然科学的一些方法来解答 “为什么人要这样行为，而不是那样行为” 这个问题。
+
 - __在行动领域中，不确定性的作用是什么？__
 
-未来的不确定，已蕴含在行为这个观念中。“人行为”与“未来是不确定的”决不是两件独立的事情。它们只是一件事的两个不同的说法。
+是否存在真的不确定是哲学中的认识论问题，这里不做深入讨论。行为学 断定 无法用自然科学的内容对人的行为做出精准预测，从这个角度来说，人类可以放弃对行为预测的尝试，这也确定了行为学研究的边界。
 
 - __行动是否总在冒险？为什么？__
 
-每一个行为都涉及一个未知的未来。
+每一个行为都涉及一个未知的未来，行为人需要为自己的行为负责，所以行为总是存在冒险。
 
 ### 2. 或然性的意义
 
@@ -507,16 +509,16 @@ Only in one respect can acting be constant: in preferring the more valuable to t
 
 - __类的或然率的定义是什么？__
 
-Class probability means: We know or assume to know, with regard to the problem concerned, everything about the behavior of a whole class of events or phenomena; but about the actual singular events or phenomena we know nothing but that they are elements of this class.
-
-可以把握整体的情况，但是对于个别事象无法知晓。
+有些数据或知识只能从整体把握，对于个体是无法推定的。
 
 - __从或然率统计中我们能得到什么补充信息？__
 - __保险业与赌搏有什么区别？__
 
-人生要冒很多风险，如果灾祸不发生，钱就白花了。对于不可控的因素，人总是位于赌徒的地位。
+保险业中的概率适用于整体，而赌博适用于个体。
 
 - __保险属于类的或然率的领域吗？为什么？__
+
+属于，保险业处理全体的动态。
 
 ### 4. 案由或然率
 

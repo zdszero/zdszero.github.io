@@ -1,9 +1,8 @@
----
-title: Taleb
-theme: latex
----
+% Taleb
 
-A Stoic is someone who transforms fear into prudence, pain into transformation, mistakes into initiation, and desire into undertaking.
+> A Stoic is someone who transforms fear into prudence, pain into transformation, mistakes into initiation, and desire into undertaking.
+
+斯多葛派将恐懼轉化爲謹慎，将痛苦轉化爲變革，将錯誤轉化爲啓蒙，将渴望轉化爲事業。
 
 ### 關于群體
 
@@ -22,8 +21,6 @@ A Stoic is someone who transforms fear into prudence, pain into transformation, 
 > Economics cannot digest the idea that the collective (and the aggregate) are disproportionately less predictable than individuals.
 
 經濟學弄不清楚的是群體（或者說集體）行爲遠比個體行爲難以預料。
-
-
 
 ### 關于知識
 
@@ -81,6 +78,24 @@ A Stoic is someone who transforms fear into prudence, pain into transformation, 
 > There are two types of people: those who try to win and those who try to win arguments. They are never the same.
 
 世上有兩類人：追求勝利的人和追求在争論中勝利的人。他們從來不是同一撥人。
+
+------
+
+> The book is the only medium left that hasn’t been corrupted by the profane: everything else on your eyelids manipulates you with an ad.
+
+還沒有被凡俗沾染的媒介就隻剩下書籍了，你看到的其他媒介都試圖通過廣告來操控你。
+
+------
+
+> To be completely cured of newspapers, spend a year reading the previous week’s newspapers.
+
+要徹底戒掉報紙，隻需要連續一年每天閱讀上個星期的報紙。
+
+------
+
+> Every social association that is not face to face is injurious to your health.
+
+任何不是面對面進行的社交活動都會損害健康。
 
 ### 關于人性
 
@@ -198,31 +213,17 @@ A Stoic is someone who transforms fear into prudence, pain into transformation, 
 
 長期來看，你更容易愚弄自己而不是别人。
 
-### 關于信息
-
-------
-
-> The book is the only medium left that hasn’t been corrupted by the profane: everything else on your eyelids manipulates you with an ad.
-
-還沒有被凡俗沾染的媒介就隻剩下書籍了，你看到的其他媒介都試圖通過廣告來操控你。
-
-------
-
-> To be completely cured of newspapers, spend a year reading the previous week’s newspapers.
-
-要徹底戒掉報紙，隻需要連續一年每天閱讀上個星期的報紙。
-
-------
-
-> Every social association that is not face to face is injurious to your health.
-
-任何不是面對面進行的社交活動都會損害健康。
-
 ------
 
 > For everything, use boredom in place of a clock, as a biological wristwatch, though under constraints of politeness.
 
 做任何事情的時候，把無聊程度當作鍾表，提醒自己做得夠久了。
+
+------
+
+> They will envy you for your success, for your wealth, for your intelligence, for your looks, for your status —— but rarely for your wisdom.
+
+人们会羡慕你的成功、你的财富、你的聪明、你的相貌、你的地位——但是很少有人会羡慕你的智慧。
 
 ### 關于現代化和自由
 
@@ -389,3 +390,9 @@ A Stoic is someone who transforms fear into prudence, pain into transformation, 
 > Missing a train is only painful if you run after it! Likewise, not matching the idea of success others exepct from you is only painful if that's what you are seeking.
 
 隻有當你迫切地想趕上火車時，錯過火車才是令人遺憾的。成功也是同理，沒能成功隻有當你在迎合他人的标準時，才會讓人沮喪。
+
+------
+
+> Life is about execution rather than purpose.
+
+人生的重點在于行動，而不是糾結意義。
