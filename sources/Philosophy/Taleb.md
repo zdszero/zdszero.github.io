@@ -225,6 +225,12 @@
 
 人们会羡慕你的成功、你的财富、你的聪明、你的相貌、你的地位——但是很少有人会羡慕你的智慧。
 
+------
+
+> Most people fear being without audiovisual stimulation because they are too repetitive when they think and imagine things on their own.
+
+绝大多数人害怕失去视听刺激，因为当他们自己思考和想象时，总是在重复同样的内容。
+
 ### 關于現代化和自由
 
 > You have a real life if and only if you do not compete with anyone in any of your pursuits.

@@ -7,6 +7,7 @@
     - [Christmas Holiday](./Christmas_Holiday.md)
 - Xiaobo Wang
     - [golden age](./golden_age.md)
+    - [silver age](./silver_age.md)
 - Hesse
     - [Narcissus and Goldmund](./Narcissus_and_Goldmund.md)
 - Zen
@@ -19,9 +20,11 @@
 - Richard Dawkins
     - [the blind watch maker](./the_blind_watch_maker.md)
 - [human bias](./human_bias.md)
+- [the great gasby](./the_great_gasby.md)
 - [thiking fast and slow](./thiking_fast_and_slow.md)
 - [the dice man](./the_dice_man.md)
 - [how to read a book](./how_to_read_a_book.md)
 - [influence](./influence.md)
 - [why we get sick](./why_we_get_sick.md)
 - [meandering thoughts](./meandering_thoughts.md)
+- [seeking wisdom](./seeking_wisdom.md)
