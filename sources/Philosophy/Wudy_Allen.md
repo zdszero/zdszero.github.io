@@ -1,5 +1,36 @@
 % Wudy Allen
 
+### 遭遇陌生人
+
+> Given all life's uncertainty and pain, how do we get through it.
+>
+> Sometimes the illusion works better that the medicine.
+
+既然生活如此的飘忽不定和痛苦不堪，我们如何才能熬过此生？有时候幻想比药物管用。
+
+### 双生美莲达
+
+> Why do things that start off so promisingly always have a way of ending up in the dump for those with any imagination?
+>
+> Life is managable enough if you keep your hopes modest.
+>
+> The minite you allow yourself sweet dreams you run the risk of them crashing down.
+
+生活对于那些充满想象力的人来说，总是龙头蛇尾。
+如果希望有个限度，那么生活还是可以得过且过的。
+如果你老是想做美梦，最后美梦就会破碎。
+
+------
+
+> Let's drink to good times. Comic or tragic.
+>
+> The most important thing to do is to enjoy life while you can.
+>
+> Because we only go round once, and when it's over, it's over.
+
+为美好的生活干杯，不管它是悲剧还是戏剧。在有生之年享受生活是最重要的。
+因为我们来世上只能走一遭，走了就没了。
+
 ### 丈夫、太太和情人
 
 You use sex to express ecery emotion but love.
@@ -170,7 +201,9 @@ You use sex to express ecery emotion but love.
 
 ### 午夜巴黎
 
-> There's nothing fine and noble about dying in the mud unless you die gracefully. And then it's not only noble but brave.
+> There's nothing fine and noble about dying in the mud unless you die gracefully.
+>
+> And then it's not only noble but brave.
 
 在泥泞中倒下，你只有死得从容，那样不仅尊贵，而且充满勇气。
 
@@ -215,3 +248,45 @@ You use sex to express ecery emotion but love.
 > It's a flaw in the Romantic imagination of those people who...who find it difficult to cope with the present.
 
 怀旧是否认，否认痛苦的现在。吉尔是个绝对的浪漫主义者，我是说他要是活在完全无限期的否认中，会更幸福，这种谬论叫做黄金时代理论，认为别的时代比自己现在生活的时代更好，这是那些无法应对当前生活的人，所产生的浪漫主义的缺陷。
+
+### 咖啡公社
+
+> Socrates said, "The unexamined life is not worth living." But the examined one is no bargain.
+
+苏格拉底说，未经审视的人生不值得过。但处处小心的人生，又比浑浑噩噩的生活好到哪里去。
+
+> Leonard says, its the poignancy of life, and not only do we have to embrace its meaninglessness, but celebrate life because it has no meaning. It's too deep for me, but mom always boils it down to: Live every day like its your last. And someday you will be right.
+
+莱昂纳德说，这就是生活的辛酸，而且我们不仅要忍受这种无意义，更要因为无意义而向生命喝彩。这对我有点儿高深，不过妈妈经常总结说：把每一天当作你的最后一天过，总有一天，你会一切顺利的。
+
+> Life is a comedy, written by a sadistic writer though.
+
+生活是一场喜剧，是虐待狂喜剧作家写的。
+
+### 纽约的一个雨天
+
+> I love a "cocktail lounge" piano. Outside it drizzles, grey. New York City, enveloped in the light mist. Two lovers have a date to meet at 6 o'clock. At Grand Central Station, under the clock, like in the movie.
+
+我更喜欢酒吧里的钢琴，外面阴雨绵绵，整个纽约被薄雾笼罩，一对情侣约着六点见面，在中央火车站的大钟，像极了电影。
+
+### 魔力月光
+
+> Hobbes: Life is nasty, brutish and short
+
+霍布斯说过：生活又肮脏又残忍又短暂。
+
+> I think Mr. Nietzsche has disposed of the god matter rather convincingly.
+
+我想尼采已经将上帝这一套揭露得够有说服力的了。
+
+> But I'm sure they are like most people, desperate for little hope in a world that has none, and willing to believe anything.
+
+我相信他们像大多数人一样，迫切追求世界上不存在的希望，最后心甘情愿地去相信任何事。
+
+> We all hope someone could come along with superpowers, but the only superpower certain to show up wears a black robe.
+
+我们都希望可以拥有某种超能力，但是唯一拥有超能力的就是一个穿着黑袍子的人。
+
+> That the world may or may not be without purpose, but it’s not totally without some kind of magic.
+
+这个世界可能是没有目的的，也可能是有的，但是它绝不是一点魔法都没有。

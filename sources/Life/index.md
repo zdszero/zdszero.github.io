@@ -9,5 +9,3 @@
 [Human Mind Patterns](./Human_Mind.md)
 
 [Values & Beliefs](./Value.md)
-
-[Evolutionary Psychology](./evolutionary_psychology.md)

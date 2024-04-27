@@ -19,6 +19,12 @@
     - [skin in the game](./skin_in_the_game.md)
 - Richard Dawkins
     - [the blind watch maker](./the_blind_watch_maker.md)
+    - [mean genes](./mean_genes.md)
+- [red queen](./red_queen.md)
+- [blueprint decoded](./blueprint_decoded.md)
+- [why everyone is a hypocrite](./why_everyone_is_a_hypocrite.md)
+- [humanity](./humanity.md)
+- [Homeric epic](./Homeric_epic.md)
 - [human bias](./human_bias.md)
 - [the great gasby](./the_great_gasby.md)
 - [thiking fast and slow](./thiking_fast_and_slow.md)
@@ -28,3 +34,4 @@
 - [why we get sick](./why_we_get_sick.md)
 - [meandering thoughts](./meandering_thoughts.md)
 - [seeking wisdom](./seeking_wisdom.md)
+- [powerful core engeering](./powerful_core_engeering.md)
