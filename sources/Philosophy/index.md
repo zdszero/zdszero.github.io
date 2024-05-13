@@ -20,6 +20,7 @@
     - [Camus](./Camus.md)
     - [Chuang Tzu](./Chuang_Tzu.md)
 - contemporary
+    - [Freud](./Freud.md)
     - [Taleb](./Taleb.md)
     - [Naval](./Naval.md)
     - [Wudy Allen](./Wudy_Allen.md)

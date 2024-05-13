@@ -1,6 +1,47 @@
 % blueprint decoded
 
-### Walking Days
+### Social Conditioning
+
+__Social Animals__
+
+We learn fast because we are social learners.
+We live in a socially created reality.
+
+Ideas, no matter how stupid, can spread like wild fire.
+
+That's human beings, very superstitous creatures.
+
+__VALUE__
+
+VALUE is like MAGNET.
+
+We are designed to be drawn to towards value.
+
+Back to the caveman days, the women are looking for decisiveness, resourcefulness, dominantness, fearless,
+a guy who dictates reality it does not have reality dictated to him.
+
+Attraction is straightforward.
+
+Am I trying to live up to her standards? NO !
+She is trying live up to my standards.
+cos that's coming accross in the sub communication.
+Then she will be far more attracted to you.
+
+When you have value, you'll naturally feel comfortable in the skin. You are in the momnet.
+Otherwise you're in your head.
+
+Express your personality freely and let the chicks fall they may.
+
+If someone is trying to self seek by giving you knowledge to generate reactions,
+is that really giving you authentic information or perspectives or vibes or whatever.
+You brain will instinctly reject it.
+
+When you bringing the party, she is interested.
+When you're trying to wedge your way into her party, she is repelled.
+
+__Walking Days__
+
+Most people walk thorugh life in their walking days.
 
 People have this desire to keep drawing stayed off the environment, so they keep chasing high status people.
 But people are just people.
@@ -14,81 +55,6 @@ through their own intentions.
 They are complusively thinking about it.
 Because they are displeased with the moment that's directly in front of them.
 This is not acting through your own intentions, that's acting to escape mentally.
-
-### Now
-
-If you in the habit on a day-to-day basis of trying to draw state from your environment.
-If that's how you live your life, is it gonna be natural to walk right up to a girl
-and try to draw state from wihtin at that point?
-
-Core understanding: when you're speaking with the women, what you need to say
-is jumbled.
-
-You run out of things when you want something.
-Trust in yourself.
-Flow.
-Turn off the noice.
-
-Thinking (Logic) in almost all endeavors is your greastest asset,
-but in meeting women thinking is your greatest weakness.
-
-Staying with the tension, non-resistance. Edge of cockiness.
-
-Masculinity is the Innate ability every man is born with to create attraction with women.
-You can get in touch with that.
-
-rip the Opaque wall: judgements, comparisons, labels, interpretations
-Your entire congntive model of these is a shelter between you and facing reality for what it is.
-
-core fenimine nature: sound, vibe, energy
-
-Living in the moment:
-
-- melting into the moment rather than struggling against it
-- have full trust in your faculties to carry you forward as issuses come up
-
-There are always forces in this world that is tugging at your awareness isn't it.
-Force like frustration and fear, essentially, they are diseases to creep into you.
-And once you let them in they take over and loop your mind endlessly around thoughts
-that are useless and draining.
-
-walk through the world with ease: put all these concepts (core confidence, strong reality, acting through your own intention,
-masculine polarity) into one expression
-
-You are moving with the current of the world not against it.
-You don't have to be above the world or below the world.
-You don't have to be better or worse.
-You can be equally at ease amoung affluence as among poverty.
-You don't attach your identity to any of that.
-In the same way you know that ground is stable and you're breathing.
-You can navigate the complexities of the world with the same certainty as you would just the most basic of facts.
-
-STRONG BELIEF SYSTEM 
-vs 
-FLEXIBLE BELIEF SYSTEM
-
-the ablity to quickly sift through ideas and either take or reject them is actually a strength and skill
-
-even beyound taht, the more adaptable you are in allowing conflicting or paradoxical realities to exist in your mind
-without being shut down by them, the more readily you can jump between maps and where other people would fall flat
-on their face, you will stand.
-
-the map is not the territory
-
-see the best of yourself, see the best of other people.
-
-### Social Conditioning
-
-We learn fast because we are social learners.
-We live in a socially created reality.
-
-Ideas, no matter how stupid, can spread like wild fire.
-
-That's human beings, very superstitous creatures.
-
-When you have certain beliefs, and you've being building on those beliefs years and years, and finding new evidence to reinforce those beliefs years and years.
-
-The way your mind is set up is to continually look for evidence to support that belief.
 
 Society has something that is appreciated, simultaneosly your interaction with society is also holding you back if you don't understand it.
 
@@ -114,6 +80,10 @@ You will be in the spoke of the wheel if you believe in the system, everything w
 
 Best comsumers: desatisfied, wild paranoia about status, a wild sort of general buzz of confusion about who he is, no identity, no values.
 
+Deferred life plan:
+We are always taught to measure ourselves, to grade ourselves and keeping going to the
+next thing.
+
 We live in a society where the idea that bad emotions are a valid excuse not to act
 is actually feasible to most people.
 
@@ -122,9 +92,7 @@ Right action is like muscle.
 This is what is required to be done and I'm gonna do it regardless of my emotions.
 You feel emotions in your body and you move forward anyway.
 
-__Chode Characteristics__
-
-Chode don't know:
+Most people are chodes and they don't know:
 
 - who they are
 - what they value
@@ -138,6 +106,9 @@ They are just scattered and not centered.
 It's well suited for peon but not for you.
 
 ### NLP
+
+
+__What is love ?__
 
 English as a language in many ways dictates our concept of reality.
 
@@ -158,7 +129,7 @@ Taoist view of seduction:
 Love and happiness within yourself.
 Relationship is like a stretch.
 
-IDENTITY
+__IDENTITY__
 
 We are always processing the world through that little seed in our mind which is identity
 
@@ -176,12 +147,16 @@ Who you are today can be completely different in a year from now.
 
 First-hand and second-hand information.
 
-RAS
+__RAS__
+
+When you have certain beliefs, and you've being building on those beliefs years and years, and finding new evidence to reinforce those beliefs years and years.
+
+The way your mind is set up is to continually look for evidence to support that belief.
 
 Put focus on what might be valuable to you.
 Someone who has more certainty than you would probably seem to have value.
 
-INFERENCE
+__INFERENCE__
 
 Your situation is always changing. And as it does, your mind is always looking at
 social feedback to figure out how much value you have and determine which personality
@@ -193,7 +168,7 @@ A very big part of mastery in terms of success with women is the ability to endu
 
 Human being's two major assets is intelligence and social bounding.
 
-STATE
+__State__
 
 Your state is the emotional system which looks at the situation to see wheather or not you have value 
 and gives you access to part of your personality that works the best.
@@ -237,7 +212,7 @@ and appear to have a strong sense of certainty.
 
 Signpost after signpost pointing you in a certain of being
 
-__CORE Confidence__ 
+__Core Confidence__ 
 
 Could true core confidence exist is a philosophical problem.
 But there's definitely people who have a lot more core confidence than others.
@@ -345,7 +320,7 @@ for every type of situation.
 
 Man is action, women is reaction
 
-__Girl Behavior__
+__Beautiful Shallow Girl Unconscious Behavior__
 
 unconscious learned behaviors to assert polarity:
 
@@ -423,28 +398,24 @@ how to unstyfle yourself ?
 we are all confined by our egos, and we all hate.
 If some can get unstyfled, you can lead the crowd to be unstyfled.
 
-### Value
+__Flexible belief system__
 
-VALUE is like MAGNET.
+STRONG BELIEF SYSTEM 
+vs 
+FLEXIBLE BELIEF SYSTEM
 
-We are designed to be drawn to towards value.
+the ablity to quickly sift through ideas and either take or reject them is actually a strength and skill
 
-Back to the caveman days, the women are looking for decisiveness, resourcefulness, dominantness, fearless,
-a guy who dictates reality it does not have reality dictated to him.
+even beyound taht, the more adaptable you are in allowing conflicting or paradoxical realities to exist in your mind
+without being shut down by them, the more readily you can jump between maps and where other people would fall flat
+on their face, you will stand.
 
-Attraction is straightforward.
+the map is not the territory
 
-Am I trying to live up to her standards? NO !
-She is trying live up to my standards.
-cos that's coming accross in the sub communication.
-Then she will be far more attracted to you.
 
-When you have value, you'll naturally feel comfortable in the skin. You are in the momnet.
-Otherwise you're in your head.
+### NOW
 
-Express your personality freely and let the chicks fall they may.
-
-### Now is the only moment
+__Now is the only moment__
 
 Do not seek happiness in the future. Happiness is now.
 
@@ -454,14 +425,7 @@ The result is anti-climatic.
 
 The result can never be as good as the doing.
 
-------
-
-Deferred life plan:
-
-We are always taught to measure ourselves, to grade ourselves and keeping going to the
-next thing.
-
-------
+__Flow__
 
 When you realize this is it, the future is coming but it's unknown.
 
@@ -469,7 +433,34 @@ Then the concept of time becomes very much irrelevant.
 
 And that's when the flow starts to happen.
 
-------
+__Being not Doing__
+
+If you are in the habit on a day-to-day basis of trying to draw state from your environment.
+If that's how you live your life, is it gonna be natural to walk right up to a girl
+and try to draw state from wihtin at that point?
+
+Core understanding: when you're speaking with the women, what you need to say
+is jumbled.
+
+You run out of things when you want something.
+Trust in yourself.
+Flow.
+Turn off the noice.
+
+Thinking (Logic) in almost all endeavors is your greastest asset,
+but in meeting women thinking is your greatest weakness.
+
+Staying with the tension, non-resistance. Edge of cockiness.
+
+Masculinity is the Innate ability every man is born with to create attraction with women.
+You can get in touch with that.
+
+Rip the opaque wall: judgements, comparisons, labels, interpretations
+Your entire congntive model of these is a shelter between you and facing reality for what it is.
+
+core fenimine nature: sound, vibe, energy
+
+__As Ends Rather Than Means__
 
 Some of human being's ultimate greatness is being able to control the environment.
 It is our ability to shape the world in the way we want it.
@@ -482,7 +473,33 @@ or are we doing this for the sake of right action.
 Are we doing it to feel the flow of creativity
 or are we doing it to deny the unknown.
 
-### ego & self-esteem
+__Walk through the world with ease__
+
+Living in the moment:
+
+- melting into the moment rather than struggling against it
+- have full trust in your faculties to carry you forward as issuses come up
+
+There are always forces in this world that is tugging at your awareness isn't it.
+Force like frustration and fear, essentially, they are diseases to creep into you.
+And once you let them in they take over and loop your mind endlessly around thoughts
+that are useless and draining.
+
+walk through the world with ease: put all these concepts (core confidence, strong reality, acting through your own intention,
+masculine polarity) into one expression
+
+You are moving with the current of the world not against it.
+You don't have to be above the world or below the world.
+You don't have to be better or worse.
+You can be equally at ease amoung affluence as among poverty.
+You don't attach your identity to any of that.
+In the same way you know that ground is stable and you're breathing.
+You can navigate the complexities of the world with the same certainty as you would just the most basic of facts.
+
+see the best of yourself, see the best of other people.
+
+
+### SELF-ESTEEM
 
 Ego is always looking for seperation to show why you're more real and tangible.
 
@@ -505,12 +522,3 @@ When you can finally reach a level where you accept yourself both for your posit
 When you stop just looking at people at the surface level  and realize we're all kind of made up in the same sort of way.
 
 And you can become what's called comfortable in your own skin.
-
-### value givers and takers
-
-If someone is trying to self seek by giving you knowledge to generate reactions,
-is that really giving you authentic information or perspectives or vibes or whatever.
-You brain will instinctly reject it.
-
-When you bringing the party, she is interested.
-When you're trying to wedge your way into her party, she is repelled.
