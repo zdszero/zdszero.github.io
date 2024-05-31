@@ -16,6 +16,7 @@
     - [Seneca](./Seneca.md)
     - [Hume](./Hume.md)
     - [Kant](./Kant.md)
+    - [Schopenhauer](./Schopenhauer.md)
     - [Nietzsche](./Nietzsche.md)
     - [Camus](./Camus.md)
     - [Chuang Tzu](./Chuang_Tzu.md)

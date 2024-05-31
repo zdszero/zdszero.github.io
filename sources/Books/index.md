@@ -1,5 +1,9 @@
 % Books
 
+- [the world as will and representation](./the_world_as_will_and_representation.md)
+- [Dostoevsky](./Dostoevsky.md)
+    - [crime and punishment](./crime_and_punishment.md)
+    - [the idiot](./the_idiot.md)
 - Maugham
     - [the moon and sixpence](./the_moon_and_sixpence.md)
     - [the razor edge](./the_razor_edge.md)
@@ -10,8 +14,6 @@
     - [silver age](./silver_age.md)
 - Hesse
     - [Narcissus and Goldmund](./Narcissus_and_Goldmund.md)
-- Zen
-    - [The Wisdom of Insecurity](./The_Wisdom_of_Insecurity.md)
 - Taleb
     - [black swan](./black_swan.md)
     - [antifragile](./antifragile.md)
@@ -20,14 +22,14 @@
 - Richard Dawkins
     - [the blind watch maker](./the_blind_watch_maker.md)
     - [mean genes](./mean_genes.md)
-- [red queen](./red_queen.md)
+- [The Wisdom of Insecurity](./The_Wisdom_of_Insecurity.md)
 - [blueprint decoded](./blueprint_decoded.md)
 - [why everyone is a hypocrite](./why_everyone_is_a_hypocrite.md)
 - [humanity](./humanity.md)
 - [Homeric epic](./Homeric_epic.md)
 - [human bias](./human_bias.md)
 - [the great gasby](./the_great_gasby.md)
-- [thiking fast and slow](./thiking_fast_and_slow.md)
+- [thinking fast and slow](./thinking_fast_and_slow.md)
 - [the dice man](./the_dice_man.md)
 - [how to read a book](./how_to_read_a_book.md)
 - [influence](./influence.md)
