@@ -8,6 +8,4 @@
 
 [History](./History/index.md)
 
-[Life](./Life/index.md)
-
 [Books](./Books/index.md)

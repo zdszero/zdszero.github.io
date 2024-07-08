@@ -1,6 +1,7 @@
 % Philosophy
 
 - [intro](./intro.md)
+- [conclusion](./conclusion.md)
 - topic
     - [ego](./ego.md)
     - [fate](./fate.md)
@@ -9,6 +10,7 @@
     - [morality](./morality.md)
     - [science](./science.md)
     - [stoicism](./stoicism.md)
+    - [existentialism](./existentialism.md)
 - philosopher
     - [Plato](./Plato.md)
     - [Aristotle](./Aristotle.md)
