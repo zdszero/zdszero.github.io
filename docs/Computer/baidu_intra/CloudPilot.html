@@ -1,0 +1,234 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="../../WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="../../WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    CloudPilot
+  </title>
+    <link rel="stylesheet" href="../../WikiTheme/theme/latex.css"  />
+        </head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">CloudPilot</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="container">
+    <div class="row">
+            <div id="TOC" class="span3">
+        <div class="well toc">
+          <ul>
+          <li><a href="#查询" id="toc-查询">查询</a>
+          <ul>
+          <li><a href="#元数据" id="toc-元数据">元数据</a></li>
+          <li><a href="#可用度" id="toc-可用度">可用度</a></li>
+          <li><a href="#各状态实例"
+          id="toc-各状态实例">各状态实例</a></li>
+          <li><a href="#硬限" id="toc-硬限">硬限</a></li>
+          <li><a href="#被屏蔽实例"
+          id="toc-被屏蔽实例">被屏蔽实例</a></li>
+          <li><a href="#实例状态信息"
+          id="toc-实例状态信息">实例状态信息</a></li>
+          <li><a href="#通过ip和端口查询实例名"
+          id="toc-通过ip和端口查询实例名">通过IP和端口查询实例名</a></li>
+          <li><a href="#服务监控数据"
+          id="toc-服务监控数据">服务监控数据</a></li>
+          </ul></li>
+          <li><a href="#instance-操作" id="toc-instance-操作">Instance
+          操作</a>
+          <ul>
+          <li><a href="#重启" id="toc-重启">重启</a></li>
+          <li><a href="#屏蔽" id="toc-屏蔽">屏蔽</a></li>
+          <li><a href="#解屏蔽" id="toc-解屏蔽">解屏蔽</a></li>
+          <li><a href="#迁移" id="toc-迁移">迁移</a></li>
+          <li><a href="#删除" id="toc-删除">删除</a></li>
+          <li><a href="#维修" id="toc-维修">维修</a></li>
+          <li><a href="#停止" id="toc-停止">停止</a></li>
+          <li><a href="#启动" id="toc-启动">启动</a></li>
+          <li><a href="#打断" id="toc-打断">打断</a></li>
+          <li><a href="#解冻" id="toc-解冻">解冻</a></li>
+          </ul></li>
+          </ul>
+        </div>
+      </div>
+            <div class="span9">
+                <h2 id="查询">查询</h2>
+                <h3 id="元数据">元数据</h3>
+                <p>API:
+                <code>http://10.146.211.21:8031/res/capacity/getappmeta</code></p>
+                <pre><code>&quot;app_meta&quot;: {
+    &quot;pass_type&quot;: PASS平台类型,
+    &quot;product&quot;: 产品线,
+    &quot;module&quot;: 模块名,
+    &quot;app_id&quot;: 服务ID,
+    &quot;cluster&quot;: 集群,
+    &quot;account_id&quot;: 资源账号,
+    &quot;service_level&quot;: 服务等级,
+    &quot;bns&quot;: BNS,
+    &quot;disk_type&quot;: 磁盘类型,
+    &quot;disk_exclusive&quot;: 磁盘是否独占,
+    &quot;limit_cpu_usage&quot;: CPU使用限制,
+    &quot;extend_join&quot;: 是否接入自动扩容,
+    &quot;shrink_join&quot;: 是否接入自动缩容,
+    &quot;extend_mask&quot;: 是否豁免自动扩容,
+    &quot;shrink_mask&quot;: 是否豁免自动缩容,
+    &quot;rescale_direction_prior&quot;: 伸缩的优先方向,
+    &quot;owner&quot;: 负责人,
+    &quot;manager&quot;: 负责人经理
+}</code></pre>
+                <h3 id="可用度">可用度</h3>
+                <p>API:
+                <code>http://10.146.211.21:8031/pandora/getappminusable</code></p>
+                <pre><code>&quot;min_usable_info&quot;: {
+    @TODO
+    &quot;instanceControlBudget&quot;: {
+        &quot;type&quot;: &quot;MinAvailableRatio&quot;
+        &quot;value&quot;: 80
+    }
+    &quot;minUsable&quot;: 最小可用度,
+    &quot;replica&quot;: 副本数量,
+    &quot;replica_that_at_least_need_to_keep&quot;: 至少需要维持的实例数量
+}</code></pre>
+                <h3 id="各状态实例">各状态实例</h3>
+                <p>API:
+                <code>http://10.146.211.21:8031/feiyun/get/instance</code></p>
+                <pre><code>{
+    &quot;app_id&quot;: 服务ID,
+    &quot;total_num&quot;: &quot;实例总数&quot;,
+    &quot;status_instance_top_five&quot;: {
+        // RUNNING 正常运行，!RUNNING 表示非正常运行，ALL获取全部实例
+        &quot;NEW&quot;: {
+            &quot;value&quot;: 总数,
+            &quot;top_five_list&quot;: 排名前五的实例名称
+        },
+        &quot;DEPLOYING&quot;: {
+            &quot;value&quot;: 总数,
+            &quot;top_five_list&quot;: 排名前五的实例名称
+        },
+        &quot;DEPLOY_OK&quot;: {
+            &quot;value&quot;: 总数,
+            &quot;top_five_list&quot;: 排名前五的实例名称
+        },
+        &quot;RESTARTING&quot;: {
+            &quot;value&quot;: 总数,
+            &quot;top_five_list&quot;: 排名前五的实例名称
+        },
+        &quot;RUNNING&quot;: {
+            &quot;value&quot;: 总数,
+            &quot;top_five_list&quot;: 排名前五的实例名称
+        },
+        &quot;STOPPING&quot;: {
+            &quot;value&quot;: 总数,
+            &quot;top_five_list&quot;: 排名前五的实例名称
+        },
+        &quot;STOP&quot;: {
+            &quot;value&quot;: 总数,
+            &quot;top_five_list&quot;: 排名前五的实例名称
+        },
+        &quot;UNKNOWN&quot;: {
+            &quot;value&quot;: 总数,
+            &quot;top_five_list&quot;: 排名前五的实例名称
+        },
+        &quot;DESTORY&quot;: {
+            &quot;value&quot;: 总数,
+            &quot;top_five_list&quot;: 排名前五的实例名称
+        },
+        &quot;INVALID_STATE&quot;: {
+            &quot;value&quot;: 总数,
+            &quot;top_five_list&quot;: 排名前五的实例名称
+        }
+    }
+}</code></pre>
+                <h3 id="硬限">硬限</h3>
+                <pre><code>{
+    &quot;cpu&quot;: 是否开启CPU硬限,
+    &quot;cpu_quota&quot;:
+    &quot;cpu_limit&quot;,
+    &quot;cpu_....&quot;: CPU硬限倍数
+    &quot;memory&quot;:
+    &quot;disk&quot;
+}</code></pre>
+                <h3 id="被屏蔽实例">被屏蔽实例</h3>
+                <pre><code>{
+    &quot;disabled_instance_id_list&quot;: 被屏蔽的实例列表
+}</code></pre>
+                <h3 id="实例状态信息">实例状态信息</h3>
+                <p>API:
+                <code>http://10.146.211.21:8031/paas/instance/getinfo</code></p>
+                <pre><code>{
+    &quot;instance_info_list&quot;: [
+        {
+            &quot;instance_id&quot;:  实例ID,
+            &quot;host_ip&quot;: pod的IP地址,
+            &quot;main_port&quot;: 端口,
+            &quot;proc_state&quot;: 进程状态,
+            &quot;container_state&quot;: 容器状态,
+            &quot;pass_agent_state&quot;: Pass Agent 状态,
+            &quot;frozen&quot;: 是否被冻结,
+            &quot;bsn_disabled&quot;: BNS被禁止,
+            &quot;under_repair&quot;: 正在修复,
+            &quot;migrating&quot;: 是否在迁移
+        }
+    ]
+}</code></pre>
+                <h3
+                id="通过ip和端口查询实例名">通过IP和端口查询实例名</h3>
+                <p>API:
+                <code>http://10.146.211.21:8031/shell/get/instance</code></p>
+                <h3 id="服务监控数据">服务监控数据</h3>
+                <p>API:
+                <code>http://10.146.211.21:8031/alm/selfhealing/geteventlist</code></p>
+                <h2 id="instance-操作">Instance 操作</h2>
+                <h3 id="重启">重启</h3>
+                <p>API:
+                <code>http://10.146.211.21:8031/feiyun/action/instance/restart</code></p>
+                <pre><code>{
+    &quot;success_instances&quot;: 成功实例列表,
+    &quot;failed_instances&quot;: 失败实例列表
+}</code></pre>
+                <h3 id="屏蔽">屏蔽</h3>
+                <p>API:
+                <code>http://10.146.211.21:8031/feiyun/action/instance/disable</code></p>
+                <h3 id="解屏蔽">解屏蔽</h3>
+                <h3 id="迁移">迁移</h3>
+                <p>API:
+                <code>http://10.146.211.21:8031/feiyun/action/instance/migrate</code></p>
+                <h3 id="删除">删除</h3>
+                <p>API:
+                <code>http://10.146.211.21:8031/feiyun/action/instance/delete</code></p>
+                <h3 id="维修">维修</h3>
+                <h3 id="停止">停止</h3>
+                <h3 id="启动">启动</h3>
+                <h3 id="打断">打断</h3>
+                <h3 id="解冻">解冻</h3>
+              </div>
+    </div>
+  </div>
+</body>
+
+</html>

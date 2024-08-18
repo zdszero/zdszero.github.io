@@ -1,0 +1,96 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="../../WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="../../WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    K8S
+  </title>
+    <link rel="stylesheet" href="../../WikiTheme/theme/bootstrap.css"  />
+        </head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">K8S</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="container">
+    <div class="row">
+            <div id="TOC" class="span3">
+        <div class="well toc">
+          <ul>
+          <li><a href="#intro" id="toc-intro">Intro</a></li>
+          <li><a href="#container" id="toc-container">Container</a></li>
+          <li><a href="#image" id="toc-image">Image</a></li>
+          <li><a href="#pod" id="toc-pod">POD</a></li>
+          <li><a href="#service" id="toc-service">Service</a></li>
+          </ul>
+        </div>
+      </div>
+            <div class="span9">
+                <h3 id="intro">Intro</h3>
+                <p>abstracts away the hardware infrastructure and
+                exposes your whole data- center as a single enormous
+                computational resource</p>
+                <h3 id="container">Container</h3>
+                <ul>
+                <li>linux namespace: each process sees its own personal
+                view of the system (files, processes, network
+                interfaces, hostname, and so on)</li>
+                <li>cgroups (linux control groups): limit the amount of
+                resources the process can consume (CPU, memory, network
+                bandwidth, and so on)</li>
+                </ul>
+                <p><strong>VM and docker container</strong></p>
+                <h3 id="image">Image</h3>
+                <p>filesystem, metadata</p>
+                <p>image is composed of layers</p>
+                <h3 id="pod">POD</h3>
+                <ul>
+                <li><strong>Why Pod?</strong></li>
+                </ul>
+                <p>resource isolation</p>
+                <ul>
+                <li><strong>Container and pod relationship? Why
+                Pod?</strong></li>
+                </ul>
+                <p>containers in the same pod shares the port and ip
+                space.</p>
+                <ul>
+                <li><p><strong>Pod allocation?</strong></p></li>
+                <li><p><strong>Why assign label to
+                pod?</strong></p></li>
+                <li><p><strong>Replica Set and Replication
+                Controller</strong></p></li>
+                </ul>
+                <h3 id="service">Service</h3>
+              </div>
+    </div>
+  </div>
+</body>
+
+</html>

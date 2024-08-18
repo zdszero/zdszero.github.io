@@ -1,0 +1,194 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="../../WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="../../WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    Godel Incompleteness Proof
+  </title>
+    <link rel="stylesheet" href="../../WikiTheme/theme/bootstrap.css"  />
+        <script
+        src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
+        type="text/javascript"></script>
+      </head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">Godel Incompleteness Proof</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="container">
+    <div class="row">
+            <div id="TOC" class="span3">
+        <div class="well toc">
+          <ul>
+          <li><a href="#形式系统" id="toc-形式系统">形式系统</a></li>
+          <li><a href="#哥德尔不完备定理证明"
+          id="toc-哥德尔不完备定理证明">哥德尔不完备定理证明</a></li>
+          </ul>
+        </div>
+      </div>
+            <div class="span9">
+                <h3 id="形式系统">形式系统</h3>
+                <p>A formal system is a math concept that consists of a
+                set of symbols and a set of rules for manipulating these
+                symbols.</p>
+                <p>These rules define how to generate, derive or
+                transform symbols, creating a series of formal
+                expressions. Here are some concepts:</p>
+                <ul>
+                <li>symbols（符号）</li>
+                <li>formulas（公式）</li>
+                <li>axioms（公理）</li>
+                <li>derivation rules（推导规则）</li>
+                <li>theorems（定理）</li>
+                </ul>
+                <hr />
+                <h3 id="哥德尔不完备定理证明">哥德尔不完备定理证明</h3>
+                <p><strong>基于哥德尔数（Gödel
+                number）建立映射关系</strong></p>
+                <blockquote>
+                <p>typographical properties of long chains of symbols
+                can be talked about in an indirect but perfectly
+                accurate manner by instead talking about the properties
+                of prime factorizations of large integers.</p>
+                </blockquote>
+                <p>基本思想：将形式系统的演绎过程映射为数字的因数分解过程</p>
+                <p>将符号用 <span class="math inline">\(1 \sim
+                12\)</span> 的数字代替，其他代表变量（variable）的符号
+                <span class="math inline">\(x, y, z\)</span> 等用大于 12
+                的素数表示（比如<span class="math inline">\(13, 17, 19,
+                \cdots\)</span>)。</p>
+                <p>用这些符号的组合（factorized combination of
+                symbols）可以将公式（formula）映射为一个哥德尔数。</p>
+                <blockquote>
+                <p>In sum, every expression inthe system, whether an
+                elementary sign, a sequence of signs,or a sequence of
+                sequences, can be assigned a unique Gödelnumber.</p>
+                </blockquote>
+                <p>我们可以为每一个符号以及符号的任意组合都对应到一个哥德尔数，不管它是正确的还是错误的。</p>
+                <table>
+                <thead>
+                <tr>
+                <th style="text-align: center;">constant sign</th>
+                <th style="text-align: center;">godel number</th>
+                <th style="text-align: center;">usual meaning</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                <td style="text-align: center;"><span
+                class="math inline">\(\sim\)</span></td>
+                <td style="text-align: center;">1</td>
+                <td style="text-align: center;">not</td>
+                </tr>
+                <tr>
+                <td style="text-align: center;"><span
+                class="math inline">\(\vee\)</span></td>
+                <td style="text-align: center;">2</td>
+                <td style="text-align: center;">or</td>
+                </tr>
+                <tr>
+                <td style="text-align: center;"><span
+                class="math inline">\(\supset\)</span></td>
+                <td style="text-align: center;">3</td>
+                <td style="text-align: center;">if…then…</td>
+                </tr>
+                <tr>
+                <td style="text-align: center;"><span
+                class="math inline">\(\exists\)</span></td>
+                <td style="text-align: center;">4</td>
+                <td style="text-align: center;">there is an…</td>
+                </tr>
+                <tr>
+                <td style="text-align: center;"><span
+                class="math inline">\(=\)</span></td>
+                <td style="text-align: center;">5</td>
+                <td style="text-align: center;">equals</td>
+                </tr>
+                <tr>
+                <td style="text-align: center;"><span
+                class="math inline">\(0\)</span></td>
+                <td style="text-align: center;">6</td>
+                <td style="text-align: center;">zero</td>
+                </tr>
+                <tr>
+                <td style="text-align: center;"><span
+                class="math inline">\(s\)</span></td>
+                <td style="text-align: center;">7</td>
+                <td style="text-align: center;">the successor of</td>
+                </tr>
+                <tr>
+                <td style="text-align: center;"><span
+                class="math inline">\((\)</span></td>
+                <td style="text-align: center;">8</td>
+                <td style="text-align: center;">punctuation mark</td>
+                </tr>
+                <tr>
+                <td style="text-align: center;"><span
+                class="math inline">\()\)</span></td>
+                <td style="text-align: center;">9</td>
+                <td style="text-align: center;">punctuation mark</td>
+                </tr>
+                <tr>
+                <td style="text-align: center;"><span
+                class="math inline">\(,\)</span></td>
+                <td style="text-align: center;">10</td>
+                <td style="text-align: center;">punctuation mark</td>
+                </tr>
+                <tr>
+                <td style="text-align: center;"><span
+                class="math inline">\(+\)</span></td>
+                <td style="text-align: center;">11</td>
+                <td style="text-align: center;">plus</td>
+                </tr>
+                <tr>
+                <td style="text-align: center;"><span
+                class="math inline">\(\times\)</span></td>
+                <td style="text-align: center;">12</td>
+                <td style="text-align: center;">times</td>
+                </tr>
+                </tbody>
+                </table>
+                <p><span class="math inline">\(\text{a and b}\)</span>
+                也就是 <span class="math inline">\(\sim (\sim a \vee
+                \sim b)\)</span></p>
+                <p>比如命题 <span class="math inline">\(0 =
+                0\)</span>，可以被转化为 <span class="math inline">\(2^6
+                \times 3^5 \times 5^6\)</span></p>
+                <p>命题 <span class="math inline">\(0 \ne 0\)</span>
+                也就是 <span class="math inline">\(\sim (0 =
+                0)\)</span>，可以被转化为 <span class="math inline">\(2
+                \times 3^8 \times 5^6 \times 7^5 \times 11^6 \times
+                13^9\)</span></p>
+                <p><strong>元数学的计算</strong></p>
+              </div>
+    </div>
+  </div>
+</body>
+
+</html>

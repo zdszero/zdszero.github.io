@@ -1,0 +1,106 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="../../WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="../../WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    SRE
+  </title>
+    <link rel="stylesheet" href="../../WikiTheme/theme/bootstrap.css"  />
+        </head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">SRE</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="container">
+    <div class="row">
+            <div id="TOC" class="span3">
+        <div class="well toc">
+          <ul>
+          <li><a href="#agile" id="toc-agile">Agile</a></li>
+          <li><a href="#部署" id="toc-部署">部署</a></li>
+          </ul>
+        </div>
+      </div>
+            <div class="span9">
+                <p><strong>Alternation</strong></p>
+                <ul>
+                <li>submission and approval</li>
+                <li>annoucement</li>
+                <li>classification</li>
+                <li>inspection</li>
+                <li>cut loss</li>
+                </ul>
+                <p><strong>Annoucement</strong></p>
+                <ul>
+                <li>Time</li>
+                <li>Content</li>
+                <li>Influence</li>
+                <li>Cause</li>
+                <li>Handling</li>
+                <li>Status</li>
+                </ul>
+                <p><strong>Authority</strong></p>
+                <ul>
+                <li>RD: Research and Development engineer</li>
+                <li>PM: Product Manager</li>
+                <li>QA: Quality Assurance</li>
+                <li>OP: Operator</li>
+                </ul>
+                <p><strong>Service Layers</strong></p>
+                <ul>
+                <li>Cluster</li>
+                <li>Domain</li>
+                <li>Service</li>
+                </ul>
+                <h3 id="agile">Agile</h3>
+                <h3 id="部署">部署</h3>
+                <ul>
+                <li>金丝雀部署
+                <ul>
+                <li>只部署到一小部分服务器（金丝雀），这些服务器处理少量请求</li>
+                <li>监控和验证</li>
+                <li>逐步拓展</li>
+                </ul></li>
+                <li>蓝绿部署
+                <ul>
+                <li>维护两个环境，一个是当前环境（蓝色），另一个是备用环境（绿色）</li>
+                <li>部署新版本到绿色，并进行全面测试</li>
+                <li>当绿色环境测试通过后，切换流量，使所有用户访问绿色环境</li>
+                <li>旧环境备用</li>
+                </ul></li>
+                </ul>
+                <p>SLA（服务级别协议）：</p>
+                <p>SLO（服务级别目标）：</p>
+              </div>
+    </div>
+  </div>
+</body>
+
+</html>

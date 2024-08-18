@@ -1,0 +1,148 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="../../WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="../../WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    接入层
+  </title>
+    <link rel="stylesheet" href="../../WikiTheme/theme/bootstrap.css"  />
+        </head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">接入层</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="container">
+    <div class="row">
+            <div id="TOC" class="span3">
+        <div class="well toc">
+          <ul>
+          <li><a href="#整体架构" id="toc-整体架构">整体架构</a></li>
+          <li><a href="#整体流程" id="toc-整体流程">整体流程</a></li>
+          <li><a href="#注意点" id="toc-注意点">注意点</a></li>
+          </ul>
+        </div>
+      </div>
+            <div class="span9">
+                <h3 id="整体架构">整体架构</h3>
+                <pre><code>USER ---- DNS/CDN ---- TDO
+ |
+ |
+BGW
+ |
+ |
+BFE</code></pre>
+                <h4 id="dnscdntdo">DNS/CDN/TDO</h4>
+                <ul>
+                <li>DNS：Domain Name System，域名到 IP
+                的映射服务，找到服务地址</li>
+                <li>CDN：Content Delivery
+                Network，内容分发网络，依靠部署在各地的边缘服务器，通过中心平台的负载均衡、内容分发、调度等功能，使用户就近选择服务器获取内容，降低网络拥塞，提高用户访问速度和命中率。快速响应</li>
+                <li>TDO：Traffic Distribution
+                Optimizer，流量分配优化，流量的负载均衡，通过 traceroute
+                发掘对用户而言，速度最优的 IDC，每周更新 CDNDNS 域名和
+                IP 地址映射关系
+                <ul>
+                <li>读取 CDNDNS 日志，按照 C 类地址对日志中用户的 IP
+                地址进行聚合</li>
+                <li>每天 3 次对聚类的结果使用 traceroute 探测到达对应 IP
+                地址类的时间，并把当天 3 次结果求平均值</li>
+                <li>根据每天每个 IDC 探测出到达 IP 地址的时间，每周更新
+                CDNDNS 的域名和 IP 地址映射</li>
+                <li>TDO 和
+                GTC，最终的生效，都是需要将域名解析配置，下发到 DNS
+                服务器</li>
+                </ul></li>
+                </ul>
+                <p>shifen.baidu.com:
+                域名的CNAME，多个域名的中继代理，方便域名管理、切流</p>
+                <h4 id="bgw">BGW</h4>
+                <p>BGW：Baidu
+                GateWay，百度智能网关，四层负载均衡平台，分析IP层和传输层，提供统一的VIP。</p>
+                <p>VIP 中的 virtual 一次是相对于 client
+                来说，隐藏了复杂的请求处理响应过程，在外界看来就像是访问了单个服务器。</p>
+                <ul>
+                <li>4 层的负载均衡
+                <ul>
+                <li>NAT模式：在转发和返回数据包时，修改其中的源IP和目的IP。</li>
+                <li>DR模式</li>
+                <li>TUN模式</li>
+                </ul></li>
+                <li>RS 保活机制</li>
+                <li>攻击防御</li>
+                </ul>
+                <h4 id="bfe">BFE</h4>
+                <p>Baidu
+                Frontend，百度统一前端，做七层的负载均衡，处理HTTP，流量的接入和转发，全局流量调度，安全和防攻击，数据分析</p>
+                <p>根据HTTP请求首部，确定应该将请求的集群、子集群和具体实例。</p>
+                <p><a
+                href="../../Computer/baidu_intra/concepts.html#集群">集群、子集群和实例</a></p>
+                <pre><code>upstream myapp1 {
+    server backend1.example.com weight=5;
+    server backend2.example.com;
+    server backend3.example.com down;  # 标记为不可用
+    server backend4.example.com backup;  # 备用服务器
+}</code></pre>
+                <h3 id="整体流程">整体流程</h3>
+                <ol type="1">
+                <li>用户查询域名 ip</li>
+                <li>本次缓存命中返回，未命中进行 DNS 查询</li>
+                <li>CDN 根据实施和用户信息返回响应最快的 vip</li>
+                <li>用户向 vip 发起 TCP 请求</li>
+                <li>通过 BGW 攻击检测后，根据负载策略选择 RS
+                下发请求</li>
+                <li>BFE 解析 http 报文，通过攻击检测后，调度后端 PR
+                下发请求</li>
+                <li>接收结果逐层返回用户</li>
+                </ol>
+                <h3 id="注意点">注意点</h3>
+                <h4 id="负载均衡">负载均衡</h4>
+                <ul>
+                <li>硬件方法：NetScaler这种，一般是非IT企业</li>
+                <li>DNS 轮询</li>
+                <li>负载均衡器
+                <ul>
+                <li>四层LB
+                <ul>
+                <li><a
+                href="https://www.alibabacloud.com/blog/load-balancing---linux-virtual-server-lvs-and-its-forwarding-modes_595724">LVS</a>（Linux
+                Virtual Server）</li>
+                </ul></li>
+                <li>七层LB
+                <ul>
+                <li>nginx</li>
+                </ul></li>
+                </ul></li>
+                </ul>
+              </div>
+    </div>
+  </div>
+</body>
+
+</html>

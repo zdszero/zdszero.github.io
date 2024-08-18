@@ -2,15 +2,16 @@
 
 - [intro](./intro.md)
 - [conclusion](./conclusion.md)
-- topic
+- school
     - [ego](./ego.md)
     - [fate](./fate.md)
     - [knowledge](./knowledge.md)
-    - [identity](./identity.md)
     - [morality](./morality.md)
-    - [science](./science.md)
     - [stoicism](./stoicism.md)
     - [existentialism](./existentialism.md)
+- theology
+    - [Augustine](./Augustine.md)
+    - [Luther](./Luther.md)
 - philosopher
     - [Plato](./Plato.md)
     - [Aristotle](./Aristotle.md)

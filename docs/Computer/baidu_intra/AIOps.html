@@ -1,0 +1,126 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="../../WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="../../WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    AIOps
+  </title>
+    <link rel="stylesheet" href="../../WikiTheme/theme/bootstrap.css"  />
+        </head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">AIOps</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="container">
+    <div class="row">
+            <div id="TOC" class="span3">
+        <div class="well toc">
+          <ul>
+          <li><a href="#概念" id="toc-概念">概念</a></li>
+          <li><a href="#ai" id="toc-ai">AI</a></li>
+          </ul>
+        </div>
+      </div>
+            <div class="span9">
+                <h3 id="概念">概念</h3>
+                <h4 id="agent">Agent</h4>
+                <p>GPT 和 Agent 的区别：</p>
+                <ul>
+                <li>GPT = generative pre-trained
+                transformer，也就是生成式预训练转换器，这是驱动大型语言模型（LLM）如
+                ChatGPT 的核心机器学习模型架构。</li>
+                <li>Agent（Agent）=
+                一个设置了一些目标或任务，可以迭代运行的大型语言模型。它与大型语言模型（LLM）在像ChatGPT这样的工具中“通常”的使用方式不同。在ChatGPT中，你提出一个问题并获得答案作为回应。而Agent拥有复杂的工作流程，可以自我对话，而无需人类驱动每一部分的交互。</li>
+                </ul>
+                <p>Agent 的能力：</p>
+                <ol type="1">
+                <li>规划（Planning）：智能体将大型任务分解为更小、更易于管理的子目标，从而实现复杂任务的有效的处理。它还可以对过去的行动进行自我批评和反思，从错误中学习，并为未来的步骤改进它们，从而提高最终结果的质量。</li>
+                <li>记忆（Memory）：短期记忆包括上下文学习，长期记忆使代理能够保留和回忆（无限期）信息。</li>
+                <li>工具使用（Tool
+                use）：智能体学会了调用外部API以获取模型权重中缺失的额外信息，包括当前信息、代码执行能力、访问专有信息源等。</li>
+                </ol>
+                <figure>
+                <img
+                src="../.././WikiImage/image_2024-07-26-16-03-05.png"
+                alt="Overview of a LLM-powered autonomous agent system" />
+                <figcaption aria-hidden="true">Overview of a LLM-powered
+                autonomous agent system</figcaption>
+                </figure>
+                <h4 id="大模型">大模型</h4>
+                <ul>
+                <li>Temperature：控制模型生成文本时的随机性。较高的温度会使生成的文本更加随机和多样化，而较低的温度会使生成的文本更加确定和集中。</li>
+                <li>Toq p：从累积概率达到 p
+                的最有可能的词汇中采样。预测时下一个词有很多潜在的可能性，p设置的值越大可选择的词汇越多。</li>
+                <li>Max
+                Tokens：控制模型生成文本的最大长度，即生成的单词或符号的最大数量。</li>
+                </ul>
+                <h3 id="ai">AI</h3>
+                <ul>
+                <li>为AI提供更加准确的上下文
+                <ul>
+                <li>上下文包含项目、框架、依赖、业务、代码的注释、文档、已经实现的功能等
+                <ul>
+                <li>在文件头部添加说明
+                <ul>
+                <li>介绍什么时候使用该文件</li>
+                <li>其他需要特殊说明的，对于有内容规律的文件，说明内容的规律</li>
+                </ul></li>
+                <li>实现组织好外部依赖</li>
+                <li>用注释加强代码理解</li>
+                <li>使用有意义的命名</li>
+                <li>准备高质量的私域知识
+                <ul>
+                <li>文字描述丰富</li>
+                <li>文档结构清晰</li>
+                <li>目录结构清晰</li>
+                </ul></li>
+                </ul></li>
+                </ul></li>
+                <li>写代码之前先写注释
+                <ul>
+                <li>何时写注释？
+                <ul>
+                <li>新建文件时：描述文件功能、依赖关系和注意事项</li>
+                <li>实现函数前：描述函数的功能、输入和输出</li>
+                <li>实现关键功能、边界条件和复杂逻辑：描述代码意图和需求</li>
+                </ul></li>
+                </ul></li>
+                <li>写完代码让AI查一查</li>
+                <li>让AI复用并拓展你的能力
+                <ul>
+                <li>连通整个研发流程，让研发过程更加专注</li>
+                </ul></li>
+                </ul>
+              </div>
+    </div>
+  </div>
+</body>
+
+</html>
