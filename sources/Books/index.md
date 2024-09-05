@@ -37,3 +37,4 @@
 - [the story of bible](./the_story_of_bible.md)
 - [bible](./bible/index.md)
 - [talking to myself](./talking_to_myself/index.md)
+- [hustler university](./hustler_university.md)
