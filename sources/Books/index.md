@@ -38,3 +38,4 @@
 - [bible](./bible/index.md)
 - [talking to myself](./talking_to_myself/index.md)
 - [hustler university](./hustler_university.md)
+- [pyramids principle](./pyramids_principle.md)
