@@ -7,7 +7,13 @@ theme: bootstrap
 
 并不是尼采用自己的哲学 “杀死” 了上帝，而是尼采以深刻的洞察力捕捉了时代发展的脉络，并以一种极具艺术表现力的方式将这趋势表达在了自己的作品之中。
 
-尼采认为哲学的历史是这样的：基督教成为西方的主要宗教信仰，它在罗马帝国崩溃后幸存下来，并在欧洲占据主导地位大约1500年左右，他认为基督教及其全能全知的上帝强化了希腊柏拉图的绝对真理观念，由上帝担保的真理，这意味着我们可以获得关于世界的真理和准确的完美知识，这将由上帝自己担保，尼采认为这种对真理的信仰催生了自然科学，经过几个世纪的自然科学发展，我们有了第二次大的科学革命。
+尼采认为哲学的历史是这样的：基督教成为西方的主要宗教信仰，它在罗马帝国崩溃后幸存下来，并在欧洲占据主导地位大约1500年左右，他认为基督教及其全能全知的上帝强化了希腊柏拉图的绝对真理观念，由上帝担保的真理，这意味着我们可以获得关于世界的真理和准确的完美知识，这将由上帝自己担保。此外，在圣经创世纪中，当人类被赋予对自然万物的统治权时，上帝告诉我们周围的大自然都是为我们服务的。
+
+尝试向一个佛教徒或者道家说明为什么你想主宰自然，他们会告诉你要与自然和谐共处。
+人类并不是天然地就像改造自然、征服自然，这是圣经的思想遗产。
+
+尼采认为这种对真理的信仰以及人类这种尝试主宰自然的意志的催生了自然科学，但是最后自然科学却反过来伤害了基督教的根基。
+真相没有让我们自由，真相却让我们陷入束缚。
 
 后续的时代发展完全符合尼采的预测，科学界达尔文提出了进化论，物理学中诞生了量子力学，数学中哥德尔发现了不完备性定理。
 
@@ -40,9 +46,34 @@ theme: bootstrap
 
 在希腊神话中，阿波罗和狄俄尼索斯都是宙斯的儿子。阿波罗是莱托之子，掌管太阳、艺术、音乐、诗歌、瘟疫和疾病，掌管理性思维和秩序，诉诸逻辑、审慎和纯洁，代表理性。塞墨勒之子狄俄尼索斯是酒神、舞蹈之神、欢乐之神，非理性与混乱之神，代表激情、情感和本能。古希腊人并不认为这两个神是对立的或竞争对手的，尽管他们经常在本质上交织在一起。
 
-### __经典语录__
+### 道德观
+
+人被生命意志所支配，即获得权力的自然欲望，这是使人类进步的力量。
+
+权力意志通常采取的方式是支配欲，代表着一种天生的冷酷无情，人们渴望支配他人、利用他人。当这种欲望对外无法满足时，当我们无法造成别人的痛苦时，我们就会将这种力量转向我们自己，“同情心” 就是这种力量的作用结果。
+
+### 经典语录
 
 [goodreads Nietzsche quotes](https://www.goodreads.com/author/quotes/1938.Friedrich_Nietzsche)
+
+
+> It is not a lack of love, but a lack of friendship that makes unhappy marriages.
+>
+> 婚姻不幸福，不是缺少爱，而是缺少友情。
+
+> There is always some madness in love. But there is also always some reason in madness.
+>
+> 爱情里总有一些疯狂，但疯狂总有一些理由。
+
+> You must have chaos within you to give birth to a dancing star.
+
+> He who has a why to live for can bear almost any how.
+>
+> 一个人知道自己为什么而活，就可以忍受任何一种生活。
+
+> In individuals, insanity is rare; but in groups, parties, nations and epochs, it is the rule.
+
+> The individual has always had to struggle to keep from being overwhelmed by the tribe. If you try it, you will be lonely often, and sometimes frightened. But no price is too high to pay for the privilege of owning yourself.
 
 > I cannot believe in a God who wants to be praised all the time.
 >
@@ -71,8 +102,6 @@ theme: bootstrap
 > Convictions are more dangerous foes of truth than lies.
 >
 > 对于真理来说，坚信不疑比谎言更加危险。
-
-很多人拒绝接受真相，就是不想让头脑中的illusion被打破。
 
 > Fool me once, shame on you. Fool me twice, shame on me
 >
@@ -107,3 +136,11 @@ theme: bootstrap
 > 道德就是牛鼻子上的那根绳子。
 
 宗教、道德观需要重新得到评估。
+
+> In heaven, all the interesting people are missing.
+>
+> 在天堂中，所有有趣的人都消失了。
+
+> There are no facts, only interpretations.
+>
+> 没有事实，只有判断。
