@@ -1,0 +1,67 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="../../WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="../../WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    vllm v0.1.2 代码阅读
+  </title>
+    <link rel="stylesheet" href="../../WikiTheme/theme/bootstrap.css"  />
+        </head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">vllm v0.1.2 代码阅读</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="container">
+    <div class="row">
+            <div class="span12">
+                <pre><code>llm.run
+    → step
+        → run_workers(&quot;execute_model&quot;)
+            → worker.execute_model
+                → modelrunner.execute_model
+        → decode_seq
+        → stop_seq
+        → free_finished_seq</code></pre>
+                <ul>
+                <li>序列组元数据中包含哪些信息？</li>
+                </ul>
+                <p>block_tables
+                即一个字典，将所有的序列ID映射到对应的块表block_table，block_table实际上就是List[PhysicalTokenBlock]</p>
+                <ul>
+                <li><p>如何将序列组的数据封装为神经网络的输入参数？</p></li>
+                <li><p>执行模型时的参数都是什么？各有什么含义？</p></li>
+                </ul>
+                <p>input_ids 的类型为 torch.Tensor，应该就是将</p>
+              </div>
+    </div>
+  </div>
+</body>
+
+</html>

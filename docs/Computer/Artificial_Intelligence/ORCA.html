@@ -1,0 +1,99 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="../../WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="../../WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    ORCA
+  </title>
+    <link rel="stylesheet" href="../../WikiTheme/theme/bootstrap.css"  />
+        </head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">ORCA</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="container">
+    <div class="row">
+            <div id="TOC" class="span3">
+        <div class="well toc">
+          <ul>
+          <li><a href="#background"
+          id="toc-background">Background</a></li>
+          <li><a href="#keypoint" id="toc-keypoint">Keypoint</a></li>
+          </ul>
+        </div>
+      </div>
+            <div class="span9">
+                <p><a
+                href="https://friendli.ai/blog/llm-iteration-batching">reference
+                pipeline image</a></p>
+                <h3 id="background">Background</h3>
+                <p><strong>Characteristics of LLM Model</strong></p>
+                <ul>
+                <li>Resnet, Bert: processed by running the model
+                once</li>
+                <li>Transformer: an iterative process</li>
+                </ul>
+                <p><strong>LLM Serving</strong></p>
+                <p>agnostic to ML Models, execution engines and
+                computing hardware</p>
+                <ul>
+                <li>expose endpoints that receives inference
+                requests</li>
+                <li>schedule execution of the engine</li>
+                <li>send responses to the requests</li>
+                </ul>
+                <figure>
+                <img
+                src="../.././WikiImage/image_2024-10-28-16-33-44.png"
+                width="400" alt="overall workflow of serving a LLM" />
+                <figcaption aria-hidden="true">overall workflow of
+                serving a LLM</figcaption>
+                </figure>
+                <p><strong>Batching</strong></p>
+                <ul>
+                <li>exploit the vast parrallel computation units</li>
+                <li>reuse the model parameters loaded from the off-chip
+                memory</li>
+                </ul>
+                <p>previous batching restrictions:</p>
+                <p>Batching is only applicable when the two selected
+                requests are in the same phase, with the same number of
+                input tokens (in case of the initiation phase) or with
+                the same token index (in case of the increment
+                phase).</p>
+                <h3 id="keypoint">Keypoint</h3>
+                <p>ORCA’s scheduler can change which requests are going
+                to be processed at every iteration.</p>
+              </div>
+    </div>
+  </div>
+</body>
+
+</html>

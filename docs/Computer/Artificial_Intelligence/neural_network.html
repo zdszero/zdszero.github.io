@@ -1,0 +1,533 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="../../WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="../../WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    neural network
+  </title>
+    <link rel="stylesheet" href="../../WikiTheme/theme/bootstrap.css"  />
+        <script
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+        type="text/javascript"></script>
+      </head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">neural network</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="container">
+    <div class="row">
+            <div id="TOC" class="span3">
+        <div class="well toc">
+          <ul>
+          <li><a href="#术语" id="toc-术语">术语</a></li>
+          <li><a href="#基础" id="toc-基础">基础</a>
+          <ul>
+          <li><a href="#perceptron"
+          id="toc-perceptron">perceptron</a></li>
+          <li><a href="#multilayer-perceptron"
+          id="toc-multilayer-perceptron">multilayer perceptron</a></li>
+          <li><a href="#backpropagation"
+          id="toc-backpropagation">backpropagation</a></li>
+          <li><a href="#activation-function"
+          id="toc-activation-function">activation function</a></li>
+          <li><a href="#tensor" id="toc-tensor">tensor</a></li>
+          <li><a href="#word-embeddings" id="toc-word-embeddings">word
+          embeddings</a></li>
+          <li><a href="#hidden-state" id="toc-hidden-state">hidden
+          state</a></li>
+          <li><a href="#unembedding-matrix"
+          id="toc-unembedding-matrix">unembedding matrix</a></li>
+          <li><a href="#softmax" id="toc-softmax">softmax</a></li>
+          </ul></li>
+          <li><a href="#层" id="toc-层">层</a>
+          <ul>
+          <li><a href="#fc" id="toc-fc">FC</a></li>
+          <li><a href="#attention" id="toc-attention">Attention</a></li>
+          <li><a href="#mlp" id="toc-mlp">MLP</a></li>
+          <li><a href="#normalization"
+          id="toc-normalization">Normalization</a></li>
+          </ul></li>
+          <li><a href="#模型" id="toc-模型">模型</a>
+          <ul>
+          <li><a href="#transformers"
+          id="toc-transformers">Transformers</a></li>
+          <li><a href="#gpt2" id="toc-gpt2">GPT2</a></li>
+          </ul></li>
+          </ul>
+        </div>
+      </div>
+            <div class="span9">
+                <h2 id="术语">术语</h2>
+                <ul>
+                <li>dimension size：维度大小</li>
+                <li>number of dimensions：维数</li>
+                <li>嵌入矩阵：embedding matrix</li>
+                </ul>
+                <h2 id="基础">基础</h2>
+                <h3 id="perceptron">perceptron</h3>
+                <figure>
+                <img
+                src="../.././WikiImage/image_2024-11-01-16-51-42.png"
+                width="500" alt="perceptron and activation function" />
+                <figcaption aria-hidden="true">perceptron and activation
+                function</figcaption>
+                </figure>
+                <p>The neuron receives inputs and picks an initial set
+                of weights a random. These are combined in weighted sum
+                and then ReLU, the activation function, determines the
+                value of the output.</p>
+                <p>perceptron can learn the weights by
+                <strong>stochastic gradient descent</strong>. Once it
+                converges, the dataset is separated into two regions by
+                a linear hyperplane.</p>
+                <figure>
+                <img
+                src="../.././WikiImage/image_2024-11-01-16-58-43.png"
+                width="250" alt="hyperplane" />
+                <figcaption aria-hidden="true">hyperplane</figcaption>
+                </figure>
+                <p>Perceptron also has its limitations: it cannot
+                represent XOR gate, where the gate only returns 1 if the
+                inputs are different.</p>
+                <h3 id="multilayer-perceptron">multilayer
+                perceptron</h3>
+                <p>The Multilayer Perceptron was developed to tackle
+                this limitation. It is a neural network where the
+                mapping between inputs and output is non-linear.</p>
+                <figure>
+                <img
+                src="../.././WikiImage/image_2024-11-01-17-23-40.png"
+                width="500" alt="multilayer perceptron" />
+                <figcaption aria-hidden="true">multilayer
+                perceptron</figcaption>
+                </figure>
+                <p>Multilayer Perceptron falls under the category of
+                feedforward algorithms.</p>
+                <p>If the algorithm only computed the weighted sums in
+                each neuron, propagated results to the output layer, and
+                stopped there, it wouldn’t be able to learn the weights
+                that minimize the cost function. If the algorithm only
+                computed one iteration, there would be no actual
+                learning.</p>
+                <h3 id="backpropagation">backpropagation</h3>
+                <p>Backpropagation is the learning mechanism that allows
+                the Multilayer Perceptron to iteratively adjust the
+                weights in the network, with the goal of minimizing the
+                cost function.</p>
+                <p>There is one hard requirement for backpropagation to
+                work properly. The function that combines inputs and
+                weights in a neuron, for instance the weighted sum, and
+                the threshold function, for instance ReLU, must be
+                differentiable.</p>
+                <p>These functions must have a bounded derivative,
+                because Gradient Descent is typically the optimization
+                function used in MultiLayer Perceptron.</p>
+                <h3 id="activation-function">activation function</h3>
+                <p><b><u>ReLU (Rectified Linear Function)</u></b></p>
+                <p><span class="math display">\[f(x) = \frac{x +
+                |x|}{2}\]</span></p>
+                <h3 id="tensor">tensor</h3>
+                <p>The input has to be formatted as an array of real
+                numbers. It could mean a list of numbers, a
+                two-dimensional array or a higher dimensional array.</p>
+                <p>The general term is <strong>tensor</strong>.</p>
+                <figure>
+                <img
+                src="../.././WikiImage/image_2024-10-24-15-49-06.png"
+                width="600" alt="tensor flow" />
+                <figcaption aria-hidden="true">tensor flow</figcaption>
+                </figure>
+                <h3 id="word-embeddings">word embeddings</h3>
+                <p>in GPT3 they have 12,288 dimensions</p>
+                <figure>
+                <img
+                src="../.././WikiImage/image_2024-10-24-16-01-44.png"
+                width="500" alt="word embeddings" />
+                <figcaption aria-hidden="true">word
+                embeddings</figcaption>
+                </figure>
+                <figure>
+                <img
+                src="../.././WikiImage/image_2024-10-24-16-00-31.png"
+                width="500" alt="embeddings matrix" />
+                <figcaption aria-hidden="true">embeddings
+                matrix</figcaption>
+                </figure>
+                <p>vector substraction to measure difference</p>
+                <p>vector alignment measred by <span
+                class="math inline">\(\frac{| v_1 \cdot v_2 |}{| v_1 |
+                \cdot | v_2 | }\)</span> （dot product, inner
+                product）</p>
+                <h3 id="hidden-state">hidden state</h3>
+                <h3 id="unembedding-matrix">unembedding matrix</h3>
+                <figure>
+                <img
+                src="../.././WikiImage/image_2024-10-24-17-01-22.png"
+                width="500" alt="unembedding matrix" />
+                <figcaption aria-hidden="true">unembedding
+                matrix</figcaption>
+                </figure>
+                <p><strong>logits:</strong> the vector of raw
+                (non-normalized) predictions that a classification model
+                generates, which is ordinarily then passed to a
+                normalization function.</p>
+                <h3 id="softmax">softmax</h3>
+                <p>softmax 是激活函数的一种</p>
+                <figure>
+                <img
+                src="../.././WikiImage/image_2024-10-24-17-04-19.png"
+                width="500" alt="softmax" />
+                <figcaption aria-hidden="true">softmax</figcaption>
+                </figure>
+                <p>softmax
+                其实就是将一个数组转化为另一个概率分布数组，对于输入数组中的元素
+                <span
+                class="math inline">\(z_{i}\)</span>，它在结果数组中的值为</p>
+                <p><span class="math display">\[\text{softmax}(z_i) =
+                \frac{e^{z_{i}}}{\sum_{j=1}^{K} e^{z_{j}}}\]</span></p>
+                <p>当然这里是假设有 K 个元素</p>
+                <p>还有一个函数叫 log_softmax，因为 softmax
+                使用对数计算，可能会溢出</p>
+                <p><span class="math display">\[\text{log_softmax}(z_i)
+                = log(\frac{e^{z_{i}}}{\sum_{j=1}^{K} e^{z_{j}}}) = z_i
+                - log(\sum_{j=1}^{K} e^{z_{j}})\]</span></p>
+                <figure>
+                <img
+                src="../.././WikiImage/image_2024-10-24-17-08-26.png"
+                width="500" alt="temperature" />
+                <figcaption aria-hidden="true">temperature</figcaption>
+                </figure>
+                <p>when temperature is higher, the higher value is more
+                focused.</p>
+                <h2 id="层">层</h2>
+                <h3 id="fc">FC</h3>
+                <p>全连接层（Fully Connected
+                Layer）执行线性变换，核心操作是通过权重矩阵对输入张量（X）进行线性变换，并且加上一个偏置矩阵/向量，这个变换将输入空间中的特征映射到输出空间中</p>
+                <p><span class="math display">\[O = WX + B\]</span></p>
+                <h3 id="attention">Attention</h3>
+                <figure>
+                <img
+                src="../.././WikiImage/image_2024-10-31-16-44-25.png"
+                width="650" alt="attention computation" />
+                <figcaption aria-hidden="true">attention
+                computation</figcaption>
+                </figure>
+                <p><span class="math display">\[Q = XW^{Q}\]</span></p>
+                <p><span class="math display">\[K = XW^{K}\]</span></p>
+                <p><span class="math display">\[V = XW^{V}\]</span></p>
+                <p><span class="math display">\[\text{Attention}(Q,K,V)
+                = \text{softmax} (\frac{QK^T}{\sqrt{d_{k}}})
+                V\]</span></p>
+                <p><span class="math display">\[\text{MultiHead}(Q,K,V)
+                = \text{Concat}(\text{head}_{1}, \dots, \text{head}_{h})
+                W^{O}\]</span></p>
+                <p><span class="math display">\[\text{head}_i =
+                \text{Attention}(QW_{i}^{Q}, KW_{i}^{K},
+                VW_{i}^{V})\]</span></p>
+                <p>输入嵌入矩阵 <span class="math inline">\(X\)</span>
+                的尺寸通常为 <span class="math inline">\(b \times
+                n_{seq} \times d_{model}\)</span>，其中 <span
+                class="math inline">\(b\)</span> 为 batch size
+                即一次推理中同时处理的样本数量，<span
+                class="math inline">\(n\)</span> 为 sequence length
+                即序列中的 token 数量，<span
+                class="math inline">\(d_{model}\)</span> 为特征维度，在
+                transformer 的不同层中保持一致。</p>
+                <p>查询矩阵 <span class="math inline">\(W^{Q}\)</span>
+                的尺寸为 <span class="math inline">\(d_{model} \times
+                d_{model}\)</span>，<span class="math inline">\(Q = X
+                \cdot W^{Q}\)</span> 的尺寸为 <span
+                class="math inline">\(b \times n_{seq} \times
+                d_{model}\)</span>。键矩阵 <span
+                class="math inline">\(W^{K}\)</span> 和值矩阵 <span
+                class="math inline">\(W^{V}\)</span> 是一样的。</p>
+                <p>对于每一个注意力头 <span
+                class="math inline">\(i\)</span>，查询矩阵 <span
+                class="math inline">\(W_{i}^{Q}\)</span> 的尺寸为 <span
+                class="math inline">\(b \times d_{model} \times
+                d_{k}\)</span>，其中 <span class="math inline">\(d_{k} =
+                \frac{d_{model}}{n_{head}}\)</span></p>
+                <p><span class="math inline">\(Q, K, V\)</span> 的形状与
+                <span class="math inline">\(X\)</span> 一致也是 <span
+                class="math inline">\(b \times n_{seq} \times
+                d_{model}\)</span>，MultiHeadAttention 的形状为 <span
+                class="math inline">\(b \times n_{seq} \times
+                d_{model}\)</span></p>
+                <p><span class="math inline">\(Q_{i}, K_{i},
+                V_{i}\)</span> 的形状是 <span class="math inline">\(b
+                \times n_{seq} \times d_{k}\)</span>，Attention 的形状为
+                <span class="math inline">\(b \times n_{seq} \times
+                d_{k}\)</span></p>
+                <figure>
+                <img
+                src="../.././WikiImage/image_2024-11-04-19-49-23.png"
+                width="700" alt="attention calculation" />
+                <figcaption aria-hidden="true">attention
+                calculation</figcaption>
+                </figure>
+                <p><strong>pytorch如何进行多头的并行计算</strong></p>
+                <p><code>(batch_size, seq_len, d_model)</code> →
+                <code>(batch_size, seq_len, n_head, d_head)</code>
+                →(permute)→
+                <code>(batch_size, n_head, seq_len, d_head)</code>
+                →(<span class="math inline">\(Q \times K^{T} \times
+                V\)</span>)→
+                <code>(batch_size, n_head, seq_len, d_head)</code></p>
+                <p>pytorch
+                中的矩阵乘法对于多维矩阵会自动进行并行化处理，注意前面维度的大小必须一致。</p>
+                <h3 id="mlp">MLP</h3>
+                <p>多层感知机（Multiple Layer
+                Perception），将输入张量通过线性变换映射到一个更高的维度，然后再映射回来，这个过程称为【扩展和压缩】。</p>
+                <p>为什么要这样？</p>
+                <h3 id="normalization">Normalization</h3>
+                <ul>
+                <li>减少数据中的极端值，从而避免计算过程中可能出现的数值不稳定性。</li>
+                <li>通过将输入数据或激活函数的输出调整到一个较小的范围（通常是0到1或-1到1），可以加速梯度下降算法的收敛速度。</li>
+                </ul>
+                <h2 id="模型">模型</h2>
+                <h3 id="transformers">Transformers</h3>
+                <p>Process: tokenizer → (attention → multi layer
+                perception → norm)+ → unembed</p>
+                <p>For each word, you might raise a question with its
+                context. This question is encoded as yet another vector
+                which we call <strong>query vector</strong>. The query
+                vector has a much smaller dimension than the embedding
+                vector.</p>
+                <p><span class="math display">\[ [Q, K, V] = XW + b
+                \]</span></p>
+                <p><span class="math display">\[ Q_i, K_i, V_i =
+                \text{split}(Q, K, V) \]</span></p>
+                <p><span class="math display">\[ \text{Attention}(Q_i,
+                K_i, V_i) = \text{softmax}\left(\frac{Q_i
+                K_i^T}{\sqrt{d_k}} + \text{mask}\right) V_i
+                \]</span></p>
+                <p><span class="math display">\[ \text{Concat}(head_1,
+                head_2, \ldots, head_h) \]</span></p>
+                <p><span class="math display">\[ O =
+                \text{Concat}(head_1, head_2, \ldots, head_h)W_o + b_o
+                \]</span></p>
+                <figure>
+                <img
+                src="../.././WikiImage/image_2024-10-25-11-13-49.png"
+                width="500" alt="queries" />
+                <figcaption aria-hidden="true">queries</figcaption>
+                </figure>
+                <p>compute the query vector by <span
+                class="math inline">\(W_{Q} \cdot \vec{E_{i}} =
+                \vec{Q_{i}}\)</span></p>
+                <p>The entries of this matrix are parameters of the
+                model. which means the true behavior is learned from
+                data.</p>
+                <figure>
+                <img
+                src="../.././WikiImage/image_2024-10-25-11-15-17.png"
+                width="500" alt="what is query in practice" />
+                <figcaption aria-hidden="true">what is query in
+                practice</figcaption>
+                </figure>
+                <p>In this example, the action of looking for an
+                adjactives in noun’s preceding positions is encoded as a
+                query vector.</p>
+                <figure>
+                <img
+                src="../.././WikiImage/image_2024-10-25-11-23-11.png"
+                width="500" alt="keys" />
+                <figcaption aria-hidden="true">keys</figcaption>
+                </figure>
+                <p>Conceptually, you want to think of the keys as
+                potentially answering the queries.</p>
+                <figure>
+                <img
+                src="../.././WikiImage/image_2024-10-25-11-27-01.png"
+                width="500" alt="measure the match" />
+                <figcaption aria-hidden="true">measure the
+                match</figcaption>
+                </figure>
+                <p>To measure how well each key matches each query, you
+                compute a dot product between each possible key-query
+                pair.</p>
+                <p>This grid gives us a score for how relevant each word
+                is to update the meaning of every other word</p>
+                <figure>
+                <img
+                src="../.././WikiImage/image_2024-10-25-12-16-35.png"
+                width="500" alt="attention pattern" />
+                <figcaption aria-hidden="true">attention
+                pattern</figcaption>
+                </figure>
+                <p>Computing this pattern lets the model <strong>deduce
+                the words’ relevance</strong>. Now you need to actually
+                update the embeddings, allowing words to <strong>pass
+                information</strong> to whichever other words they’re
+                relevant to.</p>
+                <p>This most straightforward is to use a matrix <span
+                class="math inline">\(W_{V} \times \vec{E} =
+                \vec{V}\)</span>.</p>
+                <figure>
+                <img
+                src="../.././WikiImage/image_2024-10-25-12-41-53.png"
+                width="500" alt="adding value vector example" />
+                <figcaption aria-hidden="true">adding value vector
+                example</figcaption>
+                </figure>
+                <p>When adding <span
+                class="math inline">\(\vec{V}\)</span> to the relevant
+                word, the result a vector with more meaning.</p>
+                <figure>
+                <img
+                src="../.././WikiImage/image_2024-10-25-14-45-27.png"
+                width="500" alt="weighted sum" />
+                <figcaption aria-hidden="true">weighted sum</figcaption>
+                </figure>
+                <p>Weighted sum of value vector is added to the
+                embedding vector.</p>
+                <p>Each weight is computed by dot product of key and
+                query vector.</p>
+                <figure>
+                <img
+                src="../.././WikiImage/image_2024-10-25-15-11-32.png"
+                width="500" alt="value up down matrix" />
+                <figcaption aria-hidden="true">value up down
+                matrix</figcaption>
+                </figure>
+                <figure>
+                <img
+                src="../.././WikiImage/image_2024-10-25-18-30-43.png"
+                width="500" alt="one head attention" />
+                <figcaption aria-hidden="true">one head
+                attention</figcaption>
+                </figure>
+                <figure>
+                <img
+                src="../.././WikiImage/image_2024-10-25-15-00-27.png"
+                width="500" alt="multi headed attention" />
+                <figcaption aria-hidden="true">multi headed
+                attention</figcaption>
+                </figure>
+                <figure>
+                <img
+                src="../.././WikiImage/image_2024-10-25-15-24-10.png"
+                width="500" alt="multi layer perception" />
+                <figcaption aria-hidden="true">multi layer
+                perception</figcaption>
+                </figure>
+                <figure>
+                <img
+                src="../.././WikiImage/image_2024-10-28-11-41-02.png"
+                width="500" alt="MLP and neurons" />
+                <figcaption aria-hidden="true">MLP and
+                neurons</figcaption>
+                </figure>
+                <p>The rows of the first matrix can be thought of as
+                directions in embedding space, and that means the
+                activation of each neuron tells you how much a given
+                vector aligns with some specific direction.</p>
+                <p>The columns of the second matrix tell you what will
+                be added to the result if the neuron is active.</p>
+                <figure>
+                <img
+                src="../.././WikiImage/image_2024-10-25-17-09-33.png"
+                width="500" alt="96 layers" />
+                <figcaption aria-hidden="true">96 layers</figcaption>
+                </figure>
+                <figure>
+                <img
+                src="../.././WikiImage/image_2024-10-25-17-08-48.png"
+                width="500" alt="GPT3 parameters" />
+                <figcaption aria-hidden="true">GPT3
+                parameters</figcaption>
+                </figure>
+                <h3 id="gpt2">GPT2</h3>
+                <ul>
+                <li>raw tokens → encoded tokens
+                <ul>
+                <li><code>(B, t)</code></li>
+                </ul></li>
+                <li>encodeds tokens → embedding vector
+                <ul>
+                <li><code>(B, t)</code> →
+                <code>(B, t, d_model)</code></li>
+                <li><span class="math inline">\(\vec{embd} = \vec{wpe} +
+                \vec{wte}\)</span></li>
+                </ul></li>
+                <li><span class="math inline">\(\vec{embd}\)</span> —–(n
+                blocks)—–&gt; <span
+                class="math inline">\(\text{more_detail}(\vec{embd} +
+                \vec{attn})\)</span>
+                <ul>
+                <li>block
+                <ul>
+                <li>attention layer</li>
+                <li>norm layer</li>
+                <li>mlp layer</li>
+                <li>norm layer</li>
+                </ul></li>
+                <li>attention: <code>(B, t, d_model)</code> →
+                <code>(B, n_head, t, d_head)</code> →
+                <code>(B, t, d_model)</code></li>
+                <li>mlp:
+                <code>(B, t, d_model) → (B, t, d_model * 3) → (B, t, d_model)</code></li>
+                </ul></li>
+                <li>attn vector → vocab
+                <ul>
+                <li><code>(B, t, d_model)</code> →
+                <code>(B, t, vocab_size)</code></li>
+                <li><code>logits = output[i][-1], 0 &lt;= i &lt; B</code></li>
+                </ul></li>
+                </ul>
+                <p>shape of <span class="math inline">\(W_{i}^{Q},
+                W_{i}^{K}, W_{i}^{V}\)</span> is
+                <code>(d_model, d_k)</code></p>
+                <p><span class="math inline">\(Q_{i} = x \cdot
+                W_{i}^{Q}\)</span> →
+                <code>(B, t, d_model) · (d_model, d_k)</code> →
+                <code>(B, t, d_model) · (B, d_model, d_k)</code> →
+                <code>(B, t, d_k)</code></p>
+                <p>generally <code>d_k · n_heads = d_model</code></p>
+                <pre><code>                  encoder
+sentence (B, T) -----------&gt; embd (B, T, M)
+                  attention
+            /-  -----------&gt; embd + attn (B, T, M)
+            |       norm
+            |   -----------&gt;
+       12x  |       MLP
+            |   -----------&gt; more_detail(embd + attn) (B, T, M)
+            |       norm
+            \-  -----------&gt;
+                 tok linear
+                -----------&gt; vocabs (B, T, V)
+            T=-1, retrieve the V
+                -----------&gt; logits (B, V)</code></pre>
+              </div>
+    </div>
+  </div>
+</body>
+
+</html>
