@@ -1,13 +1,17 @@
 % talking to myself
 
 - [vocabulary](./new_words.md)
+- [self development](./self_development.md)
+- [history](./history.md)
 - [religion](./religion.md)
 - [house](./house.md)
-- [capitalism](./capitalism.md)
+- [system](./system.md)
 - [class](./class.md)
 - [picture](./picture.md)
+- [marriage](./marriage.md)
 - [reading books](./reading.md)
 - [china](./china.md)
+- [economy](./economy.md)
 - [merit](./merit.md)
 - [faith](./faith.md)
 - [Fellah](./Fellah.md)
