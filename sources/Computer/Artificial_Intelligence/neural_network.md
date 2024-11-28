@@ -4,7 +4,12 @@
 
 - dimension size：维度大小
 - number of dimensions：维数
-- 嵌入矩阵：embedding matrix
+- embedding matrix：嵌入矩阵
+- dtype：数据类型
+    - BF16
+    - FP16
+    - FP32
+- cuda graph
 
 ## 基础
 
