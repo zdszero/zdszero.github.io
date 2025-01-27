@@ -78,7 +78,9 @@
           <ul>
           <li><a href="#transformers"
           id="toc-transformers">Transformers</a></li>
-          <li><a href="#gpt2" id="toc-gpt2">GPT2</a></li>
+          <li><a href="#attention-1"
+          id="toc-attention-1">Attention</a></li>
+          <li><a href="#size" id="toc-size">Size</a></li>
           </ul></li>
           </ul>
         </div>
@@ -145,17 +147,24 @@
                 learning.</p>
                 <h3 id="backpropagation">backpropagation</h3>
                 <p>Backpropagation is the learning mechanism that allows
-                the Multilayer Perceptron to iteratively adjust the
-                weights in the network, with the goal of minimizing the
-                cost function.</p>
-                <p>There is one hard requirement for backpropagation to
-                work properly. The function that combines inputs and
-                weights in a neuron, for instance the weighted sum, and
-                the threshold function, for instance ReLU, must be
-                differentiable.</p>
-                <p>These functions must have a bounded derivative,
-                because Gradient Descent is typically the optimization
-                function used in MultiLayer Perceptron.</p>
+                the Multilayer Perceptron to <strong>iteratively adjust
+                the weights</strong> in the network, with the goal of
+                minimizing the cost function.</p>
+                <figure>
+                <img
+                src="../.././WikiImage/image_2024-12-30-17-07-31.png"
+                width="250" alt="layer change" />
+                <figcaption aria-hidden="true">layer change</figcaption>
+                </figure>
+                <p>Each node expected the previous layer’s nodes to be
+                either lighter or dimer.</p>
+                <p>Suppose <span class="math inline">\(b = a_{0} w_{0} +
+                a{1} w_{1} + \cdots + a_{n} w_{n}\)</span></p>
+                <p>Then we increase <span
+                class="math inline">\(w_{i}\)</span> in proportion to
+                <span class="math inline">\(a_{i}\)</span>, also change
+                <span class="math inline">\(a_{i}\)</span> in proportion
+                to <span class="math inline">\(w_{i}\)</span></p>
                 <h3 id="activation-function">activation function</h3>
                 <p><b><u>ReLU (Rectified Linear Function)</u></b></p>
                 <p><span class="math display">\[f(x) = \frac{x +
@@ -201,6 +210,8 @@
                 <figcaption aria-hidden="true">unembedding
                 matrix</figcaption>
                 </figure>
+                <p>the size of unembedding matrix is
+                <code>d_model * vocab_size</code></p>
                 <p><strong>logits:</strong> the vector of raw
                 (non-normalized) predictions that a classification model
                 generates, which is ordinarily then passed to a
@@ -471,7 +482,7 @@
                 <figcaption aria-hidden="true">GPT3
                 parameters</figcaption>
                 </figure>
-                <h3 id="gpt2">GPT2</h3>
+                <h3 id="attention-1">Attention</h3>
                 <ul>
                 <li>raw tokens → encoded tokens
                 <ul>
@@ -498,7 +509,13 @@
                 </ul></li>
                 <li>attention: <code>(B, t, d_model)</code> →
                 <code>(B, n_head, t, d_head)</code> →
-                <code>(B, t, d_model)</code></li>
+                <code>(B, t, d_model)</code>
+                <ul>
+                <li><span class="math inline">\(Q \times K^{T} \times
+                V\)</span>:
+                <code>(t, d_model) · (d_model, t) · (t, d_model)</code>
+                → <code>(t, d_model)</code></li>
+                </ul></li>
                 <li>mlp:
                 <code>(B, t, d_model) → (B, t, d_model * 3) → (B, t, d_model)</code></li>
                 </ul></li>
@@ -532,6 +549,15 @@ sentence (B, T) -----------&gt; embd (B, T, M)
                 -----------&gt; vocabs (B, T, V)
             T=-1, retrieve the V
                 -----------&gt; logits (B, V)</code></pre>
+                <h3 id="size">Size</h3>
+                <ul>
+                <li>inputs: <code>n</code> tokens</li>
+                <li>embeddings: <code>(n, d_model)</code></li>
+                <li>Q,K,V: <code>(n, d_model)</code> —&gt;
+                <code>(n, head_num, d_head)</code></li>
+                </ul>
+                <p><strong>size of each K, V tensor?</strong></p>
+                <p><code>hidden_size * num_layers *  wp</code></p>
               </div>
     </div>
   </div>

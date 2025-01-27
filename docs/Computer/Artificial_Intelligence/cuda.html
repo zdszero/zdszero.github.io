@@ -1,0 +1,393 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="../../WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="../../WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    cuda
+  </title>
+    <link rel="stylesheet" href="../../WikiTheme/theme/bamboo.css"  />
+        <style type="text/css">
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+    </head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">cuda</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="container">
+    <div class="row">
+            <div id="TOC" class="span3">
+        <div class="well toc">
+          <ul>
+          <li><a href="#gemm" id="toc-gemm">GEMM</a>
+          <ul>
+          <li><a href="#coalesced" id="toc-coalesced">coalesced</a></li>
+          <li><a href="#tiled-gemm" id="toc-tiled-gemm">tiled
+          gemm</a></li>
+          </ul></li>
+          <li><a href="#reduction" id="toc-reduction">Reduction</a>
+          <ul>
+          <li><a href="#naive" id="toc-naive">naive</a></li>
+          <li><a href="#divergence-free"
+          id="toc-divergence-free">divergence free</a></li>
+          <li><a href="#warp-shuffle" id="toc-warp-shuffle">warp
+          shuffle</a></li>
+          <li><a href="#thread-coarsensing"
+          id="toc-thread-coarsensing">thread coarsensing</a></li>
+          </ul></li>
+          <li><a href="#histogram" id="toc-histogram">Histogram</a>
+          <ul>
+          <li><a href="#sequential"
+          id="toc-sequential">sequential</a></li>
+          <li><a href="#simple" id="toc-simple">simple</a></li>
+          <li><a href="#privatization-coarsening"
+          id="toc-privatization-coarsening">Privatization +
+          Coarsening</a></li>
+          </ul></li>
+          <li><a href="#convolution"
+          id="toc-convolution">convolution</a>
+          <ul>
+          <li><a href="#simple-1" id="toc-simple-1">simple</a></li>
+          </ul></li>
+          </ul>
+        </div>
+      </div>
+            <div class="span9">
+                <h2 id="gemm">GEMM</h2>
+                <h3 id="coalesced">coalesced</h3>
+                <div class="sourceCode" id="cb1"><pre
+                class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>__global__ <span class="dt">void</span> gemm<span class="op">(</span><span class="dt">float</span> <span class="op">*</span>A<span class="op">,</span> <span class="dt">float</span> <span class="op">*</span>B<span class="op">,</span> <span class="dt">float</span> <span class="op">*</span>C<span class="op">,</span> <span class="dt">unsigned</span> <span class="dt">int</span> N<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">unsigned</span> <span class="dt">int</span> row <span class="op">=</span> blockIdx<span class="op">.</span>y <span class="op">*</span> blockDim<span class="op">.</span>y <span class="op">+</span> threadIdx<span class="op">.</span>y<span class="op">;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">unsigned</span> <span class="dt">int</span> col <span class="op">=</span> blockIdx<span class="op">.</span>x <span class="op">*</span> blockDim<span class="op">.</span>x <span class="op">+</span> threadIdx<span class="op">.</span>x<span class="op">;</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> sum <span class="op">=</span> <span class="fl">0.0</span><span class="bu">f</span><span class="op">;</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span><span class="dt">unsigned</span> <span class="dt">int</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> N<span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>        sum <span class="op">+=</span> A<span class="op">[</span>row <span class="op">*</span> N <span class="op">+</span> i<span class="op">]</span> <span class="op">+</span> B<span class="op">[</span>col <span class="op">+</span> N <span class="op">*</span> i<span class="op">];</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    C<span class="op">[</span>row<span class="op">*</span>N <span class="op">+</span> col<span class="op">]</span> <span class="op">=</span> sum<span class="op">;</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+                <h3 id="tiled-gemm">tiled gemm</h3>
+                <p>Example:</p>
+                <ul>
+                <li>4 tiles</li>
+                <li><code>C = A · B</code></li>
+                <li><code>C[0][0] = A[0][0] · B[0][0] + A[0][1] · B[1][0]</code></li>
+                <li><code>(A[0][0], B[0][0])</code> and
+                <code>(A[0][1], B[1][0])</code> are shared by the same
+                thread block to decrease global memory read.</li>
+                </ul>
+                <div class="sourceCode" id="cb2"><pre
+                class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>__global__ <span class="dt">void</span> tiled_gemm<span class="op">(</span><span class="dt">float</span> <span class="op">*</span>A<span class="op">,</span> <span class="dt">float</span> <span class="op">*</span>B<span class="op">,</span> <span class="dt">float</span> <span class="op">*</span>C<span class="op">,</span> <span class="dt">unsigned</span> <span class="dt">int</span> N<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    __shared__ <span class="dt">float</span> A_s<span class="op">[</span>TILE_DIM<span class="op">][</span>TILE_DIM<span class="op">];</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    __shared__ <span class="dt">float</span> B_s<span class="op">[</span>TILE_DIM<span class="op">][</span>TILE_DIM<span class="op">];</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">unsigned</span> <span class="dt">int</span> row <span class="op">=</span> blockIdx<span class="op">.</span>y <span class="op">*</span> blockDim<span class="op">.</span>y <span class="op">+</span> threadIdx<span class="op">.</span>y<span class="op">;</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">unsigned</span> <span class="dt">int</span> col <span class="op">=</span> blockIdx<span class="op">.</span>x <span class="op">*</span> blockDim<span class="op">.</span>x <span class="op">+</span> threadIdx<span class="op">.</span>x<span class="op">;</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> sum <span class="op">=</span> <span class="fl">0.0</span><span class="bu">f</span><span class="op">;</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span><span class="dt">unsigned</span> <span class="dt">int</span> t <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> t <span class="op">&lt;</span> N <span class="op">/</span> TILE_DIM<span class="op">;</span> <span class="op">++</span>t<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Load tile to shared memory</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>        A_s<span class="op">[</span>threadIdx<span class="op">.</span>y<span class="op">][</span>threadIdx<span class="op">.</span>x<span class="op">]</span> <span class="op">=</span> A<span class="op">[</span>row <span class="op">*</span> N <span class="op">+</span> t <span class="op">*</span> TILE_DIM <span class="op">+</span> threadIdx<span class="op">.</span>x<span class="op">];</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>        B_s<span class="op">[</span>threadIdx<span class="op">.</span>y<span class="op">][</span>threadIdx<span class="op">.</span>x<span class="op">]</span> <span class="op">=</span> B<span class="op">[</span>col <span class="op">+</span> <span class="op">(</span>t <span class="op">*</span> TILE_DIM <span class="op">+</span> threadIdx<span class="op">.</span>y<span class="op">)</span> <span class="op">*</span> N<span class="op">];</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>        __syncthreads<span class="op">();</span> <span class="co">// wait for others to finish before computing</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Compute with tile</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">unsigned</span> <span class="dt">int</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> TILE_DIM<span class="op">;</span> <span class="op">++</span>i<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>            sum <span class="op">+=</span> A_s<span class="op">[</span>threadIdx<span class="op">.</span>y<span class="op">][</span>i<span class="op">]</span> <span class="op">*</span> B_s<span class="op">[</span>i<span class="op">][</span>threadIdx<span class="op">.</span>x<span class="op">];</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>        __syncthreads<span class="op">();</span> <span class="co">// wait for others to finish computing before loading</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    C<span class="op">[</span>row <span class="op">*</span> N <span class="op">+</span> col<span class="op">]</span> <span class="op">=</span> sum<span class="op">;</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+                <h2 id="reduction">Reduction</h2>
+                <h3 id="naive">naive</h3>
+                <figure>
+                <img
+                src="../.././WikiImage/image_2025-01-14-15-08-09.png"
+                width="500" alt="naive mapping" />
+                <figcaption aria-hidden="true">naive
+                mapping</figcaption>
+                </figure>
+                <figure>
+                <img
+                src="../.././WikiImage/image_2025-01-14-15-09-44.png"
+                width="500" alt="low warp/simd ultilization" />
+                <figcaption aria-hidden="true">low warp/simd
+                ultilization</figcaption>
+                </figure>
+                <div class="sourceCode" id="cb3"><pre
+                class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>__shared__ <span class="dt">float</span> partialSums<span class="op">[];</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">int</span> t <span class="op">=</span> threadIdx<span class="op">.</span>x<span class="op">;</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> stride <span class="op">=</span> <span class="dv">1</span><span class="op">;</span> stride <span class="op">&lt;</span> blockDim<span class="op">.</span>x <span class="op">/</span> <span class="dv">2</span><span class="op">;</span> stride <span class="op">*=</span> <span class="dv">2</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>t <span class="op">%</span> <span class="op">(</span><span class="dv">2</span> <span class="op">*</span> stride<span class="op">)</span> <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>        partialSums<span class="op">[</span>t<span class="op">]</span> <span class="op">+=</span> partialSums<span class="op">[</span>t <span class="op">+</span> stride<span class="op">];</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+                <h3 id="divergence-free">divergence free</h3>
+                <figure>
+                <img
+                src="../.././WikiImage/image_2025-01-14-15-22-09.png"
+                width="500" alt="high SIMD ultilization" />
+                <figcaption aria-hidden="true">high SIMD
+                ultilization</figcaption>
+                </figure>
+                <div class="sourceCode" id="cb4"><pre
+                class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>__shared__ <span class="dt">float</span> partialSums<span class="op">[];</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">int</span> t <span class="op">=</span> threadIdx<span class="op">.</span>x<span class="op">;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> stride <span class="op">=</span> blockDim<span class="op">.</span>x<span class="op">;</span>  stride <span class="op">&gt;</span> <span class="dv">0</span><span class="op">;</span> stride <span class="op">&gt;&gt;</span> <span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    __syncthreads<span class="op">();</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>t <span class="op">&lt;</span> stride<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>        partialSums<span class="op">[</span>t<span class="op">]</span> <span class="op">=</span> partialSums</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+                <h3 id="warp-shuffle">warp shuffle</h3>
+                <ul>
+                <li>每个线程块首先在共享内存中执行归约操作。通过这种方式，线程块内的线程可以快速地累加数据</li>
+                <li>当归约达到 WARP_SIZE 或更少的元素时，算法切换到使用
+                CUDA 的 shuffle 指令进行 warp 级别的归约。 CUDA 的
+                shuffle 指令允许在一个
+                warp内的线程之间直接交换数据，而无需通过共享内存进行同步。这大大提高了归约的效率。</li>
+                </ul>
+                <div class="sourceCode" id="cb5"><pre
+                class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>__global__ <span class="dt">void</span> reduce_kernel<span class="op">(</span><span class="dt">int</span> <span class="op">*</span>input<span class="op">,</span> <span class="dt">int</span> <span class="op">*</span>partialSums<span class="op">,</span> <span class="dt">unsigned</span> <span class="dt">int</span> N<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Load data into shared memory</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">...</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Reduction tree in shared memory</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span><span class="op">(</span><span class="dt">unsigned</span> <span class="dt">int</span> stride <span class="op">=</span> BLOCK_DIM<span class="op">/</span><span class="dv">2</span><span class="op">;</span> stride <span class="op">&gt;</span> WARP_SIZE<span class="op">;</span> stride <span class="op">/=</span> <span class="dv">2</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span><span class="op">(</span>threadIdx<span class="op">.</span>x <span class="op">&lt;</span> stride<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>            input_s<span class="op">[</span>threadIdx<span class="op">.</span>x<span class="op">]</span> <span class="op">+=</span> input_s<span class="op">[</span>threadIdx<span class="op">.</span>x <span class="op">+</span> stride<span class="op">];</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>        __syncthreads<span class="op">();</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Reduction tree with shuffle instructions</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> sum<span class="op">;</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(</span>threadIdx<span class="op">.</span>x <span class="op">&lt;</span> WARP_SIZE<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>        sum <span class="op">=</span> input_s<span class="op">[</span>threadIdx<span class="op">.</span>x<span class="op">]</span> <span class="op">+</span> input_s<span class="op">[</span>threadIdx<span class="op">.</span>x <span class="op">+</span> WARP_SIZE<span class="op">];</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span><span class="op">(</span><span class="dt">unsigned</span> <span class="dt">int</span> stride <span class="op">=</span> WARP_SIZE<span class="op">/</span><span class="dv">2</span><span class="op">;</span> stride <span class="op">&gt;</span> <span class="dv">0</span><span class="op">;</span> stride <span class="op">/=</span> <span class="dv">2</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>            sum <span class="op">+=</span> __shfl_down_sync<span class="op">(</span><span class="bn">0xffffffff</span><span class="op">,</span> sum<span class="op">,</span> stride<span class="op">);</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Store partial sum</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(</span>threadIdx<span class="op">.</span>x <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>        partialSums<span class="op">[</span>blockIdx<span class="op">.</span>x<span class="op">]</span> <span class="op">=</span> sum<span class="op">;</span></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+                <h3 id="thread-coarsensing">thread coarsensing</h3>
+                <div class="sourceCode" id="cb6"><pre
+                class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>__global__ <span class="dt">void</span> reduce_kernel<span class="op">(</span><span class="dt">int</span> <span class="op">*</span>input<span class="op">,</span> <span class="dt">int</span> <span class="op">*</span>partialSums<span class="op">,</span> <span class="dt">unsigned</span> <span class="dt">int</span> N<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    __shared__ <span class="dt">int</span> input_s<span class="op">[</span>BLOCK_SIZE<span class="op">];</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">unsigned</span> <span class="dt">int</span> i <span class="op">=</span> blockDim<span class="op">.</span>x <span class="op">*</span> blockIdx<span class="op">.</span>x <span class="op">+</span> threadIdx<span class="op">.</span>x<span class="op">;</span> <span class="co">// global thread index</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">const</span> <span class="dt">unsigned</span> <span class="dt">int</span> gridSize <span class="op">=</span> gridDim<span class="op">.</span>x <span class="op">*</span> blockDim<span class="op">.</span>x<span class="op">;</span>   <span class="co">// total number of threads</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> muSum <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> <span class="co">// Local (per-thread) sum</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="op">(</span>i <span class="op">&lt;</span> N<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>        mySum <span class="op">+=</span> input<span class="op">[</span>i<span class="op">];</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>        i <span class="op">+=</span> gridSize<span class="op">;</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    input_s<span class="op">[</span>threadIdx<span class="op">.</span>x<span class="op">]</span> <span class="op">=</span> mySum<span class="op">;</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    <span class="op">...</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+                <h2 id="histogram">Histogram</h2>
+                <h3 id="sequential">sequential</h3>
+                <div class="sourceCode" id="cb7"><pre
+                class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> histogram_calc<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">int</span> <span class="op">*</span>histo<span class="op">,</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>                    <span class="dt">unsigned</span> <span class="dt">int</span> <span class="op">*</span>input<span class="op">,</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>                    <span class="dt">unsigned</span> <span class="dt">int</span> input_size<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="op">(</span>i <span class="op">&lt;</span> input_size<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>        <span class="dt">unsigned</span> <span class="dt">int</span> val <span class="op">=</span> input<span class="op">[</span>i<span class="op">];</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>        histo<span class="op">[</span>val<span class="op">]</span> <span class="op">+=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>        i<span class="op">++;</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+                <h3 id="simple">simple</h3>
+                <div class="sourceCode" id="cb8"><pre
+                class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>__gloabl__ <span class="dt">void</span> histogram_calc<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">int</span> <span class="op">*</span>histo<span class="op">,</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>                               <span class="dt">unsigned</span> <span class="dt">int</span> <span class="op">*</span>input<span class="op">,</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>                               <span class="dt">unsigned</span> <span class="dt">int</span> input_size<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> i <span class="op">=</span> blockIdx<span class="op">.</span>x <span class="op">*</span> blockDim<span class="op">.</span>x <span class="op">+</span> threadIdx<span class="op">.</span>x<span class="op">;</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> stride <span class="op">=</span> blockDim<span class="op">.</span>x <span class="op">*</span> gridDim<span class="op">.</span>x<span class="op">;</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="op">(</span>i <span class="op">&lt;</span> input_size<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>        <span class="dt">unsigned</span> <span class="dt">int</span> val <span class="op">=</span> input<span class="op">[</span>i<span class="op">];</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>        atomicAdd<span class="op">(&amp;</span>histo<span class="op">[</span>val<span class="op">],</span> <span class="dv">1</span><span class="op">);</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>        i <span class="op">+=</span> stride<span class="op">;</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+                <h3 id="privatization-coarsening">Privatization +
+                Coarsening</h3>
+                <p><strong>Privatization</strong> is an optimization
+                technique where multiple private copies of an output are
+                maintained, then the global copy is updated on
+                completion</p>
+                <ul>
+                <li>Reduce contention on global memory</li>
+                <li>If the output is small enough, the private copy can
+                be placed in shared memory reducing access latnecy.</li>
+                </ul>
+                <p><strong>Coarsening</strong>: Each block processes
+                several chunks.</p>
+                <div class="sourceCode" id="cb9"><pre
+                class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>__global__ <span class="dt">void</span> histogram_kernel<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">int</span> <span class="op">*</span>histo<span class="op">,</span> <span class="dt">unsigned</span> <span class="dt">int</span> <span class="op">*</span>input<span class="op">,</span> <span class="dt">unsigned</span> <span class="dt">int</span> input_size<span class="op">){</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> tid <span class="op">=</span> blockIdx<span class="op">.</span>x <span class="op">*</span> blockDim<span class="op">.</span>x <span class="op">+</span> threadIdx<span class="op">.</span>x<span class="op">;</span> <span class="co">// Thread index</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> stride <span class="op">=</span> blockDim<span class="op">.</span>x <span class="op">*</span> gridDim<span class="op">.</span>x<span class="op">;</span> <span class="co">// Total number of threads</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    __shared__ <span class="dt">unsigned</span> <span class="dt">int</span> histo_s<span class="op">[</span>BINS<span class="op">];</span> <span class="co">// Private per-block sub-histogram</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Sub-histogram initialization</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span><span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> threadIdx<span class="op">.</span>x<span class="op">;</span> i <span class="op">&lt;</span> BINS<span class="op">;</span> i <span class="op">+=</span> blockDim<span class="op">.</span>x<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>        histo_s<span class="op">[</span>i<span class="op">]</span> <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    __syncthreads<span class="op">();</span> <span class="co">// Intra-block synchronization</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Main loop to compute per-block sub-histograms</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span><span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> tid<span class="op">;</span> i <span class="op">&lt;</span> input_size <span class="op">;</span> i <span class="op">+=</span> stride<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>        <span class="dt">unsigned</span> <span class="dt">int</span> val <span class="op">=</span> input<span class="op">[</span>i<span class="op">];</span> <span class="co">// Global memory read (coalesced)</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>        atomicAdd<span class="op">(&amp;</span>histo_s<span class="op">[</span>val<span class="op">],</span> <span class="dv">1</span><span class="op">);</span> <span class="co">// Atomic addition in shared memory</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>    __syncthreads<span class="op">();</span> <span class="co">// Intra-block synchronization</span></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Merge per-block sub-histograms and write to global memory</span></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span><span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> threadIdx<span class="op">.</span>x<span class="op">;</span> i <span class="op">&lt;</span> BINS<span class="op">;</span> i <span class="op">+=</span> blockDim<span class="op">.</span>x<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Atomic addition in global memory</span></span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>        atomicAdd<span class="op">(</span>histo <span class="op">+</span> i<span class="op">,</span> histo_s<span class="op">[</span>i<span class="op">]);</span></span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+                <h2 id="convolution">convolution</h2>
+                <p>Convolution applies a filter or mask or kernel* on
+                eachelement of the input (e.g., a signal, an image, a
+                frame) toobtain a new value, which is a weighted sum of
+                a set ofneighboring input elements</p>
+                <ul>
+                <li>convolutions are traditionally used for feature
+                detection in image processing
+                <ul>
+                <li>They can be used as neural network layers</li>
+                </ul></li>
+                <li>convolutions have an advantage over fully connected
+                layers (e.g. in MLP)
+                <ul>
+                <li>loacl weights: They compute on only a window around
+                the element of interest</li>
+                <li>data sharing via on-chip memories is feasible</li>
+                </ul></li>
+                </ul>
+                <figure>
+                <img
+                src="../.././WikiImage/image_2025-01-16-15-06-27.png"
+                width="500" alt="convolution layer with martix mmul" />
+                <figcaption aria-hidden="true">convolution layer with
+                martix mmul</figcaption>
+                </figure>
+                <h3 id="simple-1">simple</h3>
+                <div class="sourceCode" id="cb10"><pre
+                class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>__global__ <span class="dt">void</span> convolution_1D_basic_kernel<span class="op">(</span><span class="dt">float</span> <span class="op">*</span>N<span class="op">,</span> <span class="dt">float</span> <span class="op">*</span>M<span class="op">,</span> <span class="dt">float</span> <span class="op">*</span>P<span class="op">,</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>                                            <span class="dt">int</span> Mask_Width<span class="op">,</span> <span class="dt">int</span> Width<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> i <span class="op">=</span> blockIdx<span class="op">.</span>x <span class="op">*</span> blockDim<span class="op">.</span>x <span class="op">+</span> threadIdx<span class="op">.</span>x<span class="op">;</span> <span class="co">// Index of output element</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> Pvalue <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> N_start_point <span class="op">=</span> i <span class="op">-</span> <span class="op">(</span>Mask_Width<span class="op">/</span><span class="dv">2</span><span class="op">);</span> <span class="co">// Index of first neighbor</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> j <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> j <span class="op">&lt;</span> Mask_Width<span class="op">;</span> j<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Check the boundaries</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>N_start_point <span class="op">+</span> j <span class="op">&gt;=</span> <span class="dv">0</span> <span class="op">&amp;&amp;</span> N_start_point <span class="op">+</span> j <span class="op">&lt;</span> Width<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>            Pvalue <span class="op">+=</span> N<span class="op">[</span>N_start_point <span class="op">+</span> j<span class="op">]</span> <span class="op">*</span> M<span class="op">[</span>j<span class="op">];</span> <span class="co">// Multiply and accumulate</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    P<span class="op">[</span>i<span class="op">]</span> <span class="op">=</span> Pvalue<span class="op">;</span> <span class="co">// Store output element</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+              </div>
+    </div>
+  </div>
+</body>
+
+</html>

@@ -1,0 +1,98 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="../../WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="../../WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    MoE
+  </title>
+    <link rel="stylesheet" href="../../WikiTheme/theme/bootstrap.css"  />
+        </head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">MoE</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="container">
+    <div class="row">
+            <div id="TOC" class="span3">
+        <div class="well toc">
+          <ul>
+          <li><a href="#densesparse-layer"
+          id="toc-densesparse-layer">Dense/Sparse Layer</a></li>
+          <li><a href="#expert" id="toc-expert">Expert</a></li>
+          <li><a href="#what-to-learn" id="toc-what-to-learn">What to
+          learn</a></li>
+          </ul>
+        </div>
+      </div>
+            <div class="span9">
+                <h3 id="densesparse-layer">Dense/Sparse Layer</h3>
+                <h4 id="dense-layer">Dense Layer</h4>
+                <p>FFNN (Feedforward Neural Network)</p>
+                <p>An FFNN allows the model to use the contextual
+                information created by the attention mechanism,
+                transforming it further to capture more complex
+                relationships in the data.</p>
+                <p>MLP is a type of FFNN</p>
+                <figure>
+                <img
+                src="../.././WikiImage/image_2025-01-07-17-40-48.png"
+                width="500" alt="dense layer" />
+                <figcaption aria-hidden="true">dense layer</figcaption>
+                </figure>
+                <h4 id="sparse-layer">Sparse Layer</h4>
+                <p>Only activate a portion of the parameters</p>
+                <p>Each expert learns different information during
+                training</p>
+                <figure>
+                <img
+                src="../.././WikiImage/image_2025-01-07-17-43-21.png"
+                width="500" alt="sparse layer" />
+                <figcaption aria-hidden="true">sparse layer</figcaption>
+                </figure>
+                <h3 id="expert">Expert</h3>
+                <h3 id="what-to-learn">What to learn</h3>
+                <p><u>Mixtral Paper</u></p>
+                <figure>
+                <img
+                src="../.././WikiImage/image_2025-01-07-17-46-22.png"
+                width="500" alt="Example Expert" />
+                <figcaption aria-hidden="true">Example
+                Expert</figcaption>
+                </figure>
+                <hr />
+                <p><a
+                href="https://newsletter.maartengrootendorst.com/p/a-visual-guide-to-mixture-of-experts">MoE
+                walkthrough</a></p>
+              </div>
+    </div>
+  </div>
+</body>
+
+</html>

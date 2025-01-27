@@ -28,3 +28,4 @@
     - [Taleb](./Taleb.md)
     - [Naval](./Naval.md)
     - [Wudy Allen](./Wudy_Allen.md)
+    - [liuzhongjing](./liuzhongjing.md)

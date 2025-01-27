@@ -1,0 +1,425 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="../../WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="../../WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    GPUs
+  </title>
+    <link rel="stylesheet" href="../../WikiTheme/theme/bootstrap.css"  />
+        <style type="text/css">
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+    </head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">GPUs</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="container">
+    <div class="row">
+            <div id="TOC" class="span3">
+        <div class="well toc">
+          <ul>
+          <li><a href="#flynn-taxonomy" id="toc-flynn-taxonomy">Flynn
+          taxonomy</a></li>
+          <li><a href="#kernel" id="toc-kernel">Kernel</a></li>
+          <li><a href="#thread-hierarchy"
+          id="toc-thread-hierarchy">Thread Hierarchy</a></li>
+          <li><a href="#memory-hierarchy"
+          id="toc-memory-hierarchy">Memory Hierarchy</a></li>
+          <li><a href="#traditional-program-structure"
+          id="toc-traditional-program-structure">Traditional Program
+          Structure</a></li>
+          <li><a href="#variable-type-qualifier"
+          id="toc-variable-type-qualifier">Variable Type
+          Qualifier</a></li>
+          <li><a href="#performance-consideration"
+          id="toc-performance-consideration">Performance
+          Consideration</a></li>
+          </ul>
+        </div>
+      </div>
+            <div class="span9">
+                <table>
+                <colgroup>
+                <col style="width: 11%" />
+                <col style="width: 15%" />
+                <col style="width: 15%" />
+                <col style="width: 25%" />
+                <col style="width: 15%" />
+                <col style="width: 17%" />
+                </colgroup>
+                <thead>
+                <tr>
+                <th>GPU Model</th>
+                <th>Release Year</th>
+                <th>NetBW (GB/s)</th>
+                <th>Compute (FP16 GFLOP/s)</th>
+                <th>MemBW (GB/s)</th>
+                <th>Ratio (FLOP/B)</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                <td>V100</td>
+                <td>2017</td>
+                <td>300</td>
+                <td>125,000</td>
+                <td>900</td>
+                <td>139</td>
+                </tr>
+                </tbody>
+                </table>
+                <h3 id="flynn-taxonomy">Flynn taxonomy</h3>
+                <p>Computer architecture:</p>
+                <ul>
+                <li>SISD: single instruction stream operates on single
+                data element</li>
+                <li>SIMD: single instruction stream operates on multiple
+                data elements
+                <ul>
+                <li>Array processor</li>
+                <li>Vector processor</li>
+                </ul></li>
+                </ul>
+                <h4 id="simd-processing">SIMD Processing</h4>
+                <p>SIMD: in time or in space</p>
+                <p>Time-space duality</p>
+                <ul>
+                <li>array processor: Instruction operates on multiple
+                data elements at the same time using different spaces
+                (PEs)</li>
+                <li>vector processor: Instruction operates on multiple
+                data elments in consecutive time steps using the same
+                space (PE)</li>
+                </ul>
+                <figure>
+                <img
+                src="../.././WikiImage/image_2025-01-15-12-48-27.png"
+                width="500" alt="array and vector processor" />
+                <figcaption aria-hidden="true">array and vector
+                processor</figcaption>
+                </figure>
+                <h3 id="kernel">Kernel</h3>
+                <p>CUDA core three key abstractions:</p>
+                <ul>
+                <li>a hierarchy of threaded groups</li>
+                <li>shared memories</li>
+                <li>barrier synchronization</li>
+                </ul>
+                <p>Grid → Block → Warp → Thread</p>
+                <p>SM (streaming multiprocessor) contains many cores.
+                Each core execute instruction through SIMD (Single
+                Instruction, Multiple Data) way, which means it applies
+                the same intruction on multiple data elements at the
+                same time.</p>
+                <p>Each SM can contain 32-64-128 cuda cores according to
+                the architecture.</p>
+                <p>Each core can execute multiple warps at the same
+                time. But each thread in these warps must execute the
+                same instruction.</p>
+                <h3 id="thread-hierarchy">Thread Hierarchy</h3>
+                <figure>
+                <img
+                src="../.././WikiImage/image_2025-01-13-11-03-34.png"
+                width="500" alt="automatic scalability" />
+                <figcaption aria-hidden="true">automatic
+                scalability</figcaption>
+                </figure>
+                <ul>
+                <li><strong>kernels</strong>: cpp functions executed in
+                parallel
+                <ul>
+                <li>defined in <code>__global__</code> declaration
+                specifier</li>
+                <li>use <code>&lt;&lt;&lt;...&gt;&gt;&gt;</code> to
+                specify number of CUDA threads used</li>
+                </ul></li>
+                </ul>
+                <p>Each block can hold n-dimensional threads. All
+                threads in the same block reside on the same streaming
+                multiprocessor (SM) core and share the limited resource
+                of that core.</p>
+                <p>Blocks are organized into n-dimensional grid of
+                thread blocks. The number of thread blocks in a grid is
+                usually dictated by the size of the data being
+                processed.</p>
+                <p>Threads within a block can cooperate by sharing data
+                through some shared memory and by synchronizing their
+                execution to coordinate memory accesses.</p>
+                <figure>
+                <img
+                src="../.././WikiImage/image_2025-01-13-15-56-08.png"
+                width="500" alt="1 dim index" />
+                <figcaption aria-hidden="true">1 dim index</figcaption>
+                </figure>
+                <figure>
+                <img
+                src="../.././WikiImage/image_2025-01-13-15-58-47.png"
+                width="500" alt="2 dim index" />
+                <figcaption aria-hidden="true">2 dim index</figcaption>
+                </figure>
+                <h3 id="memory-hierarchy">Memory Hierarchy</h3>
+                <figure>
+                <img
+                src="../.././WikiImage/image_2025-01-13-16-17-25.png"
+                width="500" alt="logical view" />
+                <figcaption aria-hidden="true">logical view</figcaption>
+                </figure>
+                <ul>
+                <li>local memory</li>
+                <li>shared memory</li>
+                <li>global memory</li>
+                <li>texture memory or constant memory: special memory
+                types in the GPU optimized for accessing specific data
+                types such as textures or constant values.</li>
+                </ul>
+                <figure>
+                <img
+                src="../.././WikiImage/image_2025-01-13-16-09-02.png"
+                width="700" alt="a100 physical view" />
+                <figcaption aria-hidden="true">a100 physical
+                view</figcaption>
+                </figure>
+                <p>Each SM possesses its own dedicated shared, cache,
+                constant, and register memory. However, multiple SMs
+                share the same global memory.</p>
+                <figure>
+                <img
+                src="../.././WikiImage/image_2025-01-13-14-55-02.png"
+                width="500" alt="Memory speed" />
+                <figcaption aria-hidden="true">Memory speed</figcaption>
+                </figure>
+                <p>The entire memory is divided into different banks
+                that can be accessed simultaneously. Banks share address
+                and data buses (to minimize pin cost)</p>
+                <p>Can start and complete one bank access per cycle. Can
+                sustain N concurrent accesses if all N go to different
+                banks.</p>
+                <h3 id="traditional-program-structure">Traditional
+                Program Structure</h3>
+                <p><strong>Function prototype</strong></p>
+                <p><code>float serialFunction(...)</code></p>
+                <p><code>__global__ void kernel(...)</code></p>
+                <p><strong>main()</strong></p>
+                <ol type="1">
+                <li>Allocate memory space on the device:
+                <code>cudaMalloc(&amp;d_in, bytes)</code></li>
+                <li>Transfer data from host to device:
+                <code>cudaMemCpy(d_in, h_in, ...)</code></li>
+                <li>Execution configuration setup: #blocks and
+                #threads</li>
+                <li>Kernel call:
+                <code>kernel&lt;&lt;execution configuration&gt;&gt;(args...)</code></li>
+                <li>Transfer results from device to host:
+                <code>cudaMemCpy(h_out, d_out, ...)</code></li>
+                </ol>
+                <p>kernel</p>
+                <ul>
+                <li>automatic variables transparenly assigned to
+                registers</li>
+                <li>shared memory: <code>__shared__</code></li>
+                <li>intra-block synchronization:
+                <code>__syncthreads()</code></li>
+                </ul>
+                <p><strong>constant memory</strong></p>
+                <ul>
+                <li>the mask is small</li>
+                <li>it is constant</li>
+                <li>it is accessed by all threads</li>
+                </ul>
+                <p>Constant memory is cached inside each GPU core and it
+                is particularly fast when all threads of a warp access
+                the same value</p>
+                <div class="sourceCode" id="cb1"><pre
+                class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Declare the mask as a global variable</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#define MASK_WIDTH </span><span class="dv">5</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>__constant__ <span class="dt">float</span> M<span class="op">[</span>MASK_WIDTH<span class="op">];</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">// Initialize the mask from the host</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>cudaMemcpyToSymbol<span class="op">(</span>M<span class="op">,</span> M_h<span class="op">,</span> Mask_Width <span class="op">*</span> <span class="kw">sizeof</span><span class="op">(</span><span class="dt">float</span><span class="op">));</span></span></code></pre></div>
+                <h3 id="variable-type-qualifier">Variable Type
+                Qualifier</h3>
+                <table>
+                <colgroup>
+                <col style="width: 55%" />
+                <col style="width: 14%" />
+                <col style="width: 11%" />
+                <col style="width: 18%" />
+                </colgroup>
+                <thead>
+                <tr>
+                <th>Variable declaration</th>
+                <th>Memory</th>
+                <th>Scope</th>
+                <th>Lifetime</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                <td><code>int LocalVar</code></td>
+                <td>register</td>
+                <td>thread</td>
+                <td>thread</td>
+                </tr>
+                <tr>
+                <td><code>int localArr[N]</code></td>
+                <td>global</td>
+                <td>thread</td>
+                <td>thread</td>
+                </tr>
+                <tr>
+                <td><code>__device__ __shared__ int SharedVar</code></td>
+                <td>shared</td>
+                <td>block</td>
+                <td>block</td>
+                </tr>
+                <tr>
+                <td><code>__device__</code></td>
+                <td>global</td>
+                <td>grid</td>
+                <td>application</td>
+                </tr>
+                <tr>
+                <td><code>__device__ __constant__</code></td>
+                <td>constant</td>
+                <td>grid</td>
+                <td>application</td>
+                </tr>
+                </tbody>
+                </table>
+                <p><code>__device__</code> is optional when used with
+                <code>__shared__</code> and
+                <code>__constant__</code></p>
+                <h3 id="performance-consideration">Performance
+                Consideration</h3>
+                <ul>
+                <li>main bottlenetcks
+                <ul>
+                <li>cpu-gpu data transfer</li>
+                <li>global memory access</li>
+                </ul></li>
+                <li>memory access
+                <ul>
+                <li>latency hiding
+                <ul>
+                <li>occupancy</li>
+                </ul></li>
+                <li>memory coalescing</li>
+                <li>data reuse
+                <ul>
+                <li>shared memory usage</li>
+                </ul></li>
+                </ul></li>
+                <li>SIMD (Warp) Ultilization: Divergence</li>
+                <li>Other Considerations
+                <ul>
+                <li>Atomic opeartions: Serialization</li>
+                <li>Data transfers between CPU and GPU
+                <ul>
+                <li>Overlap of communication and computation</li>
+                </ul></li>
+                </ul></li>
+                </ul>
+                <p>typically, 32 banks in nvidia gpus, bank = address %
+                32</p>
+                <figure>
+                <img
+                src="../.././WikiImage/image_2025-01-14-12-43-38.png"
+                width="500" alt="N way bank conflict" />
+                <figcaption aria-hidden="true">N way bank
+                conflict</figcaption>
+                </figure>
+              </div>
+    </div>
+  </div>
+</body>
+
+</html>

@@ -37,12 +37,15 @@ If the algorithm only computed the weighted sums in each neuron, propagated resu
 
 ### backpropagation
 
-Backpropagation is the learning mechanism that allows the Multilayer Perceptron to iteratively adjust the weights in the network, with the goal of minimizing the cost function.
+Backpropagation is the learning mechanism that allows the Multilayer Perceptron to __iteratively adjust the weights__ in the network, with the goal of minimizing the cost function.
 
-There is one hard requirement for backpropagation to work properly. The function that combines inputs and weights in a neuron, for instance the weighted sum, and the threshold function, for instance ReLU, must be differentiable. 
+![layer change](../../../docs/WikiImage/image_2024-12-30-17-07-31.png){ width=250px }
 
-These functions must have a bounded derivative, because Gradient Descent is typically the optimization function used in MultiLayer Perceptron.
+Each node expected the previous layer's nodes to be either lighter or dimer.
 
+Suppose $b = a_{0} w_{0} + a{1} w_{1} + \cdots + a_{n} w_{n}$
+
+Then we increase $w_{i}$ in proportion to $a_{i}$, also change $a_{i}$ in proportion to $w_{i}$
 
 ### activation function
 
@@ -76,6 +79,8 @@ vector alignment measred by $\frac{| v_1 \cdot v_2 |}{| v_1 | \cdot | v_2 | }$ �
 ### unembedding matrix
 
 ![unembedding matrix](../../../docs/WikiImage/image_2024-10-24-17-01-22.png){ width=500px }
+
+the size of unembedding matrix is `d_model * vocab_size`
 
 __logits:__ the vector of raw (non-normalized) predictions that a classification model generates, which is ordinarily then passed to a normalization function.
 
@@ -226,7 +231,7 @@ The columns of the second matrix tell you what will be added to the result if th
 
 ![GPT3 parameters](../../../docs/WikiImage/image_2024-10-25-17-08-48.png){ width=500px }
 
-### GPT2
+### Attention
 
 - raw tokens → encoded tokens
     - `(B, t)`
@@ -240,6 +245,7 @@ The columns of the second matrix tell you what will be added to the result if th
         - mlp layer
         - norm layer
     - attention: `(B, t, d_model)` → `(B, n_head, t, d_head)` → `(B, t, d_model)`
+        - $Q \times K^{T} \times V$: `(t, d_model) · (d_model, t) · (t, d_model)` → `(t, d_model)`
     - mlp: `(B, t, d_model) → (B, t, d_model * 3) → (B, t, d_model)`
 - attn vector → vocab
     - `(B, t, d_model)` → `(B, t, vocab_size)`
@@ -267,3 +273,13 @@ sentence (B, T) -----------> embd (B, T, M)
             T=-1, retrieve the V
                 -----------> logits (B, V)
 ```
+
+### Size
+
+- inputs: `n` tokens
+- embeddings: `(n, d_model)`
+- Q,K,V: `(n, d_model)` ---> `(n, head_num, d_head)`
+
+__size of each K, V tensor?__
+
+`hidden_size * num_layers *  wp`

@@ -1,0 +1,163 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="../../WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="../../WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    Scheduling
+  </title>
+    <link rel="stylesheet" href="../../WikiTheme/theme/bootstrap.css"  />
+        </head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">Scheduling</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="container">
+    <div class="row">
+            <div id="TOC" class="span3">
+        <div class="well toc">
+          <ul>
+          <li><a href="#key-design" id="toc-key-design">Key
+          Design</a></li>
+          <li><a href="#distributed-arch"
+          id="toc-distributed-arch">Distributed Arch</a></li>
+          <li><a href="#scheduling-alg"
+          id="toc-scheduling-alg">Scheduling Alg</a></li>
+          </ul>
+        </div>
+      </div>
+            <div class="span9">
+                <h3 id="key-design">Key Design</h3>
+                <ul>
+                <li>Request level scheduling → Iteration level
+                scheduling
+                <ul>
+                <li>Resolve: early-finisehd and late-joining
+                requests</li>
+                </ul></li>
+                <li>Static Batching → Selective Batching
+                <ul>
+                <li>Static batching is only applicable when two selected
+                requests are in the same phase, with the same number of
+                input tokens.</li>
+                <li>In selective batching, the merged tensor can be fed
+                into non-Attention operations.</li>
+                <li>Attention operation requires a notion of requests to
+                compute attention.</li>
+                </ul></li>
+                </ul>
+                <figure>
+                <img
+                src="../.././WikiImage/image_2025-01-10-11-13-35.png"
+                width="500" alt="Batching Computation" />
+                <figcaption aria-hidden="true">Batching
+                Computation</figcaption>
+                </figure>
+                <p>Split operation and run the attention operation
+                separately on the split tensor for each request.</p>
+                <p>The outputs of attention operations are merged back
+                into a tensor by a Merge operation.</p>
+                <h3 id="distributed-arch">Distributed Arch</h3>
+                <p>Each worker is responsible for an inter-layer
+                partition of the model and can be placed on a different
+                machine</p>
+                <figure>
+                <img
+                src="../.././WikiImage/image_2025-01-09-17-42-16.png"
+                width="500" alt="Distributed Arch" />
+                <figcaption aria-hidden="true">Distributed
+                Arch</figcaption>
+                </figure>
+                <ul>
+                <li>Old: cpu-gpu synchronization overhead for control
+                message transfer</li>
+                <li>ORCA: seperate the communication channel for message
+                using grpc</li>
+                </ul>
+                <p>Control plane works in CPU (grpc), Data plane works
+                in GPU (nccl)</p>
+                <h3 id="scheduling-alg">Scheduling Alg</h3>
+                <pre><code>Params:
+n_workers
+max_bs
+n_slots: number of K/V slot
+
+# number of requets scheduled
+n_scheduled ← 0
+# slots used by current scheduled requests
+n_rsrv ← 0
+
+while true do
+    batch, n_rsrv ← Select(request_pool, n_rsrv)
+    schedule engine to run one iteration of the model for the batch
+    foreach req in batch do
+        req.state ← RUNNING
+    n_scheduled ← n_scheduled + 1
+    if n_scheduled = n_workers then
+        wait for return of a scheduled batch
+        foreach req in the returned batch do
+            seq.state ← INCREMENT
+            if finished(req) then
+                n_rsrv ← n_rsrv - req.max_tokens
+        n_scheduled ← n_scheduled - 1
+
+def Select(pool, n_rsrv):
+    batch ← {}
+    pool ← { req ∈ pool | req.state ≠ RUNNING }
+    SortByArrivalTime(pool)
+    foreach req in pool do
+        if batch.size() = max_bs then
+            break
+        if req.state = INITIATION then
+            new_n_rsrv ← n_rsrv + req.max_tokens
+            if new_n_rsrv &gt; n_slots then
+                break
+            n_rsrv ← new_n_rsrv
+        batch ← batch ∪ {req}
+    return batch, n_rsrv</code></pre>
+                <ul>
+                <li>variable number of requests can be batched in
+                selective batching</li>
+                <li>FCFS scheduler</li>
+                <li><code>Select</code> function selects a batch and
+                there can be at most <code>n_workers</code> batches
+                running in distributed orca system</li>
+                </ul>
+                <figure>
+                <img
+                src="../.././WikiImage/image_2025-01-09-16-47-53.png"
+                width="500" alt="pipelines" />
+                <figcaption aria-hidden="true">pipelines</figcaption>
+                </figure>
+              </div>
+    </div>
+  </div>
+</body>
+
+</html>
