@@ -1,0 +1,133 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="../../WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="../../WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    Metrics
+  </title>
+    <link rel="stylesheet" href="../../WikiTheme/theme/bootstrap.css"  />
+        <script
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+        type="text/javascript"></script>
+      </head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">Metrics</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="container">
+    <div class="row">
+            <div id="TOC" class="span3">
+        <div class="well toc">
+          <ul>
+          <li><a href="#request" id="toc-request">Request</a></li>
+          <li><a href="#mfu" id="toc-mfu">MFU</a></li>
+          <li><a href="#mbu" id="toc-mbu">MBU</a></li>
+          </ul>
+        </div>
+      </div>
+            <div class="span9">
+                <h3 id="request">Request</h3>
+                <figure>
+                <img
+                src="../.././WikiImage/image_2024-12-25-16-56-19.png"
+                width="500"
+                alt="Key Metrics for evaluating the performance of LLMs" />
+                <figcaption aria-hidden="true">Key Metrics for
+                evaluating the performance of LLMs</figcaption>
+                </figure>
+                <ul>
+                <li>ttft (Time to First Token)</li>
+                <li>tpot (Time Per Token Output)</li>
+                <li>e2el (End to End Latency)</li>
+                </ul>
+                <h3 id="mfu">MFU</h3>
+                <p>MFU (Model Flops Utilization)</p>
+                <p><span class="math display">\[\text{MFU} =
+                \frac{\text{measured throughput}}{\frac{P}{6N +
+                12LHQT}}\]</span></p>
+                <p>implication:</p>
+                <pre><code>                            measured throughput
+----------------------------------------------------------------------------
+                                    P
+        --------------------------------------------------------
+          3 * (gemm_flops_per_token + attention_flops_per_token)</code></pre>
+                <p><span class="math inline">\(\times 3\)</span> in
+                training, ignored in inference</p>
+                <ul>
+                <li>measured throughput: measure by perf tool</li>
+                <li>P: hardware max flops</li>
+                <li>N: model parameters</li>
+                <li>6LH(2QT): 单个 token 在 Attention 阶段的计算量
+                <ul>
+                <li><a
+                href="../../Computer/Artificial_Intelligence/Computation.html#Transformer">Each
+                token flops</a>: 4LHQT</li>
+                <li>L: layers</li>
+                <li>H: num_heads</li>
+                <li>Q: head_dims</li>
+                <li>T: seq length</li>
+                </ul></li>
+                </ul>
+                <hr />
+                <p>Example:</p>
+                <p>one perf with following results:</p>
+                <ul>
+                <li>num requests: 4096</li>
+                <li>total time: 153s</li>
+                <li>input avg: 141</li>
+                <li>throughput: 8151</li>
+                <li>otps: 4350</li>
+                <li>output avg: 164</li>
+                <li>A800
+                <ul>
+                <li>fp16: 312T flops</li>
+                <li>bandwidth: 2039 GB/s</li>
+                </ul></li>
+                </ul>
+                <h3 id="mbu">MBU</h3>
+                <p>MBU(Model Bandwidth Utilization)</p>
+                <pre><code>   achieved memory bandwidth
+-----------------------------------
+     peak memory bandwidth</code></pre>
+                <pre><code>         N + KV cache size
+    ----------------------------
+                tpot
+-----------------------------------
+     peak memory bandwidth</code></pre>
+                <p>KV cache and Model Parameters are saved in GPU global
+                memory.</p>
+                <p>1 / tpot: how many tokens are generated in a
+                second.</p>
+              </div>
+    </div>
+  </div>
+</body>
+
+</html>

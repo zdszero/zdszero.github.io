@@ -1,27 +1,33 @@
 % Artificial Intelligence
 
-[knowledge structure](./knowledge_structure.md)
-
-[Paper Index](./Paper_Index.md)
-
-[Neural Network](./neural_network.md)
-
-[Inference](./inference.md)
-
-[GPUs](./GPUs.md)
-
-[Transoformer](./Transoformer.md)
-
-[Scheduling](./Scheduling.md)
-
-[MoE](./MoE.md)
-
-[Flash Attention](./Flash_Attention.md)
-
-[cuda](./cuda.md)
-
-[ORCA](./ORCA.md)
-
-[vllm](./vllm.md)
-
-
+- ETC
+    - [Knowledge Structure](./knowledge_structure.md)
+    - [Paper Index](./Paper_Index.md)
+- Cuda
+    - [GPUs](./GPUs.md)
+    - [Gemm](./gemm.md)
+    - [Softmax](./softmax.md)
+    - [Layer Norm](./layernorm.md)
+    - [Cuda Stream](./cuda_stream.md)
+    - [cooperative group](./cooperative_group.md)
+- MODEL
+    - [Transoformer](./Transoformer.md)
+    - [Deepseek](./Deepseek.md)
+    - [Gating](./Gating.md)
+- MATH
+    - [Linear Algebra](./Linear_Algebra.md)
+    - [Neural Network](./neural_network.md)
+    - [Normalization](./Normalization.md)
+    - [RoPE](./RoPE.md)
+    - [MoE](./MoE.md)
+- INFERENCE
+    - [Parallelism](./Parallelism.md)
+    - [Quantization](./Quantization.md)
+    - [Computation](./Computation.md)
+    - [Metrics](./Metrics.md)
+    - [Attention](./Attention.md)
+    - [KV Cache](./KV_Cache.md)
+    - [Flash Attention](./Flash_Attention.md)
+    - [Scheduling](./Scheduling.md)
+    - [ORCA](./ORCA.md)
+    - [vllm](./vllm.md)

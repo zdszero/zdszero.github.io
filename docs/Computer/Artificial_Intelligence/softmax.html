@@ -1,0 +1,305 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="../../WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="../../WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    Softmax
+  </title>
+    <link rel="stylesheet" href="../../WikiTheme/theme/bootstrap.css"  />
+        <script
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+        type="text/javascript"></script>
+      <style type="text/css">
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+    </head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">Softmax</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="container">
+    <div class="row">
+            <div id="TOC" class="span3">
+        <div class="well toc">
+          <ul>
+          <li><a href="#principle" id="toc-principle">Principle</a></li>
+          <li><a href="#cpu" id="toc-cpu">CPU</a></li>
+          <li><a href="#gpu" id="toc-gpu">GPU</a></li>
+          <li><a href="#ref" id="toc-ref">Ref</a></li>
+          </ul>
+        </div>
+      </div>
+            <div class="span9">
+                <h3 id="principle">Principle</h3>
+                <p><span class="math display">\[m = \max(x)\]</span></p>
+                <p><span class="math display">\[\text{Softmax}(x_i) =
+                \frac{e^{x_i - m}}{\sum_{j} e^{x_i - m}}\]</span></p>
+                <p>简单的实现就是通过三层 for 循环，第一次循环计算最大值
+                <span class="math inline">\(m\)</span>，第二次循环计算
+                <span
+                class="math inline">\(sum\)</span>，第三次循环计算每个
+                <span class="math inline">\(x_i\)</span> 的
+                softmax。</p>
+                <p><span class="math display">\[
+                \begin{aligned}
+                &amp;\text{for } i \gets 1, N \text{ do} \\
+                &amp;\quad m_i \gets \max(m_{i-1}, x_i) \\
+                &amp;\text{end} \\
+                &amp;\text{for } i \gets 1, N \text{ do} \\
+                &amp;\quad sum_i \gets sum_{i-1} + e^{x_i - m_N} \\
+                &amp;\text{end} \\
+                &amp;\text{for } i \gets 1, N \text{ do} \\
+                &amp;\quad a_i \gets \frac{e^{x_i - m_N}}{sum_N} \\
+                &amp;\text{end}
+                \end{aligned}
+                \]</span></p>
+                <p>但这种实现没有效率不高，著名的 FlashAttention
+                也是因为把 softmax 改造成了可以分段迭代的形式，即 online
+                softmax，而显著减少 IO 次数，以大幅提高了性能。</p>
+                <p>在 safe softmax 中计算最大值和求和需要 global
+                的信息，如果在没有 global
+                信息的情况下，如何通过迭代的方式完成等效计算呢？事实上，可以通过两个循环完成，即</p>
+                <p><span class="math display">\[
+                \begin{aligned}
+                &amp;\text{for } i \gets 1, N \text{ do} \\
+                &amp;\quad m_i \gets \max(m_{i-1}, x_i) \\
+                &amp;\text{end} \\
+                &amp;\text{for } i \gets 1, N \text{ do} \\
+                &amp;\quad sum&#39;_i \gets sum&#39;_{i-1} e^{m_{i-1} -
+                m_i} + e^{x_i - m_i} \\
+                &amp;\text{end} \\
+                &amp;\text{for } i \gets 1, N \text{ do} \\
+                &amp;\quad a_i \gets \frac{e^{x_i - m_N}}{sum&#39;_N} \\
+                &amp;\text{end}
+                \end{aligned}
+                \]</span></p>
+                <p>这样就减少一次循环过程完成了等效计算。其中关键的步骤是
+                <span class="math inline">\(sum_{i}^{&#39;}\)</span>
+                的计算，在此再稍加推导一下</p>
+                <p><span class="math display">\[
+                \begin{aligned}
+                \text{sum}_i &amp;= \sum_{j=1}^{i} e^{x_j - m_i} \\
+                             &amp;= \left( \sum_{j=1}^{i-1} e^{x_j -
+                m_i} \right) + e^{x_i - m_i} \\
+                             &amp;= \left( \sum_{j=1}^{i-1} e^{x_j -
+                m_{i-1}} \right) e^{m_{i-1} - m_i} + e^{x_i - m_i} \\
+                             &amp;= \text{sum}_{i-1} e^{m_{i-1} - m_i} +
+                e^{x_i - m_i}
+                \end{aligned}
+                \]</span></p>
+                <h3 id="cpu">CPU</h3>
+                <h4 id="safe-softmax">safe softmax</h4>
+                <p>三次循环</p>
+                <div class="sourceCode" id="cb1"><pre
+                class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> softmax_forward_cpu<span class="op">(</span><span class="dt">float</span><span class="op">*</span> out<span class="op">,</span> <span class="at">const</span> <span class="dt">float</span><span class="op">*</span> inp<span class="op">,</span> <span class="dt">int</span> N<span class="op">,</span> <span class="dt">int</span> C<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">// inp is (N, C)</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">// out is (N, C), each row of inp will get softmaxed</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> N<span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">const</span> <span class="dt">float</span><span class="op">*</span> inp_row <span class="op">=</span> inp <span class="op">+</span> i <span class="op">*</span> C<span class="op">;</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>        <span class="dt">float</span><span class="op">*</span> out_row <span class="op">=</span> out <span class="op">+</span> i <span class="op">*</span> C<span class="op">;</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>        <span class="dt">float</span> maxval <span class="op">=</span> <span class="op">-</span>INFINITY<span class="op">;</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> j <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> j <span class="op">&lt;</span> C<span class="op">;</span> j<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="op">(</span>inp_row<span class="op">[</span>j<span class="op">]</span> <span class="op">&gt;</span> maxval<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>                maxval <span class="op">=</span> inp_row<span class="op">[</span>j<span class="op">];</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Note: since we want to ensure that the CUDA-kernels are accurate,</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>        <span class="co">// we do this accumulation in higher precision, so we can be assured</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>        <span class="co">// that our ground-truth is of high quality.</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>        <span class="dt">double</span> sum <span class="op">=</span> <span class="fl">0.0</span><span class="op">;</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> j <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> j <span class="op">&lt;</span> C<span class="op">;</span> j<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>            out_row<span class="op">[</span>j<span class="op">]</span> <span class="op">=</span> expf<span class="op">(</span>inp_row<span class="op">[</span>j<span class="op">]</span> <span class="op">-</span> maxval<span class="op">);</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>            sum <span class="op">+=</span> out_row<span class="op">[</span>j<span class="op">];</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>        <span class="dt">float</span> norm <span class="op">=</span> <span class="fl">1.</span><span class="bu">f</span> <span class="op">/</span> <span class="op">(</span><span class="dt">float</span><span class="op">)</span>sum<span class="op">;</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> j <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> j <span class="op">&lt;</span> C<span class="op">;</span> j<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>            out_row<span class="op">[</span>j<span class="op">]</span> <span class="op">*=</span> norm<span class="op">;</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+                <h4 id="online-softmax">online softmax</h4>
+                <p>两次循环</p>
+                <div class="sourceCode" id="cb2"><pre
+                class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">// online version of softmax on CPU from the paper &quot;Online normalizer calculation for softmax&quot;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> softmax_forward_online_cpu<span class="op">(</span><span class="dt">float</span><span class="op">*</span> out<span class="op">,</span> <span class="at">const</span> <span class="dt">float</span><span class="op">*</span> inp<span class="op">,</span> <span class="dt">int</span> N<span class="op">,</span> <span class="dt">int</span> C<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">// inp is (N, C)</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">// out is (N, C), each row of inp will get softmaxed</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> N<span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">const</span> <span class="dt">float</span><span class="op">*</span> inp_row <span class="op">=</span> inp <span class="op">+</span> i <span class="op">*</span> C<span class="op">;</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>        <span class="dt">float</span><span class="op">*</span> out_row <span class="op">=</span> out <span class="op">+</span> i <span class="op">*</span> C<span class="op">;</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>        <span class="dt">float</span> maxval <span class="op">=</span> <span class="op">-</span>INFINITY<span class="op">;</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>        <span class="dt">float</span> sum <span class="op">=</span> <span class="fl">0.0</span><span class="bu">f</span><span class="op">;</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> j <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> j <span class="op">&lt;</span> C<span class="op">;</span> j<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>            <span class="dt">float</span> maxval_prev <span class="op">=</span> maxval<span class="op">;</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="op">(</span>inp_row<span class="op">[</span>j<span class="op">]</span> <span class="op">&gt;</span> maxval<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>                maxval <span class="op">=</span> inp_row<span class="op">[</span>j<span class="op">];</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>                sum <span class="op">=</span> sum <span class="op">*</span> expf<span class="op">(</span>maxval_prev <span class="op">-</span> maxval<span class="op">)</span> <span class="op">+</span> expf<span class="op">(</span>inp_row<span class="op">[</span>j<span class="op">]</span> <span class="op">-</span> maxval<span class="op">);</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>                sum <span class="op">+=</span> expf<span class="op">(</span>inp_row<span class="op">[</span>j<span class="op">]</span> <span class="op">-</span> maxval<span class="op">);</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> j <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> j <span class="op">&lt;</span> C<span class="op">;</span> j<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>            out_row<span class="op">[</span>j<span class="op">]</span> <span class="op">=</span> expf<span class="op">(</span>inp_row<span class="op">[</span>j<span class="op">]</span> <span class="op">-</span> maxval<span class="op">)</span> <span class="op">/</span> sum<span class="op">;</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+                <h3 id="gpu">GPU</h3>
+                <h4 id="safe-softmax-1">safe softmax</h4>
+                <p>在 N 的维度上并行计算，每个线程负责计算一行。</p>
+                <div class="sourceCode" id="cb3"><pre
+                class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>__global__ <span class="dt">void</span> softmax_forward_kernel1<span class="op">(</span><span class="dt">float</span><span class="op">*</span> out<span class="op">,</span> <span class="at">const</span> <span class="dt">float</span><span class="op">*</span> inp<span class="op">,</span> <span class="dt">int</span> N<span class="op">,</span> <span class="dt">int</span> C<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">// inp is (N, C)</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">// out is (N, C), each row of inp will get softmaxed</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> i <span class="op">=</span> blockIdx<span class="op">.</span>x <span class="op">*</span> blockDim<span class="op">.</span>x <span class="op">+</span> threadIdx<span class="op">.</span>x<span class="op">;</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>i <span class="op">&lt;</span> N<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">const</span> <span class="dt">float</span><span class="op">*</span> inp_row <span class="op">=</span> inp <span class="op">+</span> i <span class="op">*</span> C<span class="op">;</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>        <span class="dt">float</span><span class="op">*</span> out_row <span class="op">=</span> out <span class="op">+</span> i <span class="op">*</span> C<span class="op">;</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>        <span class="dt">float</span> maxval <span class="op">=</span> <span class="op">-</span>INFINITY<span class="op">;</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> j <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> j <span class="op">&lt;</span> C<span class="op">;</span> j<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="op">(</span>inp_row<span class="op">[</span>j<span class="op">]</span> <span class="op">&gt;</span> maxval<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>                maxval <span class="op">=</span> inp_row<span class="op">[</span>j<span class="op">];</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>        <span class="dt">double</span> sum <span class="op">=</span> <span class="fl">0.0</span><span class="op">;</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> j <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> j <span class="op">&lt;</span> C<span class="op">;</span> j<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>            out_row<span class="op">[</span>j<span class="op">]</span> <span class="op">=</span> expf<span class="op">(</span>inp_row<span class="op">[</span>j<span class="op">]</span> <span class="op">-</span> maxval<span class="op">);</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>            sum <span class="op">+=</span> out_row<span class="op">[</span>j<span class="op">];</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> j <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> j <span class="op">&lt;</span> C<span class="op">;</span> j<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>            out_row<span class="op">[</span>j<span class="op">]</span> <span class="op">/=</span> <span class="op">(</span><span class="dt">float</span><span class="op">)</span>sum<span class="op">;</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+                <h4 id="shared-memory">shared memory</h4>
+                <h4 id="shuffle">shuffle</h4>
+                <p><code>int __shfl_down_sync(unsigned mask, int var, unsigned delta, int width=warpSize);</code></p>
+                <p>返回值含义（比如 delta = 1）：</p>
+                <pre><code>线程 0：获取线程 1 的值
+线程 1：获取线程 2 的值
+...
+线程 30：获取线程 31 的值</code></pre>
+                <p><code>__shfl_down_sync</code> 是 CUDA warp 级别的
+                shuffle 指令，用于在 一个 warp 内 实现数据交换。它常用于
+                高效的归约（reduction）运算，比使用共享内存
+                <code>__shared__</code> 更快，因为 warp
+                内的线程可以直接通信，而不需要
+                <code>__syncthreads()</code>。</p>
+                <div class="sourceCode" id="cb5"><pre
+                class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">// warp-level reduction for finding the maximum value</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>__device__ <span class="dt">float</span> warpReduceMax<span class="op">(</span><span class="dt">float</span> val<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> offset <span class="op">=</span> <span class="dv">16</span><span class="op">;</span> offset <span class="op">&gt;</span> <span class="dv">0</span><span class="op">;</span> offset <span class="op">/=</span> <span class="dv">2</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>        val <span class="op">=</span> fmaxf<span class="op">(</span>val<span class="op">,</span> __shfl_down_sync<span class="op">(</span><span class="bn">0xFFFFFFFF</span><span class="op">,</span> val<span class="op">,</span> offset<span class="op">));</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> val<span class="op">;</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co">// warp-level reduction for summing values</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>__device__ <span class="dt">float</span> warpReduceSum<span class="op">(</span><span class="dt">float</span> val<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> offset <span class="op">=</span> <span class="dv">16</span><span class="op">;</span> offset <span class="op">&gt;</span> <span class="dv">0</span><span class="op">;</span> offset <span class="op">/=</span> <span class="dv">2</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>        val <span class="op">+=</span> __shfl_down_sync<span class="op">(</span><span class="bn">0xFFFFFFFF</span><span class="op">,</span> val<span class="op">,</span> offset<span class="op">);</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> val<span class="op">;</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+                <h3 id="ref">Ref</h3>
+                <p><a
+                href="https://zhuanlan.zhihu.com/p/695307283">SoftMax算子的
+                CUDA 实现</a></p>
+              </div>
+    </div>
+  </div>
+</body>
+
+</html>

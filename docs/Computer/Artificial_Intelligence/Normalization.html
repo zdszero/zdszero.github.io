@@ -1,0 +1,93 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="../../WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="../../WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    Normalization
+  </title>
+    <link rel="stylesheet" href="../../WikiTheme/theme/bootstrap.css"  />
+        <script
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+        type="text/javascript"></script>
+      </head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">Normalization</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="container">
+    <div class="row">
+            <div id="TOC" class="span3">
+        <div class="well toc">
+          <ul>
+          <li><a href="#standardization"
+          id="toc-standardization">Standardization</a></li>
+          <li><a href="#min-max-normalization"
+          id="toc-min-max-normalization">min-max normalization</a></li>
+          <li><a href="#why" id="toc-why">Why</a></li>
+          </ul>
+        </div>
+      </div>
+            <div class="span9">
+                <p>Normalization in deep learning refers to the process
+                of transforming data to conform to specific statistical
+                properties.</p>
+                <p>There are several ways: standardization or min-max
+                normalization.</p>
+                <h3 id="standardization">Standardization</h3>
+                <p><span class="math display">\[x&#39; = \frac{x -
+                \mu}{\sigma}\]</span></p>
+                <p>One common type is standardization, where each data
+                point is adjusted by subtracting the mean of its column
+                and then dividing by the standard deviation. This
+                transformation results in a new column where the mean is
+                zero and the standard deviation is one.</p>
+                <h3 id="min-max-normalization">min-max
+                normalization</h3>
+                <p>data is scaled to fit within a given range</p>
+                <h3 id="why">Why</h3>
+                <p><strong>Nomalize data to improve training
+                efficiency</strong></p>
+                <p>Imagine you’re training a neural network, and as you
+                update the weights, some of them start getting really
+                big. When that happens, the activations tied to those
+                weights also become large, making it harder for your
+                model to learn effectively. It slows things down and can
+                cause problems in training.</p>
+                <p>Normalization helps fix this by keeping activations
+                within a stable range. This not only makes the training
+                process more stable but also speeds it up, allowing your
+                model to learn more efficiently.</p>
+                <p><strong>Avoid internal covariate shift</strong></p>
+              </div>
+    </div>
+  </div>
+</body>
+
+</html>

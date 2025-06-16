@@ -1,0 +1,348 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="../../WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="../../WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    Computation
+  </title>
+    <link rel="stylesheet" href="../../WikiTheme/theme/bootstrap.css"  />
+        <script
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+        type="text/javascript"></script>
+      </head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">Computation</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="container">
+    <div class="row">
+            <div id="TOC" class="span3">
+        <div class="well toc">
+          <ul>
+          <li><a href="#prerequisite"
+          id="toc-prerequisite">Prerequisite</a></li>
+          <li><a href="#weight" id="toc-weight">Weight</a></li>
+          <li><a href="#attention" id="toc-attention">Attention</a></li>
+          <li><a href="#transformer"
+          id="toc-transformer">Transformer</a></li>
+          <li><a href="#model-size" id="toc-model-size">Model
+          Size</a></li>
+          <li><a href="#autoregressive-process"
+          id="toc-autoregressive-process">Autoregressive
+          Process</a></li>
+          </ul>
+        </div>
+      </div>
+            <div class="span9">
+                <h3 id="prerequisite">Prerequisite</h3>
+                <ul>
+                <li>number of layers: <code>L</code></li>
+                <li>sequence tokens: <code>t</code></li>
+                <li>batch size: <code>b</code></li>
+                <li>dimension/hidden size: <code>D</code></li>
+                <li>intermidiate size: <code>I</code></li>
+                <li>vocab size: <code>V</code></li>
+                <li>heads: <code>h</code></li>
+                <li>head dimension: <code>d = D / h</code>
+                <ul>
+                <li><span class="math inline">\(d_k = d_q\)</span></li>
+                <li><span class="math inline">\(d_v\)</span></li>
+                <li>generally, <span class="math inline">\(d_k = d_v =
+                \frac{D}{h}\)</span></li>
+                </ul></li>
+                <li>model parameters: <code>N</code></li>
+                </ul>
+                <hr />
+                <ul>
+                <li><span class="math inline">\(A \cdot B\)</span></li>
+                <li>shape(A) = (x, y)</li>
+                <li>shape(B) = (y, z)</li>
+                <li>computation is <span
+                class="math inline">\(2xyz\)</span>
+                <ul>
+                <li>x2: mul and add</li>
+                </ul></li>
+                </ul>
+                <h3 id="weight">Weight</h3>
+                <p><span class="math inline">\(Q, K, V = X W = X (W_{Q},
+                W_{K}, W_{V})\)</span></p>
+                <table>
+                <thead>
+                <tr>
+                <th>Matrix</th>
+                <th>Shape</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                <td><span class="math inline">\(W_{Q}, W_{K},
+                W_{V}\)</span></td>
+                <td><code>(D D)</code></td>
+                </tr>
+                <tr>
+                <td><span class="math inline">\(W_{qkv}\)</span></td>
+                <td><code>(D 3D)</code></td>
+                </tr>
+                <tr>
+                <td><span class="math inline">\(W_{O}\)</span></td>
+                <td><code>(D D)</code></td>
+                </tr>
+                <tr>
+                <td><span class="math inline">\(X\)</span></td>
+                <td><code>(t D)</code></td>
+                </tr>
+                <tr>
+                <td><span class="math inline">\(W_{up}\)</span></td>
+                <td><code>(D I)</code></td>
+                </tr>
+                <tr>
+                <td><span class="math inline">\(W_{down}\)</span></td>
+                <td><code>(I D)</code></td>
+                </tr>
+                </tbody>
+                </table>
+                <h3 id="attention">Attention</h3>
+                <p><span class="math inline">\(S(Q K^{T} / \sqrt{k}) *
+                V\)</span></p>
+                <table>
+                <thead>
+                <tr>
+                <th>Matrix</th>
+                <th>Shape</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                <td><span class="math inline">\(Q\)</span></td>
+                <td><code>(b t D) → (b h t d)</code></td>
+                </tr>
+                <tr>
+                <td><span class="math inline">\(K^{T}\)</span></td>
+                <td><code>(b D t) → (b h d t)</code></td>
+                </tr>
+                <tr>
+                <td><span class="math inline">\(Q K^{T}\)</span></td>
+                <td><code>(b t t), (b h t t)</code></td>
+                </tr>
+                <tr>
+                <td><span class="math inline">\(V\)</span></td>
+                <td><code>(b t D) → (b h t d)</code></td>
+                </tr>
+                <tr>
+                <td><span class="math inline">\(Q K^{T} V\)</span></td>
+                <td><code>(b t D) ← (b h t d)</code></td>
+                </tr>
+                </tbody>
+                </table>
+                <p>shape: single head → multi head</p>
+                <h3 id="transformer">Transformer</h3>
+                <p>Matrix and Mul binding:</p>
+                <ul>
+                <li>gemm
+                <ul>
+                <li><span class="math inline">\(W_{Q}, W_{K}, W_{V},
+                W_{O}\)</span>: q/k/v/o_proj</li>
+                <li><span class="math inline">\(W_{up},
+                W_{down}\)</span>: MLP</li>
+                <li><span class="math inline">\(W_{unembed}\)</span>:
+                logits</li>
+                </ul></li>
+                <li>attention:
+                <ul>
+                <li><span class="math inline">\(S(Q K^{T} / \sqrt{d_k})
+                V\)</span></li>
+                </ul></li>
+                </ul>
+                <hr />
+                <ul>
+                <li>gemm
+                <ul>
+                <li>q/k/v/o_proj
+                <ul>
+                <li>shape = <span class="math inline">\((b, t, D) \cdot
+                (D, D) \cdot 4\)</span></li>
+                <li>flops = <span class="math inline">\(L \cdot 2 \cdot
+                b \cdot t \cdot D^2 \cdot 4\)</span></li>
+                </ul></li>
+                <li>MLP
+                <ul>
+                <li>shape = <span class="math inline">\((b, t, D) \cdot
+                (D, I)\)</span></li>
+                <li>flops = <span class="math inline">\(L \cdot 2 \cdot
+                b \cdot t \cdot D \cdot 3 \cdot I \cdot 3\)</span></li>
+                </ul></li>
+                <li>logits
+                <ul>
+                <li>shape = <span class="math inline">\((b, t, D) \cdot
+                (D, V)\)</span></li>
+                <li>flops = <span class="math inline">\(2 \cdot b \cdot
+                t \cdot D \cdot V\)</span></li>
+                </ul></li>
+                <li>Total
+                <ul>
+                <li>flops = <span class="math inline">\(8 \cdot L \cdot
+                b \cdot t \cdot D^2 + 6 \cdot L \cdot b \cdot t \cdot D
+                \cdot I + 2 \cdot b \cdot t \cdot D \cdot V = b \cdot t
+                \cdot (8 \cdot L \cdot D^2 + 6 \cdot L \cdot D \cdot I +
+                2 \cdot D \cdot V)\)</span></li>
+                </ul></li>
+                <li>Each token
+                <ul>
+                <li>flops = <span class="math inline">\(8L D^2 + 6 L D I
+                + 2 D V = Lhd(8hd + 6I) + 2hdV \approx 2N\)</span></li>
+                </ul></li>
+                </ul></li>
+                <li>attention
+                <ul>
+                <li><span class="math inline">\(Q K^{T}\)</span>
+                <ul>
+                <li>shape = <span class="math inline">\((b, h, t, d)
+                \cdot (b, h, d, t)\)</span></li>
+                <li>flops = <span class="math inline">\(L \cdot 2 \cdot
+                b \cdot h \cdot d \cdot t^2\)</span></li>
+                </ul></li>
+                <li><span class="math inline">\(\text{softmax}(Q
+                K^{T})\)</span>
+                <ul>
+                <li>shape = <span class="math inline">\((b, h, t,
+                t)\)</span></li>
+                <li>flops = <span class="math inline">\(L \cdot b \cdot
+                h \cdot t^2 \cdot \text{factor}\)</span>
+                <ul>
+                <li>factor = 1 + exp + division</li>
+                </ul></li>
+                </ul></li>
+                <li><span class="math inline">\(\text{softmax}(Q K^{T})
+                \cdot V\)</span>
+                <ul>
+                <li>shape = <span class="math inline">\((b, h, t, t)
+                \cdot (b, h, t, d)\)</span></li>
+                <li>flops = <span class="math inline">\(L \cdot 2 \cdot
+                b \cdot h \cdot d \cdot t^2\)</span></li>
+                </ul></li>
+                <li>Total
+                <ul>
+                <li>flops = <span class="math inline">\(4 \cdot L \cdot
+                b \cdot h \cdot d \cdot t^2 + L \cdot b \cdot h \cdot
+                t^2 \cdot \text{factor}\)</span></li>
+                <li>factor is less than <span
+                class="math inline">\(4d\)</span> which we ignore
+                first</li>
+                </ul></li>
+                <li>Each token
+                <ul>
+                <li>flops = <span class="math inline">\(4 \cdot L \cdot
+                h \cdot d \cdot t\)</span></li>
+                </ul></li>
+                </ul></li>
+                </ul>
+                <hr />
+                <p>Compare attention and gemm</p>
+                <p>attention flops / gemm flops = <span
+                class="math inline">\(\frac{t}{2hd + 1.5I} = \frac{t}{2D
+                + 1.5I}\)</span></p>
+                <p>For llama2-7b, <span class="math inline">\(2D +1.5I =
+                24704\)</span>, in most cases, <span
+                class="math inline">\(t\)</span> is much smaller thant
+                <span class="math inline">\(2D + 1.5T\)</span></p>
+                <h3 id="model-size">Model Size</h3>
+                <p>Model Parameters are saved in following martix:</p>
+                <ul>
+                <li><span class="math inline">\(W_{embed}\)</span></li>
+                <li><span class="math inline">\(W_{Q}, W_{K}, W_{V},
+                W_{O}\)</span></li>
+                <li><span class="math inline">\(W_{up},
+                W_{down}\)</span></li>
+                <li><span
+                class="math inline">\(W_{unembed}\)</span></li>
+                </ul>
+                <hr />
+                <ul>
+                <li>GPT3:
+                <ul>
+                <li><span class="math inline">\(\text{d_embed} = D =
+                12,288\)</span>
+                <ul>
+                <li><span class="math inline">\(d_k = d_v = \frac{D}{h}
+                = 128\)</span></li>
+                </ul></li>
+                <li><span class="math inline">\(\text{n_vocab} = V =
+                50,257\)</span></li>
+                <li><span class="math inline">\(\text{n_intermidiate} =
+                I = 49,152\)</span></li>
+                <li><span class="math inline">\(\text{n_heads} = h =
+                96\)</span></li>
+                <li><span class="math inline">\(\text{n_layers} = L =
+                96\)</span></li>
+                </ul></li>
+                </ul>
+                <table>
+                <thead>
+                <tr>
+                <th>Matrix</th>
+                <th>Equation</th>
+                <th>Parameters</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                <td><span class="math inline">\(W_{embed},
+                W_{unembed}\)</span></td>
+                <td><span class="math inline">\(D \cdot V\)</span></td>
+                <td>617,558,016</td>
+                </tr>
+                <tr>
+                <td><span class="math inline">\(W_{Q}, W_{K}, W_{V},
+                W_{O}\)</span></td>
+                <td><span class="math inline">\(L \cdot
+                D^2\)</span></td>
+                <td>14,495,514,624</td>
+                </tr>
+                <tr>
+                <td><span class="math inline">\(W_{up},
+                W_{down}\)</span></td>
+                <td><span class="math inline">\(L \cdot D \cdot
+                I\)</span></td>
+                <td>57,982,058,496</td>
+                </tr>
+                </tbody>
+                </table>
+                <p><span class="math inline">\(N = 2DV + 4LD^2 +
+                2LDI\)</span></p>
+                <p>updown * 2 + qkvo * 4 + embed * 2 = 175,181,291,520 ≈
+                175B</p>
+                <h3 id="autoregressive-process">Autoregressive
+                Process</h3>
+              </div>
+    </div>
+  </div>
+</body>
+
+</html>

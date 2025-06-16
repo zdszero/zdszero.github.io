@@ -43,6 +43,7 @@
             <div id="TOC" class="span3">
         <div class="well toc">
           <ul>
+          <li><a href="#batching" id="toc-batching">Batching</a></li>
           <li><a href="#key-design" id="toc-key-design">Key
           Design</a></li>
           <li><a href="#distributed-arch"
@@ -53,6 +54,21 @@
         </div>
       </div>
             <div class="span9">
+                <h3 id="batching">Batching</h3>
+                <figure>
+                <img
+                src="../.././WikiImage/image_2024-12-25-17-30-18.png"
+                width="500" alt="Batching" />
+                <figcaption aria-hidden="true">Batching</figcaption>
+                </figure>
+                <ul>
+                <li><strong>Continuous Batching</strong>: continuous and
+                dynamic gpu memory</li>
+                <li><strong>Static Batching</strong>: create static gpu
+                memory for each request</li>
+                </ul>
+                <p>batch size: how many user inputs are processed
+                concurrently in the LLM.</p>
                 <h3 id="key-design">Key Design</h3>
                 <ul>
                 <li>Request level scheduling → Iteration level

@@ -43,6 +43,7 @@
             <div id="TOC" class="span3">
         <div class="well toc">
           <ul>
+          <li><a href="#idea" id="toc-idea">Idea</a></li>
           <li><a href="#densesparse-layer"
           id="toc-densesparse-layer">Dense/Sparse Layer</a></li>
           <li><a href="#expert" id="toc-expert">Expert</a></li>
@@ -52,6 +53,26 @@
         </div>
       </div>
             <div class="span9">
+                <p>Exploiting scale in both training data and model size
+                has been central to the success of deep learning. When
+                datasets are sufficiently large, increasing the capacity
+                (number of parameters) of neural networks can give much
+                better prediction accuracy.</p>
+                <h3 id="idea">Idea</h3>
+                <p>The basic idea of MoE is split the FFN into multiple
+                sub-networks(experts), for each input token, only part
+                of sub-networks(experts) are activated. Different
+                sub-networks behavior as different “experts”, during
+                training they absorb different information and knowledge
+                from the dataset, during inferencing only part of
+                experts are activated based on the input token.</p>
+                <ul>
+                <li><strong>Gating Network</strong>: This small neural
+                network takes the input and learns to determine which
+                experts are most relevant for processing that specific
+                input. It produces scores or probabilities for each
+                expert</li>
+                </ul>
                 <h3 id="densesparse-layer">Dense/Sparse Layer</h3>
                 <h4 id="dense-layer">Dense Layer</h4>
                 <p>FFNN (Feedforward Neural Network)</p>
@@ -82,7 +103,7 @@
                 <figure>
                 <img
                 src="../.././WikiImage/image_2025-01-07-17-46-22.png"
-                width="500" alt="Example Expert" />
+                alt="Example Expert" />
                 <figcaption aria-hidden="true">Example
                 Expert</figcaption>
                 </figure>

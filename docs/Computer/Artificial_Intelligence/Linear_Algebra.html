@@ -1,0 +1,404 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="../../WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="../../WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    Linear Algebra
+  </title>
+    <link rel="stylesheet" href="../../WikiTheme/theme/bootstrap.css"  />
+        <script
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+        type="text/javascript"></script>
+      </head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">Linear Algebra</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="container">
+    <div class="row">
+            <div id="TOC" class="span3">
+        <div class="well toc">
+          <ul>
+          <li><a href="#introduction"
+          id="toc-introduction">Introduction</a></li>
+          <li><a href="#matrix-calculas" id="toc-matrix-calculas">Matrix
+          Calculas</a>
+          <ul>
+          <li><a href="#partial-derivative"
+          id="toc-partial-derivative">Partial Derivative</a></li>
+          <li><a href="#gradient" id="toc-gradient">Gradient</a></li>
+          <li><a href="#jocobian-in-general"
+          id="toc-jocobian-in-general">Jocobian in general</a></li>
+          <li><a href="#derivative-of-element-wise-binary-operators"
+          id="toc-derivative-of-element-wise-binary-operators">Derivative
+          of element-wise binary operators</a></li>
+          <li><a href="#vector-chain-rule"
+          id="toc-vector-chain-rule">Vector chain rule</a></li>
+          <li><a href="#matrix-extended-operation"
+          id="toc-matrix-extended-operation">Matrix Extended
+          Operation</a></li>
+          </ul></li>
+          <li><a href="#the-gradient-of-neuron-activation"
+          id="toc-the-gradient-of-neuron-activation">The gradient of
+          neuron activation</a></li>
+          </ul>
+        </div>
+      </div>
+            <div class="span9">
+                <h2 id="introduction">Introduction</h2>
+                <figure>
+                <img
+                src="../.././WikiImage/image_2025-03-19-08-27-00.png"
+                width="300" alt="activation" />
+                <figcaption aria-hidden="true">activation</figcaption>
+                </figure>
+                <p>The activation of a single computation unit in a
+                neural network is typically calculated using the dot
+                product of an edge weight vector <span
+                class="math inline">\(\mathbf{w}\)</span> with and input
+                vector <span class="math inline">\(\mathbf{x}\)</span>
+                plus scalar bias:</p>
+                <p><span class="math display">\[z(x) = \sum_{i=1}^{n}
+                w_i x_i + b = \textbf{w} \cdot \textbf{x} +
+                b\]</span></p>
+                <p>Function <span class="math inline">\(z(x)\)</span> is
+                called the unit’s affline function and is followed by a
+                rectified linear unit, which clips negative values to
+                zero.</p>
+                <p><strong>Traning</strong> this neuron network means
+                choosing weights <span
+                class="math inline">\(\mathbf{w}\)</span> and bias <span
+                class="math inline">\(b\)</span> so that we get desired
+                output for all N input <span
+                class="math inline">\(\mathbf{x}\)</span>.</p>
+                <p>To do that, we minimize the loss function that
+                compares the network’s final <span
+                class="math inline">\(\text{activation}(\mathbf{x})\)</span>
+                with the <span
+                class="math inline">\(\text{target}(\mathbf{x})\)</span>
+                for all input <span
+                class="math inline">\(\mathbf{x}\)</span> vectors.</p>
+                <p>To minimize the loss, we use some variation on
+                gradient descent, such as plain stochastic gradient
+                descent (SGD). All of those require the partital
+                derivative of <span
+                class="math inline">\(\text{activation}(\mathbf{x})\)</span>
+                with respect to the model parameters <span
+                class="math inline">\(\mathbf{w}\)</span> and <span
+                class="math inline">\(b\)</span>. Our goal is gradually
+                tweak <span class="math inline">\(\mathbf{w}\)</span>
+                and <span class="math inline">\(b\)</span> sot that the
+                overall loss function keeps getting smaller for all
+                input <span
+                class="math inline">\(\mathbf{x}\)</span>.</p>
+                <h2 id="matrix-calculas">Matrix Calculas</h2>
+                <h3 id="partial-derivative">Partial Derivative</h3>
+                <p>Difference between derivative and partial
+                derivative:</p>
+                <ul>
+                <li>ordinary derivative is used in a
+                single-variable</li>
+                <li>partial derivative is used in multi-variable
+                funciton. And when we try to get a variable’s partial
+                derivative. The other variables are regarded as
+                constants.</li>
+                </ul>
+                <h3 id="gradient">Gradient</h3>
+                <p>When we calculate the partial derivative of multiple
+                variables. Instaed of having the just floating around
+                and not organized in any way, we can organize them into
+                a horizontal vector:</p>
+                <p><span class="math display">\[\nabla f(x, y) = [
+                \frac{\partial f(x, y)}{\partial x}, \frac{\partial f(x,
+                y)}{\partial y}]\]</span></p>
+                <p>So the graident of <span class="math inline">\(f(x,
+                y)\)</span> is simply a vector of its partials.</p>
+                <p>If we have two functions, we get the <em>Jocobian
+                matrix</em> where gradients are rows:</p>
+                <p><span class="math display">\[
+                J = \begin{bmatrix}
+                \nabla f(x, y) \\
+                \nabla g(x, y)
+                \end{bmatrix} = \begin{bmatrix}
+                \frac{\partial f(x, y)}{\partial x} &amp; \frac{\partial
+                f(x, y)}{\partial y} \\
+                \frac{\partial g(x, y)}{\partial x} &amp; \frac{\partial
+                g(x, y)}{\partial y}
+                \end{bmatrix}
+                \]</span></p>
+                <p>Note there are many ways to represent this Jocobian.
+                We are using the so-called numerator layout but many
+                papers will use the denominator layout which is just
+                transpose of the numerator layout.</p>
+                <h3 id="jocobian-in-general">Jocobian in general</h3>
+                <p>To define jocobian matrix more generally, let’s
+                combine multiple parameters into a single vector
+                argument: <span class="math inline">\(f(x, y, z)
+                \rightarrow f(\mathbf{x})\)</span></p>
+                <p>Let’s clarify the formats:</p>
+                <ul>
+                <li><span class="math inline">\(\mathbf{x}\)</span> is
+                the same as <span
+                class="math inline">\(\vec{x}\)</span>, which is a
+                vector.</li>
+                <li><span class="math inline">\(x\)</span> is a
+                scalar.</li>
+                <li><span class="math inline">\(x_i\)</span> is a single
+                element in vector.</li>
+                </ul>
+                <p>We also have to define the orientation for vector
+                <span class="math inline">\(\mathbf{x}\)</span></p>
+                <p><span class="math display">\[x = \begin{bmatrix}
+                x_1 \\
+                x_2 \\
+                \vdots \\
+                x_n
+                \end{bmatrix}\]</span></p>
+                <p>With multiple scalar-valued functions, we can combine
+                them all into a vector just like we did with the
+                parameters.</p>
+                <p>Let <span class="math inline">\(\mathbf{y} =
+                \mathbf{f(x)}\)</span> be a vector of m scalar-valued
+                functions that each take a vector <span
+                class="math inline">\(\mathbf{x}\)</span>. And each
+                <span class="math inline">\(f_i\)</span> within <span
+                class="math inline">\(\mathbf{f}\)</span> returns a
+                scalar value.</p>
+                <p><span class="math display">\[y_1 =
+                f_1(\mathbf{x})\]</span> <span
+                class="math display">\[y_2 = f_2(\mathbf{x})\]</span>
+                <span class="math display">\[\vdots\]</span> <span
+                class="math display">\[y_m =
+                f_m(\mathbf{x})\]</span></p>
+                <p>Generally speaking, the Jacobian matrix is the
+                collection of all <span class="math inline">\(m \times
+                n\)</span> possible partial derivatives, which is the
+                stack of <span class="math inline">\(m\)</span>
+                gradients with respect to <span
+                class="math inline">\(\mathbf{x}\)</span>.</p>
+                <p><span class="math display">\[
+                \frac{\partial y}{\partial x} =
+                \begin{bmatrix}
+                \nabla f_1(\mathbf{x}) \\
+                \nabla f_2(\mathbf{x}) \\
+                \vdots \\
+                \nabla f_m(\mathbf{x}) \\
+                \end{bmatrix} =
+                \begin{bmatrix}
+                \frac{\partial f_1(\mathbf{x})}{\partial \mathbf{x}} \\
+                \frac{\partial f_2(\mathbf{x})}{\partial \mathbf{x}} \\
+                \vdots \\
+                \frac{\partial f_m(\mathbf{x})}{\partial \mathbf{x}} \\
+                \end{bmatrix} =
+                \begin{bmatrix}
+                \frac{\partial f_1(\mathbf{x})}{\partial x_1} &amp;
+                \frac{\partial f_1(\mathbf{x})}{\partial x_2} &amp;
+                \cdots &amp; \frac{\partial f_1(\mathbf{x})}{\partial
+                x_n} \\
+                \frac{\partial f_2(\mathbf{x})}{\partial x_1} &amp;
+                \frac{\partial f_2(\mathbf{x})}{\partial x_2} &amp;
+                \cdots &amp; \frac{\partial f_2(\mathbf{x})}{\partial
+                x_n} \\
+                \vdots \\
+                \frac{\partial f_m(\mathbf{x})}{\partial x_1} &amp;
+                \frac{\partial f_m(\mathbf{x})}{\partial x_2} &amp;
+                \cdots &amp; \frac{\partial f_m(\mathbf{x})}{\partial
+                x_n} \\
+                \end{bmatrix}
+                \]</span></p>
+                <figure>
+                <img
+                src="../.././WikiImage/image_2025-03-19-09-31-04.png"
+                width="300" alt="visual demo" />
+                <figcaption aria-hidden="true">visual demo</figcaption>
+                </figure>
+                <p>The jocobian function <span
+                class="math inline">\(\mathbf{f(x)} =
+                \mathbf{x}\)</span> with <span
+                class="math inline">\(f_i(\mathbf{x}) =
+                x_i\)</span>:</p>
+                <p><span class="math display">\[
+                \frac{\partial y}{\partial x} =
+                \begin{bmatrix}
+                1 &amp; 0 &amp; \cdots &amp; 0 \\
+                0 &amp; 1 &amp; \cdots &amp; 0 \\
+                \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+                0 &amp; 0 &amp; 0 &amp; 1
+                \end{bmatrix}
+                \]</span></p>
+                <h3
+                id="derivative-of-element-wise-binary-operators">Derivative
+                of element-wise binary operators</h3>
+                <p>By “element-wise binary operations” we simply mean
+                applying an operator to the first item of each vector to
+                get the first item of the output, then to the second
+                items of the inputs for the second item of the output,
+                and so forth.</p>
+                <p>We can generalize the element-wise binary operations
+                with notation <span class="math inline">\(\mathbf{y} =
+                \mathbf{f(w)} \bigcirc \mathbf{g(x)}\)</span> where
+                <span class="math inline">\(m = n = |y| = |w| =
+                |x|\)</span></p>
+                <p><span class="math display">\[
+                \begin{bmatrix}
+                y_1 \\
+                y_2 \\
+                \vdots \\
+                y_n
+                \end{bmatrix} = \begin{bmatrix}
+                f_1(\mathbf{w}) \bigcirc g_1(\mathbf{x}) \\
+                f_2(\mathbf{w}) \bigcirc g_2(\mathbf{x}) \\
+                \vdots \\
+                f_n(\mathbf{w}) \bigcirc g_n(\mathbf{x}) \\
+                \end{bmatrix}
+                \]</span></p>
+                <p><span class="math display">\[
+                \mathbf{J_{W}} = \frac{\partial \mathbf{y}}{\partial
+                \mathbf{w}} = \begin{bmatrix}
+                \frac{\partial }{\partial w_1}(f_1 (\mathbf{w}) \bigcirc
+                g_1(\mathbf{x})) &amp; \frac{\partial }{\partial
+                w_2}(f_1 (\mathbf{w}) \bigcirc g_1(\mathbf{x})) &amp;
+                \cdots &amp; \frac{\partial }{\partial w_n}(f_1
+                (\mathbf{w}) \bigcirc g_1(\mathbf{x})) \\
+                \frac{\partial }{\partial w_1}(f_2 (\mathbf{w}) \bigcirc
+                g_2(\mathbf{x})) &amp; \frac{\partial }{\partial
+                w_2}(f_2 (\mathbf{w}) \bigcirc g_2(\mathbf{x})) &amp;
+                \cdots &amp; \frac{\partial }{\partial w_n}(f_2
+                (\mathbf{w}) \bigcirc g_2(\mathbf{x})) \\
+                \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+                \frac{\partial }{\partial w_1}(f_n (\mathbf{w}) \bigcirc
+                g_n(\mathbf{x})) &amp; \frac{\partial }{\partial
+                w_2}(f_n (\mathbf{w}) \bigcirc g_n(\mathbf{x})) &amp;
+                \cdots &amp; \frac{\partial }{\partial w_n}(f_n
+                (\mathbf{w}) \bigcirc g_n(\mathbf{x})) \\
+                \end{bmatrix}
+                \]</span></p>
+                <p>Consider that <span
+                class="math inline">\(\frac{\partial}{\partial
+                w_j}(f_i(\mathbf{w}) \bigcirc g_i(\mathbf{x})) =
+                0\)</span> where <span class="math inline">\(j \ne
+                i\)</span>, so</p>
+                <p><span class="math display">\[
+                \frac{\partial \mathbf{y}}{\partial \mathbf{w}} = diag
+                \big(\frac{\partial}{\partial w_1}(f_1(w_1) \bigcirc
+                g_1(x_1)), \frac{\partial}{\partial w_2}(f_2(w_2)
+                \bigcirc g_2(x_2)), \cdots, \frac{\partial}{\partial
+                w_n}(f_n(w_n) \bigcirc g_n(x_n)) \big)
+                \]</span></p>
+                <p>With <span class="math inline">\(\mathbf{x}\)</span>
+                we can get the similiar result:</p>
+                <p><span class="math display">\[
+                \frac{\partial \mathbf{y}}{\partial \mathbf{x}} = diag
+                \big(\frac{\partial}{\partial x_1}(f_1(w_1) \bigcirc
+                g_1(x_1)), \frac{\partial}{\partial x_2}(f_2(w_2)
+                \bigcirc g_2(x_2)), \cdots, \frac{\partial}{\partial
+                x_n}(f_n(w_n) \bigcirc g_n(x_n)) \big)
+                \]</span></p>
+                <h3 id="vector-chain-rule">Vector chain rule</h3>
+                <p>With single-variable chain rule:</p>
+                <p><span class="math display">\[\frac{d}{dx} f(g(x)) =
+                \frac{df}{dg} \frac{dg}{dx}\]</span></p>
+                <p>With multiple-variable chain rule:</p>
+                <p><span class="math display">\[
+                \frac{\partial}{\partial x}
+                {\mathbf{f}(\mathbf{g}(\mathbf{x}))} =
+                \begin{bmatrix}
+                \frac{\partial f_1}{\partial g_1} &amp; \frac{\partial
+                f_1}{\partial g_2} &amp; \cdots &amp; \frac{\partial
+                f_1}{\partial g_k} \\
+                \frac{\partial f_2}{\partial g_1} &amp; \frac{\partial
+                f_2}{\partial g_2} &amp; \cdots &amp; \frac{\partial
+                f_2}{\partial g_k} \\
+                \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+                \frac{\partial f_m}{\partial g_1} &amp; \frac{\partial
+                f_m}{\partial g_2} &amp; \cdots &amp; \frac{\partial
+                f_m}{\partial g_k} \\
+                \end{bmatrix}
+                \begin{bmatrix}
+                \frac{\partial g_1}{\partial x_1} &amp; \frac{\partial
+                g_1}{\partial x_2} &amp; \cdots &amp; \frac{\partial
+                g_1}{\partial x_n} \\
+                \frac{\partial g_2}{\partial x_1} &amp; \frac{\partial
+                g_2}{\partial x_2} &amp; \cdots &amp; \frac{\partial
+                g_2}{\partial x_n} \\
+                \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+                \frac{\partial g_k}{\partial x_1} &amp; \frac{\partial
+                g_k}{\partial x_2} &amp; \cdots &amp; \frac{\partial
+                g_k}{\partial x_n} \\
+                \end{bmatrix}
+                \]</span></p>
+                <p>where <span class="math inline">\(m = |f|\)</span>,
+                <span class="math inline">\(n = |x|\)</span> and <span
+                class="math inline">\(k = |g|\)</span>. The resulting
+                Jacobian is <span class="math inline">\(m \times
+                n\)</span> (an <span class="math inline">\(m \times
+                k\)</span> matrix multiplied by <span
+                class="math inline">\(k \times n\)</span> matrix)</p>
+                <p>Sometimes element-wise operations on vectors <span
+                class="math inline">\(\mathbf{w}\)</span> and <span
+                class="math inline">\(\mathbf{x}\)</span> yield diagonal
+                matrices, and the previous equation can be simplified
+                to:</p>
+                <p><span class="math display">\[\frac{\partial
+                \mathbf{f}}{\partial \mathbf{g}} = diag( \frac{\partial
+                f_i}{\partial g_i} )\]</span></p>
+                <p><span class="math display">\[\frac{\partial
+                \mathbf{g}}{\partial \mathbf{x}} = diag( \frac{\partial
+                g_i}{\partial x_i} )\]</span></p>
+                <p><span class="math display">\[\frac{\partial}{\partial
+                x} {\mathbf{f}(\mathbf{g}(\mathbf{x}))} = diag(
+                \frac{\partial f_i}{\partial g_i} \frac{\partial
+                g_i}{\partial x_i} )\]</span></p>
+                <h3 id="matrix-extended-operation">Matrix Extended
+                Operation</h3>
+                <ul>
+                <li>Dot Product: <span class="math inline">\(A \cdot
+                B\)</span>, matrix multiplication</li>
+                <li>Kronecker Product: <span class="math inline">\(A
+                \otimes B\)</span>, elemetn wise multiplication</li>
+                </ul>
+                <h2 id="the-gradient-of-neuron-activation">The gradient
+                of neuron activation</h2>
+                <p><span class="math inline">\(X = [x_1, x_2, \cdots,
+                x_{N}]^{T}\)</span></p>
+                <p><span class="math inline">\(y = [target(x_1),
+                target(x_2), \cdots, target(x_N)]^T\)</span></p>
+                <p>where <span class="math inline">\(y_i\)</span> is a
+                scalar, then the cost function becomes</p>
+                <p><span class="math inline">\(C(w, b, X, y) =
+                \frac{1}{N} \sum_{i=1}^{N} (y_i - \sigma(x_i))^2 =
+                \frac{1}{N} \sum_{i=1}^{N} (y_i - max(0, w \cdot x_i +
+                b))^2\)</span></p>
+              </div>
+    </div>
+  </div>
+</body>
+
+</html>

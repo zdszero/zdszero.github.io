@@ -21,28 +21,48 @@
 
 ### DP
 
-Data Parallelism is most common due to its simplicity:
-
-the dataset is split into several shards, each shard is allocated to a device.
-
-![Data Parallism](../../../docs/WikiImage/image_2025-01-07-16-24-59.png){ width=500px }
+直接部署多份服务，将数据拆分到不同的服务上。
 
 ### TP
 
-Tensor Parallelism: 
+将矩阵运算拆分到多个 GPU 上，运算完之后进行 AllGather 或者 AllReduce 的操作。AllGather 适用于 Column-wise sharding，AllReduce 适用于 Row-wise sharding。
 
-![Column-wise parallelism](../../../docs/WikiImage/image_2025-01-07-16-05-38.png){ width=500px }
+对于矩阵乘法 $A \times B$
 
-![Row-wise parallelism](../../../docs/WikiImage/image_2025-01-07-16-07-53.png){ width=500px }
+#### 列拆分
 
-![Combined parallelism](../../../docs/WikiImage/image_2025-01-07-16-08-45.png){ width=500px }
+Column-wise sharding 将 $B$ 拆分为 $B_{0}, B_{1}$
 
-Collective communications involve network-intensive operations are required after the operation.
+![Column-wise sharding](../../../docs/WikiImage/image_2025-02-07-16-02-02.png){ width=500px }
 
-Operations
+对结果进行 AllGather 操作，every shard calculates the partial target martix.
 
-- AG (AllGather): column-wise
-- AR (AllReduce): row-wise
+#### 行拆分
+
+![Row-wise sharding](../../../docs/WikiImage/image_2025-02-07-16-02-31.png){ width=500px }
+
+对结果进行 AllReduce 操作，every shard calculates the partial result of the whole target matrix.
+
+```python
+import torch
+ 
+# Non-split matrices used for verification.
+A = torch.rand(16, 32)
+B = torch.rand(32, 8)
+C = A @ B
+ 
+# Split A along columns, B along rows, then:
+#
+# GPU 1: A1, B1
+# GPU 2: A2, B2
+A1, A2 = A.chunk(2, dim=1)
+B1, B2 = B.chunk(2, dim=0)
+C1 = A1 @ B1
+C2 = A2 @ B2
+ 
+# Verify that the result is the same after an element-wise sum.
+torch.testing.assert_close(C, C1 + C2)
+```
 
 ### PP
 
@@ -58,26 +78,8 @@ Device with PP operates on __mirco-batch__ split by stages.
 
 Expert Parallism
 
-## Batching
-
-![Batching](../../../docs/WikiImage/image_2024-12-25-17-30-18.png){ width=500px }
-
-- __Continuous Batching__: continuous and dynamic gpu memory
-- __Static Batching__: create static gpu memory for each request
-
-batch size: how many user inputs are processed concurrently in the LLM. 
-
-### metrics
-
-![Key Metrics for evaluating the performance of LLMs](../../../docs/WikiImage/image_2024-12-25-16-56-19.png){ width=500px }
-
-- ttft (Time to First Token)
-- tpot (Time Per Token Output)
-- e2el (End to End Latency)
-- MBU (Model Bandwidth Utilization):
-    - (achieved memory bandwidth) / (peak memory bandwidth)
-    - achieved memory bandwidth = ((total model parameter size + KV cache size) / TPOT)
-
 ------
 
 [Paradigm of Parallism](https://colossalai.org/docs/concepts/paradigms_of_parallelism/)
+
+[Demystifying Tensor Parallelism](https://robotchinwag.com/posts/demystifying-tensor-parallelism/)

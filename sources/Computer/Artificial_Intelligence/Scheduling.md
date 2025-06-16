@@ -1,5 +1,15 @@
 % Scheduling
 
+### Batching
+
+![Batching](../../../docs/WikiImage/image_2024-12-25-17-30-18.png){ width=500px }
+
+- __Continuous Batching__: continuous and dynamic gpu memory
+- __Static Batching__: create static gpu memory for each request
+
+batch size: how many user inputs are processed concurrently in the LLM. 
+
+
 ### Key Design
 
 - Request level scheduling → Iteration level scheduling
