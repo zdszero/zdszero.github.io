@@ -6,8 +6,8 @@
 
 [Economy](./Economy/index.md)
 
-[History](./History/index.md)
-
 [Notes](./notes/index.md)
 
 [Books](./Books/index.md)
+
+[Life](./Life/index.md)

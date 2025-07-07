@@ -2,14 +2,16 @@
 
 [basis](./basis.md)
 
-[china econonmy](./china_econonmy.md)
-
 [global economy](./global_economy.md)
 
-[china class](./china_class.md)
+[中国经济](./china_econonmy.md)
 
-[complex system](./complex_system.md)
+[复杂系统](./complex_system.md)
 
-[people](./people.md)
+[阶级](./people.md)
 
-[God](./god.md)
+[中国政治](./china_politics.md)
+
+[中国历史](./china_real_history.md)
+
+[上帝](./god.md)
