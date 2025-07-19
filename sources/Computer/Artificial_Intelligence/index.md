@@ -20,6 +20,8 @@
     - [Normalization](./Normalization.md)
     - [RoPE](./RoPE.md)
     - [MoE](./MoE.md)
+    - [MLP](./MLP.md)
+    - [Residual](./Residual.md)
 - INFERENCE
     - [Parallelism](./Parallelism.md)
     - [Quantization](./Quantization.md)

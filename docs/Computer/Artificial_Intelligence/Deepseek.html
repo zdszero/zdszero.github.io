@@ -94,6 +94,63 @@
                 W^{UK} \boldsymbol{c}_{t}^{KV}\]</span></p>
                 <p><span class="math display">\[\boldsymbol{v}^{C} =
                 W^{UV} \boldsymbol{c}_{t}^{KV}\]</span></p>
+                <p>Explanation:</p>
+                <ul>
+                <li><span class="math inline">\(c_{t}^{KV}\)</span> is
+                the latent vector</li>
+                <li><span class="math inline">\(W^{DKV}\)</span> is the
+                compressing matrix that maps <span
+                class="math inline">\(h_t\)</span> dimension from <span
+                class="math inline">\((h_n \cdot d_n)\)</span> into
+                <span class="math inline">\(d_c\)</span></li>
+                <li><span class="math inline">\(W^{UK}\)</span> and
+                <span class="math inline">\(W^{UV}\)</span> are
+                up-projection matrices that map the latent vector back
+                to the high-dimensional space</li>
+                </ul>
+                <p><strong>With RoPE</strong></p>
+                <p><span class="math display">\[\boldsymbol{c}_{t}^{Q} =
+                W^{DQ} \boldsymbol{h}_t\]</span></p>
+                <p><span
+                class="math display">\[[\boldsymbol{q}_{t,1}^{C};
+                \boldsymbol{q}_{t,2}^{C}; \cdots;
+                \boldsymbol{q}_{t,n_h}^{C}] = \boldsymbol{q}_{t}^{C} =
+                W^{UQ} \boldsymbol{c}_{t}^{Q}\]</span></p>
+                <p><span
+                class="math display">\[[\boldsymbol{q}_{t,1}^{R};
+                \boldsymbol{q}_{t,2}^{R}; \cdots;
+                \boldsymbol{q}_{t,n_h}^{R}] = \boldsymbol{q}_{t}^{R} =
+                \text{RoPE}(W^{QR} \boldsymbol{c}_{t}^{Q})\]</span></p>
+                <p><span class="math display">\[\boldsymbol{q}_{t,i} =
+                [\boldsymbol{q}_{t,i}^{C};
+                \boldsymbol{q}_{t,i}^{R}]\]</span></p>
+                <hr />
+                <p><span class="math display">\[\boldsymbol{c}_{t}^{KV}
+                = W^{DKV} \boldsymbol{h}_t\]</span></p>
+                <p><span
+                class="math display">\[[\boldsymbol{k}_{t,1}^{C};
+                \boldsymbol{k}_{t,2}^{C}; \cdots;
+                \boldsymbol{k}_{t,n_h}^{C}] = \boldsymbol{k}_{t}^{C} =
+                W^{UK} \boldsymbol{c}_{t}^{KV}\]</span></p>
+                <p><span class="math display">\[\boldsymbol{k}_{t}^{R} =
+                \text{RoPE}(W^{KR} \boldsymbol{h}_{t})\]</span></p>
+                <p><span class="math display">\[\boldsymbol{k}_{t,i} =
+                [\boldsymbol{k}_{t,i}^{C};
+                \boldsymbol{k}_{t}^{R}]\]</span></p>
+                <hr />
+                <p><span
+                class="math display">\[[\boldsymbol{v}_{t,1}^{C};
+                \boldsymbol{v}_{t,2}^{C}; \cdots;
+                \boldsymbol{v}_{t,n_h}^{C}] = \boldsymbol{v}_{t}^{C} =
+                W^{UV} \boldsymbol{c}_{t}^{KV}\]</span></p>
+                <p><span class="math display">\[\boldsymbol{o}_{t,i} =
+                \sum_{j=1}^{t}
+                \text{Softmax}_{j}(\frac{\boldsymbol{q}_{t,i}^{T}
+                \boldsymbol{k}_{j,i}}{\sqrt{d_h + d_h^{R}}}
+                \boldsymbol{v}_{j,i}^{C})\]</span></p>
+                <p><span class="math display">\[\boldsymbol{u}_{t} =
+                W^{O}[\boldsymbol{o}_{t,1}; \boldsymbol{o}_{t,2};
+                \cdots; \boldsymbol{o}_{t,n_h}]\]</span></p>
                 <h3 id="moe">MOE</h3>
                 <figure>
                 <img

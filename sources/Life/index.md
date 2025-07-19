@@ -7,3 +7,7 @@
 [Evolution](./Evolution.md)
 
 [Inner](./Inner.md)
+
+[Humanity](./Humanity.md)
+
+[Internet](./Internet.md)

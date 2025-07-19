@@ -1,0 +1,136 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="../../WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="../../WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    Residual
+  </title>
+    <link rel="stylesheet" href="../../WikiTheme/theme/bootstrap.css"  />
+        <script
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+        type="text/javascript"></script>
+      </head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">Residual</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="container">
+    <div class="row">
+            <div id="TOC" class="span3">
+        <div class="well toc">
+          <ul>
+          <li><a href="#什么是-residual" id="toc-什么是-residual">什么是
+          Residual</a></li>
+          </ul>
+        </div>
+      </div>
+            <div class="span9">
+                <h3 id="什么是-residual">什么是 Residual</h3>
+                <p><span class="math display">\[
+                \mathbf{h}_t^l =
+                \underbrace{\mathbf{u}_t^l}_{\text{input}} +
+                \underbrace{\mathrm{FFN}(\mathrm{LayerNorm}(\mathbf{u}_t^l))}_{\text{残差（residual）路径}}
+                \]</span></p>
+                <ul>
+                <li><strong><span
+                class="math inline">\(\mathbf{u}_t^l\)</span></strong>
+                是 residual 的主路径（skip connection）；</li>
+                <li><strong><span
+                class="math inline">\(\mathrm{FFN}(\mathrm{LayerNorm}(\cdot))\)</span></strong>
+                是变换路径（learned delta）；</li>
+                <li><strong>整个式子形成了 residual
+                connection（残差连接）</strong>。</li>
+                </ul>
+                <hr />
+                <p>✅ 重点澄清</p>
+                <table>
+                <colgroup>
+                <col style="width: 61%" />
+                <col style="width: 11%" />
+                <col style="width: 26%" />
+                </colgroup>
+                <thead>
+                <tr>
+                <th>项目</th>
+                <th>是否算 residual？</th>
+                <th>说明</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                <td><span
+                class="math inline">\(\mathrm{LayerNorm}(\mathbf{u}_t^l)\)</span></td>
+                <td>❌</td>
+                <td>只是做标准化，属于变换的一部分</td>
+                </tr>
+                <tr>
+                <td><span
+                class="math inline">\(\mathrm{FFN}(\cdot)\)</span></td>
+                <td>❌</td>
+                <td>是学习的变换部分</td>
+                </tr>
+                <tr>
+                <td><span class="math inline">\(\mathbf{u}_t^l +
+                \mathrm{FFN}(\mathrm{LayerNorm}(\mathbf{u}_t^l))\)</span></td>
+                <td>✅</td>
+                <td>整体构成 residual block</td>
+                </tr>
+                <tr>
+                <td>“加号右边”整个部分</td>
+                <td>✅（广义上）</td>
+                <td>它是 residual block 中的“残差项”或变化量</td>
+                </tr>
+                </tbody>
+                </table>
+                <hr />
+                <p>📐 <strong>残差连接的标准定义是：</strong></p>
+                <blockquote>
+                <p>给定一个输入 <span
+                class="math inline">\(\mathbf{x}\)</span>，网络只学习一个变换
+                <span
+                class="math inline">\(F(\cdot)\)</span>，最终输出为：</p>
+                <p><span class="math display">\[
+                \text{output} = \mathbf{x} + F(\mathbf{x})
+                \]</span></p>
+                <p>这个 <span class="math inline">\(F(\cdot)\)</span>
+                就叫做 <strong>残差函数（residual
+                function）</strong></p>
+                </blockquote>
+                <p>在你的例子中，残差函数就是：</p>
+                <p><span class="math display">\[
+                F(\mathbf{u}_t^l) =
+                \mathrm{FFN}(\mathrm{LayerNorm}(\mathbf{u}_t^l))
+                \]</span></p>
+              </div>
+    </div>
+  </div>
+</body>
+
+</html>

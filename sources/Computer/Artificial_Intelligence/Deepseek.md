@@ -40,6 +40,40 @@ $$\boldsymbol{k}^{C} = W^{UK} \boldsymbol{c}_{t}^{KV}$$
 
 $$\boldsymbol{v}^{C} = W^{UV} \boldsymbol{c}_{t}^{KV}$$
 
+Explanation:
+
+- $c_{t}^{KV}$ is the latent vector
+- $W^{DKV}$ is the compressing matrix that maps $h_t$ dimension from $(h_n \cdot d_n)$ into $d_c$
+- $W^{UK}$ and $W^{UV}$ are up-projection matrices that map the latent vector back to the high-dimensional space
+
+__With RoPE__
+
+$$\boldsymbol{c}_{t}^{Q} = W^{DQ} \boldsymbol{h}_t$$
+
+$$[\boldsymbol{q}_{t,1}^{C}; \boldsymbol{q}_{t,2}^{C}; \cdots; \boldsymbol{q}_{t,n_h}^{C}] = \boldsymbol{q}_{t}^{C} = W^{UQ} \boldsymbol{c}_{t}^{Q}$$
+
+$$[\boldsymbol{q}_{t,1}^{R}; \boldsymbol{q}_{t,2}^{R}; \cdots; \boldsymbol{q}_{t,n_h}^{R}] = \boldsymbol{q}_{t}^{R} = \text{RoPE}(W^{QR} \boldsymbol{c}_{t}^{Q})$$
+
+$$\boldsymbol{q}_{t,i} = [\boldsymbol{q}_{t,i}^{C}; \boldsymbol{q}_{t,i}^{R}]$$
+
+---
+
+$$\boldsymbol{c}_{t}^{KV} = W^{DKV} \boldsymbol{h}_t$$
+
+$$[\boldsymbol{k}_{t,1}^{C}; \boldsymbol{k}_{t,2}^{C}; \cdots; \boldsymbol{k}_{t,n_h}^{C}] = \boldsymbol{k}_{t}^{C} = W^{UK} \boldsymbol{c}_{t}^{KV}$$
+
+$$\boldsymbol{k}_{t}^{R} = \text{RoPE}(W^{KR} \boldsymbol{h}_{t})$$
+
+$$\boldsymbol{k}_{t,i} = [\boldsymbol{k}_{t,i}^{C}; \boldsymbol{k}_{t}^{R}]$$
+
+---
+
+$$[\boldsymbol{v}_{t,1}^{C}; \boldsymbol{v}_{t,2}^{C}; \cdots; \boldsymbol{v}_{t,n_h}^{C}] = \boldsymbol{v}_{t}^{C} = W^{UV} \boldsymbol{c}_{t}^{KV}$$
+
+$$\boldsymbol{o}_{t,i} = \sum_{j=1}^{t} \text{Softmax}_{j}(\frac{\boldsymbol{q}_{t,i}^{T} \boldsymbol{k}_{j,i}}{\sqrt{d_h + d_h^{R}}} \boldsymbol{v}_{j,i}^{C})$$
+
+$$\boldsymbol{u}_{t} = W^{O}[\boldsymbol{o}_{t,1}; \boldsymbol{o}_{t,2}; \cdots; \boldsymbol{o}_{t,n_h}]$$
+
 ### MOE
 
 ![layers](../../../docs/WikiImage/image_2025-06-10-15-55-15.png){ width=500px }
