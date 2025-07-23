@@ -7,15 +7,15 @@
 The computing process:
 
 $$\boldsymbol{q}_t = W^{Q} \cdot \boldsymbol{h}_t$$
-                                                 
+
 $$\boldsymbol{k}_t = W^{K} \cdot \boldsymbol{h}_t$$
-                                                 
+
 $$\boldsymbol{v}_t = W^{V} \cdot \boldsymbol{h}_t$$
-                  
+
 $$\boldsymbol{q}_t = [\boldsymbol{q}_{t,1}, \boldsymbol{q}_{t,2}, \cdots, \boldsymbol{q}_{t,n_h}]$$
-                                                                                                
+
 $$\boldsymbol{k}_t = [\boldsymbol{k}_{t,1}, \boldsymbol{k}_{t,2}, \cdots, \boldsymbol{k}_{t,n_h}]$$
-                                                                                                
+
 $$\boldsymbol{v}_t = [\boldsymbol{v}_{t,1}, \boldsymbol{v}_{t,2}, \cdots, \boldsymbol{v}_{t,n_h}]$$
 
 $$\boldsymbol{o}_{t, i} = \sum_{j=1}^{t} \text{Softmax} \frac{\boldsymbol{q}_{t,i}^T \cdot \boldsymbol{k}_{j,i}}{\sqrt{d_h}} \boldsymbol{v}_{j,i}$$

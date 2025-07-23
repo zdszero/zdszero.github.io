@@ -111,15 +111,152 @@
             <div id="TOC" class="span3">
         <div class="well toc">
           <ul>
-          <li><a href="#attention" id="toc-attention">Attention</a></li>
-          <li><a href="#multihead-attention"
-          id="toc-multihead-attention">MultiHead Attention</a></li>
-          <li><a href="#intuition" id="toc-intuition">Intuition</a></li>
+          <li><a href="#mha" id="toc-mha">MHA</a></li>
+          <li><a href="#mqa" id="toc-mqa">MQA</a></li>
+          <li><a href="#gqa" id="toc-gqa">GQA</a></li>
+          <li><a href="#code" id="toc-code">Code</a></li>
           </ul>
         </div>
       </div>
             <div class="span9">
-                <h3 id="attention">Attention</h3>
+                <h3 id="mha">MHA</h3>
+                <p>输入为矩阵 <span class="math inline">\(X \in
+                \mathbb{R}^{L \times d_{\text{model}}}\)</span>，长度为
+                <span class="math inline">\(L\)</span>，模型维度为 <span
+                class="math inline">\(d_{\text{model}}\)</span>。</p>
+                <p>我们有：</p>
+                <ul>
+                <li><span class="math inline">\(h\)</span>：attention
+                head 的数量</li>
+                <li><span class="math inline">\(d_k = d_v =
+                d_{\text{model}} / h\)</span></li>
+                </ul>
+                <p>每个 head 有独立的投影：</p>
+                <p><span class="math display">\[ Q_i = X W_i^Q,\quad K_i
+                = X W_i^K,\quad V_i = X W_i^V,\quad i = 1, \dots, h
+                \]</span></p>
+                <p>每个 head 的 attention：</p>
+                <p><span class="math display">\[ \text{head}_i =
+                \text{softmax}\left( \frac{Q_i K_i^\top}{\sqrt{d_k}}
+                \right) V_i \]</span></p>
+                <p>最后拼接并映射输出：</p>
+                <p><span class="math display">\[ \text{MHA}(X) =
+                \text{Concat}(\text{head}_1, \dots, \text{head}_h) W^O
+                \]</span></p>
+                <h3 id="mqa">MQA</h3>
+                <p>MQA：Multi-Query Attention（多查询注意力）</p>
+                <figure>
+                <img
+                src="../.././WikiImage/image_2025-07-22-17-17-36.png"
+                width="500" alt="MQA" />
+                <figcaption aria-hidden="true">MQA</figcaption>
+                </figure>
+                <p><strong>核心区别</strong>：<strong>所有 head
+                共享同一个 K 和 V</strong>。</p>
+                <p>我们仍然有：</p>
+                <ul>
+                <li><span class="math inline">\(Q_i = X W_i^Q \quad (i =
+                1, \dots, h)\)</span></li>
+                <li>但所有 head 使用同一组： <span
+                class="math display">\[ K = X W^K,\quad V = X W^V
+                \]</span></li>
+                </ul>
+                <p>那么每个 head 的 attention 变成：</p>
+                <p><span class="math display">\[ \text{head}_i =
+                \text{softmax}\left( \frac{Q_i K^\top}{\sqrt{d_k}}
+                \right) V \]</span></p>
+                <p>最后再拼接：</p>
+                <p><span class="math display">\[ \text{MQA}(X) =
+                \text{Concat}(\text{head}_1, \dots, \text{head}_h) W^O
+                \]</span></p>
+                <h3 id="gqa">GQA</h3>
+                <p>GQA：Grouped Query Attention（分组查询注意力）</p>
+                <p>GQA 就是对 hidden dimension 进行分组，组内使用相同的
+                K/V，相当于采取了 MHA 和 MQA
+                的一个这种方案，对于每一组，实际上是使用 MQA。</p>
+                <figure>
+                <img
+                src="../.././WikiImage/image_2025-07-22-17-26-46.png"
+                width="500" alt="GQA" />
+                <figcaption aria-hidden="true">GQA</figcaption>
+                </figure>
+                <p>假设：</p>
+                <ul>
+                <li><span class="math inline">\(h\)</span>：总 head
+                数</li>
+                <li><span class="math inline">\(g\)</span>：K/V
+                分组数（每组共享一个 K/V）</li>
+                <li><span class="math inline">\(h_g = h /
+                g\)</span>：每组中的 head 数</li>
+                </ul>
+                <p>我们有：</p>
+                <ul>
+                <li>对每组 <span class="math inline">\(j = 1, \dots,
+                g\)</span>，生成： <span class="math display">\[ K_j = X
+                W_j^K,\quad V_j = X W_j^V \]</span></li>
+                <li>每个 head <span class="math inline">\(i\)</span>
+                属于某组 <span class="math inline">\(j = \lfloor i / h_g
+                \rfloor\)</span>，该 head 用： <span
+                class="math display">\[ Q_i = X W_i^Q,\quad K_j,\quad
+                V_j \]</span></li>
+                </ul>
+                <p>对应 attention 计算为：</p>
+                <p><span class="math display">\[ \text{head}_i =
+                \text{softmax}\left( \frac{Q_i K_j^\top}{\sqrt{d_k}}
+                \right) V_j \]</span></p>
+                <p>最后一样拼接：</p>
+                <p><span class="math display">\[ \text{GQA}(X) =
+                \text{Concat}(\text{head}_1, \dots, \text{head}_h) W^O
+                \]</span></p>
+                <hr />
+                <figure>
+                <img
+                src="../.././WikiImage/image_2025-07-22-17-29-40.png"
+                width="500" alt="MHA, MQA, GQA" />
+                <figcaption aria-hidden="true">MHA, MQA,
+                GQA</figcaption>
+                </figure>
+                <table>
+                <colgroup>
+                <col style="width: 6%" />
+                <col style="width: 10%" />
+                <col style="width: 48%" />
+                <col style="width: 36%" />
+                </colgroup>
+                <thead>
+                <tr>
+                <th></th>
+                <th><span class="math inline">\(Q_i\)</span></th>
+                <th><span class="math inline">\(K_i, V_i\)</span></th>
+                <th>说明</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                <td>MHA</td>
+                <td>独立</td>
+                <td>独立</td>
+                <td>每个 head 有自己的一套 K/V</td>
+                </tr>
+                <tr>
+                <td>MQA</td>
+                <td>独立</td>
+                <td>所有 head 共用一个 <span class="math inline">\(K,
+                V\)</span></td>
+                <td>显存最省，但表达力略差</td>
+                </tr>
+                <tr>
+                <td>GQA</td>
+                <td>独立</td>
+                <td>每组共享 <span class="math inline">\(K_j,
+                V_j\)</span>（共 <span class="math inline">\(g\)</span>
+                组）</td>
+                <td>折中方案，性能和表达力均衡</td>
+                </tr>
+                </tbody>
+                </table>
+                <h3 id="code">Code</h3>
+                <h4 id="attention">Attention</h4>
                 <p><span class="math inline">\(Q, K, V = XW\)</span></p>
                 <p><span class="math inline">\(Attention(Q, K, V) =
                 \text{Softmax}(\frac{Q K^{T}}{\sqrt{d_k}})
@@ -156,7 +293,7 @@
 <span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>        attention <span class="op">=</span> torch.softmax(scaled_dot_prod, dim<span class="op">=-</span><span class="dv">1</span>)</span>
 <span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> torch.einsum(<span class="st">&#39;b i j , b j d -&gt; b i d&#39;</span>, attention, v)</span></code></pre></div>
-                <h3 id="multihead-attention">MultiHead Attention</h3>
+                <h4 id="mha-1">MHA</h4>
                 <figure>
                 <img src="/WikiImage/image_2024-11-04-19-49-23.png"
                 width="600" alt="MultiHead Attention" />
@@ -211,7 +348,7 @@
 <span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>        out <span class="op">=</span> torch.einsum(<span class="st">&#39;b h i j , b h j d -&gt; b h i d&#39;</span>, attention, v)</span>
 <span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>        out <span class="op">=</span> rearrange(out, <span class="st">&quot;b h t d -&gt; b t (h d)&quot;</span>)</span>
 <span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.W_0(out)</span></code></pre></div>
-                <h3 id="intuition">Intuition</h3>
+                <h4 id="intuition">Intuition</h4>
                 <figure>
                 <img
                 src="../.././WikiImage/image_2025-02-08-17-06-30.png"

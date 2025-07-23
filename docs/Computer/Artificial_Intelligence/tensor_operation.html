@@ -1,0 +1,156 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="../../WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="../../WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    Tensor Operation
+  </title>
+    <link rel="stylesheet" href="../../WikiTheme/theme/bootstrap.css"  />
+        </head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">Tensor Operation</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="container">
+    <div class="row">
+            <div id="TOC" class="span3">
+        <div class="well toc">
+          <ul>
+          <li><a href="#einsum" id="toc-einsum">einsum</a></li>
+          <li><a href="#tensor-operation"
+          id="toc-tensor-operation">tensor operation</a></li>
+          <li><a href="#special-syntax" id="toc-special-syntax">special
+          syntax</a></li>
+          </ul>
+        </div>
+      </div>
+            <div class="span9">
+                <table>
+                <thead>
+                <tr>
+                <th>函数</th>
+                <th>用途</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                <td><code>torch.tensor()</code></td>
+                <td>从 Python 数据构建张量</td>
+                </tr>
+                <tr>
+                <td><code>torch.arange()</code></td>
+                <td>类似 <code>range()</code>，连续整数</td>
+                </tr>
+                <tr>
+                <td><code>torch.linspace()</code></td>
+                <td>从 a 到 b 等间隔划分</td>
+                </tr>
+                <tr>
+                <td><code>x.view()</code> / <code>.reshape()</code></td>
+                <td>改变形状</td>
+                </tr>
+                <tr>
+                <td><code>x.permute()</code></td>
+                <td>维度换位</td>
+                </tr>
+                <tr>
+                <td><code>x.unsqueeze()</code> /
+                <code>.squeeze()</code></td>
+                <td>增减维</td>
+                </tr>
+                <tr>
+                <td><code>x.transpose()</code></td>
+                <td>转置两个维度</td>
+                </tr>
+                <tr>
+                <td><code>torch.cat()</code> /
+                <code>torch.stack()</code></td>
+                <td>拼接张量</td>
+                </tr>
+                <tr>
+                <td><code>x.expand()</code> /
+                <code>x.repeat()</code></td>
+                <td>广播 vs 复制</td>
+                </tr>
+                <tr>
+                <td><code>torch.where()</code></td>
+                <td>条件选择</td>
+                </tr>
+                <tr>
+                <td><code>x.mean() / x.sum()</code></td>
+                <td>求均值 / 和</td>
+                </tr>
+                </tbody>
+                </table>
+                <h3 id="einsum">einsum</h3>
+                <ul>
+                <li>矩阵乘法：<code>torch.einsum("ij,jk-&gt;ik", A, B)</code></li>
+                <li>向量内积：<code>torch.einsum("i,i-&gt;", a, b)</code></li>
+                <li>Batch
+                矩阵乘法：<code>torch.einsum(bij,bjk-&gt;bik, A, B)</code></li>
+                </ul>
+                <h3 id="tensor-operation">tensor operation</h3>
+                <ul>
+                <li>reinterpret dimension
+                <ul>
+                <li><code>reshape(dim1, dim2, ...)</code></li>
+                <li><code>view(dim1, dim2, ...)</code></li>
+                </ul></li>
+                <li>shift dimensions
+                <ul>
+                <li><code>permute(dim1, dim2, ...)</code>：任意维度重排</li>
+                <li><code>transpose(dim1, dim2)</code>：交换两个维度</li>
+                </ul></li>
+                <li>split dimension
+                <ul>
+                <li><code>split([split1, split2, ...], dim)</code></li>
+                </ul></li>
+                <li>add/remove dimension
+                <ul>
+                <li><code>unsqueeze(dim)</code>：在指定维度插入一个维度</li>
+                <li><code>squeeze(dim)</code>：删除某个维度，只有在 dim
+                对应的维度大小为 1 时才会生效</li>
+                </ul></li>
+                </ul>
+                <h3 id="special-syntax">special syntax</h3>
+                <ul>
+                <li><code>-1</code>: 自动推导</li>
+                <li><code>:</code>：当前维度</li>
+                <li><code>...</code>：表示所有其他维度</li>
+                <li><code>None</code>：新增一个维度，类似于
+                <code>squeeze()</code></li>
+                <li><code>[[index1], [index2]]</code>：高级索引</li>
+                </ul>
+              </div>
+    </div>
+  </div>
+</body>
+
+</html>

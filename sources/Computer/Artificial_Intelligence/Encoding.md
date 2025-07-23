@@ -1,4 +1,6 @@
-% RoPE
+% Encoding
+
+### Absolute
 
 Before introducing RoPE, let’s recap the basics of the attention mechanism. Attention focuses on pair-wise relationships: there’s a query vector q from one token and a key vector k from another. __We obtain the attention score by taking the inner product of q and k, and this inner product is key to how position embeddings function.__
 
@@ -7,6 +9,8 @@ For example, to get the attention score for the pair (1, 3), we get the query ve
 The authors then reflect on this formulation and realize that in this setup, __the relative positional information is encoded before the inner product — meaning it’s inherently tied to the token embedding.__
 
 They ask themselves: “Is there another way to encode relative positional information only when we need the attention score — i.e., at the moment we perform the q,k inner product?” Or equivalently, the __q,k__ inner product is __equivalent to another function g that takes only the token embeddings and their positions as input?__
+
+### Rope
 
 In simple terms, this means that after the transformation, we can either rotate first and then perform the inner product, or we can perform the inner product first and then rotate, and take the real part. In the second approach, we only need (m–n) for the rotation, which signifies that this is a type of relative position embedding.
 

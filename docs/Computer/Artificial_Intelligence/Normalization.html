@@ -48,9 +48,11 @@
           <ul>
           <li><a href="#standardization"
           id="toc-standardization">Standardization</a></li>
-          <li><a href="#min-max-normalization"
-          id="toc-min-max-normalization">min-max normalization</a></li>
-          <li><a href="#why" id="toc-why">Why</a></li>
+          <li><a href="#min-max" id="toc-min-max">Min Max</a></li>
+          <li><a href="#layer-vs-rms" id="toc-layer-vs-rms">Layer vs
+          RMS</a></li>
+          <li><a href="#pre-vs-post" id="toc-pre-vs-post">Pre vs
+          Post</a></li>
           </ul>
         </div>
       </div>
@@ -68,10 +70,8 @@
                 and then dividing by the standard deviation. This
                 transformation results in a new column where the mean is
                 zero and the standard deviation is one.</p>
-                <h3 id="min-max-normalization">min-max
-                normalization</h3>
+                <h3 id="min-max">Min Max</h3>
                 <p>data is scaled to fit within a given range</p>
-                <h3 id="why">Why</h3>
                 <p><strong>Nomalize data to improve training
                 efficiency</strong></p>
                 <p>Imagine you’re training a neural network, and as you
@@ -85,6 +85,76 @@
                 process more stable but also speeds it up, allowing your
                 model to learn more efficiently.</p>
                 <p><strong>Avoid internal covariate shift</strong></p>
+                <h3 id="layer-vs-rms">Layer vs RMS</h3>
+                <p><strong>LayerNorm</strong></p>
+                <p><span class="math display">\[y = \frac{x -
+                \mathbb{E}[x]}{\sqrt{\mathrm{Var}[x]} + \epsilon} \cdot
+                \gamma + \beta\]</span></p>
+                <p><strong>RMSNorm</strong></p>
+                <p><span class="math display">\[y =
+                \frac{x}{\sqrt{\frac{1}{n} \sum_{i=1}^n x_i^2 +
+                \epsilon}} \cdot \gamma\]</span></p>
+                <p>分母是 <span class="math inline">\(x\)</span>
+                各元素的 <strong>均方根（RMS）</strong></p>
+                <p>Modern Explanation - faster and just as good</p>
+                <ul>
+                <li>fewer operations (no mean calculation)</li>
+                <li>fewer parameters (no bias term to store)</li>
+                </ul>
+                <p><strong>More generally</strong>: dropping bias
+                terms</p>
+                <p>original transformer: <span
+                class="math inline">\(\text{FFN}(x) = \text{max}(0, xW_1
+                + b_1)W_2 + b_2\)</span></p>
+                <p>most implementations: <span
+                class="math inline">\(\text{FFN}(x) =
+                \sigma(xW_1)W_2\)</span></p>
+                <h3 id="pre-vs-post">Pre vs Post</h3>
+                <figure>
+                <img
+                src="../.././WikiImage/image_2025-07-21-10-25-55.png"
+                width="500" alt="pre vs post" />
+                <figcaption aria-hidden="true">pre vs post</figcaption>
+                </figure>
+                <p>✅ <strong>Post-LN Transformer</strong></p>
+                <p><span class="math display">\[ x^{\text{post},1}_{l,i}
+                = \text{MultiHeadAtt}(x^{\text{post}}_{l,i},
+                [x^{\text{post}}_{l,1}, \cdots, x^{\text{post}}_{l,n}])
+                \]</span></p>
+                <p><span class="math display">\[ x^{\text{post},2}_{l,i}
+                = x^{\text{post}}_{l,i} + x^{\text{post},1}_{l,i}
+                \]</span></p>
+                <p><span class="math display">\[ x^{\text{post},3}_{l,i}
+                = \text{LayerNorm}(x^{\text{post},2}_{l,i})
+                \]</span></p>
+                <p><span class="math display">\[ x^{\text{post},4}_{l,i}
+                = \text{ReLU}(x^{\text{post},3}_{l,i} W^{1,l} + b^{1,l})
+                W^{2,l} + b^{2,l} \]</span></p>
+                <p><span class="math display">\[ x^{\text{post},5}_{l,i}
+                = x^{\text{post},3}_{l,i} + x^{\text{post},4}_{l,i}
+                \]</span></p>
+                <p><span class="math display">\[ x^{\text{post}}_{l+1,i}
+                = \text{LayerNorm}(x^{\text{post},5}_{l,i})
+                \]</span></p>
+                <hr />
+                <p>✅ <strong>Pre-LN Transformer</strong></p>
+                <p><span class="math display">\[ x^{\text{pre},1}_{l,i}
+                = \text{LayerNorm}(x^{\text{pre}}_{l,i}) \]</span></p>
+                <p><span class="math display">\[ x^{\text{pre},2}_{l,i}
+                = \text{MultiHeadAtt}(x^{\text{pre},1}_{l,i},
+                [x^{\text{pre},1}_{l,1}, \cdots,
+                x^{\text{pre},1}_{l,n}]) \]</span></p>
+                <p><span class="math display">\[ x^{\text{pre},3}_{l,i}
+                = x^{\text{pre}}_{l,i} + x^{\text{pre},2}_{l,i}
+                \]</span></p>
+                <p><span class="math display">\[ x^{\text{pre},4}_{l,i}
+                = \text{LayerNorm}(x^{\text{pre},3}_{l,i}) \]</span></p>
+                <p><span class="math display">\[ x^{\text{pre},5}_{l,i}
+                = \text{ReLU}(x^{\text{pre},4}_{l,i} W^{1,l} + b^{1,l})
+                W^{2,l} + b^{2,l} \]</span></p>
+                <p><span class="math display">\[ x^{\text{pre}}_{l+1,i}
+                = x^{\text{pre},3}_{l,i} + x^{\text{pre},5}_{l,i}
+                \]</span></p>
               </div>
     </div>
   </div>

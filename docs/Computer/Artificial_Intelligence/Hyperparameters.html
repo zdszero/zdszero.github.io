@@ -1,0 +1,249 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="../../WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="../../WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    Hyperparameters
+  </title>
+    <link rel="stylesheet" href="../../WikiTheme/theme/bootstrap.css"  />
+        <script
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+        type="text/javascript"></script>
+      </head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">Hyperparameters</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="container">
+    <div class="row">
+            <div id="TOC" class="span3">
+        <div class="well toc">
+          <ul>
+          <li><a href="#feedforward"
+          id="toc-feedforward">FeedForward</a></li>
+          <li><a href="#aspect-ratio" id="toc-aspect-ratio">Aspect
+          Ratio</a></li>
+          <li><a href="#vocab-size" id="toc-vocab-size">Vocab
+          Size</a></li>
+          </ul>
+        </div>
+      </div>
+            <div class="span9">
+                <p>Transformer hyperparameter questions you might have
+                had in 224n..</p>
+                <ul>
+                <li>How much bigger should the feedforward size be
+                compared to hidden size?</li>
+                <li>How many heads, and should num_heads always divide
+                hidden size?</li>
+                <li>What should my vocab size be?</li>
+                </ul>
+                <p>And other model setting questions</p>
+                <ul>
+                <li>Do people even regularize these huge LMs?</li>
+                <li>How do people scale these models - very deep or very
+                wide?</li>
+                </ul>
+                <h3 id="feedforward">FeedForward</h3>
+                <p><span class="math display">\[FFN(x) = max(0, xW_1 +
+                b_1)W_2 + b_2\]</span></p>
+                <p>There are two dimensions:</p>
+                <ul>
+                <li><span class="math inline">\(d_{ff}\)</span>: feed
+                forward dimension</li>
+                <li><span class="math inline">\(d_{model}\)</span>:
+                model dimension</li>
+                </ul>
+                <p>convention: <span class="math inline">\(d_{ff} = 4
+                d_{ff}\)</span></p>
+                <p><strong>Exception #1 - GLU varient</strong></p>
+                <p>Remember that GLU variants scale down by <span
+                class="math inline">\(2/3^{\text{rd}}\)</span>. This
+                means most GLU variants have <span
+                class="math inline">\(d_{ff} =
+                \frac{8}{3}d_{model}\)</span>. This is mostly what
+                happens. Some notable such examples.</p>
+                <table>
+                <thead>
+                <tr>
+                <th>Model</th>
+                <th><span
+                class="math inline">\(d_{ff}/d_{model}\)</span></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                <td>PaLM</td>
+                <td>4</td>
+                </tr>
+                <tr>
+                <td>Mistral 7B</td>
+                <td>3.5</td>
+                </tr>
+                <tr>
+                <td>LLaMA-2 70B</td>
+                <td>3.5</td>
+                </tr>
+                <tr>
+                <td>LLaMA 70B</td>
+                <td>2.68</td>
+                </tr>
+                <tr>
+                <td>Qwen 14B</td>
+                <td>2.67</td>
+                </tr>
+                <tr>
+                <td>DeepSeek 67B</td>
+                <td>2.68</td>
+                </tr>
+                <tr>
+                <td>Yi 34B</td>
+                <td>2.85</td>
+                </tr>
+                </tbody>
+                </table>
+                <h3 id="aspect-ratio">Aspect Ratio</h3>
+                <p>Should my model be deep or wide? How deep and how
+                wide?</p>
+                <p>Most models are surprisingly consistent on this
+                too.</p>
+                <table>
+                <thead>
+                <tr>
+                <th style="text-align: center;">Model</th>
+                <th style="text-align: center;"><span
+                class="math inline">\(d_{model} /
+                n_{layer}\)</span></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                <td style="text-align: center;">BLOOM</td>
+                <td style="text-align: center;">205</td>
+                </tr>
+                <tr>
+                <td style="text-align: center;">T5 v1.1.</td>
+                <td style="text-align: center;">171</td>
+                </tr>
+                <tr>
+                <td style="text-align: center;">PaLM</td>
+                <td style="text-align: center;">156</td>
+                </tr>
+                <tr>
+                <td
+                style="text-align: center;">GPT3/OPT/Mistral/Qwen</td>
+                <td style="text-align: center;">128</td>
+                </tr>
+                <tr>
+                <td style="text-align: center;">LLama/LLama2</td>
+                <td style="text-align: center;">102</td>
+                </tr>
+                </tbody>
+                </table>
+                <h3 id="vocab-size">Vocab Size</h3>
+                <p>将两张表格转换为 Markdown 格式：</p>
+                <p><strong>Monolingual models - 30-50k
+                vocab</strong></p>
+                <table>
+                <thead>
+                <tr>
+                <th>Model</th>
+                <th>Token count</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                <td>Original transformer</td>
+                <td>37000</td>
+                </tr>
+                <tr>
+                <td>GPT</td>
+                <td>40257</td>
+                </tr>
+                <tr>
+                <td>GPT2/3</td>
+                <td>50257</td>
+                </tr>
+                <tr>
+                <td>T5/T5v1.1</td>
+                <td>32128</td>
+                </tr>
+                <tr>
+                <td>LLaMA</td>
+                <td>32000</td>
+                </tr>
+                </tbody>
+                </table>
+                <p><strong>Multilingual / production systems
+                100-250k</strong></p>
+                <table>
+                <thead>
+                <tr>
+                <th>Model</th>
+                <th>Token count</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                <td>mT5</td>
+                <td>250000</td>
+                </tr>
+                <tr>
+                <td>PaLM</td>
+                <td>256000</td>
+                </tr>
+                <tr>
+                <td>GPT4</td>
+                <td>100276</td>
+                </tr>
+                <tr>
+                <td>Command A</td>
+                <td>255000</td>
+                </tr>
+                <tr>
+                <td>DeepSeek</td>
+                <td>100000</td>
+                </tr>
+                <tr>
+                <td>Qwen 15B</td>
+                <td>152064</td>
+                </tr>
+                <tr>
+                <td>Yi</td>
+                <td>64000</td>
+                </tr>
+                </tbody>
+                </table>
+              </div>
+    </div>
+  </div>
+</body>
+
+</html>

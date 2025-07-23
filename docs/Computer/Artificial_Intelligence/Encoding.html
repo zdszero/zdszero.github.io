@@ -21,7 +21,7 @@
 
   <meta name="generator" content="pandoc" />
       <title>
-    RoPE
+    Encoding
   </title>
     <link rel="stylesheet" href="../../WikiTheme/theme/bootstrap.css"  />
         <script
@@ -33,7 +33,7 @@
     <div class="navbar navbar-static-top">
     <div class="navbar-inner">
       <div class="container">
-        <span class="doc-title">RoPE</span>
+        <span class="doc-title">Encoding</span>
         <ul class="nav pull-right doc-info">
           <p class="navbar-text">
                                                       </p>
@@ -43,7 +43,16 @@
   </div>
     <div class="container">
     <div class="row">
-            <div class="span12">
+            <div id="TOC" class="span3">
+        <div class="well toc">
+          <ul>
+          <li><a href="#absolute" id="toc-absolute">Absolute</a></li>
+          <li><a href="#rope" id="toc-rope">Rope</a></li>
+          </ul>
+        </div>
+      </div>
+            <div class="span9">
+                <h3 id="absolute">Absolute</h3>
                 <p>Before introducing RoPE, let’s recap the basics of
                 the attention mechanism. Attention focuses on pair-wise
                 relationships: there’s a query vector q from one token
@@ -66,6 +75,7 @@
                 <strong>q,k</strong> inner product is <strong>equivalent
                 to another function g that takes only the token
                 embeddings and their positions as input?</strong></p>
+                <h3 id="rope">Rope</h3>
                 <p>In simple terms, this means that after the
                 transformation, we can either rotate first and then
                 perform the inner product, or we can perform the inner
