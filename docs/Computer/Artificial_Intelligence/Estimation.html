@@ -103,9 +103,9 @@
                 <p>Intensity(Accelerator) TPU 达到其峰值 FLOPs/s
                 时的算术强度。对于 TPU v5e MXU，这大约是 240
                 FLOPs/B，因为 TPU 每秒可以执行 1.97e14 FLOPs 并从 HBM
-                加载 8.2e11 字节/秒。这意味着如果一个算法的算术强度低于
-                240
-                FLOPs/字节，它将受限于字节加载，因此我们无法充分利用我们的硬件。</p>
+                加载 8.2e11 字节/秒。</p>
+                <p>如果一个算子的计算强度低于 240
+                FLOPs/B，它将进入访存瓶颈，否则会进入计算瓶颈。</p>
                 <p><strong>Self Dot Product</strong></p>
                 <p>对于两个 vector
                 的内积：<code>x * y: bf16[N] * bf16[N] → bf16[1]</code>，我们需要将
@@ -213,7 +213,8 @@
                 </tr>
                 <tr>
                 <td><span class="math inline">\(D\)</span></td>
-                <td>d_model, embedding dimension, hidden size</td>
+                <td><span class="math inline">\(d_{model}\)</span>,
+                embedding dimension</td>
                 </tr>
                 <tr>
                 <td><span class="math inline">\(F\)</span></td>
@@ -238,6 +239,15 @@
                 </tr>
                 </tbody>
                 </table>
+                <p>需要注意以下几点：</p>
+                <p><strong>embedding size 和 hidden size</strong></p>
+                <p>两者在实践中一般相同，但是却是不同的概念，embedding
+                size 指的是对 token 进行 embed 后的维度。 hidden size
+                指的是 Q/K/V 的维度</p>
+                <p><strong>Q 和 K/V 的维度</strong></p>
+                <p>Q/K/V
+                的维度在实践中一般相同，但是在理论上可以不同，对于多头注意力，q
+                的维度是 NH，k/v 的维度是 KH。</p>
                 <figure>
                 <img
                 src="https://jax-ml.github.io/scaling-book/assets/img/transformer-diagram.png"
@@ -269,8 +279,8 @@
                 <ul>
                 <li><span class="math inline">\(W_{in1},
                 W_{in2}\)</span> 都是从输入维度 <span
-                class="math inline">\(D\)</span> 投影到扩展维度 $F$
-                的两个不同矩阵</li>
+                class="math inline">\(D\)</span> 投影到扩展维度 <span
+                class="math inline">\(F\)</span> 的两个不同矩阵</li>
                 <li>第一个投影 <span class="math inline">\(X
                 W_{in1}\)</span> 通过 sigmoid 激活变成门控值</li>
                 <li>第二个投影 <span class="math inline">\(X
@@ -422,17 +432,149 @@
                 </tbody>
                 </table>
                 <h3 id="attn-gemm">attn &amp; gemm</h3>
+                <p>Let’s consider all the gemm operations (<span
+                class="math inline">\(A \cdot B\)</span>):</p>
+                <table>
+                <thead>
+                <tr>
+                <th>B Name</th>
+                <th>A</th>
+                <th>B</th>
+                <th>Param</th>
+                <th>FLOPs</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                <td><span class="math inline">\(W_{Q}\)</span></td>
+                <td><span class="math inline">\([B, D]\)</span></td>
+                <td><span class="math inline">\([D, N, H]\)</span></td>
+                <td><span class="math inline">\(DNH\)</span></td>
+                <td><span class="math inline">\(2BDNH\)</span></td>
+                </tr>
+                <tr>
+                <td><span class="math inline">\(W_{K},
+                W_{V}\)</span></td>
+                <td><span class="math inline">\([B, D]\)</span></td>
+                <td><span class="math inline">\([D, K, H]\)</span></td>
+                <td><span class="math inline">\(DKH\)</span></td>
+                <td><span class="math inline">\(2BDKH\)</span></td>
+                </tr>
+                <tr>
+                <td><span class="math inline">\(W_{O}\)</span></td>
+                <td><span class="math inline">\([B, N, H]\)</span></td>
+                <td><span class="math inline">\([N, H, D]\)</span></td>
+                <td><span class="math inline">\(DNH\)</span></td>
+                <td><span class="math inline">\(2BDNH\)</span></td>
+                </tr>
+                <tr>
+                <td><span class="math inline">\(W_{in1},
+                W_{in2}\)</span></td>
+                <td><span class="math inline">\([B, D]\)</span></td>
+                <td><span class="math inline">\([D, F]\)</span></td>
+                <td><span class="math inline">\(DF\)</span></td>
+                <td><span class="math inline">\(2BDF\)</span></td>
+                </tr>
+                <tr>
+                <td><span class="math inline">\(W_{down}\)</span></td>
+                <td><span class="math inline">\([B, F]\)</span></td>
+                <td><span class="math inline">\([F, D]\)</span></td>
+                <td><span class="math inline">\(DF\)</span></td>
+                <td><span class="math inline">\(2BDF\)</span></td>
+                </tr>
+                </tbody>
+                </table>
+                <p>Let’s consider the attention operation:</p>
+                <table>
+                <thead>
+                <tr>
+                <th>Type</th>
+                <th>A</th>
+                <th>B</th>
+                <th>FLOPs</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                <td><span class="math inline">\(QK^T\)</span></td>
+                <td>Q <span class="math inline">\([B, T, N,
+                H]\)</span></td>
+                <td>K <span class="math inline">\([B, S, K,
+                H]\)</span></td>
+                <td><span class="math inline">\(2BTSNH\)</span></td>
+                </tr>
+                </tbody>
+                </table>
+                <p>对于 prefill 阶段，T=S=prompt tokens数量，QK
+                的计算量为 <span class="math inline">\(2BT^2
+                NH\)</span>，随着上下文二次增长。</p>
+                <p>对于 decode 阶段，T=1，S=上下文长度，QK 的计算量为
+                <span
+                class="math inline">\(2BSNH\)</span>，随着上下文长度线性增长。</p>
+                <table style="width:100%;">
+                <colgroup>
+                <col style="width: 11%" />
+                <col style="width: 26%" />
+                <col style="width: 20%" />
+                <col style="width: 25%" />
+                <col style="width: 15%" />
+                </colgroup>
+                <thead>
+                <tr>
+                <th>Phase</th>
+                <th>Type</th>
+                <th>A</th>
+                <th>B</th>
+                <th>FLOPs</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                <td>prefill</td>
+                <td>Softmax(<span class="math inline">\(QK^T\)</span>) *
+                V</td>
+                <td><span class="math inline">\([B, T, N,
+                H]\)</span></td>
+                <td><span class="math inline">\(V\)</span> <span
+                class="math inline">\([B, T, K, H]\)</span></td>
+                <td><span class="math inline">\(2BT^{2}NH\)</span></td>
+                </tr>
+                <tr>
+                <td>decode</td>
+                <td>Softmax(<span class="math inline">\(QK^T\)</span>) *
+                V</td>
+                <td><span class="math inline">\([B, 1, N,
+                H]\)</span></td>
+                <td><span class="math inline">\(V\)</span> <span
+                class="math inline">\([B, S, K, H]\)</span></td>
+                <td><span class="math inline">\(2BSNH\)</span></td>
+                </tr>
+                </tbody>
+                </table>
+                <hr />
+                <p><strong>对于训练</strong></p>
                 <p>Suppose <span class="math inline">\(F =
                 4D\)</span>，<span class="math inline">\(N =
                 K\)</span>：</p>
-                <p><span class="math display">\[\frac{\text{attention
-                FLOPs}}{\text{matmul FLOPs}} = \frac{12BT^2NH}{18BTDF +
-                24BTDNH} = \frac{12BT^2D}{4 * 18BTD^2 + 24BTD^2} =
-                \frac{12BT^2D}{96BTD^2} = \frac{T}{8D}\]</span></p>
+                <p><span
+                class="math display">\[\frac{\text{attention}}{\text{gemm}}
+                = \frac{12BT^2NH}{18BTDF + 24BTDNH} = \frac{12BT^2D}{4 *
+                18BTD^2 + 24BTD^2} = \frac{12BT^2D}{96BTD^2} =
+                \frac{T}{8D}\]</span></p>
                 <p>所以只有当 <span class="math inline">\(T &gt;
                 8D\)</span> 的时候 attention 的计算量才会超过 gemm，假设
                 hidden size = 8K，只有上下文长度达到 64k 时 attention
                 计算量才会超过 gemm。</p>
+                <p><strong>对于推理</strong></p>
+                <p>Suppose <span
+                class="math inline">\(F=5D\)</span>，<span
+                class="math inline">\(N=K\)</span>：</p>
+                <p><span
+                class="math display">\[\frac{\text{attention}}{\text{gemm}}
+                = \frac{8BD^2 + 2BSD}{6BDF} = \frac{8D +
+                2S}{24D}\]</span></p>
+                <p>当上下文长度 <span class="math inline">\(S &gt;
+                8D\)</span> 时，attention 阶段的计算量会超过 MLP。</p>
                 <h3 id="general-rule">general rule</h3>
                 <p>如果上下文比较短，然后忽略 attention 阶段的 self dot
                 product 的计算量的话，那么计算量可以近似为：</p>

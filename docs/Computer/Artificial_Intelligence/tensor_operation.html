@@ -43,6 +43,7 @@
             <div id="TOC" class="span3">
         <div class="well toc">
           <ul>
+          <li><a href="#dtype" id="toc-dtype">dtype</a></li>
           <li><a href="#einsum" id="toc-einsum">einsum</a></li>
           <li><a href="#tensor-operation"
           id="toc-tensor-operation">tensor operation</a></li>
@@ -109,6 +110,17 @@
                 </tr>
                 </tbody>
                 </table>
+                <h3 id="dtype">dtype</h3>
+                <ul>
+                <li>FP8: <code>e4m3fn</code>
+                <ul>
+                <li><code>e4</code>: Exponent（指数）4 位</li>
+                <li><code>m3</code>: Mantissa（尾数/有效位）3 位</li>
+                <li><code>fn</code>：finite + no
+                subnormals，只有有限值，不包含非规格化数（subnormal）或
+                NaN</li>
+                </ul></li>
+                </ul>
                 <h3 id="einsum">einsum</h3>
                 <ul>
                 <li>矩阵乘法：<code>torch.einsum("ij,jk-&gt;ik", A, B)</code></li>

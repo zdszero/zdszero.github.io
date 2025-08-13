@@ -15,6 +15,13 @@
 | `torch.where()`                 | 条件选择              |
 | `x.mean() / x.sum()`            | 求均值 / 和           |
 
+### dtype
+
+- FP8: `e4m3fn`
+    - `e4`: Exponent（指数）4 位
+    - `m3`: Mantissa（尾数/有效位）3 位
+    - `fn`：finite + no subnormals，只有有限值，不包含非规格化数（subnormal）或 NaN
+
 ### einsum
 
 - 矩阵乘法：`torch.einsum("ij,jk->ik", A, B)`

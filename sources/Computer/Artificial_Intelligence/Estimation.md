@@ -28,7 +28,9 @@ __计算访存比__（Intensity）：
 
 ![Intensity](../../../docs/WikiImage/image_2025-07-23-16-41-50.png){ width=500px }
 
-Intensity(Accelerator) TPU 达到其峰值 FLOPs/s 时的算术强度。对于 TPU v5e MXU，这大约是 240 FLOPs/B，因为 TPU 每秒可以执行 1.97e14 FLOPs 并从 HBM 加载 8.2e11 字节/秒。这意味着如果一个算法的算术强度低于 240 FLOPs/字节，它将受限于字节加载，因此我们无法充分利用我们的硬件。
+Intensity(Accelerator) TPU 达到其峰值 FLOPs/s 时的算术强度。对于 TPU v5e MXU，这大约是 240 FLOPs/B，因为 TPU 每秒可以执行 1.97e14 FLOPs 并从 HBM 加载 8.2e11 字节/秒。
+
+如果一个算子的计算强度低于 240 FLOPs/B，它将进入访存瓶颈，否则会进入计算瓶颈。
 
 __Self Dot Product__
 
@@ -73,12 +75,23 @@ $$Intensity(dot product) = \frac{N + N - 1}{2N + 2N} → \frac{1}{2}$$
 | $T$    | sequence length (query)                   |
 | $S$    | sequence length (key value)               |
 | $V$    | vocab                                     |
-| $D$    | d_model, embedding dimension, hidden size |
+| $D$    | $d_{model}$, embedding dimension |
 | $F$    | MLP intermidiate dimension                |
 | $H$    | attention head dimension                  |
 | $N$    | number of query heads                     |
 | $K$    | number of key/value heads                 |
 | $G$    | q heads per kv head = $N // K$            |
+
+需要注意以下几点：
+
+__embedding size 和 hidden size__
+
+两者在实践中一般相同，但是却是不同的概念，embedding size 指的是对 token 进行 embed 后的维度。
+hidden size 指的是 Q/K/V 的维度
+
+__Q 和 K/V 的维度__
+
+Q/K/V 的维度在实践中一般相同，但是在理论上可以不同，对于多头注意力，q 的维度是 NH，k/v 的维度是 KH。
 
 ![Transformer](https://jax-ml.github.io/scaling-book/assets/img/transformer-diagram.png)
 
@@ -103,7 +116,7 @@ $$ A = \sigma(X W_{in1}) \odot (X W_{in2}) $$
 
 解释：
 
-* $W_{in1}, W_{in2}$ 都是从输入维度 $D$ 投影到扩展维度 \$F\$ 的两个不同矩阵
+* $W_{in1}, W_{in2}$ 都是从输入维度 $D$ 投影到扩展维度 $F$ 的两个不同矩阵
 * 第一个投影 $X W_{in1}$ 通过 sigmoid 激活变成门控值
 * 第二个投影 $X W_{in2}$ 作为被门控的主流路径
 * 二者逐元素相乘之后再通过 $W_{out}$ 降维
@@ -139,11 +152,49 @@ $$ A = \sigma(X W_{in1}) \odot (X W_{in2}) $$
 
 ### attn & gemm
 
+Let's consider all the gemm operations ($A \cdot B$):
+
+| B Name             | A           | B           | Param | FLOPs   |
+|--------------------|-------------|-------------|-------|---------|
+| $W_{Q}$            | $[B, D]$    | $[D, N, H]$ | $DNH$ | $2BDNH$ |
+| $W_{K}, W_{V}$     | $[B, D]$    | $[D, K, H]$ | $DKH$ | $2BDKH$ |
+| $W_{O}$            | $[B, N, H]$ | $[N, H, D]$ | $DNH$ | $2BDNH$ |
+| $W_{in1}, W_{in2}$ | $[B, D]$    | $[D, F]$    | $DF$  | $2BDF$  |
+| $W_{down}$         | $[B, F]$    | $[F, D]$    | $DF$  | $2BDF$  |
+
+Let's consider the attention operation:
+
+| Type   | A                | B                | FLOPs    |
+|--------|------------------|------------------|----------|
+| $QK^T$ | Q $[B, T, N, H]$ | K $[B, S, K, H]$ | $2BTSNH$ |
+
+
+对于 prefill 阶段，T=S=prompt tokens数量，QK 的计算量为 $2BT^2 NH$，随着上下文二次增长。
+
+对于 decode 阶段，T=1，S=上下文长度，QK 的计算量为 $2BSNH$，随着上下文长度线性增长。
+
+| Phase   | Type                | A              | B                  | FLOPs      |
+|---------|---------------------|----------------|--------------------|------------|
+| prefill | Softmax($QK^T$) * V | $[B, T, N, H]$ | $V$ $[B, T, K, H]$ | $2BT^{2}NH$ |
+| decode  | Softmax($QK^T$) * V | $[B, 1, N, H]$ | $V$ $[B, S, K, H]$ | $2BSNH$ |
+
+---
+
+__对于训练__
+
 Suppose $F = 4D$，$N = K$：
 
-$$\frac{\text{attention FLOPs}}{\text{matmul FLOPs}} = \frac{12BT^2NH}{18BTDF + 24BTDNH} = \frac{12BT^2D}{4 * 18BTD^2 + 24BTD^2} = \frac{12BT^2D}{96BTD^2} = \frac{T}{8D}$$
+$$\frac{\text{attention}}{\text{gemm}} = \frac{12BT^2NH}{18BTDF + 24BTDNH} = \frac{12BT^2D}{4 * 18BTD^2 + 24BTD^2} = \frac{12BT^2D}{96BTD^2} = \frac{T}{8D}$$
 
 所以只有当 $T > 8D$ 的时候 attention 的计算量才会超过 gemm，假设 hidden size = 8K，只有上下文长度达到 64k 时 attention 计算量才会超过 gemm。
+
+__对于推理__
+
+Suppose $F=5D$，$N=K$：
+
+$$\frac{\text{attention}}{\text{gemm}} = \frac{8BD^2 + 2BSD}{6BDF} = \frac{8D + 2S}{24D}$$
+
+当上下文长度 $S > 8D$ 时，attention 阶段的计算量会超过 MLP。
 
 ### general rule
 
