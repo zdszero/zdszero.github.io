@@ -10,7 +10,6 @@
 - [picture](./picture.md)
 - [marriage](./marriage.md)
 - [reading books](./reading.md)
-- [china](./china.md)
 - [economy](./economy.md)
 - [merit](./merit.md)
 - [faith](./faith.md)
