@@ -1,90 +1,88 @@
 % Encoding
 
-### Absolute
+### 绝对位置编码
 
-Before introducing RoPE, let’s recap the basics of the attention mechanism. Attention focuses on pair-wise relationships: there’s a query vector q from one token and a key vector k from another. __We obtain the attention score by taking the inner product of q and k, and this inner product is key to how position embeddings function.__
-
-For example, to get the attention score for the pair (1, 3), we get the query vector from token 1 and the key vector from token 3.
-
-The authors then reflect on this formulation and realize that in this setup, __the relative positional information is encoded before the inner product — meaning it’s inherently tied to the token embedding.__
-
-They ask themselves: “Is there another way to encode relative positional information only when we need the attention score — i.e., at the moment we perform the q,k inner product?” Or equivalently, the __q,k__ inner product is __equivalent to another function g that takes only the token embeddings and their positions as input?__
-
-### Rope
-
-In simple terms, this means that after the transformation, we can either rotate first and then perform the inner product, or we can perform the inner product first and then rotate, and take the real part. In the second approach, we only need (m–n) for the rotation, which signifies that this is a type of relative position embedding.
+对于位置编码，常规的做法是在计算 query、key 和 value 向量之前，会计算一个位置编码向量 $p_i$ 加到词嵌入 $x_i$ 上，位置编码向量 $p_i$ 同样也是 $d$ 维向量，然后再乘以对应的变换矩阵 $W$：
 
 $$
-R^d_{\Theta,m} = \begin{pmatrix}
-\cos m\theta_1 & -\sin m\theta_1 & 0 & 0 & \cdots & 0 & 0 \\
-\sin m\theta_1 & \cos m\theta_1 & 0 & 0 & \cdots & 0 & 0 \\
-0 & 0 & \cos m\theta_2 & -\sin m\theta_2 & \cdots & 0 & 0 \\
-0 & 0 & \sin m\theta_2 & \cos m\theta_2 & \cdots & 0 & 0 \\
-\vdots & \vdots & \vdots & \vdots & \ddots & \vdots & \vdots \\
-0 & 0 & 0 & 0 & \cdots & \cos m\theta_{d/2} & -\sin m\theta_{d/2} \\
-0 & 0 & 0 & 0 & \cdots & \sin m\theta_{d/2} & \cos m\theta_{d/2}
-\end{pmatrix}
+f_{t; t \in \{q,k,v\}}(x_i, i) := W_{t; t \in \{q,k,v\}} (x_i + p_i)
 $$
 
-$$\theta_{i} = 10000^{-2i/d}$$
-
-$$f_{\{q,k\}}(\mathbf{x}_m, m) = \mathbf{R}^d_{\Theta,m} \mathbf{W}_{\{q,k\}}\mathbf{x}_m$$
+而经典的位置编码向量 $p_i$ 的计算方式是使用 Sinusoidal 函数：
 
 $$
-\mathbf{R}^d_{\Theta,m} \mathbf{x} =
+p_{i,2t} = \sin \left( \frac{k}{10000^{2t/d}} \right) \\
+p_{i,2t+1} = \cos \left( \frac{k}{10000^{2t/d}} \right)
+$$
+
+其中，$p_{i,2t}$ 表示位置 $i$ 维度向量 $p_i$ 中的第 $2t$ 位置分量，也就是偶数索引位置的计算公式，而 $p_{i,2t+1}$ 就对应第 $2t+1$ 位置分量，也就是奇数索引位置的计算公式。
+
+
+### 旋转位置编码
+
+旋转位置编码的核心就是用某种方式直接在 $\mathbf{q}_{t} \mathbf{k}_{j}^{T}$ 计算的过程中直接插入两者的位置信息。
+
+所以需要找到一个公式满足以下条件：
+
+$f(\mathbf{q}, t) f(\mathbf{k}^\top, j) = f(\mathbf{q} \mathbf{k}^\top, t-j)$
+
+Rope 就是找了这样一个基于旋转的公式：
+
+$$
+\text{RoPE}(x_m)[2k-1:2k] =
 \begin{pmatrix}
-x_1 \\
-x_2 \\
-x_3 \\
-x_4 \\
-\vdots \\
-x_{d-1} \\
-x_d
-\end{pmatrix}
-\otimes
-\begin{pmatrix}
-\cos m\theta_1 \\
-\cos m\theta_1 \\
-\cos m\theta_2 \\
-\cos m\theta_2 \\
-\vdots \\
-\cos m\theta_{d/2} \\
-\cos m\theta_{d/2}
-\end{pmatrix}
-+
-\begin{pmatrix}
--x_2 \\
-x_1 \\
--x_4 \\
-x_3 \\
-\vdots \\
--x_d \\
-x_{d-1}
-\end{pmatrix}
-\otimes
-\begin{pmatrix}
-\sin m\theta_1 \\
-\sin m\theta_1 \\
-\sin m\theta_2 \\
-\sin m\theta_2 \\
-\vdots \\
-\sin m\theta_{d/2} \\
-\sin m\theta_{d/2}
+x_{2k-1}\cos(m\theta_k) - x_{2k}\sin(m\theta_k) \\
+x_{2k-1}\sin(m\theta_k) + x_{2k}\cos(m\theta_k)
 \end{pmatrix}
 $$
 
-![RoPE](../../../docs/WikiImage/image_2025-05-21-14-37-42.png){ width=800px }
 
-The objective of RoPE:
+假设 $R_a$ 表示角度为 $a$ 的旋转矩阵，那么 $R$ 具有如下性质：  
+
+1. $R_a^T = R(-a)$  
+2. $R_a R_b = R(a+b)$  
+
+回到旋转位置编码，我们可以去证明  
 
 $$
-\left\langle f_q(\mathbf{x}_m, \mathbf{m}), f_k(\mathbf{x}_n, \mathbf{n}) \right\rangle = g(\mathbf{x}_m, \mathbf{x}_n, \mathbf{m} - \mathbf{n}).
-$$
+\langle R_a X, R_b Y \rangle = \langle X, R(b-a) Y \rangle
+$$  
+
+证明如下：  
 
 $$
-\begin{align*}
-f_q(\mathbf{x}_m, m) &= (\mathbf{W}_q\mathbf{x}_m)e^{im\theta} \\
-f_k(\mathbf{x}_n, n) &= (\mathbf{W}_k\mathbf{x}_n)e^{in\theta} \\
-g(\mathbf{x}_m, \mathbf{x}_n, m-n) &= \text{Re}[(\mathbf{W}_q\mathbf{x}_m)(\mathbf{W}_k\mathbf{x}_n)^* e^{i(m-n)\theta}]
-\end{align*}
+\begin{aligned}
+\langle R_a X, R_b Y \rangle  
+&= (R_a X)^T R_b Y \\  
+&= X^T R_a^T R_b Y \\  
+&= X^T R(-a) R_b Y \\  
+&= X^T R(b-a) Y \\  
+&= \langle X, R(b-a) Y \rangle  
+\end{aligned}
 $$
+
+---
+
+__那么使用 RoPE 的 attention 公式呢？__
+
+
+使用 Rope 后，自注意力计算公式在形式上保持不变，但 $Q$ 和 $K$ 的计算方式发生了变化：
+
+$$\text{Attention}(Q_{R}, K_{R}, V) = \text{softmax}\left(\frac{Q_{R} K_{R}^T}{\sqrt{d_k}}\right) V$$
+
+其中：
+
+* $Q_{R}$ 和 $K_{R}$ 分别是通过旋转变换后的 $Q$ 和 $K$ 向量。
+
+具体来说，对于序列中的第 $m$ 个 token 和第 $n$ 个 token，其对应的 $Q$ 和 $K$ 向量分别是 $q_m$ 和 $k_n$。经过 Rope 旋转变换后，它们变为 $q'_m$ 和 $k'_n$。
+
+$q'_m$ 和 $k'_n$ 的点积为：
+
+$$(q'_m)^T k'_n = \left(\mathbf{R}_{\Theta, m} q_m\right)^T \left(\mathbf{R}_{\Theta, n} k_n\right) = q_m^T \mathbf{R}_{\Theta, m}^T \mathbf{R}_{\Theta, n} k_n = q_m^T \mathbf{R}_{\Theta, n-m} k_n$$
+
+其中：
+
+* $\mathbf{R}_{\Theta, m}$ 和 $\mathbf{R}_{\Theta, n}$ 是旋转矩阵，它们将位置信息 $m$ 和 $n$ 编码到向量中。
+* $\mathbf{R}_{\Theta, m}^T \mathbf{R}_{\Theta, n} = \mathbf{R}_{\Theta, n-m}$ 是一个只依赖于**相对位置**差 $n-m$ 的旋转矩阵。
+
+这个公式表明，Rope 将自注意力机制中的 **点积** 与 **相对位置** 关联了起来。

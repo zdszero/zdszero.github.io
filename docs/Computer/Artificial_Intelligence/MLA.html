@@ -1,0 +1,140 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="../../WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="../../WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    MLA
+  </title>
+    <link rel="stylesheet" href="../../WikiTheme/theme/bootstrap.css"  />
+        <script
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+        type="text/javascript"></script>
+      </head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">MLA</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="container">
+    <div class="row">
+            <div id="TOC" class="span3">
+        <div class="well toc">
+          <ul>
+          <li><a href="#mha" id="toc-mha">MHA</a></li>
+          <li><a href="#mla" id="toc-mla">MLA</a></li>
+          </ul>
+        </div>
+      </div>
+            <div class="span9">
+                <h3 id="mha">MHA</h3>
+                <ul>
+                <li><span class="math inline">\([\mathbf{q}_{t,1};
+                \mathbf{q}_{t,2}; ...; \mathbf{q}_{t,n_h}] =
+                \mathbf{q}_t = W^{Q} \mathbf{h}_{t}\)</span></li>
+                <li><span class="math inline">\([\mathbf{k}_{t,1};
+                \mathbf{k}_{t,2}; ...; \mathbf{k}_{t,n_h}] =
+                \mathbf{k}_t = W^{K} \mathbf{h}_{t}\)</span></li>
+                <li><span class="math inline">\([\mathbf{v}_{t,1};
+                \mathbf{v}_{t,2}; ...; \mathbf{v}_{t,n_h}] =
+                \mathbf{v}_t = W^{V} \mathbf{h}_{t}\)</span></li>
+                <li><span class="math inline">\(\mathbf{o}_{t,i} =
+                \sum_{j=1}^{t}
+                \text{Softmax}_j\left(\frac{\mathbf{q}_{t,i}
+                \mathbf{k}_{j,i}^\top}{\sqrt{d_h}}\right)
+                \mathbf{v}_{j,i}\)</span>
+                <ul>
+                <li><span class="math inline">\(i\)</span> 表示第 <span
+                class="math inline">\(i\)</span> 个 head</li>
+                <li><span class="math inline">\(t\)</span> 当时计算第
+                <span class="math inline">\(t\)</span> 个 token 的
+                attention</li>
+                </ul></li>
+                <li><span class="math inline">\(\mathbf{u}_t =
+                W^O[\mathbf{o}_{t,1}; \mathbf{o}_{t,2}; ...;
+                \mathbf{o}_{t,n_h}]\)</span></li>
+                </ul>
+                <blockquote>
+                <p><span class="math inline">\(\mathbf{o}_{t,i}\)</span>
+                中的 <span class="math inline">\(t\)</span>
+                表示当前总共有 <span class="math inline">\(t\)</span> 个
+                token，</p>
+                </blockquote>
+                <h3 id="mla">MLA</h3>
+                <ul>
+                <li>$ _t^{KV} = W^{DKV} _t $
+                <ul>
+                <li>$ _t^{KV} ^{d_c} $：是 key 和 value 压缩的 latent
+                vector，且 KV 的压缩维度 $ d_c d_h n_h $</li>
+                <li>$ W^{DKV} ^{d_c d} $：down-projection 矩阵</li>
+                </ul></li>
+                <li>$ _t^C = W^{UK} _t^{KV} $</li>
+                <li>$ _t^C = W^{UV} _t^{KV} $
+                <ul>
+                <li>$ W^{UK}, W^{UV} ^{d_h n_h d_c} $：up-projection
+                矩阵</li>
+                </ul></li>
+                </ul>
+                <p><strong>为什么 rope 和 nope 分离？</strong></p>
+                <p>首先 rope 的旋转矩阵无法被融合进入 W_q 和 k_b
+                矩阵之中（该矩阵并不是一个常量）：</p>
+                <p><span class="math display">\[
+                q_t^{(s)} {k_i^{(s)}}^\top
+                = \left( x_t W_q^{(s)} \mathcal{R}_t \right)
+                  \left( c_i W_k^{(s)} \mathcal{R}_i \right)^\top
+                = x_t \left( W_q^{(s)} \mathcal{R}_{t-i}
+                {W_k^{(s)}}^\top \right) c_i^\top
+                \]</span></p>
+                <p>MLA 在推理的时候不想缓存完整的 kv
+                cache，只想缓存压缩的
+                ckv，但这样的话需要在升维后再重新计算
+                rope，它也不想，所以干脆把 q 和 k
+                拆成两部分，一部分是位置编码的，一部分是无关位置编码的。带位置编码的
+                k 可以缓存，比缓存全部维度都带位置的 k 强。</p>
+                <p><strong>normal 和 absorb 的区别？</strong></p>
+                <p>absorb 就是把 kv_b 拆分成 k_b 和 v_b，然后分别合入到
+                W_q 和 O_proj 中。</p>
+                <p><span class="math display">\[\mathbf{q}_t^\top
+                \mathbf{k}_j^C = (W^Q \mathbf{h}_t)^\top W^{UK}
+                \mathbf{c}_j^{KV} = \mathbf{h}_t^\top (W^{Q^\top})
+                W^{UK} \mathbf{c}_j^{KV} = \mathbf{h}_t^\top W^{Q^\top}
+                W^{UK} \mathbf{c}_j^{KV} = \mathbf{h}_t^\top W^{Q^\top
+                UK} \mathbf{c}_j^{KV}\]</span></p>
+                <p><span class="math display">\[\mathbf{u}_t = W^O
+                \mathbf{o}_t = W^{O} W^{UV} \sum_{j=1}^t
+                \text{Softmax}_j \left( \frac{\mathbf{q}_t^\top
+                \mathbf{k}_j}{\sqrt{d_h}} \right) \mathbf{c}_j^{KV} =
+                W^{OUV} \sum_{j=1}^t \text{Softmax} \left(
+                \frac{\mathbf{q}_t^\top \mathbf{k}_j^{KV}}{\sqrt{d_h}}
+                \right) \mathbf{c}_j^{KV}\]</span></p>
+              </div>
+    </div>
+  </div>
+</body>
+
+</html>

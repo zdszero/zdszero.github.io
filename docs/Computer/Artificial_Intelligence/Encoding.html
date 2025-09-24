@@ -46,132 +46,139 @@
             <div id="TOC" class="span3">
         <div class="well toc">
           <ul>
-          <li><a href="#absolute" id="toc-absolute">Absolute</a></li>
-          <li><a href="#rope" id="toc-rope">Rope</a></li>
+          <li><a href="#绝对位置编码"
+          id="toc-绝对位置编码">绝对位置编码</a></li>
+          <li><a href="#旋转位置编码"
+          id="toc-旋转位置编码">旋转位置编码</a></li>
           </ul>
         </div>
       </div>
             <div class="span9">
-                <h3 id="absolute">Absolute</h3>
-                <p>Before introducing RoPE, let’s recap the basics of
-                the attention mechanism. Attention focuses on pair-wise
-                relationships: there’s a query vector q from one token
-                and a key vector k from another. <strong>We obtain the
-                attention score by taking the inner product of q and k,
-                and this inner product is key to how position embeddings
-                function.</strong></p>
-                <p>For example, to get the attention score for the pair
-                (1, 3), we get the query vector from token 1 and the key
-                vector from token 3.</p>
-                <p>The authors then reflect on this formulation and
-                realize that in this setup, <strong>the relative
-                positional information is encoded before the inner
-                product — meaning it’s inherently tied to the token
-                embedding.</strong></p>
-                <p>They ask themselves: “Is there another way to encode
-                relative positional information only when we need the
-                attention score — i.e., at the moment we perform the q,k
-                inner product?” Or equivalently, the
-                <strong>q,k</strong> inner product is <strong>equivalent
-                to another function g that takes only the token
-                embeddings and their positions as input?</strong></p>
-                <h3 id="rope">Rope</h3>
-                <p>In simple terms, this means that after the
-                transformation, we can either rotate first and then
-                perform the inner product, or we can perform the inner
-                product first and then rotate, and take the real part.
-                In the second approach, we only need (m–n) for the
-                rotation, which signifies that this is a type of
-                relative position embedding.</p>
+                <h3 id="绝对位置编码">绝对位置编码</h3>
+                <p>对于位置编码，常规的做法是在计算 query、key 和 value
+                向量之前，会计算一个位置编码向量 <span
+                class="math inline">\(p_i\)</span> 加到词嵌入 <span
+                class="math inline">\(x_i\)</span> 上，位置编码向量
+                <span class="math inline">\(p_i\)</span> 同样也是 <span
+                class="math inline">\(d\)</span>
+                维向量，然后再乘以对应的变换矩阵 <span
+                class="math inline">\(W\)</span>：</p>
                 <p><span class="math display">\[
-                R^d_{\Theta,m} = \begin{pmatrix}
-                \cos m\theta_1 &amp; -\sin m\theta_1 &amp; 0 &amp; 0
-                &amp; \cdots &amp; 0 &amp; 0 \\
-                \sin m\theta_1 &amp; \cos m\theta_1 &amp; 0 &amp; 0
-                &amp; \cdots &amp; 0 &amp; 0 \\
-                0 &amp; 0 &amp; \cos m\theta_2 &amp; -\sin m\theta_2
-                &amp; \cdots &amp; 0 &amp; 0 \\
-                0 &amp; 0 &amp; \sin m\theta_2 &amp; \cos m\theta_2
-                &amp; \cdots &amp; 0 &amp; 0 \\
-                \vdots &amp; \vdots &amp; \vdots &amp; \vdots &amp;
-                \ddots &amp; \vdots &amp; \vdots \\
-                0 &amp; 0 &amp; 0 &amp; 0 &amp; \cdots &amp; \cos
-                m\theta_{d/2} &amp; -\sin m\theta_{d/2} \\
-                0 &amp; 0 &amp; 0 &amp; 0 &amp; \cdots &amp; \sin
-                m\theta_{d/2} &amp; \cos m\theta_{d/2}
+                f_{t; t \in \{q,k,v\}}(x_i, i) := W_{t; t \in \{q,k,v\}}
+                (x_i + p_i)
+                \]</span></p>
+                <p>而经典的位置编码向量 <span
+                class="math inline">\(p_i\)</span> 的计算方式是使用
+                Sinusoidal 函数：</p>
+                <p><span class="math display">\[
+                p_{i,2t} = \sin \left( \frac{k}{10000^{2t/d}} \right) \\
+                p_{i,2t+1} = \cos \left( \frac{k}{10000^{2t/d}} \right)
+                \]</span></p>
+                <p>其中，<span class="math inline">\(p_{i,2t}\)</span>
+                表示位置 <span class="math inline">\(i\)</span> 维度向量
+                <span class="math inline">\(p_i\)</span> 中的第 <span
+                class="math inline">\(2t\)</span>
+                位置分量，也就是偶数索引位置的计算公式，而 <span
+                class="math inline">\(p_{i,2t+1}\)</span> 就对应第 <span
+                class="math inline">\(2t+1\)</span>
+                位置分量，也就是奇数索引位置的计算公式。</p>
+                <h3 id="旋转位置编码">旋转位置编码</h3>
+                <p>旋转位置编码的核心就是用某种方式直接在 <span
+                class="math inline">\(\mathbf{q}_{t}
+                \mathbf{k}_{j}^{T}\)</span>
+                计算的过程中直接插入两者的位置信息。</p>
+                <p>所以需要找到一个公式满足以下条件：</p>
+                <p><span class="math inline">\(f(\mathbf{q}, t)
+                f(\mathbf{k}^\top, j) = f(\mathbf{q} \mathbf{k}^\top,
+                t-j)\)</span></p>
+                <p>Rope 就是找了这样一个基于旋转的公式：</p>
+                <p><span class="math display">\[
+                \text{RoPE}(x_m)[2k-1:2k] =
+                \begin{pmatrix}
+                x_{2k-1}\cos(m\theta_k) - x_{2k}\sin(m\theta_k) \\
+                x_{2k-1}\sin(m\theta_k) + x_{2k}\cos(m\theta_k)
                 \end{pmatrix}
                 \]</span></p>
-                <p><span class="math display">\[\theta_{i} =
-                10000^{-2i/d}\]</span></p>
-                <p><span
-                class="math display">\[f_{\{q,k\}}(\mathbf{x}_m, m) =
-                \mathbf{R}^d_{\Theta,m}
-                \mathbf{W}_{\{q,k\}}\mathbf{x}_m\]</span></p>
+                <p>假设 <span class="math inline">\(R_a\)</span>
+                表示角度为 <span class="math inline">\(a\)</span>
+                的旋转矩阵，那么 <span class="math inline">\(R\)</span>
+                具有如下性质：</p>
+                <ol type="1">
+                <li><span class="math inline">\(R_a^T =
+                R(-a)\)</span><br />
+                </li>
+                <li><span class="math inline">\(R_a R_b =
+                R(a+b)\)</span></li>
+                </ol>
+                <p>回到旋转位置编码，我们可以去证明</p>
                 <p><span class="math display">\[
-                \mathbf{R}^d_{\Theta,m} \mathbf{x} =
-                \begin{pmatrix}
-                x_1 \\
-                x_2 \\
-                x_3 \\
-                x_4 \\
-                \vdots \\
-                x_{d-1} \\
-                x_d
-                \end{pmatrix}
-                \otimes
-                \begin{pmatrix}
-                \cos m\theta_1 \\
-                \cos m\theta_1 \\
-                \cos m\theta_2 \\
-                \cos m\theta_2 \\
-                \vdots \\
-                \cos m\theta_{d/2} \\
-                \cos m\theta_{d/2}
-                \end{pmatrix}
-                +
-                \begin{pmatrix}
-                -x_2 \\
-                x_1 \\
-                -x_4 \\
-                x_3 \\
-                \vdots \\
-                -x_d \\
-                x_{d-1}
-                \end{pmatrix}
-                \otimes
-                \begin{pmatrix}
-                \sin m\theta_1 \\
-                \sin m\theta_1 \\
-                \sin m\theta_2 \\
-                \sin m\theta_2 \\
-                \vdots \\
-                \sin m\theta_{d/2} \\
-                \sin m\theta_{d/2}
-                \end{pmatrix}
+                \langle R_a X, R_b Y \rangle = \langle X, R(b-a) Y
+                \rangle
                 \]</span></p>
-                <figure>
-                <img
-                src="../.././WikiImage/image_2025-05-21-14-37-42.png"
-                width="800" alt="RoPE" />
-                <figcaption aria-hidden="true">RoPE</figcaption>
-                </figure>
-                <p>The objective of RoPE:</p>
+                <p>证明如下：</p>
                 <p><span class="math display">\[
-                \left\langle f_q(\mathbf{x}_m, \mathbf{m}),
-                f_k(\mathbf{x}_n, \mathbf{n}) \right\rangle =
-                g(\mathbf{x}_m, \mathbf{x}_n, \mathbf{m} - \mathbf{n}).
+                \begin{aligned}
+                \langle R_a X, R_b Y \rangle  
+                &amp;= (R_a X)^T R_b Y \\  
+                &amp;= X^T R_a^T R_b Y \\  
+                &amp;= X^T R(-a) R_b Y \\  
+                &amp;= X^T R(b-a) Y \\  
+                &amp;= \langle X, R(b-a) Y \rangle  
+                \end{aligned}
                 \]</span></p>
-                <p><span class="math display">\[
-                \begin{align*}
-                f_q(\mathbf{x}_m, m) &amp;=
-                (\mathbf{W}_q\mathbf{x}_m)e^{im\theta} \\
-                f_k(\mathbf{x}_n, n) &amp;=
-                (\mathbf{W}_k\mathbf{x}_n)e^{in\theta} \\
-                g(\mathbf{x}_m, \mathbf{x}_n, m-n) &amp;=
-                \text{Re}[(\mathbf{W}_q\mathbf{x}_m)(\mathbf{W}_k\mathbf{x}_n)^*
-                e^{i(m-n)\theta}]
-                \end{align*}
-                \]</span></p>
+                <hr />
+                <p><strong>那么使用 RoPE 的 attention
+                公式呢？</strong></p>
+                <p>使用 Rope 后，自注意力计算公式在形式上保持不变，但
+                <span class="math inline">\(Q\)</span> 和 <span
+                class="math inline">\(K\)</span>
+                的计算方式发生了变化：</p>
+                <p><span class="math display">\[\text{Attention}(Q_{R},
+                K_{R}, V) = \text{softmax}\left(\frac{Q_{R}
+                K_{R}^T}{\sqrt{d_k}}\right) V\]</span></p>
+                <p>其中：</p>
+                <ul>
+                <li><span class="math inline">\(Q_{R}\)</span> 和 <span
+                class="math inline">\(K_{R}\)</span>
+                分别是通过旋转变换后的 <span
+                class="math inline">\(Q\)</span> 和 <span
+                class="math inline">\(K\)</span> 向量。</li>
+                </ul>
+                <p>具体来说，对于序列中的第 <span
+                class="math inline">\(m\)</span> 个 token 和第 <span
+                class="math inline">\(n\)</span> 个 token，其对应的
+                <span class="math inline">\(Q\)</span> 和 <span
+                class="math inline">\(K\)</span> 向量分别是 <span
+                class="math inline">\(q_m\)</span> 和 <span
+                class="math inline">\(k_n\)</span>。经过 Rope
+                旋转变换后，它们变为 <span
+                class="math inline">\(q&#39;_m\)</span> 和 <span
+                class="math inline">\(k&#39;_n\)</span>。</p>
+                <p><span class="math inline">\(q&#39;_m\)</span> 和
+                <span class="math inline">\(k&#39;_n\)</span>
+                的点积为：</p>
+                <p><span class="math display">\[(q&#39;_m)^T k&#39;_n =
+                \left(\mathbf{R}_{\Theta, m} q_m\right)^T
+                \left(\mathbf{R}_{\Theta, n} k_n\right) = q_m^T
+                \mathbf{R}_{\Theta, m}^T \mathbf{R}_{\Theta, n} k_n =
+                q_m^T \mathbf{R}_{\Theta, n-m} k_n\]</span></p>
+                <p>其中：</p>
+                <ul>
+                <li><span class="math inline">\(\mathbf{R}_{\Theta,
+                m}\)</span> 和 <span
+                class="math inline">\(\mathbf{R}_{\Theta, n}\)</span>
+                是旋转矩阵，它们将位置信息 <span
+                class="math inline">\(m\)</span> 和 <span
+                class="math inline">\(n\)</span> 编码到向量中。</li>
+                <li><span class="math inline">\(\mathbf{R}_{\Theta, m}^T
+                \mathbf{R}_{\Theta, n} = \mathbf{R}_{\Theta,
+                n-m}\)</span> 是一个只依赖于<strong>相对位置</strong>差
+                <span class="math inline">\(n-m\)</span>
+                的旋转矩阵。</li>
+                </ul>
+                <p>这个公式表明，Rope 将自注意力机制中的
+                <strong>点积</strong> 与 <strong>相对位置</strong>
+                关联了起来。</p>
               </div>
     </div>
   </div>

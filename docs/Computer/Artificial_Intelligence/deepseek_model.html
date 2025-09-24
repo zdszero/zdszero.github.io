@@ -1,0 +1,231 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="../../WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="../../WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    deepseek model
+  </title>
+    <link rel="stylesheet" href="../../WikiTheme/theme/bootstrap.css"  />
+        <style type="text/css">
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+    </head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">deepseek model</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="container">
+    <div class="row">
+            <div id="TOC" class="span3">
+        <div class="well toc">
+          <ul>
+          <li><a href="#deepseek" id="toc-deepseek">DeepSeek</a></li>
+          <li><a href="#mla" id="toc-mla">mla</a></li>
+          <li><a href="#experts-weights"
+          id="toc-experts-weights">experts weights</a></li>
+          </ul>
+        </div>
+      </div>
+            <div class="span9">
+                <h3 id="deepseek">DeepSeek</h3>
+                <h4 id="config">config</h4>
+                <ul>
+                <li><code>q_lora_rank</code>: 1536
+                <ul>
+                <li>Q 的 MLA 的压缩维度</li>
+                <li>开发者在实现各种参数高效微调方法时，可能会沿用
+                Q-LoRA
+                的命名规范，以表明这是一个与“低秩”、“量化”和“参数高效”相关的维度。</li>
+                </ul></li>
+                <li><code>kv_lora_rank</code>：512
+                <ul>
+                <li>KV 的压缩维度和 Q 不同，MLA 主要应用在这里</li>
+                </ul></li>
+                <li><code>qk_nope_head_dim</code>：128</li>
+                <li><code>v_head_dim</code>：128
+                <ul>
+                <li>q 和 k 中的每个头中不施加 rope 的 dim</li>
+                <li>v 的 dim 与 qk 不施加 rope 的保持相同</li>
+                </ul></li>
+                <li><code>qk_rope_head_dim</code>：64</li>
+                <li><code>num_attention_heads</code>：128</li>
+                <li><code>num_key_value_heads</code>：128
+                <ul>
+                <li>采用 128 个头的设计</li>
+                <li>Q, K, V 的头数都相同</li>
+                </ul></li>
+                <li><code>n_routed_experts</code>: 8
+                <ul>
+                <li>moe 每层选 8 个专家</li>
+                </ul></li>
+                <li><code>n_shared_experts</code>: 1
+                <ul>
+                <li>每层有一个共享专家，所以每层专家总数为 257</li>
+                </ul></li>
+                </ul>
+                <h4 id="weights">weights</h4>
+                <p>可以通过如下代码打印权重：</p>
+                <div class="sourceCode" id="cb1"><pre
+                class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> safetensors <span class="im">import</span> safe_open</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># path = &quot;model-00001-of-000163.safetensors&quot;</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>path <span class="op">=</span> <span class="st">&quot;model-00100-of-000163.safetensors&quot;</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> safe_open(path, framework<span class="op">=</span><span class="st">&quot;pt&quot;</span>, device<span class="op">=</span><span class="st">&quot;cpu&quot;</span>) <span class="im">as</span> f:</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> k <span class="kw">in</span> f.keys():</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>        tensor <span class="op">=</span> f.get_tensor(k)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f&quot;</span><span class="sc">{</span>k<span class="sc">}</span><span class="ss">: shape=</span><span class="sc">{</span>tensor<span class="sc">.</span>shape<span class="sc">}</span><span class="ss">, dtype=</span><span class="sc">{</span>tensor<span class="sc">.</span>dtype<span class="sc">}</span><span class="ss">&quot;</span>)</span></code></pre></div>
+                <p>需要注意下表的权重行列是反过来的：</p>
+                <div class="sourceCode" id="cb2"><pre
+                class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>input_layernorm.weight torch.Size([<span class="dv">7168</span>]) bfloat16</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># out [ mlp_intermidiate_size, hidden_size ]</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>mlp.down_proj.weight torch.Size([<span class="dv">7168</span>, <span class="dv">18432</span>]) fp8</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>mlp.down_proj.weight_scale_inv torch.Size([<span class="dv">56</span>, <span class="dv">144</span>])</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># in1, in2 [ hidden_size, mlp_intermidiate_size ]</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>mlp.gate_proj.weight torch.Size([<span class="dv">18432</span>, <span class="dv">7168</span>])</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>mlp.gate_proj.weight_scale_inv torch.Size([<span class="dv">144</span>, <span class="dv">56</span>])</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>mlp.up_proj.weight torch.Size([<span class="dv">18432</span>, <span class="dv">7168</span>])</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>mlp.up_proj.weight_scale_inv torch.Size([<span class="dv">144</span>, <span class="dv">56</span>])</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>post_attention_layernorm.weight torch.Size([<span class="dv">7168</span>])</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>self_attn.kv_a_layernorm.weight torch.Size([<span class="dv">512</span>])</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="co"># [ hidden_size, kv_lora_rank + qk_rope_head_dim ]</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>self_attn.kv_a_proj_with_mqa.weight torch.Size([<span class="dv">576</span>, <span class="dv">7168</span>])</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>self_attn.kv_a_proj_with_mqa.weight_scale_inv torch.Size([<span class="dv">5</span>, <span class="dv">56</span>])</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="co"># [ kv_lora_rank, 2 * num_key_value_heads * (kv)]</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>self_attn.kv_b_proj.weight torch.Size([<span class="dv">32768</span>, <span class="dv">512</span>])</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>self_attn.kv_b_proj.weight_scale_inv torch.Size([<span class="dv">256</span>, <span class="dv">4</span>])</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>self_attn.o_proj.weight torch.Size([<span class="dv">7168</span>, <span class="dv">16384</span>])</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>self_attn.o_proj.weight_scale_inv torch.Size([<span class="dv">56</span>, <span class="dv">128</span>])</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>self_attn.q_a_layernorm.weight torch.Size([<span class="dv">1536</span>])</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="co"># [ hidden_size, q_lora_rank ]</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>self_attn.q_a_proj.weight torch.Size([<span class="dv">1536</span>, <span class="dv">7168</span>])</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>self_attn.q_a_proj.weight_scale_inv torch.Size([<span class="dv">12</span>, <span class="dv">56</span>])</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a><span class="co"># [ q_lora_rank, num_attention_heads * (qk_nope_head_dim + qk_rope_head_dim) ]</span></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>self_attn.q_b_proj.weight torch.Size([<span class="dv">24576</span>, <span class="dv">1536</span>])</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>self_attn.q_b_proj.weight_scale_inv torch.Size([<span class="dv">192</span>, <span class="dv">12</span>])</span></code></pre></div>
+                <p>专家权重如下：</p>
+                <div class="sourceCode" id="cb3"><pre
+                class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>layers<span class="fl">.3</span><span class="op">-</span><span class="fl">60.</span><span class="er">mlp</span>.(experts<span class="fl">.0</span><span class="op">-</span><span class="dv">255</span><span class="op">|</span>shared_experts).down_proj.weight: shape<span class="op">=</span>torch.Size([<span class="dv">7168</span>, <span class="dv">2048</span>]), dtype<span class="op">=</span>torch.float8_e4m3fn</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>layers<span class="fl">.3</span><span class="op">-</span><span class="fl">60.</span><span class="er">mlp</span>.(experts<span class="fl">.0</span><span class="op">-</span><span class="dv">255</span><span class="op">|</span>shared_experts).down_proj.weight_scale_inv: shape<span class="op">=</span>torch.Size([<span class="dv">56</span>, <span class="dv">16</span>]), dtype<span class="op">=</span>torch.float32</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>layers<span class="fl">.3</span><span class="op">-</span><span class="fl">60.</span><span class="er">mlp</span>.(experts<span class="fl">.0</span><span class="op">-</span><span class="dv">255</span><span class="op">|</span>shared_experts).gate_proj.weight: shape<span class="op">=</span>torch.Size([<span class="dv">2048</span>, <span class="dv">7168</span>]), dtype<span class="op">=</span>torch.float8_e4m3fn</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>layers<span class="fl">.3</span><span class="op">-</span><span class="fl">60.</span><span class="er">mlp</span>.(experts<span class="fl">.0</span><span class="op">-</span><span class="dv">255</span><span class="op">|</span>shared_experts).gate_proj.weight_scale_inv: shape<span class="op">=</span>torch.Size([<span class="dv">16</span>, <span class="dv">56</span>]), dtype<span class="op">=</span>torch.float32</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>layers<span class="fl">.3</span><span class="op">-</span><span class="fl">60.</span><span class="er">mlp</span>.(experts<span class="fl">.0</span><span class="op">-</span><span class="dv">255</span><span class="op">|</span>shared_experts).up_proj.weight: shape<span class="op">=</span>torch.Size([<span class="dv">2048</span>, <span class="dv">7168</span>]), dtype<span class="op">=</span>torch.float8_e4m3fn</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>layers<span class="fl">.3</span><span class="op">-</span><span class="fl">60.</span><span class="er">mlp</span>.(experts<span class="fl">.0</span><span class="op">-</span><span class="dv">255</span><span class="op">|</span>shared_experts).up_proj.weight_scale_inv: shape<span class="op">=</span>torch.Size([<span class="dv">16</span>, <span class="dv">56</span>]), dtype<span class="op">=</span>torch.float32</span></code></pre></div>
+                <h3 id="mla">mla</h3>
+                <h3 id="experts-weights">experts weights</h3>
+                <p>前 3 层为 dense 层，后 58 层为稀疏 moe 层。</p>
+                <p><strong>对于 dense 层</strong></p>
+                <p>dense 层固定选择 8 个专家</p>
+                <p>权重大小为 7168 * 2048 * 3 * 9 * 3 =
+                1,189,085,184</p>
+                <p><strong>对于稀疏 moe</strong></p>
+                <p>256 专家，hidden size 为 7168，每个 token 从 256
+                专家中选择 8 个</p>
+                <p>每个专家为 3 路 MLP，7168 → 2048 → 7168</p>
+                <ul>
+                <li>每个专家大小为：2048 * 7168 * 3</li>
+                <li>router 大小为：7168 * 256 + 256</li>
+                </ul>
+                <p>所以后面 58 层 MOE 所占的权重大小为：(2048 * 7168 * 3
+                * 257 + 7168 * 256 + 256) * 58 = 656,569,547,264</p>
+                <p>总共的专家大小为 656569547264 + 1189085184 =
+                657,758,632,448</p>
+                <p>差不多是 658 B</p>
+              </div>
+    </div>
+  </div>
+</body>
+
+</html>

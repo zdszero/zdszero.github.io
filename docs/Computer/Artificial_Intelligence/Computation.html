@@ -46,300 +46,541 @@
             <div id="TOC" class="span3">
         <div class="well toc">
           <ul>
-          <li><a href="#prerequisite"
-          id="toc-prerequisite">Prerequisite</a></li>
-          <li><a href="#weight" id="toc-weight">Weight</a></li>
-          <li><a href="#attention" id="toc-attention">Attention</a></li>
-          <li><a href="#transformer"
-          id="toc-transformer">Transformer</a></li>
-          <li><a href="#model-size" id="toc-model-size">Model
-          Size</a></li>
-          <li><a href="#autoregressive-process"
-          id="toc-autoregressive-process">Autoregressive
-          Process</a></li>
+          <li><a href="#矩阵乘法" id="toc-矩阵乘法">矩阵乘法</a></li>
+          <li><a href="#推理过程的计算量分析"
+          id="toc-推理过程的计算量分析">推理过程的计算量分析</a></li>
           </ul>
         </div>
       </div>
             <div class="span9">
-                <h3 id="prerequisite">Prerequisite</h3>
-                <ul>
-                <li>number of layers: <code>L</code></li>
-                <li>sequence tokens: <code>t</code></li>
-                <li>batch size: <code>b</code></li>
-                <li>dimension/hidden size: <code>D</code></li>
-                <li>intermidiate size: <code>I</code></li>
-                <li>vocab size: <code>V</code></li>
-                <li>heads: <code>h</code></li>
-                <li>head dimension: <code>d = D / h</code>
-                <ul>
-                <li><span class="math inline">\(d_k = d_q\)</span></li>
-                <li><span class="math inline">\(d_v\)</span></li>
-                <li>generally, <span class="math inline">\(d_k = d_v =
-                \frac{D}{h}\)</span></li>
-                </ul></li>
-                <li>model parameters: <code>N</code></li>
-                </ul>
-                <hr />
-                <ul>
-                <li><span class="math inline">\(A \cdot B\)</span></li>
-                <li>shape(A) = (x, y)</li>
-                <li>shape(B) = (y, z)</li>
-                <li>computation is <span
-                class="math inline">\(2xyz\)</span>
-                <ul>
-                <li>x2: mul and add</li>
-                </ul></li>
-                </ul>
-                <h3 id="weight">Weight</h3>
-                <p><span class="math inline">\(Q, K, V = X W = X (W_{Q},
-                W_{K}, W_{V})\)</span></p>
+                <h3 id="矩阵乘法">矩阵乘法</h3>
+                <p>本节重点阐述矩阵乘法的计算量分析，这是后续
+                Transformer 模型的计算量分析的基础。</p>
+                <h4 id="向量和二维矩阵">向量和二维矩阵</h4>
+                <p>假设有两个向量 <span
+                class="math inline">\(x\)</span>、<span
+                class="math inline">\(y\)</span> 和两个矩阵 <span
+                class="math inline">\(A\)</span>、<span
+                class="math inline">\(B\)</span> 有如下的形状：</p>
                 <table>
                 <thead>
                 <tr>
-                <th>Matrix</th>
-                <th>Shape</th>
+                <th>向量/矩阵</th>
+                <th>形状</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr>
-                <td><span class="math inline">\(W_{Q}, W_{K},
-                W_{V}\)</span></td>
-                <td><code>(D D)</code></td>
+                <td><span class="math inline">\(x\)</span></td>
+                <td><span class="math inline">\([K]\)</span></td>
                 </tr>
                 <tr>
-                <td><span class="math inline">\(W_{qkv}\)</span></td>
-                <td><code>(D 3D)</code></td>
+                <td><span class="math inline">\(y\)</span></td>
+                <td><span class="math inline">\([K]\)</span></td>
                 </tr>
                 <tr>
-                <td><span class="math inline">\(W_{O}\)</span></td>
-                <td><code>(D D)</code></td>
+                <td><span class="math inline">\(A\)</span></td>
+                <td><span class="math inline">\([M, K]\)</span></td>
                 </tr>
                 <tr>
-                <td><span class="math inline">\(X\)</span></td>
-                <td><code>(t D)</code></td>
-                </tr>
-                <tr>
-                <td><span class="math inline">\(W_{up}\)</span></td>
-                <td><code>(D I)</code></td>
-                </tr>
-                <tr>
-                <td><span class="math inline">\(W_{down}\)</span></td>
-                <td><code>(I D)</code></td>
+                <td><span class="math inline">\(B\)</span></td>
+                <td><span class="math inline">\([K, N]\)</span></td>
                 </tr>
                 </tbody>
                 </table>
-                <h3 id="attention">Attention</h3>
-                <p><span class="math inline">\(S(Q K^{T} / \sqrt{k}) *
-                V\)</span></p>
+                <p>那么 向量/矩阵 之间的浮点计算量如下：</p>
+                <ul>
+                <li>向量点积 <span class="math inline">\(x \cdot
+                y\)</span> 需要执行 <span
+                class="math inline">\(K\)</span> 次乘法和 <span
+                class="math inline">\(K-1\)</span> 次加法，总共需要约
+                <span class="math inline">\(2K\)</span>
+                次浮点运算。</li>
+                <li>矩阵向量乘法 <span class="math inline">\(Ax\)</span>
+                等同于 <span class="math inline">\(K\)</span>
+                次向量点积，计算量为 <span
+                class="math inline">\(2MK\)</span>。</li>
+                <li>矩阵乘法 <span class="math inline">\(AB\)</span>
+                等同于对于矩阵 <span class="math inline">\(B\)</span>
+                的每一列都与矩阵 <span class="math inline">\(A\)</span>
+                进行一次矩阵向量乘法，总共计算量为 <span
+                class="math inline">\(2MKN\)</span>。</li>
+                </ul>
+                <h4 id="高维矩阵">高维矩阵</h4>
+                <p>高维矩阵的计算量分析更加复杂一些，因为其中的维度分为三种情况：</p>
+                <ul>
+                <li>收缩维度（<span
+                class="math inline">\(\textcolor{red}{\text{contracting
+                dimensions}}\)</span>）
+                <ul>
+                <li>这是两个张量在相乘时需要
+                <strong>求和消去的维度</strong>。</li>
+                <li>它们在两个输入张量中同时出现，但不会出现在结果中。</li>
+                </ul></li>
+                <li>批处理维度（<span
+                class="math inline">\(\textcolor{blue}{\text{batching
+                dimensions}}\)</span>）
+                <ul>
+                <li>在乘法过程中，这些维度会被保留，并且
+                <strong>在批次上并行执行乘法</strong>。</li>
+                <li>它们在两个张量中同时出现，并且会保留到输出结果里。</li>
+                </ul></li>
+                <li>自由维度（<span
+                class="math inline">\(\textcolor{green}{\text{free
+                dimensions}}\)</span>）
+                <ul>
+                <li>那些 <strong>只在一个输入张量中出现</strong>
+                的维度。</li>
+                <li>在乘法过程中不会被求和，而是直接保留到输出结果里。</li>
+                </ul></li>
+                </ul>
+                <p>为了更好地理解这三种维度，我们首先来看一个简单的例子：</p>
+                <p>假设我们有一个张量 <span
+                class="math inline">\(A\)</span>，其形状为 <span
+                class="math inline">\((\textcolor{blue}{B},
+                \textcolor{green}{M},
+                \textcolor{red}{K})\)</span>，以及另一个张量 <span
+                class="math inline">\(B\)</span>，其形状为 <span
+                class="math inline">\((\textcolor{blue}{B},
+                \textcolor{red}{K},
+                \textcolor{green}{N})\)</span>。我们希望计算 <span
+                class="math inline">\(C = A \times
+                B\)</span>，在这种情况下：</p>
+                <ul>
+                <li><span
+                class="math inline">\(\textcolor{blue}{B}\)</span>
+                是批处理维度：它在 <span
+                class="math inline">\(A\)</span> 和 <span
+                class="math inline">\(B\)</span>
+                中都存在，并且会保留到结果 <span
+                class="math inline">\(C\)</span> 中。</li>
+                <li><span
+                class="math inline">\(\textcolor{red}{K}\)</span>
+                是收缩维度：它在 <span class="math inline">\(A\)</span>
+                和 <span class="math inline">\(B\)</span>
+                中都存在，但在计算过程中会被求和，从结果 <span
+                class="math inline">\(C\)</span> 中消失。</li>
+                <li><span
+                class="math inline">\(\textcolor{green}{M}\)</span> 和
+                <span
+                class="math inline">\(\textcolor{green}{N}\)</span>
+                是自由维度：<span
+                class="math inline">\(\textcolor{green}{M}\)</span>
+                只存在于 <span class="math inline">\(A\)</span>
+                中，<span
+                class="math inline">\(\textcolor{green}{N}\)</span>
+                只存在于 <span class="math inline">\(B\)</span>
+                中，它们都会保留到结果 <span
+                class="math inline">\(C\)</span> 中。</li>
+                </ul>
+                <p>结果张量 <span class="math inline">\(C\)</span>
+                的形状为 <span
+                class="math inline">\((\textcolor{blue}{B},
+                \textcolor{green}{M},
+                \textcolor{green}{N})\)</span>。可以观察到，收缩维度被消去，批处理维度只保留一份，自由维度都被保留。矩阵乘法
+                <span class="math inline">\(A \times B\)</span>
+                的计算量为 <span
+                class="math inline">\(2\textcolor{blue}{B}\textcolor{green}{MN}\textcolor{red}{K}\)</span>。</p>
+                <h3 id="推理过程的计算量分析">推理过程的计算量分析</h3>
+                <h4 id="符号表示">符号表示</h4>
+                <p>在推导大模型推理阶段的计算量之前，首先需要引入一系列符号用于表示推理过程中的关键概念：</p>
                 <table>
                 <thead>
                 <tr>
-                <th>Matrix</th>
-                <th>Shape</th>
+                <th>符号</th>
+                <th>含义</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr>
-                <td><span class="math inline">\(Q\)</span></td>
-                <td><code>(b t D) → (b h t d)</code></td>
+                <td><span class="math inline">\(B\)</span></td>
+                <td>batch size</td>
                 </tr>
                 <tr>
-                <td><span class="math inline">\(K^{T}\)</span></td>
-                <td><code>(b D t) → (b h d t)</code></td>
+                <td><span class="math inline">\(L\)</span></td>
+                <td>number of layers</td>
                 </tr>
                 <tr>
-                <td><span class="math inline">\(Q K^{T}\)</span></td>
-                <td><code>(b t t), (b h t t)</code></td>
+                <td><span class="math inline">\(T\)</span></td>
+                <td>sequence length (query)</td>
+                </tr>
+                <tr>
+                <td><span class="math inline">\(S\)</span></td>
+                <td>sequence length (key/value)</td>
                 </tr>
                 <tr>
                 <td><span class="math inline">\(V\)</span></td>
-                <td><code>(b t D) → (b h t d)</code></td>
+                <td>vocab</td>
                 </tr>
                 <tr>
-                <td><span class="math inline">\(Q K^{T} V\)</span></td>
-                <td><code>(b t D) ← (b h t d)</code></td>
+                <td><span class="math inline">\(D\)</span></td>
+                <td>dimension of model (embedding size)</td>
+                </tr>
+                <tr>
+                <td><span class="math inline">\(F\)</span></td>
+                <td>MLP hidden dimension</td>
+                </tr>
+                <tr>
+                <td><span class="math inline">\(H\)</span></td>
+                <td>attention head dimension</td>
+                </tr>
+                <tr>
+                <td><span class="math inline">\(N\)</span></td>
+                <td>number of query heads</td>
+                </tr>
+                <tr>
+                <td><span class="math inline">\(K\)</span></td>
+                <td>number of key/value heads</td>
+                </tr>
+                <tr>
+                <td><span class="math inline">\(G\)</span></td>
+                <td>q heads per kv head</td>
                 </tr>
                 </tbody>
                 </table>
-                <p>shape: single head → multi head</p>
-                <h3 id="transformer">Transformer</h3>
-                <p>Matrix and Mul binding:</p>
+                <p>在实践中，常常设置 <span
+                class="math inline">\(NH=D\)</span>，但是严格上来说，两者的
+                dimension 可以不一致，所以需要区分开来。</p>
+                <p>在 MHA 中，query 的多头数量和 key/value
+                一致，都设置为 <span
+                class="math inline">\(H\)</span>。但是在 MQA 和 GQA
+                中，key/value 的头数量比 query 更少，上表中的 <span
+                class="math inline">\(K\)</span> 和 <span
+                class="math inline">\(G\)</span>
+                参数的引入也是为了方便对于这两种 attention
+                计算情况的论证：</p>
                 <ul>
-                <li>gemm
-                <ul>
-                <li><span class="math inline">\(W_{Q}, W_{K}, W_{V},
-                W_{O}\)</span>: q/k/v/o_proj</li>
-                <li><span class="math inline">\(W_{up},
-                W_{down}\)</span>: MLP</li>
-                <li><span class="math inline">\(W_{unembed}\)</span>:
-                logits</li>
-                </ul></li>
-                <li>attention:
-                <ul>
-                <li><span class="math inline">\(S(Q K^{T} / \sqrt{d_k})
-                V\)</span></li>
-                </ul></li>
+                <li>对于 MQA，<span
+                class="math inline">\(K=1\)</span>，<span
+                class="math inline">\(G=N\)</span>。</li>
+                <li>对于 GQA，<span class="math inline">\(K =
+                N/G\)</span>，其中 <span
+                class="math inline">\(K&gt;1\)</span>。</li>
                 </ul>
-                <hr />
+                <p><span class="math inline">\(G\)</span> 的含义是一个
+                key/value 的头被几个 query 的头共用，所以 <span
+                class="math inline">\(K \times G = N\)</span>。</p>
+                <h4 id="embedding-阶段">Embedding 阶段</h4>
+                <p>Embedding 本质是一个查表操作（look-up），不是
+                gemm，计算量相对小。</p>
                 <ul>
-                <li>gemm
-                <ul>
-                <li>q/k/v/o_proj
-                <ul>
-                <li>shape = <span class="math inline">\((b, t, D) \cdot
-                (D, D) \cdot 4\)</span></li>
-                <li>flops = <span class="math inline">\(L \cdot 2 \cdot
-                b \cdot t \cdot D^2 \cdot 4\)</span></li>
-                </ul></li>
-                <li>MLP
-                <ul>
-                <li>shape = <span class="math inline">\((b, t, D) \cdot
-                (D, I)\)</span></li>
-                <li>flops = <span class="math inline">\(L \cdot 2 \cdot
-                b \cdot t \cdot D \cdot 3 \cdot I \cdot 3\)</span></li>
-                </ul></li>
-                <li>logits
-                <ul>
-                <li>shape = <span class="math inline">\((b, t, D) \cdot
-                (D, V)\)</span></li>
-                <li>flops = <span class="math inline">\(2 \cdot b \cdot
-                t \cdot D \cdot V\)</span></li>
-                </ul></li>
-                <li>Total
-                <ul>
-                <li>flops = <span class="math inline">\(8 \cdot L \cdot
-                b \cdot t \cdot D^2 + 6 \cdot L \cdot b \cdot t \cdot D
-                \cdot I + 2 \cdot b \cdot t \cdot D \cdot V = b \cdot t
-                \cdot (8 \cdot L \cdot D^2 + 6 \cdot L \cdot D \cdot I +
-                2 \cdot D \cdot V)\)</span></li>
-                </ul></li>
-                <li>Each token
-                <ul>
-                <li>flops = <span class="math inline">\(8L D^2 + 6 L D I
-                + 2 D V = Lhd(8hd + 6I) + 2hdV \approx 2N\)</span></li>
-                </ul></li>
-                </ul></li>
-                <li>attention
-                <ul>
-                <li><span class="math inline">\(Q K^{T}\)</span>
-                <ul>
-                <li>shape = <span class="math inline">\((b, h, t, d)
-                \cdot (b, h, d, t)\)</span></li>
-                <li>flops = <span class="math inline">\(L \cdot 2 \cdot
-                b \cdot h \cdot d \cdot t^2\)</span></li>
-                </ul></li>
-                <li><span class="math inline">\(\text{softmax}(Q
-                K^{T})\)</span>
-                <ul>
-                <li>shape = <span class="math inline">\((b, h, t,
-                t)\)</span></li>
-                <li>flops = <span class="math inline">\(L \cdot b \cdot
-                h \cdot t^2 \cdot \text{factor}\)</span>
-                <ul>
-                <li>factor = 1 + exp + division</li>
-                </ul></li>
-                </ul></li>
-                <li><span class="math inline">\(\text{softmax}(Q K^{T})
-                \cdot V\)</span>
-                <ul>
-                <li>shape = <span class="math inline">\((b, h, t, t)
-                \cdot (b, h, t, d)\)</span></li>
-                <li>flops = <span class="math inline">\(L \cdot 2 \cdot
-                b \cdot h \cdot d \cdot t^2\)</span></li>
-                </ul></li>
-                <li>Total
-                <ul>
-                <li>flops = <span class="math inline">\(4 \cdot L \cdot
-                b \cdot h \cdot d \cdot t^2 + L \cdot b \cdot h \cdot
-                t^2 \cdot \text{factor}\)</span></li>
-                <li>factor is less than <span
-                class="math inline">\(4d\)</span> which we ignore
-                first</li>
-                </ul></li>
-                <li>Each token
-                <ul>
-                <li>flops = <span class="math inline">\(4 \cdot L \cdot
-                h \cdot d \cdot t\)</span></li>
-                </ul></li>
-                </ul></li>
+                <li>输入：token id <span
+                class="math inline">\([B,T]\)</span></li>
+                <li>查表：<span class="math inline">\(E[\text{Vocab},
+                D]\)</span>，取出对应行</li>
+                <li>输出：<span
+                class="math inline">\(X[B,T,D]\)</span></li>
                 </ul>
-                <hr />
-                <p>Compare attention and gemm</p>
-                <p>attention flops / gemm flops = <span
-                class="math inline">\(\frac{t}{2hd + 1.5I} = \frac{t}{2D
-                + 1.5I}\)</span></p>
-                <p>For llama2-7b, <span class="math inline">\(2D +1.5I =
-                24704\)</span>, in most cases, <span
-                class="math inline">\(t\)</span> is much smaller thant
-                <span class="math inline">\(2D + 1.5T\)</span></p>
-                <h3 id="model-size">Model Size</h3>
-                <p>Model Parameters are saved in following martix:</p>
+                <p>该阶段计算量很小，几乎可以忽略不计。</p>
+                <h4 id="attention-阶段">Attention 阶段</h4>
+                <p>Attention 阶段核心包含以下几个数学公式：</p>
                 <ul>
-                <li><span class="math inline">\(W_{embed}\)</span></li>
-                <li><span class="math inline">\(W_{Q}, W_{K}, W_{V},
-                W_{O}\)</span></li>
-                <li><span class="math inline">\(W_{up},
-                W_{down}\)</span></li>
-                <li><span
-                class="math inline">\(W_{unembed}\)</span></li>
+                <li><span class="math inline">\(Q = X
+                W_{Q}\)</span></li>
+                <li><span class="math inline">\(K = X
+                W_{K}\)</span></li>
+                <li><span class="math inline">\(V = X
+                W_{V}\)</span></li>
+                <li><span class="math inline">\(Y = \text{Attention}(Q,
+                K, V) = \text{Softmax}(\frac{Q
+                K^{T}}{\sqrt{d_k}})V\)</span></li>
+                <li><span class="math inline">\(Z = YW_{O}\)</span></li>
+                <li><span class="math inline">\(\text{Output} =
+                \text{LayerNorm}(X+Z)\)</span></li>
                 </ul>
-                <hr />
+                <p>Attention 计算可以分为三大部分：</p>
                 <ul>
-                <li>GPT3:
-                <ul>
-                <li><span class="math inline">\(\text{d_embed} = D =
-                12,288\)</span>
-                <ul>
-                <li><span class="math inline">\(d_k = d_v = \frac{D}{h}
-                = 128\)</span></li>
-                </ul></li>
-                <li><span class="math inline">\(\text{n_vocab} = V =
-                50,257\)</span></li>
-                <li><span class="math inline">\(\text{n_intermidiate} =
-                I = 49,152\)</span></li>
-                <li><span class="math inline">\(\text{n_heads} = h =
-                96\)</span></li>
-                <li><span class="math inline">\(\text{n_layers} = L =
-                96\)</span></li>
-                </ul></li>
+                <li>线性投影/矩阵乘法（linear projection/gemm）：<span
+                class="math inline">\(X\)</span> 和 <span
+                class="math inline">\(W_{Q}, W_{K}, W_{V},
+                W_{O}\)</span> 相乘</li>
+                <li>注意力得分计算（attention score）</li>
+                <li>其他运算：layernorm</li>
                 </ul>
+                <p>其中 <strong>gemm</strong>
+                的计算量和访存量如下表所示：</p>
                 <table>
+                <colgroup>
+                <col style="width: 25%" />
+                <col style="width: 25%" />
+                <col style="width: 25%" />
+                <col style="width: 25%" />
+                </colgroup>
                 <thead>
                 <tr>
-                <th>Matrix</th>
-                <th>Equation</th>
-                <th>Parameters</th>
+                <th style="text-align: center;">operation</th>
+                <th style="text-align: center;">inference FLOPs</th>
+                <th style="text-align: center;">params</th>
+                <th style="text-align: center;">output shape</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr>
-                <td><span class="math inline">\(W_{embed},
-                W_{unembed}\)</span></td>
-                <td><span class="math inline">\(D \cdot V\)</span></td>
-                <td>617,558,016</td>
+                <td style="text-align: center;"><span
+                class="math inline">\(A[B,T,\textcolor{red}{D}] \cdot
+                W_Q[\textcolor{red}{D},N,H]\)</span></td>
+                <td style="text-align: center;"><span
+                class="math inline">\(2BTDNH\)</span></td>
+                <td style="text-align: center;"><span
+                class="math inline">\(DNH\)</span></td>
+                <td style="text-align: center;"><span
+                class="math inline">\(Q[B,T,D,H]\)</span></td>
                 </tr>
                 <tr>
-                <td><span class="math inline">\(W_{Q}, W_{K}, W_{V},
-                W_{O}\)</span></td>
-                <td><span class="math inline">\(L \cdot
-                D^2\)</span></td>
-                <td>14,495,514,624</td>
+                <td style="text-align: center;"><span
+                class="math inline">\(A[B,T,\textcolor{red}{D}] \cdot
+                W_K[\textcolor{red}{D},K,H]\)</span></td>
+                <td style="text-align: center;"><span
+                class="math inline">\(2BTDKH\)</span></td>
+                <td style="text-align: center;"><span
+                class="math inline">\(DKH\)</span></td>
+                <td style="text-align: center;"><span
+                class="math inline">\(K[B,T,K,H]\)</span></td>
                 </tr>
                 <tr>
-                <td><span class="math inline">\(W_{up},
-                W_{down}\)</span></td>
-                <td><span class="math inline">\(L \cdot D \cdot
-                I\)</span></td>
-                <td>57,982,058,496</td>
+                <td style="text-align: center;"><span
+                class="math inline">\(A[B,T,\textcolor{red}{D}] \cdot
+                W_V[\textcolor{red}{D},K,H]\)</span></td>
+                <td style="text-align: center;"><span
+                class="math inline">\(2BTDKH\)</span></td>
+                <td style="text-align: center;"><span
+                class="math inline">\(DKH\)</span></td>
+                <td style="text-align: center;"><span
+                class="math inline">\(V[B,T,K,H]\)</span></td>
+                </tr>
+                <tr>
+                <td style="text-align: center;"><span
+                class="math inline">\(A[B,T,\textcolor{red}{N,H}] \cdot
+                W_O[\textcolor{red}{N,H},D]\)</span></td>
+                <td style="text-align: center;"><span
+                class="math inline">\(2BTDNH\)</span></td>
+                <td style="text-align: center;"><span
+                class="math inline">\(DNH\)</span></td>
+                <td style="text-align: center;"><span
+                class="math inline">\(\text{Z}[B,T,D]\)</span></td>
                 </tr>
                 </tbody>
                 </table>
-                <p><span class="math inline">\(N = 2DV + 4LD^2 +
-                2LDI\)</span></p>
-                <p>updown * 2 + qkvo * 4 + embed * 2 = 175,181,291,520 ≈
-                175B</p>
-                <h3 id="autoregressive-process">Autoregressive
-                Process</h3>
+                <p>其中 <strong>attention score</strong>
+                的计算量如下表所示：</p>
+                <table>
+                <colgroup>
+                <col style="width: 36%" />
+                <col style="width: 56%" />
+                <col style="width: 6%" />
+                </colgroup>
+                <thead>
+                <tr>
+                <th>operation</th>
+                <th>inference FLOPs</th>
+                <th>output shape</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                <td><span
+                class="math inline">\(Q[\textcolor{blue}{B},T,\textcolor{blue}{K},G,\textcolor{red}{H}]
+                \cdot
+                K[\textcolor{blue}{B},S,\textcolor{blue}{K},\textcolor{red}{H}]\)</span></td>
+                <td><span
+                class="math inline">\(2BTSKGH=2BTSNH\)</span></td>
+                <td><span
+                class="math inline">\(\text{score}[B,T,S,K,G]=[B,T,S,N]\)</span></td>
+                </tr>
+                <tr>
+                <td><span class="math inline">\(\text{softmax}_{S}\
+                L[B,T,S,K,G]\)</span></td>
+                <td><span
+                class="math inline">\(O(BTSKG)=O(BTSN)\)</span></td>
+                <td></td>
+                </tr>
+                <tr>
+                <td><span
+                class="math inline">\(S[\textcolor{blue}{B},T,\textcolor{red}{S},\textcolor{blue}{K},G]
+                \cdot
+                V[\textcolor{blue}{B},\textcolor{red}{S},\textcolor{blue}{K},H]\)</span></td>
+                <td><span
+                class="math inline">\(2BTSKGH=2BTSNH\)</span></td>
+                <td><span
+                class="math inline">\(Y[B,T,K,G,H]=[B,T,N,H]\)</span></td>
+                </tr>
+                </tbody>
+                </table>
+                <p>根据以上推导，可以得到以下结论：</p>
+                <ul>
+                <li>Z 的 shape 和输入相同，都是 <span
+                class="math inline">\([B,T,D]\)</span>，所以可以将两者直接相加，再进行
+                LayerNorm 得到 Output。</li>
+                <li>Self Attention 的计算量取决于 q 和 k/v length。
+                <ul>
+                <li>如果忽略 softmax 的话，总共的计算量为 <span
+                class="math inline">\(O(BTSNH)\)</span>。</li>
+                </ul></li>
+                </ul>
+                <p>为了方便理解，我们考虑以下 <span
+                class="math inline">\(B=1\)</span>、<span
+                class="math inline">\(N=1\)</span>
+                的情况，计算过程为如下公式：</p>
+                <p><span class="math display">\[
+                \begin{aligned}
+                Y&amp;=\underbrace{\begin{bmatrix}
+                \alpha_{11} &amp; \alpha_{12} &amp; \cdots &amp;
+                \alpha_{1s}\\
+                \alpha_{21} &amp; \alpha_{22} &amp; \cdots &amp;
+                \alpha_{2s}\\
+                \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+                \alpha_{t1} &amp; \alpha_{t2} &amp; \cdots &amp;
+                \alpha_{ts}
+                \end{bmatrix}}_{\displaystyle
+                \alpha=\operatorname{Softmax}\!\left(\frac{QK^{\top}}{\sqrt{d_k}}\right)}
+                \begin{bmatrix}
+                v_1\\ v_2\\ \vdots\\ v_s
+                \end{bmatrix}
+                \\[4pt]
+                &amp;=\begin{bmatrix}
+                \alpha_{11}v_1+\alpha_{12}v_2+\cdots+\alpha_{1s}v_s\\
+                \alpha_{21}v_1+\alpha_{22}v_2+\cdots+\alpha_{2s}v_s\\
+                \vdots\\
+                \alpha_{t1}v_1+\alpha_{t2}v_2+\cdots+\alpha_{ts}v_s
+                \end{bmatrix}.
+                \end{aligned}
+                \]</span></p>
+                <p>其中 <span class="math inline">\(\alpha_{ij}\)</span>
+                是当前 token 和先前每一个 token
+                的注意力得分，通过以下方式计算出来，注意 Softmax
+                是按照行作用的：</p>
+                <p><span class="math display">\[
+                s_{ij}=\frac{q_i\cdot k_j}{\sqrt{d_k}},\qquad
+                \alpha_{ij}=\frac{e^{s_{ij}}}{\sum_{t=1}^{n} e^{s_{it}}}
+                \]</span></p>
+                <p><span class="math display">\[
+                QK^{T} = \begin{bmatrix}
+                q_1 \\ q_2 \\ \vdots \\ q_t
+                \end{bmatrix}
+                \begin{bmatrix}
+                k_1^T &amp; k_2^T &amp; \cdots &amp; k_s^T
+                \end{bmatrix} =
+                \begin{bmatrix}
+                q_1 \cdot k_1^T &amp; q_1 \cdot k_2^T &amp; q_1 \cdot
+                k_3^T &amp; q_1 \cdot k_s^T \\
+                q_2 \cdot k_1^T &amp; q_2 \cdot k_2^T &amp; q_2 \cdot
+                k_3^T &amp; q_2 \cdot k_s^T \\
+                \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+                q_t \cdot k_1^T &amp; q_t \cdot k_2^T &amp; q_t \cdot
+                k_3^T &amp; q_t \cdot k_s^T \\
+                \end{bmatrix}
+                \xrightarrow{\text{softmax 逐行归一化}}
+                \begin{bmatrix}
+                \alpha_{11} &amp; \alpha_{12} &amp; \cdots &amp;
+                \alpha_{1s}\\
+                \alpha_{21} &amp; \alpha_{22} &amp; \cdots &amp;
+                \alpha_{2s}\\
+                \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+                \alpha_{t1} &amp; \alpha_{t2} &amp; \cdots &amp;
+                \alpha_{ts}
+                \end{bmatrix}
+                \]</span></p>
+                <p>注意力得分矩阵的 shape 为 <span
+                class="math inline">\([T, S]\)</span>，行长度就是 query
+                length，列长度就是 kv length，每行就是一个 token 和之前
+                token 的注意力打分，还需要乘上对应的 <span
+                class="math inline">\(v\)</span> 向量。再乘以 <span
+                class="math inline">\(V\)</span>
+                的时候收缩的维度是在行上，所以 contracting dimension 是
+                <span class="math inline">\(S\)</span>。</p>
+                <h4 id="mlpmoe-阶段">MLP/MOE 阶段</h4>
+                <p>首先说一说 MLP，MLP 在当前 transformer
+                的模型中有两种常见实现方式，一种是 up/down，另一种是
+                in1/in2/out。</p>
+                <p>第一种 up/down 就是经典的 transformer
+                论文中提到的两层线性层，包含三个数学公式：</p>
+                <ul>
+                <li><span class="math inline">\(H_{\text{up}} =
+                \sigma(XW_{\text{up}} + b_{\text{up}})\)</span></li>
+                <li><span class="math inline">\(H_{\text{down}} =
+                H_{\text{up}}W_{\text{down}} +
+                b_{\text{down}}\)</span></li>
+                <li><span class="math inline">\(\text{Output} =
+                \text{LayerNorm}(X + H_{\text{down}})\)</span></li>
+                </ul>
+                <p>第二种方式是 in1/in2/out，两个 in
+                是并行的线性映射，一个负责主通道（值），一个负责门控（控制开关）。比传统
+                up/down 更灵活，计算量略多，但性能通常更好。</p>
+                <ul>
+                <li><span class="math inline">\(U = XW_{\text{in1}} +
+                b_{\text{in1}}\)</span></li>
+                <li><span class="math inline">\(G = XW_{\text{in2}} +
+                b_{\text{in2}}\)</span></li>
+                <li><span class="math inline">\(H_{\text{gated}} =
+                \sigma(G) \odot U\)</span></li>
+                <li><span class="math inline">\(H_{\text{out}} =
+                H_{\text{gated}} W_{\text{out}} +
+                b_{\text{out}}\)</span></li>
+                <li><span class="math inline">\(\text{Output} =
+                \text{LayerNorm}(X + H_{\text{out}})\)</span></li>
+                </ul>
+                <p>现在 transformer
+                架构通常使用第二种方式，几个核心的操作都是 gemm
+                操作，其计算量如下：</p>
+                <table>
+                <colgroup>
+                <col style="width: 33%" />
+                <col style="width: 33%" />
+                <col style="width: 33%" />
+                </colgroup>
+                <thead>
+                <tr>
+                <th>operation</th>
+                <th>inference FLOPs</th>
+                <th>params</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                <td><span
+                class="math inline">\(A[B,T,\textcolor{red}{D}] \cdot
+                W_{in1}[\textcolor{red}{D},F]\)</span></td>
+                <td><span class="math inline">\(2BTDF\)</span></td>
+                <td><span class="math inline">\(DF\)</span></td>
+                </tr>
+                <tr>
+                <td><span
+                class="math inline">\(A[B,T,\textcolor{red}{D}] \cdot
+                W_{in2}[\textcolor{red}{D},F]\)</span></td>
+                <td><span class="math inline">\(2BTDF\)</span></td>
+                <td><span class="math inline">\(DF\)</span></td>
+                </tr>
+                <tr>
+                <td><span class="math inline">\(\sigma(A_{in1})[B,T,F] *
+                A_{in2}[B,T,F]\)</span></td>
+                <td><span class="math inline">\(O(BTF)\)</span></td>
+                <td></td>
+                </tr>
+                <tr>
+                <td><span
+                class="math inline">\(A[B,T,\textcolor{red}{F}] \cdot
+                W_{out}[\textcolor{red}{F},D]\)</span></td>
+                <td><span class="math inline">\(2BTDF\)</span></td>
+                <td><span class="math inline">\(DF\)</span></td>
+                </tr>
+                </tbody>
+                </table>
+                <hr />
+                <p>如果是使用 MOE 的模型，主要包含以下几个数学公式：</p>
+                <ul>
+                <li>路由器：<span class="math inline">\(g=
+                W_{gate}x\)</span></li>
+                <li>选择 k 专家：<span class="math inline">\(S =
+                TopK(g,k)\)</span></li>
+                <li>归一化权重：<span class="math inline">\(w_{i} =
+                \frac{exp(g_i)}{\sum_{j \in S} exp(g_i)}, i \in
+                S\)</span></li>
+                <li>专家计算：<span class="math inline">\(f_{i}(x) =
+                \sigma(x W_{i,1})W_{i,2}\)</span></li>
+                <li>组合：<span class="math inline">\(y = \sum_{i=1}^{N}
+                w_i f_i(x)\)</span></li>
+                </ul>
+                <h4 id="unembedding-阶段">Unembedding 阶段</h4>
               </div>
     </div>
   </div>

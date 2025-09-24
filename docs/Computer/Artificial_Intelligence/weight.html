@@ -1,0 +1,103 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="../../WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="../../WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    weight
+  </title>
+    <link rel="stylesheet" href="../../WikiTheme/theme/bootstrap.css"  />
+        <script
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+        type="text/javascript"></script>
+      </head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">weight</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="container">
+    <div class="row">
+            <div id="TOC" class="span3">
+        <div class="well toc">
+          <ul>
+          <li><a href="#w1-w2-w3" id="toc-w1-w2-w3">w1, w2, w3</a></li>
+          <li><a href="#w13" id="toc-w13">w13</a></li>
+          </ul>
+        </div>
+      </div>
+            <div class="span9">
+                <h3 id="w1-w2-w3">w1, w2, w3</h3>
+                <p>在 MLP（前馈网络，FFN）里，通常有 2 或 3
+                个权重矩阵：</p>
+                <ul>
+                <li><p><strong>两路 (GPT-2 风格)</strong></p>
+                <p><span class="math display">\[
+                \text{FFN}(x) = \text{GeLU}(x W_1 + b_1) W_2 + b_2
+                \]</span></p></li>
+                <li><p><strong>三路 (Gated FFN, 也叫 SwiGLU/GeGLU，LLaMA
+                / DeepSeek 等用)</strong></p>
+                <p><span class="math display">\[
+                \text{FFN}(x) = (\text{GeLU}(x W_1) \;\; \odot \;\; x
+                W_3) W_2
+                \]</span></p>
+                <ul>
+                <li><code>W1</code>：生成激活（通常过 GeLU/SiLU）</li>
+                <li><code>W3</code>：生成门控向量（gating）</li>
+                <li><code>W2</code>：down
+                projection，把大维度投影回隐藏层</li>
+                </ul></li>
+                </ul>
+                <p>在 checkpoint 里，就会看到：</p>
+                <ul>
+                <li><code>w1_weight</code></li>
+                <li><code>w2_weight</code></li>
+                <li><code>w3_weight</code></li>
+                </ul>
+                <h3 id="w13">w13</h3>
+                <ul>
+                <li><p>在一些实现里，作者把 <code>w1</code> 和
+                <code>w3</code> 合并存成一个张量：</p>
+                <p><span class="math display">\[
+                W_{13} = \text{concat}(W_1, W_3,
+                \text{dim}=\text{output})
+                \]</span></p></li>
+                <li><p>在 forward 里，再一次性算：</p>
+                <p><span class="math display">\[
+                [h_1, h_3] = x \cdot W_{13}
+                \]</span></p></li>
+                <li><p>然后拆开 <code>h1</code> 和 <code>h3</code>
+                分别进入 GeLU 和 gate。</p></li>
+                <li><p>这样比单独调用两次 matmul 更高效。</p></li>
+                </ul>
+              </div>
+    </div>
+  </div>
+</body>
+
+</html>

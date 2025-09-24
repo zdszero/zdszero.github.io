@@ -1,6 +1,5 @@
 % Artificial Intelligence
 
-[aiak_sglang](./aiak_sglang.md)
 - ETC
     - [Knowledge Structure](./knowledge_structure.md)
     - [Paper Index](./Paper_Index.md)
@@ -29,6 +28,7 @@
         - [MoE](./MoE.md)
         - [MLP](./MLP.md)
     - [Residual](./Residual.md)
+    - [Computation](./Computation.md)
 - INFERENCE
     - [Parallelism](./Parallelism.md)
     - [Quantization](./Quantization.md)
@@ -39,3 +39,10 @@
     - [Scheduling](./Scheduling.md)
     - [ORCA](./ORCA.md)
     - [vllm](./vllm.md)
+- Torch
+    - [weight](./weight.md)
+- Kernels
+- Attention
+    - [MLA](./MLA.md)
+- Model Example
+    - [deepseek model](./deepseek_model.md)
