@@ -27,7 +27,72 @@
         <script
         src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
         type="text/javascript"></script>
-      </head>
+      <style type="text/css">
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+    </head>
 
 <body>
     <div class="navbar navbar-static-top">
@@ -46,60 +111,26 @@
             <div id="TOC" class="span3">
         <div class="well toc">
           <ul>
-          <li><a href="#mha" id="toc-mha">MHA</a></li>
-          <li><a href="#mla" id="toc-mla">MLA</a></li>
+          <li><a href="#concept" id="toc-concept">Concept</a></li>
+          <li><a href="#code" id="toc-code">Code</a></li>
           </ul>
         </div>
       </div>
             <div class="span9">
-                <h3 id="mha">MHA</h3>
-                <ul>
-                <li><span class="math inline">\([\mathbf{q}_{t,1};
-                \mathbf{q}_{t,2}; ...; \mathbf{q}_{t,n_h}] =
-                \mathbf{q}_t = W^{Q} \mathbf{h}_{t}\)</span></li>
-                <li><span class="math inline">\([\mathbf{k}_{t,1};
-                \mathbf{k}_{t,2}; ...; \mathbf{k}_{t,n_h}] =
-                \mathbf{k}_t = W^{K} \mathbf{h}_{t}\)</span></li>
-                <li><span class="math inline">\([\mathbf{v}_{t,1};
-                \mathbf{v}_{t,2}; ...; \mathbf{v}_{t,n_h}] =
-                \mathbf{v}_t = W^{V} \mathbf{h}_{t}\)</span></li>
-                <li><span class="math inline">\(\mathbf{o}_{t,i} =
-                \sum_{j=1}^{t}
-                \text{Softmax}_j\left(\frac{\mathbf{q}_{t,i}
-                \mathbf{k}_{j,i}^\top}{\sqrt{d_h}}\right)
-                \mathbf{v}_{j,i}\)</span>
-                <ul>
-                <li><span class="math inline">\(i\)</span> 表示第 <span
-                class="math inline">\(i\)</span> 个 head</li>
-                <li><span class="math inline">\(t\)</span> 当时计算第
-                <span class="math inline">\(t\)</span> 个 token 的
-                attention</li>
-                </ul></li>
-                <li><span class="math inline">\(\mathbf{u}_t =
-                W^O[\mathbf{o}_{t,1}; \mathbf{o}_{t,2}; ...;
-                \mathbf{o}_{t,n_h}]\)</span></li>
-                </ul>
-                <blockquote>
-                <p><span class="math inline">\(\mathbf{o}_{t,i}\)</span>
-                中的 <span class="math inline">\(t\)</span>
-                表示当前总共有 <span class="math inline">\(t\)</span> 个
-                token，</p>
-                </blockquote>
-                <h3 id="mla">MLA</h3>
-                <ul>
-                <li>$ _t^{KV} = W^{DKV} _t $
-                <ul>
-                <li>$ _t^{KV} ^{d_c} $：是 key 和 value 压缩的 latent
-                vector，且 KV 的压缩维度 $ d_c d_h n_h $</li>
-                <li>$ W^{DKV} ^{d_c d} $：down-projection 矩阵</li>
-                </ul></li>
-                <li>$ _t^C = W^{UK} _t^{KV} $</li>
-                <li>$ _t^C = W^{UV} _t^{KV} $
-                <ul>
-                <li>$ W^{UK}, W^{UV} ^{d_h n_h d_c} $：up-projection
-                矩阵</li>
-                </ul></li>
-                </ul>
+                <h3 id="concept">Concept</h3>
+                <figure>
+                <img src="../.././WikiImage/mla_naive_raw.png"
+                alt="mla_naive_raw" />
+                <figcaption
+                aria-hidden="true">mla_naive_raw</figcaption>
+                </figure>
+                <figure>
+                <img
+                src="../.././WikiImage/mla_naive_details.drawio.svg"
+                alt="mla naive details" />
+                <figcaption aria-hidden="true">mla naive
+                details</figcaption>
+                </figure>
                 <p><strong>为什么 rope 和 nope 分离？</strong></p>
                 <p>首先 rope 的旋转矩阵无法被融合进入 W_q 和 k_b
                 矩阵之中（该矩阵并不是一个常量）：</p>
@@ -110,15 +141,14 @@
                 = x_t \left( W_q^{(s)} \mathcal{R}_{t-i}
                 {W_k^{(s)}}^\top \right) c_i^\top
                 \]</span></p>
-                <p>MLA 在推理的时候不想缓存完整的 kv
-                cache，只想缓存压缩的
-                ckv，但这样的话需要在升维后再重新计算
+                <p>既然无法融合，在使用 MLA 的情况下如果需要使用
+                rope，就需要升维之后重新计算，但这样的话需要在升维后再重新计算
                 rope，它也不想，所以干脆把 q 和 k
                 拆成两部分，一部分是位置编码的，一部分是无关位置编码的。带位置编码的
                 k 可以缓存，比缓存全部维度都带位置的 k 强。</p>
                 <p><strong>normal 和 absorb 的区别？</strong></p>
-                <p>absorb 就是把 kv_b 拆分成 k_b 和 v_b，然后分别合入到
-                W_q 和 O_proj 中。</p>
+                <p>absorb 就是把 wkv_b 拆分成 wk_b_nope 和
+                wv_b，然后分别合入到 wq_b_nope 和 o_proj 中。</p>
                 <p><span class="math display">\[\mathbf{q}_t^\top
                 \mathbf{k}_j^C = (W^Q \mathbf{h}_t)^\top W^{UK}
                 \mathbf{c}_j^{KV} = \mathbf{h}_t^\top (W^{Q^\top})
@@ -132,6 +162,84 @@
                 W^{OUV} \sum_{j=1}^t \text{Softmax} \left(
                 \frac{\mathbf{q}_t^\top \mathbf{k}_j^{KV}}{\sqrt{d_h}}
                 \right) \mathbf{c}_j^{KV}\]</span></p>
+                <p>也就是将 wq_b_nope 和 wk_b_nope 进行一个融合，wv_b 和
+                o_proj 进行一个融合。融合之后实际上就相当于 kv_latent 和
+                absorb 之后的 q 每个 head 做 MQA。</p>
+                <p>此时 kv_latent 的 dim 为 (b, t, c)，q_absorb 的 dim
+                为 (b, s, h, c)，两者相乘实际上实在 lora_rank
+                上做向量内积，所以乘法结果 scores 的 dim 为 (b, t, s,
+                h)，然后再将 scores 和 kv_latent 相乘，实际上实在 kv_len
+                上做内积，所以结果的 dim 为 (b, s, h,
+                c)，可以发现，此时结果的最后一个维度是 c 而不是
+                h<em>d，但是我们已经将 o_proj 和 wv_b
+                融合了，融合后矩阵的 dim 为 (b, hd, hidden_size) </em>
+                (b, c, hd) → (b, c,
+                hidden_size)，所以这么一乘最后还是能够得到
+                hidden_size。</p>
+                <figure>
+                <img src="../.././WikiImage/mla_absorb.drawio.svg"
+                alt="mla absorb" />
+                <figcaption aria-hidden="true">mla absorb</figcaption>
+                </figure>
+                <h3 id="code">Code</h3>
+                <ul>
+                <li><strong>对于 q 来说</strong>，首先计算
+                latent，然后由 latent 计算出来 q 的 rope 和 nope 部分
+                <ul>
+                <li><code>qk_head_dim = qk_rope_head_dim + qk_nope_head_dim</code></li>
+                <li><code>hidden_size</code> → <code>qk_lora_rank</code>
+                → <code>n_heads * qk_head_dim</code></li>
+                </ul></li>
+                </ul>
+                <div class="sourceCode" id="cb1"><pre
+                class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="va">self</span>.q_lora_rank <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    q <span class="op">=</span> <span class="va">self</span>.wq(x)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    q <span class="op">=</span> <span class="va">self</span>.wq_b(<span class="va">self</span>.q_norm(<span class="va">self</span>.wq_a(x)))</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>n_local_heads <span class="op">=</span> n_heads <span class="op">/</span> world_size</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>q <span class="op">=</span> q.view(bsz, seqlen, n_local_heads, qk_head_dim)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>q_nope, q_pe <span class="op">=</span> torch.split(q, [qk_nope_head_dim, qk_rope_head_dim], dim<span class="op">=-</span><span class="dv">1</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>q_pe <span class="op">=</span> apply_rope(q_pe)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>q <span class="op">=</span> torch.cat([q_nope, q_pe], dim<span class="op">=-</span><span class="dv">1</span>)</span></code></pre></div>
+                <ul>
+                <li><strong>对于 kv 来说</strong>
+                <ul>
+                <li>k 的 rope 部分直接由 x 计算得到，并且是 n_heads
+                共用一个 k_rope</li>
+                <li>k 的 nope 部分、v 由 kv_compressed 升维得到</li>
+                </ul></li>
+                </ul>
+                <div class="sourceCode" id="cb2"><pre
+                class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>kv <span class="op">=</span> <span class="va">self</span>.wkv_a(x)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>kv, k_pe <span class="op">=</span> torch.split(kv, [kv_lora_rank, qk_rope_head_dim])</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>k_pe <span class="op">=</span> apply_rope(k_pe)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>k_pe <span class="op">=</span> k_pe.expand(<span class="op">-</span><span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>, n_heads, <span class="op">-</span><span class="dv">1</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>kv <span class="op">=</span> <span class="va">self</span>.wkv_b(<span class="va">self</span>.kv_norm(kv))</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>k_nope, v <span class="op">=</span> torch.split(kv, [qk_nope_head_dim, v_head_dim])</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>k <span class="op">=</span> torch.cat([k_nope, k_pe], dim<span class="op">=-</span><span class="dv">1</span>)</span></code></pre></div>
+                <p>对于 <strong>kv cache</strong> 保存和
+                <strong>attention 计算</strong>：</p>
+                <div class="sourceCode" id="cb3"><pre
+                class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>k_cache[:bsz, start_pos:end_pos] <span class="op">=</span> k</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>v_cache[:bsz, start_pos:end_pos] <span class="op">=</span> v</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>scores <span class="op">=</span> torch.einsum(<span class="st">&quot;bshd,bthd-&gt;bsht&quot;</span>, q, k_cache[:bsz, :end_pos]) <span class="op">*</span> softmax_scale</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> torch.einsum(<span class="st">&quot;bsth,bthd-&gt;bshd&quot;</span>, scores, <span class="va">self</span>.v_cache[:bsz, :end_pos])</span></code></pre></div>
+                <p>上述是 naive attention
+                的实现，问题在于仍然需要保存完整的 kv
+                cache，我们只想保存 latent，所以可以将 q_nope 和 wkv_b
+                的 k_nope 部分进行一个融合。</p>
+                <div class="sourceCode" id="cb4"><pre
+                class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>wkv_b <span class="op">=</span> wkv_b.view(n_local_heads, kv_lora_rank, <span class="op">-</span><span class="dv">1</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>q_nope <span class="op">=</span> torch.einsum(<span class="st">&quot;bshd,hdc-&gt;bshc&quot;</span>, q_nope, wkv_b[:, :qk_nope_head_dim]) </span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>q_absorb <span class="op">=</span> q_nope</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>kv_cache[:bsz, start_pos:end_pos] <span class="op">=</span> <span class="va">self</span>.kv_norm(kv)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>k_pe_cache[:bsz, start_pos:end_pos]</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>scores <span class="op">=</span> (</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    torch.einsum(<span class="st">&quot;bshc,btc-&gt;bsht&quot;</span>, q_absorb, kv_cache[:bsz, :end_pos]) <span class="op">+</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    torch.einsum(<span class="st">&quot;bshr,btr-&gt;bsht&quot;</span>, q_pe, k_pe_cache[:bsz, :end_pos])</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>) <span class="op">*</span> softmax_scale</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> torch.einsum(<span class="st">&quot;bsht,btc-&gt;bshc&quot;</span>, scores, kv_cache[:bsz, :end_pos])</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> torch.einsum(<span class="st">&quot;bshc,hdc-&gt;bshd&quot;</span>, x, wkv_b[:, <span class="op">-</span>v_head_dim:])</span></code></pre></div>
               </div>
     </div>
   </div>

@@ -19,6 +19,7 @@
     - [Naming](./Naming.md)
 - MATH
     - [Linear Algebra](./Linear_Algebra.md)
+    - [Vector](./Vector.md)
     - [Neural Network](./neural_network.md)
     - [Encoding](./Encoding.md)
     - [Normalization](./Normalization.md)
@@ -40,9 +41,11 @@
     - [ORCA](./ORCA.md)
     - [vllm](./vllm.md)
 - Torch
+    - [types](./types.md)
     - [weight](./weight.md)
 - Kernels
 - Attention
+    - [MHA](./MHA.md)
     - [MLA](./MLA.md)
 - Model Example
     - [deepseek model](./deepseek_model.md)
