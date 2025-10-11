@@ -13,3 +13,7 @@
 更简单的方式是去除多头的符号，因为 head，q_len 是可以并行的扩展。
 
 - $\mathbf{o}_{t} = \sum_{j=1}^{t} \text{Softmax}_j\left(\frac{\mathbf{q}_{t} \mathbf{k}_{j}^\top}{\sqrt{d_h}}\right) \mathbf{v}_{j}$
+
+![mha process](../../../docs/WikiImage/mha_computation.drawio.svg)
+
+可以通过上述图示理解 MHA 的过程，Q 由 q_len 个 q 向量组成（在 torch 中一般表示为行向量），K 和 V 由 kv_len 个列向量组成

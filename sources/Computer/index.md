@@ -6,6 +6,8 @@
 
 [Artificial Intelligence](./Artificial_Intelligence/index.md)
 
+[Lectrues](./Lectrues/index.md)
+
 [Network](./Network/index.md)
 
 [Operating](./Operating/index.md)

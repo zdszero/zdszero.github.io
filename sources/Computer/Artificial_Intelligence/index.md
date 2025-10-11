@@ -40,6 +40,7 @@
     - [Scheduling](./Scheduling.md)
     - [ORCA](./ORCA.md)
     - [vllm](./vllm.md)
+    - [Dualpipe](./Dualpipe.md)
 - Torch
     - [types](./types.md)
     - [weight](./weight.md)
