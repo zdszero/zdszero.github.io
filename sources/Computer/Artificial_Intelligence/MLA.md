@@ -1,10 +1,12 @@
 % MLA
 
-### Concept
+### MLA
 
 ![mla_naive_raw](../../../docs/WikiImage/mla_naive_raw.png)
 
 ![mla naive details](../../../docs/WikiImage/mla_naive_details.drawio.svg)
+
+### Rope
 
 __为什么 rope 和 nope 分离？__
 
@@ -20,6 +22,8 @@ $$
 
 既然无法融合，在使用 MLA 的情况下如果需要使用 rope，就需要升维之后重新计算，但这样的话需要在升维后再重新计算 rope，它也不想，所以干脆把 q 和 k 拆成两部分，一部分是位置编码的，一部分是无关位置编码的。带位置编码的 k 可以缓存，比缓存全部维度都带位置的 k 强。
 
+### Absorb
+
 __normal 和 absorb 的区别？__
 
 absorb 就是把 wkv_b 拆分成 wk_b_nope 和 wv_b，然后分别合入到 wq_b_nope 和 o_proj 中。
@@ -33,6 +37,11 @@ $$\mathbf{u}_t = W^O \mathbf{o}_t = W^{O} W^{UV} \sum_{j=1}^t \text{Softmax}_j \
 此时 kv_latent 的 dim 为 (b, t, c)，q_absorb 的 dim 为 (b, s, h, c)，两者相乘实际上实在 lora_rank 上做向量内积，所以乘法结果 scores 的 dim 为 (b, t, s, h)，然后再将 scores 和 kv_latent 相乘，实际上实在 kv_len 上做内积，所以结果的 dim 为 (b, s, h, c)，可以发现，此时结果的最后一个维度是 c 而不是 h*d，但是我们已经将 o_proj 和 wv_b 融合了，融合后矩阵的 dim 为 (b, hd, hidden_size) * (b, c, hd) → (b, c, hidden_size)，所以这么一乘最后还是能够得到 hidden_size。
 
 ![mla absorb](../../../docs/WikiImage/mla_absorb.drawio.svg)
+
+### Analysis
+
+```python
+```
 
 ### Code
 

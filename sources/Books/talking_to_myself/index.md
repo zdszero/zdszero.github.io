@@ -4,6 +4,8 @@
 - [religion](./religion.md)
 - [house](./house.md)
 - [system](./system.md)
+- [god](./god.md)
+- [chaos system](./chaos_system.md)
 - [life](./life.md)
 - [class](./class.md)
 - [picture](./picture.md)
