@@ -108,16 +108,13 @@
             <div id="TOC" class="span3">
         <div class="well toc">
           <ul>
-          <li><a href="#mircro-batch" id="toc-mircro-batch">Mircro
-          Batch</a></li>
-          <li><a href="#ds-prefill" id="toc-ds-prefill">DS
-          Prefill</a></li>
+          <li><a href="#prefill" id="toc-prefill">Prefill</a></li>
+          <li><a href="#decode" id="toc-decode">Decode</a></li>
           </ul>
         </div>
       </div>
             <div class="span9">
-                <h3 id="mircro-batch">Mircro Batch</h3>
-                <h3 id="ds-prefill">DS Prefill</h3>
+                <h3 id="prefill">Prefill</h3>
                 <figure>
                 <img
                 src="../.././WikiImage/image_2025-09-30-15-32-16.png"
@@ -158,6 +155,30 @@
 <span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>combine_overlaped2_time <span class="op">=</span> (</span>
 <span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    shared_time <span class="op">+</span> moe_layer_time <span class="op">+</span> <span class="dv">20</span> <span class="cf">if</span> combine_overlaped2 <span class="cf">else</span> combine_time</span>
 <span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    )</span></code></pre></div>
+                <h3 id="decode">Decode</h3>
+                <p>In prefill, the prompt has many tokens, so we need to
+                dispatch large tensors to EP (expert parallel) workers
+                and then combine results. Because the data volume is
+                large, the all-to-all communication itself needs GPU SM
+                participation to pack/unpack and move chunks
+                efficiently.</p>
+                <p>In decoding, each step processes only one token per
+                sequence, so the tensors are tiny; after launching
+                RDMA/NVLink sends, data movement happens asynchronously
+                in hardware, without occupying SMs.</p>
+                <figure>
+                <img
+                src="../.././WikiImage/image_2025-10-13-10-48-26.png"
+                alt="deepseek decode overlap" />
+                <figcaption aria-hidden="true">deepseek decode
+                overlap</figcaption>
+                </figure>
+                <ul>
+                <li><code>shared + attn0</code> vs
+                <code>dispatch</code></li>
+                <li><code>attn1</code> vs <code>combine</code></li>
+                <li><code>mlp</code> 不需要 overlap</li>
+                </ul>
               </div>
     </div>
   </div>

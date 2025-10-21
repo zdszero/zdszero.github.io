@@ -1,0 +1,303 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="../../WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="../../WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    Hardware
+  </title>
+    <link rel="stylesheet" href="../../WikiTheme/theme/bootstrap.css"  />
+        <script
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+        type="text/javascript"></script>
+      </head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">Hardware</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="container">
+    <div class="row">
+            <div id="TOC" class="span3">
+        <div class="well toc">
+          <ul>
+          <li><a href="#mfu" id="toc-mfu">MFU</a></li>
+          <li><a href="#hgx" id="toc-hgx">HGX</a></li>
+          <li><a href="#hopper" id="toc-hopper">Hopper</a></li>
+          </ul>
+        </div>
+      </div>
+            <div class="span9">
+                <h3 id="mfu">MFU</h3>
+                <p><strong>当你计算一个芯片的 MFU（Model FLOPs
+                Utilization）时，必须考虑所使用的数据类型（precision
+                format），例如 FP8、BF16、FP16 等</strong>。</p>
+                <table>
+                <colgroup>
+                <col style="width: 45%" />
+                <col style="width: 54%" />
+                </colgroup>
+                <thead>
+                <tr>
+                <th>名称</th>
+                <th>含义</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                <td><strong>Theoretical peak FLOPs</strong></td>
+                <td>芯片在给定精度下的最大理论算力（例如 FP8 算力 vs
+                BF16 算力不同）</td>
+                </tr>
+                <tr>
+                <td><strong>Measured FLOPs</strong></td>
+                <td>实际模型执行过程中统计到的有效浮点运算数量</td>
+                </tr>
+                <tr>
+                <td><strong>MFU (Model FLOPs Utilization)</strong></td>
+                <td>模型在实际运行中利用了理论算力的多少比例</td>
+                </tr>
+                </tbody>
+                </table>
+                <p>计算公式通常是：</p>
+                <p><span class="math display">\[\text{MFU} =
+                \frac{\text{Measured FLOPs}}{\text{Theoretical peak
+                FLOPs for the same precision}}\]</span></p>
+                <p>H200 上的 Tensor Core
+                是“同一批硬件单元”，<strong>支持多种数据精度模式</strong>；
+                不同精度下的峰值算力差异源于每个 Tensor Core
+                在该模式下的有效吞吐率不同，而不是“专门为某个精度配置了不同数量的
+                Tensor Core”。</p>
+                <h3 id="hgx">HGX</h3>
+                <table>
+                <colgroup>
+                <col style="width: 54%" />
+                <col style="width: 26%" />
+                <col style="width: 20%" />
+                </colgroup>
+                <thead>
+                <tr>
+                <th>Technical Specifications¹</th>
+                <th>GB200 NVL72</th>
+                <th>HGX B200</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                <td><strong>Blackwell GPUs | Grace CPUs</strong></td>
+                <td>72 | 36</td>
+                <td>8 | 0</td>
+                </tr>
+                <tr>
+                <td><strong>CPU Cores</strong></td>
+                <td>2,592 Arm Neoverse V2 Cores</td>
+                <td>-</td>
+                </tr>
+                <tr>
+                <td><strong>Total FP4 Tensor Core</strong></td>
+                <td>1,440 PFLOPS</td>
+                <td>144 PFLOPS</td>
+                </tr>
+                <tr>
+                <td><strong>Total FP8/FP6 Tensor Core</strong></td>
+                <td>720 PFLOPS</td>
+                <td>72 PFLOPS</td>
+                </tr>
+                <tr>
+                <td><strong>Total Fast Memory</strong></td>
+                <td>Up to 30TB</td>
+                <td>Up to 1.4TB</td>
+                </tr>
+                <tr>
+                <td><strong>Total Memory Bandwidth</strong></td>
+                <td>Up to 576TB/s</td>
+                <td>Up to 62TB/s</td>
+                </tr>
+                <tr>
+                <td><strong>Total NVLink Bandwidth</strong></td>
+                <td>130TB/s</td>
+                <td>14.4TB/s</td>
+                </tr>
+                <tr>
+                <td><strong>Individual Blackwell GPU
+                Specifications</strong></td>
+                <td></td>
+                <td></td>
+                </tr>
+                <tr>
+                <td><strong>FP4 Tensor Core</strong></td>
+                <td>20 PFLOPS</td>
+                <td>18 PFLOPS</td>
+                </tr>
+                <tr>
+                <td><strong>FP8/FP6 Tensor Core</strong></td>
+                <td>10 PFLOPS</td>
+                <td>9 PFLOPS</td>
+                </tr>
+                <tr>
+                <td><strong>INT8 Tensor Core</strong></td>
+                <td>10 POPS</td>
+                <td>9 POPS</td>
+                </tr>
+                <tr>
+                <td><strong>FP16/BF16 Tensor Core</strong></td>
+                <td>5 PFLOPS</td>
+                <td>4.5 PFLOPS</td>
+                </tr>
+                <tr>
+                <td><strong>TF32 Tensor Core</strong></td>
+                <td>2.5 PFLOPS</td>
+                <td>2.2 PFLOPS</td>
+                </tr>
+                <tr>
+                <td><strong>FP32</strong></td>
+                <td>80 TFLOPS</td>
+                <td>75 TFLOPS</td>
+                </tr>
+                <tr>
+                <td><strong>FP64/FP64 Tensor Core</strong></td>
+                <td>40 TFLOPS</td>
+                <td>37 TFLOPS</td>
+                </tr>
+                <tr>
+                <td><strong>GPU Memory | Bandwidth</strong></td>
+                <td>186GB HBM3E | 8TB/s</td>
+                <td>180GB HBM3E | 7.7TB/s</td>
+                </tr>
+                <tr>
+                <td><strong>Multi-Instance GPU (MIG)</strong></td>
+                <td>7</td>
+                <td></td>
+                </tr>
+                <tr>
+                <td><strong>Decompression Engine</strong></td>
+                <td>Yes</td>
+                <td></td>
+                </tr>
+                <tr>
+                <td><strong>Decoders</strong></td>
+                <td>7 NVDEC²</td>
+                <td></td>
+                </tr>
+                <tr>
+                <td></td>
+                <td>7 nvJPEG</td>
+                <td></td>
+                </tr>
+                <tr>
+                <td><strong>Max Thermal Design Power (TDP)</strong></td>
+                <td>Configurable up to 1,200W</td>
+                <td>Configurable up to 1,000W</td>
+                </tr>
+                <tr>
+                <td><strong>Interconnect</strong></td>
+                <td>5th Generation NVLink: 1.8TB/s</td>
+                <td></td>
+                </tr>
+                <tr>
+                <td></td>
+                <td>PCIe Gen5: 128GB/s</td>
+                <td></td>
+                </tr>
+                <tr>
+                <td><strong>Server Options</strong></td>
+                <td>NVIDIA GB200 NVL72 partner and NVIDIA-Certified
+                Systems™ with 72 GPUs</td>
+                <td>NVIDIA HGX B200 partner and NVIDIA-Certified Systems
+                with 8 GPUs</td>
+                </tr>
+                </tbody>
+                </table>
+                <h3 id="hopper">Hopper</h3>
+                <table>
+                <thead>
+                <tr>
+                <th>Specification</th>
+                <th>H200 SXM</th>
+                <th>H200 NVL</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                <td><strong>FP64</strong></td>
+                <td>34 TFLOPS</td>
+                <td>30 TFLOPS</td>
+                </tr>
+                <tr>
+                <td><strong>FP64 Tensor Core</strong></td>
+                <td>67 TFLOPS</td>
+                <td>60 TFLOPS</td>
+                </tr>
+                <tr>
+                <td><strong>FP32</strong></td>
+                <td>67 TFLOPS</td>
+                <td>60 TFLOPS</td>
+                </tr>
+                <tr>
+                <td><strong>TF32 Tensor Core</strong></td>
+                <td>989 TFLOPS</td>
+                <td>835 TFLOPS</td>
+                </tr>
+                <tr>
+                <td><strong>BFLOAT16 Tensor Core</strong></td>
+                <td>1,979 TFLOPS</td>
+                <td>1,671 TFLOPS</td>
+                </tr>
+                <tr>
+                <td><strong>FP16 Tensor Core</strong></td>
+                <td>1,979 TFLOPS</td>
+                <td>1,671 TFLOPS</td>
+                </tr>
+                <tr>
+                <td><strong>FP8 Tensor Core</strong></td>
+                <td>3,958 TFLOPS</td>
+                <td>3,341 TFLOPS</td>
+                </tr>
+                <tr>
+                <td><strong>INT8 Tensor Core</strong></td>
+                <td>3,958 TFLOPS</td>
+                <td>3,341 TFLOPS</td>
+                </tr>
+                <tr>
+                <td><strong>GPU Memory</strong></td>
+                <td>141 GB</td>
+                <td>141 GB</td>
+                </tr>
+                <tr>
+                <td><strong>GPU Memory Bandwidth</strong></td>
+                <td>4.8 TB/s</td>
+                <td>4.8 TB/s</td>
+                </tr>
+                </tbody>
+                </table>
+              </div>
+    </div>
+  </div>
+</body>
+
+</html>

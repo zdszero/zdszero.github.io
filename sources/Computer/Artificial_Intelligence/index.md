@@ -30,6 +30,7 @@
         - [MLP](./MLP.md)
     - [Residual](./Residual.md)
     - [Computation](./Computation.md)
+    - [Hardware](./Hardware.md)
 - INFERENCE
     - [Parallelism](./Parallelism.md)
     - [Quantization](./Quantization.md)
@@ -46,6 +47,7 @@
     - [weight](./weight.md)
 - Kernels
 - Attention
+    - [Kernel Argument](./Kernel_Argument.md)
     - [MHA](./MHA.md)
     - [MLA](./MLA.md)
 - Model Example

@@ -90,7 +90,12 @@
                 </figure>
                 <p>可以通过上述图示理解 MHA 的过程，Q 由 q_len 个 q
                 向量组成（在 torch 中一般表示为行向量），K 和 V 由
-                kv_len 个列向量组成</p>
+                kv_len 个列向量组成。</p>
+                <p>在不考虑 attention mask 的情况下，计算量为：</p>
+                <p>q_len * kv_len * (qk_dim + v_dim) * n_heads * 2</p>
+                <p>在考虑 attention mask 的情况下，计算量为：</p>
+                <p>(q_len * kv_len - (q_len - 1)^2 / 2) * (qk_dim +
+                v_dim) * n_heads * 2</p>
               </div>
     </div>
   </div>
