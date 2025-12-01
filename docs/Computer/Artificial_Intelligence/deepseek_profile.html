@@ -1,0 +1,337 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="../../WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="../../WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    deepseek profile
+  </title>
+    <link rel="stylesheet" href="../../WikiTheme/theme/bootstrap.css"  />
+        </head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">deepseek profile</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="container">
+    <div class="row">
+            <div id="TOC" class="span3">
+        <div class="well toc">
+          <ul>
+          <li><a href="#h800" id="toc-h800">H800</a></li>
+          </ul>
+        </div>
+      </div>
+            <div class="span9">
+                <h3 id="h800">H800</h3>
+                <p>D4 Profile</p>
+                <table>
+                <colgroup>
+                <col style="width: 20%" />
+                <col style="width: 23%" />
+                <col style="width: 29%" />
+                <col style="width: 12%" />
+                <col style="width: 15%" />
+                </colgroup>
+                <thead>
+                <tr>
+                <th>层级</th>
+                <th>模块</th>
+                <th>Kernel</th>
+                <th>h800 ds prof</th>
+                <th>b 200 d1 mtp on</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                <td></td>
+                <td>端到端</td>
+                <td></td>
+                <td>96ms</td>
+                <td></td>
+                </tr>
+                <tr>
+                <td></td>
+                <td>61层执行耗时</td>
+                <td></td>
+                <td>87.32ms</td>
+                <td></td>
+                </tr>
+                <tr>
+                <td>attention层</td>
+                <td>self.input_layernorm</td>
+                <td>flashinfer::norm::FusedAddRM</td>
+                <td>4</td>
+                <td></td>
+                </tr>
+                <tr>
+                <td>attention层</td>
+                <td>q_a_kv_a</td>
+                <td>deep_gemm::sm100_fp8_gem</td>
+                <td>13</td>
+                <td></td>
+                </tr>
+                <tr>
+                <td>attention层</td>
+                <td>self.input_layernorm</td>
+                <td>rmsnorm_split_col_kernel</td>
+                <td>2</td>
+                <td></td>
+                </tr>
+                <tr>
+                <td>attention层</td>
+                <td>q_proj_b</td>
+                <td>per_token_group_quant_fp8_</td>
+                <td>2</td>
+                <td></td>
+                </tr>
+                <tr>
+                <td>attention层</td>
+                <td>q_proj_b</td>
+                <td>deep_gemm::sm100_fp8_gem</td>
+                <td>19</td>
+                <td></td>
+                </tr>
+                <tr>
+                <td>attention层</td>
+                <td>torch.bmm transpose(0,1)</td>
+                <td>nvjet_tst_256x128_64x5_2x1</td>
+                <td>16</td>
+                <td></td>
+                </tr>
+                <tr>
+                <td>attention层</td>
+                <td>self.rotary_emb</td>
+                <td>elementwise_kernel</td>
+                <td></td>
+                <td></td>
+                </tr>
+                <tr>
+                <td>attention层</td>
+                <td>self.rotary_emb</td>
+                <td>rotary_embedding_kernel</td>
+                <td>7</td>
+                <td></td>
+                </tr>
+                <tr>
+                <td>attention层</td>
+                <td>self.rotary_emb</td>
+                <td>unrolled_elementwise_kernel</td>
+                <td></td>
+                <td></td>
+                </tr>
+                <tr>
+                <td>attention层</td>
+                <td>self.rotary_emb</td>
+                <td>index_elementwise_kernel</td>
+                <td></td>
+                <td></td>
+                </tr>
+                <tr>
+                <td>attention层</td>
+                <td>self.attn_mqa</td>
+                <td>mhaSm100fKernel_Qkv</td>
+                <td>255</td>
+                <td>225.767</td>
+                </tr>
+                <tr>
+                <td>attention层</td>
+                <td>torch.bmm transpose(0,1)</td>
+                <td>nvjet_tst_64x128_64x13_2x1</td>
+                <td>15</td>
+                <td></td>
+                </tr>
+                <tr>
+                <td>attention层</td>
+                <td>self.o_proj</td>
+                <td>elementwise_kernel</td>
+                <td></td>
+                <td></td>
+                </tr>
+                <tr>
+                <td>attention层</td>
+                <td>self.o_proj</td>
+                <td>per_token_group_quant_fp8_</td>
+                <td>5</td>
+                <td></td>
+                </tr>
+                <tr>
+                <td>attention层</td>
+                <td>self.o_proj</td>
+                <td>deep_gemm::sm100_fp8_gem</td>
+                <td>50</td>
+                <td>43.512</td>
+                </tr>
+                <tr>
+                <td>attention层</td>
+                <td>sum</td>
+                <td></td>
+                <td>388</td>
+                <td></td>
+                </tr>
+                <tr>
+                <td>gate层</td>
+                <td>self.input_layernorm</td>
+                <td>flashinfer::norm::FusedAddRM</td>
+                <td>3</td>
+                <td></td>
+                </tr>
+                <tr>
+                <td>gate层</td>
+                <td></td>
+                <td>nvjet_tst_64x32_64x16_2x4_2</td>
+                <td>6</td>
+                <td></td>
+                </tr>
+                <tr>
+                <td>gate层</td>
+                <td></td>
+                <td>cublasLt::splitKreduce_kernel</td>
+                <td>2</td>
+                <td></td>
+                </tr>
+                <tr>
+                <td>gate层</td>
+                <td></td>
+                <td>distribution_elementwise_grid</td>
+                <td></td>
+                <td></td>
+                </tr>
+                <tr>
+                <td>gate层</td>
+                <td></td>
+                <td>topk</td>
+                <td>8</td>
+                <td></td>
+                </tr>
+                <tr>
+                <td>gate层</td>
+                <td>sum</td>
+                <td></td>
+                <td>19</td>
+                <td></td>
+                </tr>
+                <tr>
+                <td>moe层</td>
+                <td>dispatch</td>
+                <td>deep_ep::internode_ll::dispatch</td>
+                <td>187</td>
+                <td>48.212</td>
+                </tr>
+                <tr>
+                <td>moe层</td>
+                <td>up_gate_gemm</td>
+                <td>deep_gemm::sm100_fp8_gem</td>
+                <td>81</td>
+                <td>195.136</td>
+                </tr>
+                <tr>
+                <td>moe层</td>
+                <td>up_gate_gemm</td>
+                <td>vectorized_elementwise_kernel</td>
+                <td></td>
+                <td></td>
+                </tr>
+                <tr>
+                <td>moe层</td>
+                <td>silu</td>
+                <td>silu_and_mul_kernel_ep_index</td>
+                <td>8</td>
+                <td>40.491</td>
+                </tr>
+                <tr>
+                <td>moe层</td>
+                <td>down_gemm</td>
+                <td>deep_gemm::sm100_fp8_gem</td>
+                <td>39</td>
+                <td>104.671</td>
+                </tr>
+                <tr>
+                <td>moe层</td>
+                <td>combine</td>
+                <td></td>
+                <td>394</td>
+                <td></td>
+                </tr>
+                <tr>
+                <td>moe层</td>
+                <td>sum</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                </tr>
+                <tr>
+                <td>combine/share overlap</td>
+                <td></td>
+                <td>deep_ep::internode_ll::combine</td>
+                <td></td>
+                <td></td>
+                </tr>
+                <tr>
+                <td>combine/share overlap</td>
+                <td></td>
+                <td>per_token_group_quant_fp8_</td>
+                <td>3</td>
+                <td></td>
+                </tr>
+                <tr>
+                <td>combine/share overlap</td>
+                <td></td>
+                <td>deep_gemm::sm100_fp8_gem</td>
+                <td>17</td>
+                <td></td>
+                </tr>
+                <tr>
+                <td>combine/share overlap</td>
+                <td></td>
+                <td>act_and_mul_kernel</td>
+                <td>4</td>
+                <td></td>
+                </tr>
+                <tr>
+                <td>combine/share overlap</td>
+                <td></td>
+                <td>deep_gemm::sm100_fp8_gem</td>
+                <td>10</td>
+                <td></td>
+                </tr>
+                <tr>
+                <td>combine/share overlap</td>
+                <td></td>
+                <td>deep_ep::internode_ll::combine</td>
+                <td></td>
+                <td></td>
+                </tr>
+                </tbody>
+                </table>
+              </div>
+    </div>
+  </div>
+</body>
+
+</html>

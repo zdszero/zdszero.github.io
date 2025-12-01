@@ -23,6 +23,10 @@
     - moe 每层选 8 个专家
 - `n_shared_experts`: 1
     - 每层有一个共享专家，所以每层专家总数为 257
+- `intermediate_size`: 18432 = 2048 * 9
+    - 前三层（9*`moe_intermediate_size`）
+- `moe_intermediate_size`: 2048
+    - 路由专家 MLP 中间维度
 
 #### weights
 

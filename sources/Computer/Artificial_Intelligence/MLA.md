@@ -40,7 +40,55 @@ $$\mathbf{u}_t = W^O \mathbf{o}_t = W^{O} W^{UV} \sum_{j=1}^t \text{Softmax}_j \
 
 ### Analysis
 
-```python
+为了方便，这里不考虑 gemm 的乘 2，以及 softmax，乘以 factor 这种
+
+__absorb 在 decode 可以减少计算量的本质原因__
+
+absorb 之后做 k_b 和 v_b 矩阵乘法的时候是 q_len 为尺度，而不是以 kv_len 为尺度，所以这一部分减少了很多计算量。
+
+absorb 之后 mqa 由于 head_dim 从 192 变成了 576，所以这一部分计算量是变高了，但是 k_v 和 v_b 减少的计算量完全可以抵消这一部分。
+
+对于 prefill，attention 阶段的计算量增加太多，无法被抵消。
+
+```py
+def flops_vanilla(q_len, kv_len, verbose=False):
+    all_ops = {
+        'flops_q_a': q_len * hidden_size * q_lora_rank, # from Q to c_q
+        'flops_kv_a': kv_len * hidden_size * (kv_lora_rank + qk_rope_head_dim), # from KV to c_kv and k_pe
+        'flops_q_b': q_len * q_lora_rank * n_heads * qk_head_dim, # from c_q to q_nope and q_pe
+        'flops_k_b': kv_len * kv_lora_rank * n_heads * qk_nope_head_dim, # from c_kv to k_nope
+        'flops_v_b': kv_len * kv_lora_rank * n_heads * v_head_dim, # from c_kv to v_dim
+        'flops_mha': n_heads * (q_len * kv_len * qk_head_dim + q_len * kv_len * v_head_dim), # MHA
+        'flops_oproj': q_len * n_heads * v_head_dim * hidden_size # o_proj
+    }
+    total_flops = sum(v for v in all_ops.values())
+    if verbose is True:
+        print('-' * 20)
+        print('Vanilla FLOPS for each step:')
+        for k, v in all_ops.items():
+            print(f'{k}: {v} (%{v/total_flops*100:.2f})')
+        print('Total:', total_flops)
+    return total_flops
+
+
+def flops_absorb(q_len, kv_len, verbose=False):
+    all_ops = {
+        'flops_q_a': q_len * hidden_size * q_lora_rank, # from Q to c_q
+        'flops_kv_a': kv_len * hidden_size * (kv_lora_rank + qk_rope_head_dim), # from KV to c_kv and k_pe
+        'flops_q_b': q_len * q_lora_rank * qk_head_dim * n_heads, # from c_q to q_pe
+        'flops_k_b': q_len * qk_nope_head_dim * n_heads * kv_lora_rank, 
+        'flops_mqa': n_heads * (q_len * kv_len * (qk_rope_head_dim + kv_lora_rank) + q_len * kv_len * kv_lora_rank), # MQA
+        'flops_v_b': q_len * kv_lora_rank * n_heads * v_head_dim,
+        'flops_oproj': q_len * n_heads * v_head_dim * hidden_size,
+    }
+    total_flops = sum(v for v in all_ops.values())
+    if verbose is True:
+        print('-' * 20)
+        print('Absorb2 FLOPS for each step:')
+        for k, v in all_ops.items():
+            print(f'{k}: {v} (%{v/total_flops*100:.2f})')
+        print('Total:', total_flops)
+    return total_flops
 ```
 
 ### Code

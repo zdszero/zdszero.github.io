@@ -151,6 +151,14 @@
                 <ul>
                 <li>每层有一个共享专家，所以每层专家总数为 257</li>
                 </ul></li>
+                <li><code>intermediate_size</code>: 18432 = 2048 * 9
+                <ul>
+                <li>前三层（9*<code>moe_intermediate_size</code>）</li>
+                </ul></li>
+                <li><code>moe_intermediate_size</code>: 2048
+                <ul>
+                <li>路由专家 MLP 中间维度</li>
+                </ul></li>
                 </ul>
                 <h4 id="weights">weights</h4>
                 <p>可以通过如下代码打印权重：</p>

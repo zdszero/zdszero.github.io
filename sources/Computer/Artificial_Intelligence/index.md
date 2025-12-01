@@ -46,9 +46,13 @@
     - [types](./types.md)
     - [weight](./weight.md)
 - Kernels
-- Attention
-    - [Kernel Argument](./Kernel_Argument.md)
-    - [MHA](./MHA.md)
-    - [MLA](./MLA.md)
+    - Attention
+        - [Kernel Argument](./Kernel_Argument.md)
+        - [MHA](./MHA.md)
+        - [MLA](./MLA.md)
+    - MLP
+        - [deepseek moe](./deepseek_moe.md)
 - Model Example
-    - [deepseek model](./deepseek_model.md)
+    - [deepseek weight](./deepseek_model.md)
+    - [deepseek profile](./deepseek_profile.md)
+    - [deepseek process math](./deepseek_process_math.md)

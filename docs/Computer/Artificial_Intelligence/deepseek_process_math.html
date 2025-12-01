@@ -1,0 +1,218 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="../../WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="../../WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="../../WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="../../WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    deepseek process math
+  </title>
+    <link rel="stylesheet" href="../../WikiTheme/theme/bootstrap.css"  />
+        <script
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+        type="text/javascript"></script>
+      </head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">deepseek process math</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="container">
+    <div class="row">
+            <div id="TOC" class="span3">
+        <div class="well toc">
+          <ul>
+          <li><a href="#attention" id="toc-attention">Attention</a></li>
+          <li><a href="#moe" id="toc-moe">MOE</a></li>
+          <li><a href="#next" id="toc-next">Next</a></li>
+          <li><a href="#summary" id="toc-summary">Summary</a></li>
+          </ul>
+        </div>
+      </div>
+            <div class="span9">
+                <h3 id="attention">Attention</h3>
+                <p><strong>Pre-Norm</strong></p>
+                <p><span class="math display">\[x_1 =
+                \text{Norm}(x)\]</span></p>
+                <p><strong>QKV Projection</strong></p>
+                <p><span class="math display">\[Q = x_1 W_Q,\quad K =
+                x_1 W_K,\quad V = x_1 W_V\]</span></p>
+                <p><strong>Attention Softmax</strong></p>
+                <p><span class="math display">\[A =
+                \text{Softmax}\left(\frac{QK^T}{\sqrt{d}}\right)\]</span></p>
+                <p><strong>Attention Output</strong></p>
+                <p><span class="math display">\[\text{attn_out} = A
+                V\]</span></p>
+                <p><strong>Residual Add</strong></p>
+                <p><span class="math display">\[x_2 = x +
+                \text{attn_out}\]</span></p>
+                <h3 id="moe">MOE</h3>
+                <p><strong>Pre NORM</strong></p>
+                <p><span class="math display">\[x_3 =
+                \text{Norm}(x_2)\]</span></p>
+                <hr />
+                <p><strong>Gate, Softmax, Top-K</strong></p>
+                <p>对每个 token：</p>
+                <p><span class="math display">\[p_i = \text{Softmax}(x_3
+                W_g)\]</span></p>
+                <p>再做 top-k：</p>
+                <p><span class="math display">\[{(e_{i,j},
+                \alpha_{i,j})}_{j=1}^k\]</span></p>
+                <p><strong>Dispatch</strong></p>
+                <p><span class="math display">\[x_3 \rightarrow
+                x_3^{(e)}\]</span></p>
+                <p><strong>Group GEMM</strong></p>
+                <p>每个 expert：</p>
+                <p><span class="math display">\[\text{FFN}_e(h) =
+                W_2^{(e)} , \sigma(W_1^{(e)} h)\]</span></p>
+                <p><span class="math display">\[
+                \text{moe_out}*i = \sum*{j=1}^{k}
+                \alpha_{i,j} \cdot \text{FFN}*{e*{i,j}}(x_{3,i})
+                \]</span></p>
+                <p><strong>Residual Add</strong></p>
+                <p><span class="math display">\[
+                \boxed{
+                x_4 = x_2 + \text{moe_out}
+                }
+                \]</span></p>
+                <h3 id="next">Next</h3>
+                <p>下一层一开始又是：</p>
+                <p><span class="math display">\[x_{\text{next}} =
+                \text{Norm}(x_4)\]</span></p>
+                <p>—— 周而复始。</p>
+                <h3 id="summary">Summary</h3>
+                <p>在 **DeepSeek 的 MoE Transformer 中：</p>
+                <p><strong>Norm 只出现在：</strong></p>
+                <ol type="1">
+                <li>Attention 之前（Pre-Norm）</li>
+                <li>MoE 之前（Pre-Norm）</li>
+                <li>下一层开始（也是 Pre-Norm）</li>
+                </ol>
+                <p><strong>Softmax 只出现在：</strong></p>
+                <ol type="1">
+                <li>Attention 的 <code>QK^T</code> 上</li>
+                <li>MoE 的 gating 路由上</li>
+                </ol>
+                <p><strong>Residual Add 只出现在：</strong></p>
+                <ol type="1">
+                <li>Attention 输出后：<code>x + attn_out</code></li>
+                <li>MoE combine 后：<code>x₂ + moe_out</code></li>
+                </ol>
+                <hr />
+                <pre class="text"><code>x
+→ Norm → Attention → Residual
+→ Norm → Gate Softmax → Dispatch → Expert GEMM → Combine → Residual
+→ (进入下一层)</code></pre>
+                <blockquote>
+                <p>Norm 永远在“子层之前”，</p>
+                <p>Softmax 只在“Attn 和 Gate”，</p>
+                <p>Residual 永远在“子层之后”。</p>
+                </blockquote>
+                <p>哪些地方有 <strong>Norm / Softmax /
+                Residual</strong></p>
+                <table style="width:100%;">
+                <colgroup>
+                <col style="width: 24%" />
+                <col style="width: 14%" />
+                <col style="width: 18%" />
+                <col style="width: 24%" />
+                <col style="width: 17%" />
+                </colgroup>
+                <thead>
+                <tr>
+                <th>阶段</th>
+                <th>是否做 <strong>Norm</strong></th>
+                <th>是否做 <strong>Softmax</strong></th>
+                <th>是否做 <strong>Residual Add</strong></th>
+                <th>说明</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                <td>进入 Attention 之前</td>
+                <td>✅</td>
+                <td>❌</td>
+                <td>❌</td>
+                <td>Pre-Norm</td>
+                </tr>
+                <tr>
+                <td>Attention 内部（QK）</td>
+                <td>❌</td>
+                <td>✅</td>
+                <td>❌</td>
+                <td>只在 <code>QK^T</code> 后</td>
+                </tr>
+                <tr>
+                <td>Attention 输出后</td>
+                <td>❌</td>
+                <td>❌</td>
+                <td>✅</td>
+                <td><code>x + attn_out</code></td>
+                </tr>
+                <tr>
+                <td>进入 MoE 之前</td>
+                <td>✅</td>
+                <td>❌</td>
+                <td>❌</td>
+                <td>第二个 Pre-Norm</td>
+                </tr>
+                <tr>
+                <td>MoE gating</td>
+                <td>❌</td>
+                <td>✅</td>
+                <td>❌</td>
+                <td>top-k 归一化</td>
+                </tr>
+                <tr>
+                <td>MoE FFN (group_gemm)</td>
+                <td>❌</td>
+                <td>❌</td>
+                <td>❌</td>
+                <td>纯 GEMM + SiLU</td>
+                </tr>
+                <tr>
+                <td>MoE combine 后</td>
+                <td>❌</td>
+                <td>❌</td>
+                <td>✅</td>
+                <td><code>x + moe_out</code></td>
+                </tr>
+                <tr>
+                <td>下一层开始</td>
+                <td>✅</td>
+                <td>❌</td>
+                <td>❌</td>
+                <td>下一层 Pre-Norm</td>
+                </tr>
+                </tbody>
+                </table>
+              </div>
+    </div>
+  </div>
+</body>
+
+</html>
