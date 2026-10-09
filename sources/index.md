@@ -15,7 +15,17 @@
     - [2022](./2022.md)
     - [2023](./2023.md)
     - [2024](./2024.md)
+        - [924](./2024-924.md)
     - [2025-2026](./2025-2026.md)
+- 个股研究
+    - 2020
+        - [CATL](./CATL.md)
+    - 2026
+        - [先进封装](./advanced_packaging.md)
+        - [ODM](./2026-ODM.md)
 - 随笔
     - [读书学习投资有用么](./should_i_learn_by_books.md)
     - [谈一谈历史的失真](./wrong_history_record.md)
+    - [A 股中的博弈势力](./stock_investor_types.md)
+    - [A 股特性](./stock_feature.md)
+- [概念](./concepts.md)
