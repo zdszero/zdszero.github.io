@@ -28,4 +28,5 @@
     - [谈一谈历史的失真](./wrong_history_record.md)
     - [A 股中的博弈势力](./stock_investor_types.md)
     - [A 股特性](./stock_feature.md)
-- [概念](./concepts.md)
+    - [A 股的价值投资](./value_investment.md)
+- [基础技术分析](./concepts.md)
