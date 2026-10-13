@@ -1,0 +1,521 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    Quantization
+  </title>
+    <link rel="stylesheet" href="./WikiTheme/theme/bootstrap.css"  />
+        <script defer=""
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+        type="text/javascript"></script>
+        <style type="text/css">
+    /* ---- three column wiki layout (left: site directory, center: content, right: page TOC) ---- */
+    .wiki-layout {
+      display: flex;
+      align-items: flex-start;
+      gap: 24px;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 20px;
+      box-sizing: border-box;
+    }
+    .wiki-sidebar {
+      flex: 0 0 240px;
+      width: 240px;
+      position: sticky;
+      top: 0;
+      max-height: 100vh;
+      overflow-y: auto;
+      padding: 10px 4px 20px 0;
+      border-right: 1px solid #eee;
+      font-size: 14px;
+    }
+    .wiki-sidebar[hidden] { display: none; }
+    .wiki-toc {
+      flex: 0 0 220px;
+      width: 220px;
+      position: sticky;
+      top: 0;
+      max-height: 100vh;
+      overflow-y: auto;
+      padding: 10px 0 20px 4px;
+      border-left: 1px solid #eee;
+      font-size: 14px;
+    }
+    .wiki-main {
+      flex: 1 1 auto;
+      min-width: 0;
+      max-width: 820px;
+      padding: 10px 0 40px;
+    }
+    /* site directory tree */
+    .wiki-sidebar .wiki-home {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #eee;
+      text-decoration: none;
+      color: #333;
+    }
+    .wiki-sidebar ul { list-style: none; margin: 0 0 0 12px; padding: 0; }
+    .wiki-sidebar > ul { margin-left: 0; }
+    .wiki-sidebar li { line-height: 1.7; }
+    .wiki-sidebar a { text-decoration: none; color: #555; }
+    .wiki-sidebar a:hover { color: #0088cc; text-decoration: underline; }
+    .wiki-sidebar a.active { color: #0088cc; font-weight: bold; }
+    /* page TOC */
+    .wiki-toc ul { list-style: none; margin: 0 0 0 12px; padding: 0; }
+    .wiki-toc > ul { margin-left: 0; }
+    .wiki-toc li { line-height: 1.6; }
+    .wiki-toc a { text-decoration: none; color: #555; }
+    .wiki-toc a:hover { color: #0088cc; }
+    @media (max-width: 980px) {
+      .wiki-layout { flex-direction: column; }
+      .wiki-sidebar, .wiki-toc {
+        position: static;
+        width: 100%;
+        flex-basis: auto;
+        max-height: none;
+        border: 0;
+      }
+      .wiki-main { max-width: none; }
+    }
+  </style>
+</head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">Quantization</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="wiki-layout">
+    <nav class="wiki-sidebar" id="wiki-sidebar" hidden></nav>
+    <main class="wiki-main">
+            <h2 id="通用量化模型">通用量化模型</h2>
+            <p>对于任意张量 (X)，量化可以抽象为：</p>
+            <p><span class="math display">\[
+            X \approx \hat{X} = s_X \cdot Q_X
+            \]</span></p>
+            <p>其中：</p>
+            <ul>
+            <li><span
+            class="math inline">\(Q_X\)</span>：低精度表示（int8 / fp8 /
+            nf4 等）</li>
+            <li><span
+            class="math inline">\(s_X\)</span>：scale（可以是：per-tensor,
+            per-channel 或 per-group）</li>
+            <li><span
+            class="math inline">\(\hat{X}\)</span>：反量化后的近似值</li>
+            </ul>
+            <h3 id="核心计算目标">核心计算目标</h3>
+            <p><strong>GEMM 的通用形式</strong></p>
+            <p><span class="math display">\[
+            Y = XW
+            \]</span></p>
+            <p>量化后：</p>
+            <p><span class="math display">\[
+            X \approx s_X Q_X,\quad W \approx s_W Q_W
+            \]</span></p>
+            <p>代入：</p>
+            <p><span class="math display">\[
+            Y \approx (Q_X Q_W) \cdot (s_X s_W)
+            \]</span></p>
+            <blockquote>
+            <p><strong>在低精度空间完成大部分计算，同时最小化恢复到高精度的代价</strong></p>
+            </blockquote>
+            <p>也就是：</p>
+            <p><span class="math display">\[
+            \text{目标：} \quad XW \approx (Q_X \cdot Q_W) \cdot (s_X
+            \cdot s_W)
+            \]</span></p>
+            <h3 id="理解视角">理解视角</h3>
+            <p>把 GEMM 拆成两部分：</p>
+            <h4 id="低精度核心计算">低精度核心计算</h4>
+            <p><span class="math display">\[
+            Z = Q_X Q_W
+            \]</span></p>
+            <p>特点：</p>
+            <ul>
+            <li>完全在低精度执行（FP8 / INT8）</li>
+            <li>吞吐最大</li>
+            <li>是<strong>主要算力消耗</strong></li>
+            </ul>
+            <h4 id="高精度缩放恢复">高精度缩放恢复</h4>
+            <p><span class="math display">\[
+            Y = Z \cdot (s_X s_W)
+            \]</span></p>
+            <p>特点：</p>
+            <ul>
+            <li>标量 / 向量乘</li>
+            <li>可以：
+            <ul>
+            <li>fuse 到 epilogue</li>
+            <li>或延迟到后续算子</li>
+            </ul></li>
+            </ul>
+            <h4 id="进一步抽象">进一步抽象</h4>
+            <p>我们可以写成一个<strong>统一计算框架</strong>：</p>
+            <p><span class="math display">\[
+            Y = f(Q_X, Q_W, s_X, s_W)
+            \]</span></p>
+            <p>其中：</p>
+            <p><span class="math display">\[
+            f = \text{LowPrecisionMatmul}(Q_X, Q_W) \cdot g(s_X, s_W)
+            \]</span></p>
+            <h3 id="优化目标">优化目标</h3>
+            <p>大模型推理中，真正优化的是：</p>
+            <h4 id="计算效率">计算效率</h4>
+            <p>最大化：</p>
+            <p><span class="math display">\[
+            \text{Throughput}(Q_X Q_W)
+            \]</span></p>
+            <p>也就是：</p>
+            <ul>
+            <li>Tensor Core 利用率</li>
+            <li>memory bandwidth 利用率</li>
+            </ul>
+            <hr />
+            <h4 id="精度误差最小化">精度误差最小化</h4>
+            <p>最小化：</p>
+            <p><span class="math display">\[
+            |XW - (Q_X Q_W) s_X s_W|
+            \]</span></p>
+            <p>这决定：</p>
+            <ul>
+            <li>FP8 vs INT8 vs NF4</li>
+            <li>per-channel vs per-tensor</li>
+            <li>scale 动态/静态</li>
+            </ul>
+            <h3 id="scale-的计算存储成本">scale 的计算/存储成本</h3>
+            <p>你那句其实点到了关键：</p>
+            <pre><code>需要额外乘两个 scale</code></pre>
+            <p>工程上目标是：</p>
+            <p>👉 <strong>让 scale 成本“消失”</strong></p>
+            <p>方法：</p>
+            <ul>
+            <li>fuse scale 到：
+            <ul>
+            <li>bias</li>
+            <li>activation</li>
+            <li>下一层 weight</li>
+            </ul></li>
+            <li>或：
+            <ul>
+            <li>提前合并：<span class="math inline">\(s_X s_W →
+            s_{fused}\)</span></li>
+            </ul></li>
+            </ul>
+            <hr />
+            <p>其实可以把整个量化推理写成：</p>
+            <p><span class="math display">\[
+            \boxed{
+            \min_{Q_X, Q_W, s_X, s_W}
+            |XW - s_X s_W (Q_X Q_W)|
+            }
+            \]</span></p>
+            <p>约束：</p>
+            <ul>
+            <li><span class="math inline">\(Q_X, Q_W\)</span> ∈
+            低精度集合（FP8 / INT8）</li>
+            <li>scale 受限（硬件友好）</li>
+            </ul>
+            <h2 id="量化粒度">量化粒度</h2>
+            <p>{{&lt; svg “/images/quantization_granularity_v2.svg”
+            &gt;}}</p>
+            <p>粒度从粗到细：</p>
+            <table>
+            <colgroup>
+            <col style="width: 26%" />
+            <col style="width: 26%" />
+            <col style="width: 47%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>粒度</th>
+            <th>含义</th>
+            <th>scale 数量</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td><strong>Per-tensor</strong></td>
+            <td>整个张量共享一个 scale</td>
+            <td>1</td>
+            </tr>
+            <tr>
+            <td><strong>Per-channel / Per-token</strong></td>
+            <td>权重按输出通道、激活按 token 各一个 scale</td>
+            <td>N 或 M</td>
+            </tr>
+            <tr>
+            <td><strong>Per-group</strong></td>
+            <td>输入通道每 group_size 个共享一个 scale</td>
+            <td>N × (K/group_size)</td>
+            </tr>
+            <tr>
+            <td><strong>Per-block</strong></td>
+            <td>二维分块，如 128×128 的 tile 一个 scale（DeepSeek FP8
+            用的就是这种）</td>
+            <td>按 block 数</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>Per-group 内还可以细分： -
+            <strong>顺序分组</strong>：通道 [0..127] 一组、[128..255]
+            一组（常见，Kimi K2.5 就是这种） - <strong>act_order
+            分组</strong>：先按激活幅度排序再分组（GPTQ
+            desc_act=True）</p>
+            <h2 id="量化对象">量化对象</h2>
+            <p>量化对象有两个：weight（权重）和 activation（激活）</p>
+            <blockquote>
+            <p>默会前提：现代大模型量化，默认原始精度 ≈ BF16</p>
+            <p>如果 W4，就是代表 weight 用 4bit，4 &lt; 16，就是用了量化
+            如果 A8，就是代表 activation 用 8bit，8 &lt;
+            16，用了量化</p>
+            </blockquote>
+            <p>这是一个重要维度，命名惯例如 <code>WxAy</code> 表示权重
+            x-bit、激活 y-bit：</p>
+            <ul>
+            <li><strong>Weight-only（W4A16,
+            W8A16）</strong>：只量化权重，激活保持 FP16/BF16。推理时
+            on-the-fly 反量化权重再与 FP16 激活相乘。Kimi K2.5 就是
+            W4A16。</li>
+            <li><strong>Weight + Activation（W8A8,
+            W4A8）</strong>：权重和激活都量化，计算在低精度域完成（如
+            INT8 matmul 或 FP8 matmul），吞吐更高。</li>
+            <li><strong>KV Cache 量化</strong>：单独对 attention 的 KV
+            cache 量化（如 FP8 KV），节省显存。</li>
+            </ul>
+            <h2 id="数据类型">数据类型</h2>
+            <p>两大阵营：</p>
+            <h4 id="整数">整数</h4>
+            <ul>
+            <li><strong>INT8</strong>：<code>x_q = round(x / scale) + zero_point</code>，反量化
+            <code>x = (x_q - zp) * scale</code></li>
+            <li><strong>INT4 / UINT4</strong>：同上，但 4-bit。又分：
+            <ul>
+            <li><strong>对称量化</strong>（symmetric）：zero_point =
+            0，<code>x_q = round(x / scale)</code>。GPTQ 的 uint4b8
+            就是偏移 8 的对称量化</li>
+            <li><strong>非对称量化</strong>（asymmetric）：有
+            zero_point，需要额外存储 <code>qzeros</code>。AWQ
+            用这种</li>
+            </ul></li>
+            </ul>
+            <h4 id="浮点">浮点</h4>
+            <ul>
+            <li><strong>FP8 (E4M3 / E5M2)</strong>：IEEE 风格的 8-bit
+            浮点。E4M3 精度更高（推理常用），E5M2
+            动态范围更大（训练常用）</li>
+            <li><strong>FP4 (NF4)</strong>：QLoRA 提出的
+            NormalFloat4，假设权重近似正态分布，4-bit 非均匀量化</li>
+            <li><strong>MXFP（Microscaling）</strong>：block-wise
+            的微缩放浮点，如 MXFP4/MXFP8</li>
+            </ul>
+            <p>关键区别：整数量化是<strong>均匀映射</strong>（量化值等间距），浮点量化是<strong>非均匀映射</strong>（小值处密、大值处疏），更符合权重的实际分布。</p>
+            <p>先说明几个单词：</p>
+            <blockquote>
+            <p>Sign：符号位 Exponent（E）：指数位
+            Mantissa（M）：小数位</p>
+            </blockquote>
+            <table>
+            <thead>
+            <tr>
+            <th>浮点格式</th>
+            <th>符号位</th>
+            <th>指数位</th>
+            <th>小数位</th>
+            <th>量化 group size（典型值）</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>bfloat16</td>
+            <td>1</td>
+            <td>8</td>
+            <td>7</td>
+            <td>通常不分组或按层量化</td>
+            </tr>
+            <tr>
+            <td>fp16</td>
+            <td>1</td>
+            <td>5</td>
+            <td>10</td>
+            <td>通常不分组或按层量化</td>
+            </tr>
+            <tr>
+            <td>fp8(e4m3)</td>
+            <td>1</td>
+            <td>4</td>
+            <td>3</td>
+            <td>128（常见于权重分组）</td>
+            </tr>
+            <tr>
+            <td>fp8(e5m2)</td>
+            <td>1</td>
+            <td>5</td>
+            <td>2</td>
+            <td>128（常见于权重分组）</td>
+            </tr>
+            <tr>
+            <td>fp8(e8m0)</td>
+            <td>1</td>
+            <td>8</td>
+            <td>0</td>
+            <td>128（blackwell 默认使用）</td>
+            </tr>
+            <tr>
+            <td>fp4(e2m1)</td>
+            <td>1</td>
+            <td>2</td>
+            <td>1</td>
+            <td>32 或 64（常用于权重）</td>
+            </tr>
+            <tr>
+            <td>mxfp8</td>
+            <td>1</td>
+            <td>4</td>
+            <td>3</td>
+            <td>128（类似 fp8(e4m3)）</td>
+            </tr>
+            <tr>
+            <td>mxfp4</td>
+            <td>1</td>
+            <td>2</td>
+            <td>1</td>
+            <td>32 或 64（类似 fp4(e2m1)）</td>
+            </tr>
+            </tbody>
+            </table>
+            <hr />
+            <p><strong>mxfp8 和 标准fp8 量化方案的区别</strong></p>
+            <ul>
+            <li>scale 格式
+            <ul>
+            <li>mxfp8：e8m0 fp8</li>
+            <li>fp8: fp32</li>
+            </ul></li>
+            <li>量化粒度
+            <ul>
+            <li>mxfp8: block quant 1x32，每 32 个元素一个 scale</li>
+            <li>fp8: block quant 128x128</li>
+            </ul></li>
+            </ul>
+            <h2 id="量化算法">量化算法</h2>
+            <p>上面说的是”格式”，还有一个维度是”怎么选 scale”：</p>
+            <ul>
+            <li><strong>RTN（Round-to-Nearest）</strong>：直接取 min/max
+            算 scale，最简单</li>
+            <li><strong>GPTQ</strong>：基于 Hessian 逆矩阵逐列量化 +
+            误差补偿，数学上是二阶优化</li>
+            <li><strong>AWQ（Activation-Aware）</strong>：根据激活幅度给重要通道乘一个保护系数再量化，等效于调整
+            per-channel scale</li>
+            <li><strong>SmoothQuant</strong>：把激活的离群值”平滑”到权重上（<code>diag(s) × W × diag(1/s)</code>），使两者都更好量化</li>
+            <li><strong>AQLM / QuIP</strong>：向量量化 / lattice
+            量化，多个权重联合编码，压缩率更高但 kernel 复杂</li>
+            </ul>
+            <h3 id="example">Example</h3>
+            <pre><code>量化方案 = 粒度 × 对象 × 数据类型 × 算法
+
+Kimi K2.5 的位置:
+  粒度:   per-group (group_size = 32)
+  对象:   weight-only (W4A16)
+  类型:   INT4 对称 (uint4b8, 无 qzeros)
+
+DeepSeek V3/R1 的位置:
+  粒度:   Per-block 128×128
+  对象:   weight+activation (W8A8)
+  类型:   FP8 (e4m3)</code></pre>
+            <blockquote>
+            <p>uint4b8 就是 [0, 15] - 8，范围是和 int4
+            一样的，那为什么要用 uint4</p>
+            <p>区别纯粹是存储编码层面的：unsigned 4-bit 在 bit packing
+            到 int32 时不需要处理符号位扩展，实现上更简单。GPU kernel
+            解包时直接 (v &gt;&gt; shift) &amp; 0xF
+            就行，不用额外做符号位处理。</p>
+            </blockquote>
+          </main>
+        <aside class="wiki-toc">
+      <ul>
+      <li><a href="#通用量化模型" id="toc-通用量化模型">通用量化模型</a>
+      <ul>
+      <li><a href="#核心计算目标"
+      id="toc-核心计算目标">核心计算目标</a></li>
+      <li><a href="#理解视角" id="toc-理解视角">理解视角</a></li>
+      <li><a href="#优化目标" id="toc-优化目标">优化目标</a></li>
+      <li><a href="#scale-的计算存储成本"
+      id="toc-scale-的计算存储成本">scale 的计算/存储成本</a></li>
+      </ul></li>
+      <li><a href="#量化粒度" id="toc-量化粒度">量化粒度</a></li>
+      <li><a href="#量化对象" id="toc-量化对象">量化对象</a></li>
+      <li><a href="#数据类型" id="toc-数据类型">数据类型</a></li>
+      <li><a href="#量化算法" id="toc-量化算法">量化算法</a>
+      <ul>
+      <li><a href="#example" id="toc-example">Example</a></li>
+      </ul></li>
+      </ul>
+    </aside>
+      </div>
+  <script type="text/javascript">
+    (function () {
+      function markActive() {
+        var here = location.href.split('#')[0];
+        var links = document.querySelectorAll('.wiki-sidebar a');
+        for (var i = 0; i < links.length; i++) {
+          if (links[i].href.split('#')[0] === here) {
+            links[i].classList.add('active');
+          }
+        }
+      }
+      // load the shared site directory once (served from the wiki root);
+      // kept in a standalone file so adding a page needn't rebuild every page.
+      var nav = document.getElementById('wiki-sidebar');
+      if (nav) {
+        fetch('/.wiki_sidebar.html')
+          .then(function (r) { return r.ok ? r.text() : ''; })
+          .then(function (html) {
+            if (html) {
+              nav.innerHTML = html;
+              nav.hidden = false;
+              markActive();
+            }
+          })
+          .catch(function () {});
+      }
+      // keep bootstrap table styling (previously done by sticky_menu.js)
+      var tables = document.getElementsByTagName('table');
+      for (var j = 0; j < tables.length; j++) {
+        tables[j].classList.add('table');
+      }
+    })();
+  </script>
+</body>
+
+</html>

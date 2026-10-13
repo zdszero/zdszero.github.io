@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="380" viewBox="0 0 900 380" font-family="-apple-system,Helvetica,Arial,sans-serif">
+  <style>
+    .ti{font-size:13px;font-weight:700;fill:#111}
+    .bx{font-size:11px;fill:#fff;font-weight:600}
+    .cap{font-size:11px;fill:#666}
+    .yr{font-size:11px;font-weight:700;fill:#888}
+  </style>
+  <rect x="0" y="0" width="900" height="380" fill="#fdfdfd"/>
+  <text x="24" y="30" font-size="17" font-weight="800" fill="#111">着色器架构的演变：从固定管线到统一着色器</text>
+
+  <!-- panel 1: fixed function -->
+  <text x="40" y="66" class="yr">~2000</text>
+  <text x="40" y="84" class="ti">固定功能管线</text>
+  <g>
+    <rect x="40" y="98" width="200" height="30" rx="5" fill="#60a5fa"/><text x="140" y="118" text-anchor="middle" class="bx">顶点变换 T&amp;L</text>
+    <rect x="40" y="138" width="200" height="30" rx="5" fill="#60a5fa"/><text x="140" y="158" text-anchor="middle" class="bx">光栅化 Raster</text>
+    <rect x="40" y="178" width="200" height="30" rx="5" fill="#60a5fa"/><text x="140" y="198" text-anchor="middle" class="bx">纹理贴图 Texture</text>
+    <rect x="40" y="218" width="200" height="30" rx="5" fill="#60a5fa"/><text x="140" y="238" text-anchor="middle" class="bx">混合 / 帧缓冲</text>
+  </g>
+  <text x="40" y="282" class="cap">逻辑写死在硅片上，</text>
+  <text x="40" y="298" class="cap">只能调参数，不能编程</text>
+
+  <!-- arrow 1 -->
+  <text x="268" y="178" font-size="22" fill="#bbb">→</text>
+
+  <!-- panel 2: separate programmable shaders -->
+  <text x="320" y="66" class="yr">2001–2005</text>
+  <text x="320" y="84" class="ti">可编程但分离的着色器</text>
+  <g>
+    <rect x="320" y="98" width="95" height="70" rx="5" fill="#34d399"/><text x="367" y="128" text-anchor="middle" class="bx">顶点</text><text x="367" y="146" text-anchor="middle" class="bx">着色器</text>
+    <rect x="425" y="98" width="95" height="70" rx="5" fill="#f59e0b"/><text x="472" y="128" text-anchor="middle" class="bx">像素</text><text x="472" y="146" text-anchor="middle" class="bx">着色器</text>
+  </g>
+  <rect x="320" y="178" width="200" height="30" rx="5" fill="#9ca3af"/><text x="420" y="198" text-anchor="middle" class="bx">光栅化 / 混合</text>
+  <text x="320" y="282" class="cap">顶点、像素单元数量固定，</text>
+  <text x="320" y="298" class="cap">负载不均时一半单元空闲</text>
+
+  <!-- arrow 2 -->
+  <text x="548" y="178" font-size="22" fill="#bbb">→</text>
+
+  <!-- panel 3: unified shader -->
+  <text x="600" y="66" class="yr">2006 起 (G80 + CUDA)</text>
+  <text x="600" y="84" class="ti">统一着色器阵列</text>
+  <rect x="600" y="98" width="260" height="110" rx="6" fill="#f1f5f9" stroke="#cbd5e1"/>
+  <text x="730" y="116" text-anchor="middle" font-size="11" fill="#475569" font-weight="700">统一标量核心池 (SM × SP)</text>
+  <g fill="#6366f1">
+    <rect x="614" y="126" width="34" height="26" rx="3"/><rect x="658" y="126" width="34" height="26" rx="3"/><rect x="702" y="126" width="34" height="26" rx="3"/><rect x="746" y="126" width="34" height="26" rx="3"/><rect x="790" y="126" width="34" height="26" rx="3"/>
+    <rect x="614" y="162" width="34" height="26" rx="3"/><rect x="658" y="162" width="34" height="26" rx="3"/><rect x="702" y="162" width="34" height="26" rx="3"/><rect x="746" y="162" width="34" height="26" rx="3"/><rect x="790" y="162" width="34" height="26" rx="3"/>
+  </g>
+  <text x="600" y="238" class="cap">同一批核心按需承担顶点 / 像素 /</text>
+  <text x="600" y="254" class="cap">通用计算，可用 CUDA 直接编程，</text>
+  <text x="600" y="270" class="cap">GPU 从图形芯片变成并行计算机</text>
+</svg>

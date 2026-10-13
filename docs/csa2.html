@@ -1,0 +1,705 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    CSA2
+  </title>
+    <link rel="stylesheet" href="./WikiTheme/theme/bootstrap.css"  />
+        <script defer=""
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+        type="text/javascript"></script>
+        <style type="text/css">
+    /* ---- three column wiki layout (left: site directory, center: content, right: page TOC) ---- */
+    .wiki-layout {
+      display: flex;
+      align-items: flex-start;
+      gap: 24px;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 20px;
+      box-sizing: border-box;
+    }
+    .wiki-sidebar {
+      flex: 0 0 240px;
+      width: 240px;
+      position: sticky;
+      top: 0;
+      max-height: 100vh;
+      overflow-y: auto;
+      padding: 10px 4px 20px 0;
+      border-right: 1px solid #eee;
+      font-size: 14px;
+    }
+    .wiki-sidebar[hidden] { display: none; }
+    .wiki-toc {
+      flex: 0 0 220px;
+      width: 220px;
+      position: sticky;
+      top: 0;
+      max-height: 100vh;
+      overflow-y: auto;
+      padding: 10px 0 20px 4px;
+      border-left: 1px solid #eee;
+      font-size: 14px;
+    }
+    .wiki-main {
+      flex: 1 1 auto;
+      min-width: 0;
+      max-width: 820px;
+      padding: 10px 0 40px;
+    }
+    /* site directory tree */
+    .wiki-sidebar .wiki-home {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #eee;
+      text-decoration: none;
+      color: #333;
+    }
+    .wiki-sidebar ul { list-style: none; margin: 0 0 0 12px; padding: 0; }
+    .wiki-sidebar > ul { margin-left: 0; }
+    .wiki-sidebar li { line-height: 1.7; }
+    .wiki-sidebar a { text-decoration: none; color: #555; }
+    .wiki-sidebar a:hover { color: #0088cc; text-decoration: underline; }
+    .wiki-sidebar a.active { color: #0088cc; font-weight: bold; }
+    /* page TOC */
+    .wiki-toc ul { list-style: none; margin: 0 0 0 12px; padding: 0; }
+    .wiki-toc > ul { margin-left: 0; }
+    .wiki-toc li { line-height: 1.6; }
+    .wiki-toc a { text-decoration: none; color: #555; }
+    .wiki-toc a:hover { color: #0088cc; }
+    @media (max-width: 980px) {
+      .wiki-layout { flex-direction: column; }
+      .wiki-sidebar, .wiki-toc {
+        position: static;
+        width: 100%;
+        flex-basis: auto;
+        max-height: none;
+        border: 0;
+      }
+      .wiki-main { max-width: none; }
+    }
+  </style>
+</head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">CSA2</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="wiki-layout">
+    <nav class="wiki-sidebar" id="wiki-sidebar" hidden></nav>
+    <main class="wiki-main">
+            <p><strong>CSA2 = 会跨层复用的 CSA +
+            两级稀疏检索。</strong></p>
+            <p>它把长上下文成本沿三个<strong>相乘</strong>的维度一起压：</p>
+            <ol type="1">
+            <li><strong>entry size</strong>：一条 KV 有多宽（GQA / MLA
+            已经做过）；</li>
+            <li><strong>sequence</strong>：隔多少个 token 记一条 KV（V4
+            的 CSA / HCA 已经做过）；</li>
+            <li><strong>layer</strong>：哪些层可以有自己独立的一份（CSA2
+            新增）。</li>
+            </ol>
+            <p>并且把第三维上的两件事<strong>解耦</strong>：</p>
+            <ul>
+            <li><strong>cache 共享</strong>（main KV 与 indexer K
+            跨层共享）——省的是显存与存储；</li>
+            <li><strong>索引复用</strong>（Top-K 结果跨层复用）——省的是
+            indexer 计算。</li>
+            </ul>
+            <p>解耦之后就有了三种静态模式：Full / Reindex / Reuse。</p>
+            <h3 id="为什么要往层维度压">为什么要往层维度压</h3>
+            <p>三个维度的关系是乘法而不是加法：总 KV 成本大致是</p>
+            <p><span class="math display">\[
+            \text{cost} \;\propto\; \underbrace{(\text{entry
+            size})}_{\text{每条 KV 多大}} \times
+            \underbrace{\frac{N}{m}}_{\text{序列方向条目数}} \times
+            \underbrace{\#\text{layers keeping their
+            own}}_{\text{层方向份数}} \times \text{bits}
+            \]</span></p>
+            <p>前两个维度 V4
+            已经压过了，第三维是剩下的空间。论文列举的前人工作在层维度上各有缺口：</p>
+            <table>
+            <colgroup>
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>工作</th>
+            <th>做法</th>
+            <th>缺口</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>IndexCache</td>
+            <td>跨层复用 Top-K 索引</td>
+            <td>省的是 indexer 计算，<strong>省不了 main KV
+            存储</strong></td>
+            </tr>
+            <tr>
+            <td>YOIO</td>
+            <td>一次算完 sparse routing，全层共享</td>
+            <td>全网共享一份 routing，<strong>限制性能</strong></td>
+            </tr>
+            <tr>
+            <td>HySparse</td>
+            <td>sparse 层复用 dense 层 KV</td>
+            <td><strong>仍保留全量 attention 层</strong></td>
+            </tr>
+            </tbody>
+            </table>
+            <p>论文的结论很直接：<em>index reuse alone saves no main KV
+            storage, network-wide routing sharing limits performance,
+            and hybrid designs still retain full attention
+            layers</em>——<strong>没有一种方法同时覆盖三个维度</strong>。</p>
+            <p>CSA2 的答案是把三个维度乘起来用，同时把 cache
+            共享与索引复用拆开——拆开之后，“共享了 cache
+            但想让每层选出不同的 KV”这种中间形态（Reindex）才存在。</p>
+            <h3 id="相比-v4-的-csa改了什么">相比 V4 的
+            CSA，改了什么</h3>
+            <table>
+            <colgroup>
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>维度</th>
+            <th>CSA（DeepSeek-V4）</th>
+            <th>CSA2（DeepSeek-V4.1）</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>压缩窗口</td>
+            <td>一条压缩条目由 <span class="math inline">\(2m\)</span>
+            个原始 entry 产生，相邻条目<strong>重叠</strong></td>
+            <td><strong>去掉 overlap</strong>，一条由 <span
+            class="math inline">\(m\)</span> 个 entry 产生</td>
+            </tr>
+            <tr>
+            <td>位置编码</td>
+            <td>压缩时用 absolute positional embedding 标注这 <span
+            class="math inline">\(2m\)</span> 个位置</td>
+            <td><strong>去掉</strong></td>
+            </tr>
+            <tr>
+            <td>indexer K 的来源</td>
+            <td>从 hidden state 走<strong>独立的压缩路径</strong></td>
+            <td>由 main KV <strong>投影</strong>得到</td>
+            </tr>
+            <tr>
+            <td>全局分支结构</td>
+            <td>CSA + HCA 混合</td>
+            <td><strong>纯 CSA2</strong>（HCA 取消），<span
+            class="math inline">\(m=1\)</span> 作为不压缩特例</td>
+            </tr>
+            <tr>
+            <td>与其它层的关系</td>
+            <td>每层各自持有自己的 cache 与索引</td>
+            <td>Full / Reindex / Reuse 三模式跨层复用</td>
+            </tr>
+            <tr>
+            <td>深层 indexer 的打分域</td>
+            <td>每层都在全量可见范围打分</td>
+            <td>Hierarchical Sparse
+            Indexer：只在前层给出的候选池内打分（仅 decoder）</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>前三行都是<strong>减法</strong>，论文给的理由是
+            <em>simplify the implementation and increase the training
+            efficiency</em>。从结构上看：</p>
+            <ul>
+            <li><strong>去掉 overlap 是顺理成章的</strong>。V4 需要
+            overlap 是因为 <span class="math inline">\(m=4\)</span>
+            时窗口太短、边界 token
+            被切在块缝上的损失明显（见同目录《压缩数学原理》中关于覆盖完备性的讨论）。V4.1
+            里 encoder 用 <span
+            class="math inline">\(m=2\)</span>、decoder 直接用 <span
+            class="math inline">\(m=1\)</span>，重叠带来的收益下降，而它的代价（约
+            2 倍的投影参数与 kernel 内存带宽、双流 state
+            buffer）一点没少——所以砍掉；</li>
+            <li><strong>indexer K 改为从 main KV
+            投影</strong>省掉了一整条独立压缩路径：V4 里 indexer
+            有自己的一套
+            <code>Compressor</code>（<code>head_dim=128</code>、独立的
+            gate 与 state），现在复用 main KV 即可，既有参数收益，也让
+            indexer K 与 main KV <strong>天然对齐</strong>——同一份 cache
+            可以同时服务 attention 与索引；</li>
+            <li><strong>去掉 APE</strong>
+            与上面两条同源：压缩窗口变成恰好划分之后，块内位置先验这类显式的形状参数收益变薄。（去
+            APE 后位置信息仍由压缩之后统一施加的 RoPE
+            承担，这一句是笔者的推断，报告只写了”remove”。）</li>
+            </ul>
+            <h3 id="三种模式">三种模式</h3>
+            <p><strong>三个模式共享的部分</strong>：每层都自己计算 main
+            Q 和 SWA KV，都用「选中的 main KV 条目 + 本层 SWA
+            KV」拼接后做 core
+            attention。<strong>模式之间的差别只在三件事上</strong>：main
+            KV、indexer K、Top-K 索引从哪来。</p>
+            <table>
+            <colgroup>
+            <col style="width: 20%" />
+            <col style="width: 20%" />
+            <col style="width: 20%" />
+            <col style="width: 20%" />
+            <col style="width: 20%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>模式</th>
+            <th>main KV</th>
+            <th>indexer K</th>
+            <th>indexer Q</th>
+            <th>Top-K 索引</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td><strong>Full</strong></td>
+            <td>本层算</td>
+            <td>由本层 main KV 投影</td>
+            <td>本层算</td>
+            <td>本层全量打分后选出</td>
+            </tr>
+            <tr>
+            <td><strong>Reindex</strong></td>
+            <td>复用最近可用的</td>
+            <td>随 main KV 一起复用</td>
+            <td>本层算</td>
+            <td>本层<strong>在候选池内</strong>重新选出</td>
+            </tr>
+            <tr>
+            <td><strong>Reuse</strong></td>
+            <td>复用最近可用的</td>
+            <td>随 main KV 一起复用</td>
+            <td>不算</td>
+            <td>直接复用（针对同一份 main KV 的最近一次选择）</td>
+            </tr>
+            </tbody>
+            </table>
+            <pre class="text"><code>Full    :  本层 hidden ──► main KV ──► indexer K ──┐
+                                                     ├─► indexer Q ──► 全量打分 ──► Top-K
+Reindex :  main KV ◄──复用── (前层) ──► indexer K ──┘   └─► 本层 indexer Q ──► 池内打分 ──► Top-K
+
+Reuse   :  main KV ◄──复用── (前层)，Top-K ◄──复用── (前层)，不算 indexer Q、不打分</code></pre>
+            <p>两点值得单独说：</p>
+            <ul>
+            <li><strong>Full 是唯一”完整路径”</strong>，所以它既是 cache
+            的产出者，也是候选池与 Top-K 的产出者；</li>
+            <li><strong>Reindex
+            是这套设计里最有意思的一格</strong>：cache
+            是共享的，但选择可以变。也就是说”哪些位置重要”这件事仍然允许逐层特化，而”这些位置长什么样”被省掉了。这一点是单纯复用索引（IndexCache
+            / YOIO）做不到的。</li>
+            </ul>
+            <p><strong>与 CED 结合时</strong>：decoder 里被分配为 Full
+            模式的层，它的 global KV 不是从本层 hidden state
+            算出来的，而是从第 <span class="math inline">\(L/2\)</span>
+            层——也就是 causal encoder 最后一层——的 hidden state
+            投影出来的：</p>
+            <p><span class="math display">\[
+            C_l = H_{L/2}\,W^{KV}_l, \qquad Z_l = H_{L/2}\,W^{Z}_l,
+            \qquad l &gt; \frac{L}{2}
+            \]</span></p>
+            <p>其中 <span class="math inline">\(C, Z\)</span> 分别是 KV
+            条目及其压缩权重，<span class="math inline">\(W^{KV}_l,
+            W^{Z}_l\)</span> 是逐层不同的投影矩阵。Reindex 与 Reuse
+            模式不受这条改动影响——它们本来就只负责”复用”。</p>
+            <p><strong>成本上的意义</strong>：论文给了一个很具体的数字——一个处于
+            Reuse 模式的 CSA2 层，prefill 只需要 <strong>15 个
+            kernel</strong>、decode 只需要 <strong>11
+            个</strong>。层层都算 indexer 的开销被摊薄了。</p>
+            <h3 id="hierarchical-sparse-indexer">Hierarchical Sparse
+            Indexer</h3>
+            <p><strong>问题</strong>：跨层复用减少了 indexer
+            被执行的<strong>次数</strong>，但每次执行时它仍然要打<strong>整段</strong>因果可见
+            context 的分。在百万级 context
+            下，剩下的那几次全量打分本身就成了瓶颈。</p>
+            <p><strong>做法分成两级</strong>：</p>
+            <ol type="1">
+            <li><strong>第一个 Full
+            模式层做全量检索</strong>：对所有因果可见的 main KV
+            位置打分、选出自己的
+            Top-K；<strong>同时</strong>做一次块级选择——每个 block
+            取块内最大 index score 作为该块的分数，选出分数最高的若干
+            block，把这些 block
+            覆盖的位置收集成一个<strong>候选池</strong>。报告给的例子是选
+            2,048 个 block、每块 8 个位置，得到 16,384 个候选位置；</li>
+            <li><strong>后续 Reindex
+            层只做池内精排</strong>：只在候选池里打分，并在这个池内选自己的
+            Top-K；Reuse 层则完全不再索引。</li>
+            </ol>
+            <p>候选池在索引层之间<strong>共享</strong>，但每层最终的
+            Top-K 可以不同。</p>
+            <p><strong>复杂度上的关键结论</strong>：候选池大小固定之后，<strong>每个后续
+            indexer 每 query 需要打分的位置数与 context
+            长度无关</strong>；只有第一个 Full
+            层仍然扫描全量可见范围。也就是说层次化索引把”每一次都是
+            <span
+            class="math inline">\(O(N)\)</span>“变成了”<strong>一次
+            <span class="math inline">\(O(N)\)</span> + 若干次 <span
+            class="math inline">\(O(1)\)</span></strong>”。</p>
+            <p><strong>训练一致性</strong>：这个机制是
+            <em>training-aware</em> 的，在 post-training
+            阶段引入，训练与推理使用完全相同的候选域。否则深层 indexer
+            会在训练时见过全量位置、推理时只看得到池子，产生明显的
+            domain shift。</p>
+            <h3 id="v4.1-flash-的实际配置">V4.1-Flash 的实际配置</h3>
+            <table>
+            <colgroup>
+            <col style="width: 50%" />
+            <col style="width: 50%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>项</th>
+            <th>取值</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>总层数 / 结构</td>
+            <td>40 层 = 20 层 causal encoder + 20 层 decoder，<span
+            class="math inline">\(d = 5120\)</span></td>
+            </tr>
+            <tr>
+            <td>encoder 前 2 层</td>
+            <td>纯 SWA（无 global attention）</td>
+            </tr>
+            <tr>
+            <td>encoder 其余 18 层</td>
+            <td>CSA2，压缩率 <span class="math inline">\(m =
+            2\)</span>；分 3 组、每组 6 层：<strong>1 Full + 5
+            Reuse</strong></td>
+            </tr>
+            <tr>
+            <td>decoder 20 层</td>
+            <td>CSA2，压缩率 <span class="math inline">\(m =
+            1\)</span>；分 5 组、每组 4 层：第 1 组 <strong>1 Full + 3
+            Reuse</strong>，其余 4 组 <strong>1 Reindex + 3
+            Reuse</strong></td>
+            </tr>
+            <tr>
+            <td>indexer</td>
+            <td>32 个 indexer query head，head dim 128，attention top-k
+            = 512</td>
+            </tr>
+            <tr>
+            <td>main attention</td>
+            <td>64 个 query head，head dim 512，query 压缩维度 1280</td>
+            </tr>
+            <tr>
+            <td>Hierarchical Indexer</td>
+            <td>最多 2,048 个 block × 8 个位置 = 最多 16,384
+            个候选位置</td>
+            </tr>
+            <tr>
+            <td>输出投影</td>
+            <td>8 组，每组中间维度 1024</td>
+            </tr>
+            <tr>
+            <td>SWA</td>
+            <td>窗口 <span class="math inline">\(n_{\text{win}} =
+            128\)</span></td>
+            </tr>
+            <tr>
+            <td>MoE / mHC</td>
+            <td>1 shared + 384 routed experts，每 token 激活 6 个；mHC
+            扩展因子 4、Sinkhorn 20 次迭代</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>这张表里有两件事值得单独指出来。</p>
+            <p><strong>decoder 的压缩率是 1，也就是不压缩。</strong>
+            换言之 CSA2 在 decoder 里其实只做”跨层复用 + Top-K
+            稀疏”，序列方向上的压缩（<span
+            class="math inline">\(m=2\)</span>）只发生在 encoder。真正让
+            decoder 变便宜的是：top-k 固定为 512（decode 时每 token 只读
+            512 个 main KV 条目）加上大部分层复用前层的 cache
+            与索引。这也解释了为什么 CSA2 要费力气做层次化 indexer——在
+            <span class="math inline">\(m=1\)</span> 的 decoder
+            里，“候选数”没有被压缩稀释过，indexer
+            的打分成本必须靠搜索域约束来降。</p>
+            <p><strong>模式分配的比例很激进</strong>：encoder 是
+            1:5、decoder 是 1:3。按层数算，40 层里只有 4 层（1 个
+            decoder Full + 3 个 encoder Full）产出全局 cache 和候选池，4
+            层做 Reindex，其余 30 层都是 Reuse。</p>
+            <h3 id="收益与代价">收益与代价</h3>
+            <p><strong>收益</strong>（报告给出的数字）：</p>
+            <table>
+            <colgroup>
+            <col style="width: 50%" />
+            <col style="width: 50%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>指标</th>
+            <th>结果</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>global KV cache（常驻 HBM）</td>
+            <td><strong>890 bytes / token</strong>，约为 V4-Flash 的
+            <span class="math inline">\(1/4\)</span>；相对 V1 是 437
+            倍</td>
+            </tr>
+            <tr>
+            <td>persistent KV cache（SSD / host memory）</td>
+            <td>约为 V4-Flash 的 <span
+            class="math inline">\(1/8\)</span></td>
+            </tr>
+            <tr>
+            <td>单 token decode FLOPs</td>
+            <td>context 从 4K 扩到 1M（256 倍）只增加约 <span
+            class="math inline">\(1/4\)</span>（论文用词是 “nearly
+            constant”）</td>
+            </tr>
+            </tbody>
+            </table>
+            <p><span class="math inline">\(1/8\)</span>
+            是两件事相乘的结果：</p>
+            <p><span class="math display">\[
+            \underbrace{\frac{1}{2}}_{\text{不再持久化 SWA KV}}
+            \;\times\; \underbrace{\frac{1}{4}}_{\text{global KV 架构 +
+            精度优化}} \;=\; \frac{1}{8}
+            \]</span></p>
+            <ul>
+            <li><strong>SWA KV 移出持久化缓存</strong>：V4
+            的持久化缓存里 SWA KV
+            占了近一半，但它的访问是”会话内分钟级”的，和持久缓存的 72
+            小时保留策略根本不匹配。V4.1 把它挪到 host DRAM
+            上的分布式内存池（每台机器 10% 的 DRAM），TTL
+            只有分钟级，靠高周转覆盖并发会话；</li>
+            <li><strong>global KV 再压到 <span
+            class="math inline">\(1/4\)</span></strong>：架构上是 CSA2
+            的跨层复用，精度上是 FP4 global KV cache（报告称训练时就用
+            FP4，性能损失 marginal）。</li>
+            </ul>
+            <p><strong>代价</strong>：</p>
+            <ul>
+            <li><strong>miss 的恢复变成近似</strong>。SWA KV
+            被逐出后，精确重建需要 replay <span class="math inline">\(L
+            \times n_{\text{win}}\)</span> 个 token 的前向；V4.1 改成
+            <strong>SWA Bounded Replay</strong>——只 replay 最近的 <span
+            class="math inline">\(n_{\text{win}}\)</span> 个
+            token，并截断 SWA 到 replay
+            段，接受一个近似状态。论文认为这种”把灾难性 miss
+            换成有界的轻微退化”是这条路线成立的前提；</li>
+            <li><strong>KV cache 的量测口径要分清</strong>：890
+            bytes/token 说的是常驻 HBM 的 global KV，<span
+            class="math inline">\(1/8\)</span> 说的是持久化部分，而 SWA
+            KV 是另一条账（host DRAM 池 + replay
+            重算）。这三者混在一起谈会得出错误结论；</li>
+            <li><strong>选择错误无法挽回</strong>。候选池是后续所有
+            Reindex 层的搜索上界，一旦第一个 Full
+            层漏掉真正重要的位置，后面的层再精排也找不回来。报告在
+            limitations 里明确写了这一点：<em>Potential selection errors
+            in CSA2 and approximate state reconstruction in SWA Bounded
+            Replay may still cause capability degradation in untested
+            boundary cases</em>。</li>
+            </ul>
+            <h3 id="训练侧怎么支撑-csa2">训练侧怎么支撑 CSA2</h3>
+            <p>共享组件的层可能被切在<strong>不同的 pipeline
+            stage</strong> 上，这让”直接复用模块对象”在传统的
+            stage-local 执行模型下不成立。报告给了三个设计：</p>
+            <ul>
+            <li><strong>Shadow indexer</strong>：在每个参与 stage
+            上放一份轻量的<strong>可执行副本</strong>，但共享参数保留唯一逻辑
+            owner——owner 负责优化器与
+            checkpoint，副本之间通过参数同步与梯度聚合保持一致。这样就不用让
+            pipeline scheduler 把”共享层”当成特殊执行单元；</li>
+            <li><strong>Pipeline payload
+            extension</strong>：当产出方与消费方跨 pipeline
+            边界时，把下游需要的中间表示和 sparse routing 信息塞进已有的
+            p2p 通信路径，并<strong>按 context parallel
+            的方式分区</strong>，避免重复传输，同时保持梯度流；</li>
+            <li><strong>Micro-batch 级共享状态管理</strong>：跟踪并发
+            micro-batch 的共享状态生命周期，跨越前向、activation
+            重算与反向传播，直到最后一个消费者用完才释放，以免额外占用显存。</li>
+            </ul>
+            <p>再加上
+            optimizer、checkpointing、warm-up、计算图追踪的适配，CSA2
+            才能在原有分布式训练接口和 pipeline 调度下”透明”运行。</p>
+            <h3 id="笔者的分析与开放问题">笔者的分析与开放问题</h3>
+            <p>以下不属于报告的结论：</p>
+            <ul>
+            <li><strong>层次化索引本质是”召回 +
+            精排”两阶段检索</strong>。第一个 Full
+            层做完一次全量召回，产出候选池；后续层在池内精排。这和搜索/推荐系统的两阶段结构同构——差别在于这里的”召回”用的是下采样后的
+            main KV 自身的 indexer
+            打分，而不是独立的向量索引。这个类比直接指出了它的失效模式：<strong>召回率决定上限</strong>，精排再准也补不回漏召；</li>
+            <li><strong>压缩的重心从序列轴搬到了层轴</strong>。V4
+            的主线是”每 <span class="math inline">\(m\)</span> 个 token
+            压成一条”，V4.1 的主线变成”每 4~6
+            层共用一份”。序列轴的压缩率从 4 降到 2 甚至
+            1，层轴的复用率却做到 3/4 ~
+            5/6。这是一个相当明确的取舍方向：<strong>复用已有计算结果，比重新设计一个更激进的压缩算子更容易训练和维护</strong>；</li>
+            <li><strong>去掉 overlap 与 APE
+            是一次”用表达力换工程简洁”的下注</strong>。V4
+            的技术报告花了篇幅论证 overlap 的覆盖完备性，V4.1
+            直接砍掉；在 <span class="math inline">\(m \le 2\)</span>
+            的设定下这个取舍看起来合理，但如果后续把 <span
+            class="math inline">\(m\)</span> 调大，重新引入 overlap
+            的收益可能会回来；</li>
+            <li><strong>静态模式分配是个便宜且稳的设计</strong>。Full /
+            Reindex / Reuse
+            是<strong>静态</strong>分配而不是学出来的路由——省掉了可学路由的不稳定性和负载均衡问题，也让
+            kernel 形状、显存规划和 pipeline
+            切分都能在编译期定下来。代价是失去了逐样本自适应：无论输入多难，都是同几层做全量检索；</li>
+            <li><strong>值得追问的问题</strong>：
+            <ul>
+            <li>30 层 Reuse 共享同一份 top-512
+            选择，会不会削弱层的特化能力？报告用”选择错误”承认了风险，但没有给出
+            Reuse 层与 Full 层的表示差异分析；</li>
+            <li>候选池（2048 × 8 = 16384）对 1M context 而言只有约 1.6%
+            的覆盖率，这个比例如何随 context 长度和任务类型伸缩？</li>
+            <li>encoder 用 <span
+            class="math inline">\(m=2\)</span>、decoder 用 <span
+            class="math inline">\(m=1\)</span>
+            的分工，是否意味着”压缩只在 prefill 阶段划算”——即 prefill
+            是吞吐问题、decode
+            是延迟问题，两者的最优压缩率本来就不同？</li>
+            </ul></li>
+            </ul>
+            <h3 id="与-csahca-的关系">与 CSA/HCA 的关系</h3>
+            <table>
+            <colgroup>
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th></th>
+            <th>V4 的 CSA / HCA</th>
+            <th>V4.1 的 CSA2</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>压缩的轴</td>
+            <td>序列轴（每 <span class="math inline">\(m\)</span> 个
+            token 一条）</td>
+            <td>层轴（跨层复用）+ 序列轴（<span
+            class="math inline">\(m=1\)</span> 或 <span
+            class="math inline">\(2\)</span>）</td>
+            </tr>
+            <tr>
+            <td>核心算子</td>
+            <td>逐通道 softmax 门控的凸组合（软池化）</td>
+            <td><strong>没变</strong>，压缩器本身被简化（去 overlap、去
+            APE）</td>
+            </tr>
+            <tr>
+            <td>稀疏选择</td>
+            <td>Lightning Indexer + TopK</td>
+            <td>TopK 保留，新增层次化候选池把后续 indexer 的打分域压到
+            <span class="math inline">\(O(1)\)</span></td>
+            </tr>
+            <tr>
+            <td>省的是</td>
+            <td>KV cache 条目数</td>
+            <td>KV cache 的<strong>份数</strong>（层维度）与 indexer
+            计算</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>一句话：<strong>CSA2
+            没有换掉压缩算子，而是改变了”谁来压缩、压缩结果给谁用”</strong>。压缩器本身仍然是那套逐通道
+            softmax
+            加权平均（见《压缩数学原理》），变化发生在算子的<strong>复用拓扑</strong>上——这才是
+            CSA2 这个名字里那个 “2” 实际指的东西。</p>
+          </main>
+        <aside class="wiki-toc">
+      <ul>
+      <li><a href="#为什么要往层维度压"
+      id="toc-为什么要往层维度压">为什么要往层维度压</a></li>
+      <li><a href="#相比-v4-的-csa改了什么"
+      id="toc-相比-v4-的-csa改了什么">相比 V4 的 CSA，改了什么</a></li>
+      <li><a href="#三种模式" id="toc-三种模式">三种模式</a></li>
+      <li><a href="#hierarchical-sparse-indexer"
+      id="toc-hierarchical-sparse-indexer">Hierarchical Sparse
+      Indexer</a></li>
+      <li><a href="#v4.1-flash-的实际配置"
+      id="toc-v4.1-flash-的实际配置">V4.1-Flash 的实际配置</a></li>
+      <li><a href="#收益与代价" id="toc-收益与代价">收益与代价</a></li>
+      <li><a href="#训练侧怎么支撑-csa2"
+      id="toc-训练侧怎么支撑-csa2">训练侧怎么支撑 CSA2</a></li>
+      <li><a href="#笔者的分析与开放问题"
+      id="toc-笔者的分析与开放问题">笔者的分析与开放问题</a></li>
+      <li><a href="#与-csahca-的关系" id="toc-与-csahca-的关系">与
+      CSA/HCA 的关系</a></li>
+      </ul>
+    </aside>
+      </div>
+  <script type="text/javascript">
+    (function () {
+      function markActive() {
+        var here = location.href.split('#')[0];
+        var links = document.querySelectorAll('.wiki-sidebar a');
+        for (var i = 0; i < links.length; i++) {
+          if (links[i].href.split('#')[0] === here) {
+            links[i].classList.add('active');
+          }
+        }
+      }
+      // load the shared site directory once (served from the wiki root);
+      // kept in a standalone file so adding a page needn't rebuild every page.
+      var nav = document.getElementById('wiki-sidebar');
+      if (nav) {
+        fetch('/.wiki_sidebar.html')
+          .then(function (r) { return r.ok ? r.text() : ''; })
+          .then(function (html) {
+            if (html) {
+              nav.innerHTML = html;
+              nav.hidden = false;
+              markActive();
+            }
+          })
+          .catch(function () {});
+      }
+      // keep bootstrap table styling (previously done by sticky_menu.js)
+      var tables = document.getElementsByTagName('table');
+      for (var j = 0; j < tables.length; j++) {
+        tables[j].classList.add('table');
+      }
+    })();
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,292 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    TP
+  </title>
+    <link rel="stylesheet" href="./WikiTheme/theme/bamboo.css"  />
+        <script defer=""
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+        type="text/javascript"></script>
+        <style type="text/css">
+    /* ---- three column wiki layout (left: site directory, center: content, right: page TOC) ---- */
+    .wiki-layout {
+      display: flex;
+      align-items: flex-start;
+      gap: 24px;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 20px;
+      box-sizing: border-box;
+    }
+    .wiki-sidebar {
+      flex: 0 0 240px;
+      width: 240px;
+      position: sticky;
+      top: 0;
+      max-height: 100vh;
+      overflow-y: auto;
+      padding: 10px 4px 20px 0;
+      border-right: 1px solid #eee;
+      font-size: 14px;
+    }
+    .wiki-sidebar[hidden] { display: none; }
+    .wiki-toc {
+      flex: 0 0 220px;
+      width: 220px;
+      position: sticky;
+      top: 0;
+      max-height: 100vh;
+      overflow-y: auto;
+      padding: 10px 0 20px 4px;
+      border-left: 1px solid #eee;
+      font-size: 14px;
+    }
+    .wiki-main {
+      flex: 1 1 auto;
+      min-width: 0;
+      max-width: 820px;
+      padding: 10px 0 40px;
+    }
+    /* site directory tree */
+    .wiki-sidebar .wiki-home {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #eee;
+      text-decoration: none;
+      color: #333;
+    }
+    .wiki-sidebar ul { list-style: none; margin: 0 0 0 12px; padding: 0; }
+    .wiki-sidebar > ul { margin-left: 0; }
+    .wiki-sidebar li { line-height: 1.7; }
+    .wiki-sidebar a { text-decoration: none; color: #555; }
+    .wiki-sidebar a:hover { color: #0088cc; text-decoration: underline; }
+    .wiki-sidebar a.active { color: #0088cc; font-weight: bold; }
+    /* page TOC */
+    .wiki-toc ul { list-style: none; margin: 0 0 0 12px; padding: 0; }
+    .wiki-toc > ul { margin-left: 0; }
+    .wiki-toc li { line-height: 1.6; }
+    .wiki-toc a { text-decoration: none; color: #555; }
+    .wiki-toc a:hover { color: #0088cc; }
+    @media (max-width: 980px) {
+      .wiki-layout { flex-direction: column; }
+      .wiki-sidebar, .wiki-toc {
+        position: static;
+        width: 100%;
+        flex-basis: auto;
+        max-height: none;
+        border: 0;
+      }
+      .wiki-main { max-width: none; }
+    }
+  </style>
+</head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">TP</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="wiki-layout">
+    <nav class="wiki-sidebar" id="wiki-sidebar" hidden></nav>
+    <main class="wiki-main">
+            <h2 id="gemm">Gemm</h2>
+            <p>考虑矩阵 <span class="math inline">\(A B\)</span>
+            相乘，我们可以考虑三种切分方式：</p>
+            <ol type="1">
+            <li>将 <span class="math inline">\(B\)</span>
+            按照列切（列拆分）</li>
+            <li>将 <span class="math inline">\(A\)</span>
+            按照行切（行拆分）</li>
+            <li>将 <span class="math inline">\(A\)</span> 按照列切，将
+            <span class="math inline">\(B\)</span>
+            按照行切分（行列拆分）</li>
+            </ol>
+            <h3 id="outer-dim">Outer Dim</h3>
+            <p><strong>适用场景</strong>：当权重矩阵 <span
+            class="math inline">\(B\)</span>
+            的列数（即输出特征维度）非常大时，适合沿列维度进行拆分。</p>
+            <p><strong>拆分方式</strong>：</p>
+            <ul>
+            <li>将权重矩阵 <span class="math inline">\(B\)</span>
+            沿<strong>列</strong>维度均匀拆分为 <span
+            class="math inline">\(N\)</span> 块，其中 <span
+            class="math inline">\(N\)</span> 为并行设备数。</li>
+            <li>输入矩阵 <span class="math inline">\(A\)</span>
+            <strong>保持完整</strong>地分发到所有设备。</li>
+            </ul>
+            <p><span class="math display">\[AB = A [B_1, B_2, \cdots,
+            B_{N-1}] = [C_1, C_2, \cdots, C_{N-1}] = C\]</span></p>
+            <p>矩阵 <span class="math inline">\(B\)</span>
+            的每个子矩阵可以分别与矩阵 <span
+            class="math inline">\(A\)</span>
+            相乘，在不同的设备上进行计算，计算完之后之后做一个 all
+            gather 进行结果聚合：</p>
+            <p><span class="math display">\[
+            \begin{aligned}
+            B &amp;= [B_0, B_1, \dots, B_{N-1}] \\
+            &amp;\Downarrow \quad \text{每个设备 } k \text{ 计算} \\
+            C_k &amp;= A \times B_k \\
+            &amp;\Downarrow \quad \text{All-Gather 聚合} \\
+            C &amp;= [C_0, C_1, \dots, C_{N-1}]
+            \end{aligned}
+            \]</span></p>
+            <p>其中 <span class="math inline">\(A \in \mathbb{R}^{L
+            \times K}\)</span>， <span class="math inline">\(B \in
+            \mathbb{R}^{K \times M}\)</span>， <span
+            class="math inline">\(B_k \in \mathbb{R}^{K \times
+            \frac{M}{N}}\)</span>，<span class="math inline">\(C_k \in
+            \mathbb{R}^{L \times \frac{M}{N}}\)</span>，<span
+            class="math inline">\(C \in \mathbb{R}^{L \times
+            M}\)</span>。</p>
+            <h3 id="inner-dim">Inner Dim</h3>
+            <p><strong>适用场景</strong>：当权重矩阵 <span
+            class="math inline">\(B\)</span>
+            的行数（即输入特征维度）非常大，或当输入 <span
+            class="math inline">\(A\)</span>
+            的批次/序列维度很大时，适合沿行维度进行拆分。</p>
+            <p><strong>拆分方式</strong>： - 将权重矩阵 <span
+            class="math inline">\(B\)</span>
+            沿<strong>行</strong>维度均匀拆分为 <span
+            class="math inline">\(N\)</span> 块。 - 同时，将输入矩阵
+            <span class="math inline">\(A\)</span>
+            沿<strong>列</strong>维度进行对应的拆分，以匹配 <span
+            class="math inline">\(B\)</span> 的行分割。</p>
+            <p>用数学公式表示为： <span class="math display">\[
+            A = [A_0, A_1, ..., A_{N-1}], \quad B = \begin{bmatrix} B_0
+            \\ B_1 \\ \vdots \\ B_{N-1} \end{bmatrix}
+            \]</span> 其中，<span class="math inline">\(A_k\)</span>
+            的形状为 <span class="math inline">\((L,
+            \frac{K}{N})\)</span>，<span
+            class="math inline">\(B_k\)</span> 的形状为 <span
+            class="math inline">\((\frac{K}{N}, M)\)</span>。</p>
+            <p><strong>计算过程</strong>： 每个设备 <span
+            class="math inline">\(k\)</span> 计算局部结果： <span
+            class="math display">\[
+            C_k = A_k \times B_k
+            \]</span> 这里，每个 <span
+            class="math inline">\(C_k\)</span> 的形状与最终输出 <span
+            class="math inline">\(C\)</span> 相同，均为 <span
+            class="math inline">\((L, M)\)</span>，但每个 <span
+            class="math inline">\(C_k\)</span>
+            只是基于局部输入和权重计算的<strong>部分和</strong>。</p>
+            <p><strong>通信与聚合</strong>：
+            为了得到最终结果，需要对所有设备的局部结果 <span
+            class="math inline">\(C_k\)</span> 进行求和。这通过
+            <strong>All-Reduce</strong>（或更优化的
+            <strong>Reduce-Scatter</strong>）操作实现。 <span
+            class="math display">\[
+            C = \sum_{k=0}^{N-1} C_k \quad \text{（在每个设备上通过
+            All-Reduce 后得到）}
+            \]</span></p>
+            <h2 id="attention-切分">Attention 切分</h2>
+            <h3 id="qkv">QKV</h3>
+            <p>qkv_proj：<code>MergedColumnParallelLinear([hidden_size, q_dim + k_dim + v_dim])</code></p>
+            <p>进行 TP 切分时，<code>MergedColumnParallelLinear</code>
+            内部处理了 KV 切分的一些细节：</p>
+            <ul>
+            <li>Q
+            <ul>
+            <li>每个 rank 有 <code>num_heads / tp_size</code> 个 q
+            head</li>
+            </ul></li>
+            <li>KV
+            <ul>
+            <li>如果 <code>tp_size &lt;= num_kv_heads</code>，那么每个
+            rank 有 <code>num_kv_heads / tp_size</code> 个 KV head</li>
+            <li>如果 <code>tp_size &gt; num_kv_heads</code>，那么每个
+            rank 有 1 个 KV head</li>
+            </ul></li>
+            </ul>
+            <pre><code>self.num_heads = self.total_num_heads // attn_tp_size
+self.num_kv_heads = max(1, self.total_num_kv_heads // attn_tp_size)</code></pre>
+            <h3 id="attention">Attention</h3>
+            <p>上一步 QKV Projection 已经为每个 rank 切分好 head
+            了，这一步直接喂到 Attention kernel 中就可以了。</p>
+            <pre><code>self.attn = RadixAttention(
+    self.num_heads,
+    self.head_dim,
+    num_kv_heads=self.num_kv_heads,
+    v_head_dim=self.v_head_dim,
+)</code></pre>
+          </main>
+        <aside class="wiki-toc">
+      <ul>
+      <li><a href="#gemm" id="toc-gemm">Gemm</a>
+      <ul>
+      <li><a href="#outer-dim" id="toc-outer-dim">Outer Dim</a></li>
+      <li><a href="#inner-dim" id="toc-inner-dim">Inner Dim</a></li>
+      </ul></li>
+      <li><a href="#attention-切分" id="toc-attention-切分">Attention
+      切分</a>
+      <ul>
+      <li><a href="#qkv" id="toc-qkv">QKV</a></li>
+      <li><a href="#attention" id="toc-attention">Attention</a></li>
+      </ul></li>
+      </ul>
+    </aside>
+      </div>
+  <script type="text/javascript">
+    (function () {
+      function markActive() {
+        var here = location.href.split('#')[0];
+        var links = document.querySelectorAll('.wiki-sidebar a');
+        for (var i = 0; i < links.length; i++) {
+          if (links[i].href.split('#')[0] === here) {
+            links[i].classList.add('active');
+          }
+        }
+      }
+      // load the shared site directory once (served from the wiki root);
+      // kept in a standalone file so adding a page needn't rebuild every page.
+      var nav = document.getElementById('wiki-sidebar');
+      if (nav) {
+        fetch('/.wiki_sidebar.html')
+          .then(function (r) { return r.ok ? r.text() : ''; })
+          .then(function (html) {
+            if (html) {
+              nav.innerHTML = html;
+              nav.hidden = false;
+              markActive();
+            }
+          })
+          .catch(function () {});
+      }
+      // keep bootstrap table styling (previously done by sticky_menu.js)
+      var tables = document.getElementsByTagName('table');
+      for (var j = 0; j < tables.length; j++) {
+        tables[j].classList.add('table');
+      }
+    })();
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,425 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    Communicator
+  </title>
+    <link rel="stylesheet" href="./WikiTheme/theme/bootstrap.css"  />
+          <style type="text/css">
+    /* ---- three column wiki layout (left: site directory, center: content, right: page TOC) ---- */
+    .wiki-layout {
+      display: flex;
+      align-items: flex-start;
+      gap: 24px;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 20px;
+      box-sizing: border-box;
+    }
+    .wiki-sidebar {
+      flex: 0 0 240px;
+      width: 240px;
+      position: sticky;
+      top: 0;
+      max-height: 100vh;
+      overflow-y: auto;
+      padding: 10px 4px 20px 0;
+      border-right: 1px solid #eee;
+      font-size: 14px;
+    }
+    .wiki-sidebar[hidden] { display: none; }
+    .wiki-toc {
+      flex: 0 0 220px;
+      width: 220px;
+      position: sticky;
+      top: 0;
+      max-height: 100vh;
+      overflow-y: auto;
+      padding: 10px 0 20px 4px;
+      border-left: 1px solid #eee;
+      font-size: 14px;
+    }
+    .wiki-main {
+      flex: 1 1 auto;
+      min-width: 0;
+      max-width: 820px;
+      padding: 10px 0 40px;
+    }
+    /* site directory tree */
+    .wiki-sidebar .wiki-home {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #eee;
+      text-decoration: none;
+      color: #333;
+    }
+    .wiki-sidebar ul { list-style: none; margin: 0 0 0 12px; padding: 0; }
+    .wiki-sidebar > ul { margin-left: 0; }
+    .wiki-sidebar li { line-height: 1.7; }
+    .wiki-sidebar a { text-decoration: none; color: #555; }
+    .wiki-sidebar a:hover { color: #0088cc; text-decoration: underline; }
+    .wiki-sidebar a.active { color: #0088cc; font-weight: bold; }
+    /* page TOC */
+    .wiki-toc ul { list-style: none; margin: 0 0 0 12px; padding: 0; }
+    .wiki-toc > ul { margin-left: 0; }
+    .wiki-toc li { line-height: 1.6; }
+    .wiki-toc a { text-decoration: none; color: #555; }
+    .wiki-toc a:hover { color: #0088cc; }
+    @media (max-width: 980px) {
+      .wiki-layout { flex-direction: column; }
+      .wiki-sidebar, .wiki-toc {
+        position: static;
+        width: 100%;
+        flex-basis: auto;
+        max-height: none;
+        border: 0;
+      }
+      .wiki-main { max-width: none; }
+    }
+  </style>
+</head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">Communicator</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="wiki-layout">
+    <nav class="wiki-sidebar" id="wiki-sidebar" hidden></nav>
+    <main class="wiki-main">
+            <h3
+            id="一问题数据在层内会处于不同的分布状态">一、问题：数据在层内会处于不同的「分布状态」</h3>
+            <p>一个 Transformer 层由 <strong>Attention</strong> 和
+            <strong>MLP</strong>
+            两个子模块串联而成。在张量并行（TP）下，两个子模块内部都用「列并行
+            → 行并行」的方式切分线性层，行并行线性层算完后得到的是各
+            rank 的<strong>部分和</strong>，需要一次 AllReduce
+            才能合并成完整结果。这就是经典的 Megatron-LM
+            范式：每层固定两次 AllReduce，所有 rank
+            自始至终持有相同的完整 token 序列，逻辑非常简单。</p>
+            <p>真正的复杂性来自 <strong>DP Attention</strong>：同一个 TP
+            组内，不同 rank 负责不同请求的注意力计算（数据并行地切分
+            token），但 MLP 的权重仍按完整 TP 切分、需要看到所有
+            token。于是同一份 hidden_states
+            在一层的不同阶段，处于<strong>不同的分布状态</strong>：</p>
+            <ul>
+            <li>Attention 阶段：每个 attention 子组只持有自己那部分
+            token</li>
+            <li>MLP 阶段：需要把所有子组的 token 聚齐</li>
+            </ul>
+            <p>要让计算正确，就必须在「阶段切换」的位置插入恰当的集合通信（AllGather
+            / ReduceScatter /
+            AllReduce），把数据从一种分布状态搬到另一种。</p>
+            <p>难点在于：这些通信<strong>不是固定的</strong>。它取决于并行配置（TP、DP、是否
+            DP Attention）、层的类型（dense 还是
+            MoE）、乃至具体的后端优化开关。如果在每个 forward 里用一堆
+            <code>if/else</code>
+            判断”现在该不该通信、该做哪种通信”，代码会迅速失控，而且每次
+            forward 都在重复做同样的判断，白白浪费时间。</p>
+            <p><code>LayerCommunicator</code>（<code>layers/communicator.py</code>）就是为解决这个问题而生：<strong>用一套统一的抽象描述”数据在层内各阶段的分布状态”，并在模型初始化时就把每个衔接点需要的通信操作推导好、绑定好</strong>；运行时只管执行，不再判断。</p>
+            <hr />
+            <h3
+            id="二抽象用分布状态描述数据用状态差异推导通信">二、抽象：用「分布状态」描述数据，用「状态差异」推导通信</h3>
+            <h4 id="scattermode同一份数据被几个-rank-共同持有">2.1
+            ScatterMode：同一份数据被几个 rank 共同持有</h4>
+            <p>整套抽象的基石是一个很克制的概念 ——
+            <code>ScatterMode</code>。它描述的不是”数据在哪个 rank
+            上”，而是一个更本质的量：<strong>同一份数据，被多少个 rank
+            共同完整持有</strong>。</p>
+            <figure>
+            <img src="./WikiImage/communicator_scatter_modes.svg"
+            alt="ScatterMode 的三种分布状态" />
+            <figcaption aria-hidden="true">ScatterMode
+            的三种分布状态</figcaption>
+            </figure>
+            <p>以 TP=4、DP=2（因此每个 attention 子组
+            <code>attn_tp_size=2</code>）、系统同时处理请求 a/b/c/d
+            为例，三种核心状态是：</p>
+            <ul>
+            <li><strong>SCATTERED</strong>：每个 rank
+            只独占一个分片（a、b、c、d 各一份），对应「持有者数量」=
+            1</li>
+            <li><strong>TP_ATTN_FULL</strong>：一个 attention TP 组内的
+            rank 持有本组完整数据（rank0/1 都有 ab，rank2/3 都有
+            cd），持有者数量 = <code>attn_tp_size</code> = 2</li>
+            <li><strong>FULL</strong>：所有 rank
+            都持有全部数据（abcd），持有者数量 = <code>tp_size</code> =
+            4</li>
+            </ul>
+            <p>把「持有者数量」记为
+            <code>group_size</code>，抽象的精髓就浮现了：<strong>判断两个阶段的数据分布是否一致，只需比较它们的
+            <code>group_size</code>
+            是否相等</strong>。相等，说明数据已经在对的分布上，什么都不用做；不相等，就需要一次通信把它搬过去。至于搬的方向：</p>
+            <ul>
+            <li><code>group_size</code> 变大（如 2 →
+            4）：数据要”铺开”给更多 rank →
+            <strong>AllGather</strong></li>
+            <li><code>group_size</code> 变小（如 4 →
+            2）：数据要”收拢”并顺带归约 →
+            <strong>ReduceScatter</strong></li>
+            <li>同一 <code>group_size</code> 内还是部分和：需要就地合并
+            → <strong>AllReduce</strong></li>
+            </ul>
+            <p>一个本来需要枚举各种配置组合的问题，被压缩成了「比较两个整数」。</p>
+            <h4 id="把一层拆成五个状态三个衔接点">2.2
+            把一层拆成五个状态、三个衔接点</h4>
+            <p>有了 <code>ScatterMode</code>，就可以给一个 Transformer
+            层标注出它内部的<strong>五个分布状态</strong>，以及状态之间的<strong>三个衔接点</strong>：</p>
+            <figure>
+            <img src="./WikiImage/communicator_layer_stages.svg"
+            alt="一层之内的五个状态与三个衔接点" />
+            <figcaption
+            aria-hidden="true">一层之内的五个状态与三个衔接点</figcaption>
+            </figure>
+            <ul>
+            <li>五个状态：<code>layer_input</code> → <code>attn</code> →
+            <code>mlp</code> →
+            <code>layer_output</code>，外加一条与它们并行的
+            <code>middle_residual</code>（残差支线）</li>
+            <li>三个衔接点：<code>prepare_attn</code>（进入注意力前）、<code>prepare_mlp</code>（注意力到
+            MLP 之间）、<code>postprocess_layer</code>（层末）</li>
+            </ul>
+            <p>其中 <code>attn</code> 状态<strong>固定为
+            <code>TP_ATTN_FULL</code></strong>（注意力计算要求 TP
+            组内看到相同的完整 token
+            序列），是整套推导的锚点。<code>mlp</code>
+            状态则是真正的”自由变量”，由层的类型决定（dense 还是
+            MoE、是否全 DP 等）；其余状态再由这两者向两端推导出来。</p>
+            <p>这样一来，是否需要通信就一目了然。举两个极端：</p>
+            <p><strong>标准 TP（无 DP Attention）</strong>：此时
+            <code>attn_tp_size == tp_size</code>，意味着
+            <code>TP_ATTN_FULL</code> 和 <code>FULL</code> 的
+            <code>group_size</code> 相等。于是五个状态的
+            <code>group_size</code> 全都一样 ——
+            相邻状态之间没有任何重分布需求，三个衔接点全是”透传”。唯一的通信来自
+            attention 和 MLP 内部行并行层的 AllReduce，退化回经典
+            Megatron 范式。</p>
+            <p><strong>TP=4 + DP=2</strong>：<code>attn</code> 的
+            <code>group_size</code> 是 2，<code>mlp</code>（FULL）是
+            4。于是 <code>attn(2) → mlp(4)</code> 要
+            AllGather，<code>mlp(4) → layer_output(2)</code> 要
+            Scatter。两处 group_size 不等的地方，恰好就是两处真正发生跨
+            rank 通信的地方。</p>
+            <h4 id="判定前移初始化时推导运行时零判断">2.3
+            判定前移：初始化时推导，运行时零判断</h4>
+            <p>抽象带来的最大收益是<strong>把”要不要通信、通信做什么”的判断从运行时搬到了初始化时</strong>。</p>
+            <p>模型构建时，<code>LayerScatterModes</code>
+            为每一层算好五个状态，<code>LayerCommunicator</code>
+            再据此为三个衔接点各<strong>绑定一个静态函数</strong>（透传、AllGather、ReduceScatter……）。此后每次
+            forward 直接调用绑定好的函数，不再有任何
+            <code>if/else</code>。这既消除了热路径上的分支开销，也让「不同配置
+            /
+            不同层类型自动得到不同通信方案」成为初始化期的自然结果，而不是散落在
+            forward 里的特判。</p>
+            <hr />
+            <h3
+            id="三落到实现三个衔接点各做什么">三、落到实现：三个衔接点各做什么</h3>
+            <p>三个衔接点由三个策略类负责，每个类在初始化时根据相邻状态的组合选出一个具体实现。下面结合
+            Qwen3 + DP Attention（TP=4, DP=2）追踪 hidden_states
+            在一层中的形态变化，看这三处分别发生了什么：</p>
+            <figure>
+            <img src="./WikiImage/communicator_dp_attn_flow.svg"
+            alt="DP Attention 下一层内的数据流动" />
+            <figcaption aria-hidden="true">DP Attention
+            下一层内的数据流动</figcaption>
+            </figure>
+            <p><strong>衔接点①
+            <code>prepare_attn</code>（CommunicateSimpleFn）</strong>　目标状态是固定的
+            <code>TP_ATTN_FULL</code>，所以只有两种可能：输入已经是
+            <code>TP_ATTN_FULL</code> → 直接透传（标准
+            TP、以及上一层输出就是 TP_ATTN_FULL 的情形）；输入是
+            <code>SCATTERED</code>（典型见于 MoE 的 all-to-all
+            场景，上一层输出是分片的）→ 做一次
+            <strong>AllGather</strong>，把各 rank
+            的分片拼回组内完整序列。</p>
+            <p><strong>衔接点②
+            <code>prepare_mlp</code>（CommunicateWithAllReduceAndLayerNormFn）</strong>　这是最关键也最复杂的衔接点，因为它要同时完成三件交织在一起的事：合并
+            attention 行并行层（o_proj）的部分和、把数据重分布到 MLP
+            需要的状态、以及应用
+            LayerNorm。三者的顺序正是性能优化的着力点：</p>
+            <ul>
+            <li><strong>标准 TP</strong>：o_proj 的部分和在此处做
+            <strong>AllReduce</strong> 合并，然后
+            LayerNorm。在支持的架构上（如 SM90/SM100、batch
+            不过大），AllReduce 与 RMSNorm 会<strong>融合成一个
+            kernel</strong>，省掉中间一轮显存读写。</li>
+            <li><strong>DP Attention</strong>：各 attention 组只有部分
+            token，需要 <strong>AllGather</strong>
+            聚齐（<code>attn(2) → mlp(4)</code>）。一个常见优化是：当每个
+            rank 本就独立处理不同 token 时，先在小数据量上做
+            LayerNorm，再 AllGather，从而缩小 LayerNorm 的计算量。</li>
+            <li><strong>MoE + all-to-all</strong>：目标是
+            <code>SCATTERED</code>，于是用
+            <strong>ReduceScatter</strong> 替代 AllReduce ——
+            合并部分和的同时直接完成分片。由于省掉了 AllReduce 里”再
+            AllGather 回去”的那一半，通信量减半，后续 LayerNorm
+            的计算量也按 <code>attn_tp_size</code> 缩小。</li>
+            </ul>
+            <p><strong>衔接点③
+            <code>postprocess_layer</code>（CommunicateSummableTensorPairFn）</strong>　把
+            MLP 的结果送回下一层需要的状态。它的特点是 hidden_states 与
+            residual 是「可相加的」——
+            需要时先相加再通信，只传一份数据。常见三种：group_size 不变
+            → 透传（标准 TP）；<code>FULL → TP_ATTN_FULL</code> →
+            <strong>Scatter</strong> 把全局结果散回本 attention
+            组（若开启 padding 且允许，还可用 ReduceScatter 顺带完成 MLP
+            down_proj
+            省下的那次归约）；<code>SCATTERED → TP_ATTN_FULL</code> →
+            <strong>AllGather</strong>（MoE 场景的反向操作）。</p>
+            <p>对照上面的数据流图可以看到：<strong>标准 TP
+            下三个衔接点几乎全是透传</strong>，复杂度完全退化；只有 DP
+            Attention / MoE 才会真正触发②③处的通信。这正是抽象想要的效果
+            —— 简单场景零负担，复杂场景也不需要上层写一行通信代码。</p>
+            <hr />
+            <h3
+            id="四两个值得一提的设计细节">四、两个值得一提的设计细节</h3>
+            <h4 id="mlp_mode-驱动的自动推导混合模型自动适配">4.1
+            mlp_mode 驱动的自动推导：混合模型自动适配</h4>
+            <p>五个状态的推导核心是 <code>mlp_mode</code>：dense
+            层通常是 <code>FULL</code>（完全 DP 计算时才是
+            <code>SCATTERED</code>）；MoE 层在使用 all-to-all 后端时是
+            <code>SCATTERED</code>（token 的 dispatch/combine 由 MoE
+            层自理），否则
+            <code>FULL</code>。其余状态向两端跟随，<code>layer_input_mode</code>
+            则等于上一层的 <code>layer_output_mode</code>。</p>
+            <p>这个链式推导带来一个很优雅的性质：<strong>对于 dense 层和
+            MoE 层混合的模型（如
+            Qwen3-MoE），每种层会自动得到各自的状态组合，衔接处的通信也随之自动适配</strong>。比如
+            dense 层输出 <code>TP_ATTN_FULL</code>、下一个 MoE
+            层输入就是
+            <code>TP_ATTN_FULL</code>，衔接点①退化为透传；而若 MoE
+            层输出 <code>SCATTERED</code>、下一个 dense 层输入就是
+            <code>SCATTERED</code>，衔接点①自动变为
+            AllGather。整个过程在初始化时一次算完，运行时没有任何分支。</p>
+            <h4
+            id="attn_tp_input_scatteredprefill-阶段的-reducescatter-优化">4.2
+            attn_tp_input_scattered：prefill 阶段的 ReduceScatter
+            优化</h4>
+            <p>除了 <code>LayerScatterModes</code>
+            驱动的主干，<code>communicator.py</code>
+            里还有一条独立的优化路径。思路是：prefill（extend）阶段
+            token 很多，如果 TP 组内每个 rank 都对全部 token 做
+            LayerNorm 和 QKV 投影，计算是冗余的。于是把上一层输出用
+            <strong>ReduceScatter</strong>（而非 AllReduce）分片到各
+            rank，每个 rank 只在 <code>1/tp_size</code> 的 token 上做
+            LayerNorm 和 QKV 投影，等到真正算 attention 之前再 AllGather
+            补齐。</p>
+            <p>由于
+            <code>AllReduce = ReduceScatter + AllGather</code>，通信总量不变，但
+            <strong>LayerNorm 与 QKV 投影的计算量缩小了
+            <code>tp_size</code> 倍</strong> —— 对 prefill
+            的长序列尤其划算。该优化目前限定在特定条件下启用（CUDA、带
+            <code>q_lora_rank</code>、非 DP Attention、非 MoE all-to-all
+            等）。</p>
+            <hr />
+            <h3
+            id="五通信操作的最终落地groupcoordinator">五、通信操作的最终落地：GroupCoordinator</h3>
+            <p>无论抽象层选出的是 AllReduce、AllGather 还是
+            ReduceScatter，它们最终都落到
+            <code>GroupCoordinator</code>（<code>parallel_state.py</code>）执行。<code>GroupCoordinator</code>
+            不是对 <code>torch.distributed</code>
+            的简单封装，而是一个<strong>多后端路由器</strong>，按场景挑选最优实现：</p>
+            <ul>
+            <li><strong>AllReduce</strong>：优先 CustomAllreduce（NVLink
+            上基于 IPC 共享内存，适合小 tensor）→ PyNccl（直调
+            <code>ncclAllReduce</code>）→
+            <code>torch.distributed</code>；CUDA Graph 模式下另走
+            out-of-place 实现。</li>
+            <li><strong>AllGather / ReduceScatter</strong>：优先 PyNccl
+            的 <code>ncclAllGather</code> /
+            <code>ncclReduceScatter</code>，fallback 到
+            <code>torch.distributed</code>。</li>
+            </ul>
+            <p>这些通信全部在 GPU 上经 NCCL 完成，走的是 GPU
+            间高速互联（NVLink/NVSwitch 或 PCIe）。它与 Scheduler 之间用
+            Gloo 走 CPU
+            传递请求元数据的通道，是<strong>完全独立的两条链路</strong>。</p>
+            <hr />
+            <p><strong>小结</strong>：<code>LayerCommunicator</code>
+            的价值不在于某个通信 kernel，而在于那层抽象 ——
+            把”层内数据分布”统一建模为
+            <code>ScatterMode</code>，把”要不要通信”化简为比较
+            <code>group_size</code>，并把全部判定前移到初始化。于是上层模型代码只需声明”这里是
+            prepare_attn / prepare_mlp /
+            postprocess”，不必关心当前是标准 TP、DP Attention 还是 MoE
+            —— 正确且高效的通信会被自动织入。</p>
+          </main>
+        <aside class="wiki-toc">
+      <ul>
+      <li><a href="#一问题数据在层内会处于不同的分布状态"
+      id="toc-一问题数据在层内会处于不同的分布状态">一、问题：数据在层内会处于不同的「分布状态」</a></li>
+      <li><a href="#二抽象用分布状态描述数据用状态差异推导通信"
+      id="toc-二抽象用分布状态描述数据用状态差异推导通信">二、抽象：用「分布状态」描述数据，用「状态差异」推导通信</a></li>
+      <li><a href="#三落到实现三个衔接点各做什么"
+      id="toc-三落到实现三个衔接点各做什么">三、落到实现：三个衔接点各做什么</a></li>
+      <li><a href="#四两个值得一提的设计细节"
+      id="toc-四两个值得一提的设计细节">四、两个值得一提的设计细节</a></li>
+      <li><a href="#五通信操作的最终落地groupcoordinator"
+      id="toc-五通信操作的最终落地groupcoordinator">五、通信操作的最终落地：GroupCoordinator</a></li>
+      </ul>
+    </aside>
+      </div>
+  <script type="text/javascript">
+    (function () {
+      function markActive() {
+        var here = location.href.split('#')[0];
+        var links = document.querySelectorAll('.wiki-sidebar a');
+        for (var i = 0; i < links.length; i++) {
+          if (links[i].href.split('#')[0] === here) {
+            links[i].classList.add('active');
+          }
+        }
+      }
+      // load the shared site directory once (served from the wiki root);
+      // kept in a standalone file so adding a page needn't rebuild every page.
+      var nav = document.getElementById('wiki-sidebar');
+      if (nav) {
+        fetch('/.wiki_sidebar.html')
+          .then(function (r) { return r.ok ? r.text() : ''; })
+          .then(function (html) {
+            if (html) {
+              nav.innerHTML = html;
+              nav.hidden = false;
+              markActive();
+            }
+          })
+          .catch(function () {});
+      }
+      // keep bootstrap table styling (previously done by sticky_menu.js)
+      var tables = document.getElementsByTagName('table');
+      for (var j = 0; j < tables.length; j++) {
+        tables[j].classList.add('table');
+      }
+    })();
+  </script>
+</body>
+
+</html>

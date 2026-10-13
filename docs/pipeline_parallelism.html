@@ -1,0 +1,342 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    PP
+  </title>
+    <link rel="stylesheet" href="./WikiTheme/theme/bootstrap.css"  />
+          <style type="text/css">
+    /* ---- three column wiki layout (left: site directory, center: content, right: page TOC) ---- */
+    .wiki-layout {
+      display: flex;
+      align-items: flex-start;
+      gap: 24px;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 20px;
+      box-sizing: border-box;
+    }
+    .wiki-sidebar {
+      flex: 0 0 240px;
+      width: 240px;
+      position: sticky;
+      top: 0;
+      max-height: 100vh;
+      overflow-y: auto;
+      padding: 10px 4px 20px 0;
+      border-right: 1px solid #eee;
+      font-size: 14px;
+    }
+    .wiki-sidebar[hidden] { display: none; }
+    .wiki-toc {
+      flex: 0 0 220px;
+      width: 220px;
+      position: sticky;
+      top: 0;
+      max-height: 100vh;
+      overflow-y: auto;
+      padding: 10px 0 20px 4px;
+      border-left: 1px solid #eee;
+      font-size: 14px;
+    }
+    .wiki-main {
+      flex: 1 1 auto;
+      min-width: 0;
+      max-width: 820px;
+      padding: 10px 0 40px;
+    }
+    /* site directory tree */
+    .wiki-sidebar .wiki-home {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #eee;
+      text-decoration: none;
+      color: #333;
+    }
+    .wiki-sidebar ul { list-style: none; margin: 0 0 0 12px; padding: 0; }
+    .wiki-sidebar > ul { margin-left: 0; }
+    .wiki-sidebar li { line-height: 1.7; }
+    .wiki-sidebar a { text-decoration: none; color: #555; }
+    .wiki-sidebar a:hover { color: #0088cc; text-decoration: underline; }
+    .wiki-sidebar a.active { color: #0088cc; font-weight: bold; }
+    /* page TOC */
+    .wiki-toc ul { list-style: none; margin: 0 0 0 12px; padding: 0; }
+    .wiki-toc > ul { margin-left: 0; }
+    .wiki-toc li { line-height: 1.6; }
+    .wiki-toc a { text-decoration: none; color: #555; }
+    .wiki-toc a:hover { color: #0088cc; }
+    @media (max-width: 980px) {
+      .wiki-layout { flex-direction: column; }
+      .wiki-sidebar, .wiki-toc {
+        position: static;
+        width: 100%;
+        flex-basis: auto;
+        max-height: none;
+        border: 0;
+      }
+      .wiki-main { max-width: none; }
+    }
+  </style>
+</head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">PP</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="wiki-layout">
+    <nav class="wiki-sidebar" id="wiki-sidebar" hidden></nav>
+    <main class="wiki-main">
+            <h2 id="workflow">Workflow</h2>
+            <h3 id="example">Example</h3>
+            <p>PP4 async depth = 0</p>
+            <pre><code>PP0  mb0  mb1  mb2  mb3
+PP1       mb0  mb1  mb2  mb3
+PP2            mb0  mb1  mb2  mb3
+PP3                 mb0  mb1  mb2  mb3</code></pre>
+            <p>PP4 async depth = 2</p>
+            <pre><code>PP0  mb0  mb1  mb2  mb3  mb4  mb5
+PP1       mb0  mb1  mb2  mb3  mb4  mb5
+PP2            mb0  mb1  mb2  mb3  mb4  mb5
+PP3                 mb0  mb1  mb2  mb3  mb4  mb5</code></pre>
+            <p>以 PP1 处理 mb1 和 mb2 的流程为例：</p>
+            <table style="width:100%;">
+            <colgroup>
+            <col style="width: 16%" />
+            <col style="width: 24%" />
+            <col style="width: 20%" />
+            <col style="width: 38%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>prev mb</th>
+            <th>current mb</th>
+            <th>next mb</th>
+            <th>next_first_rank_mb</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td></td>
+            <td><code>recv_meta(mb1)</code></td>
+            <td></td>
+            <td></td>
+            </tr>
+            <tr>
+            <td><code>commit_meta(mb0)</code></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            </tr>
+            <tr>
+            <td></td>
+            <td><code>prefill_chunk(mb1)</code></td>
+            <td></td>
+            <td></td>
+            </tr>
+            <tr>
+            <td></td>
+            <td><code>get_new_prefill_batch(mb1)</code></td>
+            <td></td>
+            <td></td>
+            </tr>
+            <tr>
+            <td></td>
+            <td><code>recv_hs(mb1)</code></td>
+            <td></td>
+            <td></td>
+            </tr>
+            <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td><code>commit_output(next_first) if async_depth &gt; 0</code></td>
+            </tr>
+            <tr>
+            <td><code>commit_hs(mb0)</code></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            </tr>
+            <tr>
+            <td></td>
+            <td><code>launch(mb1)</code></td>
+            <td></td>
+            <td></td>
+            </tr>
+            <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td><code>commit_output(next_first) if async_depth == 0</code></td>
+            </tr>
+            <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td><code>send_consensus(next_first)</code></td>
+            </tr>
+            <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td><code>commit_consensus(next_first)</code></td>
+            </tr>
+            <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td><code>commit_release(next_first)</code></td>
+            </tr>
+            <tr>
+            <td></td>
+            <td></td>
+            <td><code>harvest_wait(mb2)</code></td>
+            <td></td>
+            </tr>
+            <tr>
+            <td></td>
+            <td></td>
+            <td><code>harvest(mb2)</code></td>
+            <td></td>
+            </tr>
+            <tr>
+            <td></td>
+            <td></td>
+            <td><code>process_inflight(mb2)</code></td>
+            <td></td>
+            </tr>
+            <tr>
+            <td></td>
+            <td><code>send_req(mb1)</code></td>
+            <td></td>
+            <td></td>
+            </tr>
+            <tr>
+            <td></td>
+            <td><code>send_hs(mb1)</code></td>
+            <td></td>
+            <td></td>
+            </tr>
+            </tbody>
+            </table>
+            <h3 id="async-depth">async depth</h3>
+            <p>如果 async depth == 0，那么在 launch 下一个 loop 的
+            current_mb 时，必须同步等待上一个 loop 的 current_mb
+            完成。</p>
+            <h2 id="pp-和-tp-对比">PP 和 TP 对比</h2>
+            <p>讨论 PP 和 TP 方案在 Prefill 阶段的优劣</p>
+            <ul>
+            <li>PP 相比 TP
+            <ul>
+            <li>优势：
+            <ul>
+            <li>可以减少通信操作
+            <ul>
+            <li>AllReduce/Dispatch/Combine</li>
+            </ul></li>
+            <li>某些 kernel 计算效率更高
+            <ul>
+            <li>fused_moe_w2</li>
+            </ul></li>
+            <li>不同卡不存在重复计算
+            <ul>
+            <li>q_a_and_kv_a_proj</li>
+            <li>fused_moe
+            <ul>
+            <li>moe_gate</li>
+            <li>expert_up_proj</li>
+            <li>expert_down_proj</li>
+            </ul></li>
+            </ul></li>
+            <li>可以做多机部署</li>
+            </ul></li>
+            <li>劣势
+            <ul>
+            <li>不同卡不存在对于单一 batch 的并行计算，TTFT 天然大</li>
+            <li>不同卡是弱同步状态，稳定性建设难度更大
+            <ul>
+            <li>不同 rank 的 prefix cache 命中同步</li>
+            <li>请求被 abort 的时候如何维持稳定性</li>
+            </ul></li>
+            </ul></li>
+            </ul></li>
+            </ul>
+          </main>
+        <aside class="wiki-toc">
+      <ul>
+      <li><a href="#workflow" id="toc-workflow">Workflow</a>
+      <ul>
+      <li><a href="#example" id="toc-example">Example</a></li>
+      <li><a href="#async-depth" id="toc-async-depth">async
+      depth</a></li>
+      </ul></li>
+      <li><a href="#pp-和-tp-对比" id="toc-pp-和-tp-对比">PP 和 TP
+      对比</a></li>
+      </ul>
+    </aside>
+      </div>
+  <script type="text/javascript">
+    (function () {
+      function markActive() {
+        var here = location.href.split('#')[0];
+        var links = document.querySelectorAll('.wiki-sidebar a');
+        for (var i = 0; i < links.length; i++) {
+          if (links[i].href.split('#')[0] === here) {
+            links[i].classList.add('active');
+          }
+        }
+      }
+      // load the shared site directory once (served from the wiki root);
+      // kept in a standalone file so adding a page needn't rebuild every page.
+      var nav = document.getElementById('wiki-sidebar');
+      if (nav) {
+        fetch('/.wiki_sidebar.html')
+          .then(function (r) { return r.ok ? r.text() : ''; })
+          .then(function (html) {
+            if (html) {
+              nav.innerHTML = html;
+              nav.hidden = false;
+              markActive();
+            }
+          })
+          .catch(function () {});
+      }
+      // keep bootstrap table styling (previously done by sticky_menu.js)
+      var tables = document.getElementsByTagName('table');
+      for (var j = 0; j < tables.length; j++) {
+        tables[j].classList.add('table');
+      }
+    })();
+  </script>
+</body>
+
+</html>

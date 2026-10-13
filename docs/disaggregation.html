@@ -1,0 +1,662 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    Disaggregation
+  </title>
+    <link rel="stylesheet" href="./WikiTheme/theme/bootstrap.css"  />
+        <script defer=""
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+        type="text/javascript"></script>
+      <style type="text/css">
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+      <style type="text/css">
+    /* ---- three column wiki layout (left: site directory, center: content, right: page TOC) ---- */
+    .wiki-layout {
+      display: flex;
+      align-items: flex-start;
+      gap: 24px;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 20px;
+      box-sizing: border-box;
+    }
+    .wiki-sidebar {
+      flex: 0 0 240px;
+      width: 240px;
+      position: sticky;
+      top: 0;
+      max-height: 100vh;
+      overflow-y: auto;
+      padding: 10px 4px 20px 0;
+      border-right: 1px solid #eee;
+      font-size: 14px;
+    }
+    .wiki-sidebar[hidden] { display: none; }
+    .wiki-toc {
+      flex: 0 0 220px;
+      width: 220px;
+      position: sticky;
+      top: 0;
+      max-height: 100vh;
+      overflow-y: auto;
+      padding: 10px 0 20px 4px;
+      border-left: 1px solid #eee;
+      font-size: 14px;
+    }
+    .wiki-main {
+      flex: 1 1 auto;
+      min-width: 0;
+      max-width: 820px;
+      padding: 10px 0 40px;
+    }
+    /* site directory tree */
+    .wiki-sidebar .wiki-home {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #eee;
+      text-decoration: none;
+      color: #333;
+    }
+    .wiki-sidebar ul { list-style: none; margin: 0 0 0 12px; padding: 0; }
+    .wiki-sidebar > ul { margin-left: 0; }
+    .wiki-sidebar li { line-height: 1.7; }
+    .wiki-sidebar a { text-decoration: none; color: #555; }
+    .wiki-sidebar a:hover { color: #0088cc; text-decoration: underline; }
+    .wiki-sidebar a.active { color: #0088cc; font-weight: bold; }
+    /* page TOC */
+    .wiki-toc ul { list-style: none; margin: 0 0 0 12px; padding: 0; }
+    .wiki-toc > ul { margin-left: 0; }
+    .wiki-toc li { line-height: 1.6; }
+    .wiki-toc a { text-decoration: none; color: #555; }
+    .wiki-toc a:hover { color: #0088cc; }
+    @media (max-width: 980px) {
+      .wiki-layout { flex-direction: column; }
+      .wiki-sidebar, .wiki-toc {
+        position: static;
+        width: 100%;
+        flex-basis: auto;
+        max-height: none;
+        border: 0;
+      }
+      .wiki-main { max-width: none; }
+    }
+  </style>
+</head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">Disaggregation</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="wiki-layout">
+    <nav class="wiki-sidebar" id="wiki-sidebar" hidden></nav>
+    <main class="wiki-main">
+            <p>大语言模型在线推理通常包含两个计算阶段：</p>
+            <ul>
+            <li><strong>Prefill</strong>：并行处理用户输入的
+            prompt，建立上下文状态；</li>
+            <li><strong>Decode</strong>：逐 token
+            生成输出，反复读取上下文状态。</li>
+            </ul>
+            <p>两者的硬件特征不同。Prefill 的有效 token
+            数较多，更接近大矩阵乘；Decode 每次通常只处理每个请求的一个
+            token，更容易受显存带宽、KV Cache 访问和 batch
+            规模影响。因此，SGLang 的 PD disaggregation
+            可以把两种阶段放到不同的 worker 上，使 Prefill 和 Decode
+            分别扩容、分别调度。</p>
+            <p>这里的 PD 指
+            <code>Prefill-Decode</code>，不是把一次请求简单地切成两个互不相关的模型副本。Prefill
+            必须把 Decode 继续推理所需的状态交给 Decode。</p>
+            <h3 id="首-token-的归属">首 token 的归属</h3>
+            <p>设 prompt 为</p>
+            <p><span class="math display">\[
+            X = (x_0, x_1, \ldots, x_{L-1})
+            \]</span></p>
+            <p>Target 模型对 prompt 做一次并行 forward，得到各位置
+            hidden state：</p>
+            <p><span class="math display">\[
+            H_0, H_1, \ldots, H_{L-1}
+            \]</span></p>
+            <p>最后一个位置经过 LM Head 得到 logits：</p>
+            <p><span class="math display">\[
+            \operatorname{logits}_{L-1} =
+            H_{L-1}W_{\mathrm{lm}}^{\mathsf T}
+            \]</span></p>
+            <p>再依据 temperature、top-<span
+            class="math inline">\(p\)</span>、top-<span
+            class="math inline">\(k\)</span> 等 sampling
+            参数采样出首个生成 token：</p>
+            <p><span class="math display">\[
+            y_0 \sim p_\theta(\cdot \mid x_0,\ldots,x_{L-1})
+            \]</span></p>
+            <p>因此，在 SGLang 典型的 PD 路径中，需要区分两个层次：</p>
+            <table>
+            <thead>
+            <tr>
+            <th>事项</th>
+            <th>归属</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>Prompt forward、最后位置 logits 和首 token sampling</td>
+            <td>Prefill</td>
+            </tr>
+            <tr>
+            <td>首 token 的请求状态接管、提交和输出流归属</td>
+            <td>Decode</td>
+            </tr>
+            <tr>
+            <td>首 token 之后的增量生成</td>
+            <td>Decode</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>所以“首 token 在 Decode
+            生成”这个说法容易产生歧义。更准确的说法是：<strong>首 token
+            通常在 Prefill 侧已经完成 logits 计算和 sampling，Decode
+            侧接收并提交它，然后继续生成后续 token。</strong></p>
+            <h3 id="为什么-decode-需要首-token">为什么 Decode 需要首
+            token</h3>
+            <p>假设 prompt 为</p>
+            <pre class="text"><code>[A, B, C]</code></pre>
+            <p>Prefill 计算 <code>C</code> 位置的 logits 并采样出
+            <code>D</code>：</p>
+            <pre class="text"><code>Prefill:
+    KV[A, B, C]
+    logits(C) -&gt; sample D</code></pre>
+            <p>此时模型还没有执行 <code>D</code> 位置的 forward。Decode
+            接收 <code>D</code> 后，会把它作为下一次 forward
+            的输入，用于生成 <code>E</code>：</p>
+            <pre class="text"><code>Decode:
+    input = D
+    KV = KV[A, B, C]
+    forward(D) -&gt; sample E</code></pre>
+            <p>因此，PD 的边界状态可以表示为：</p>
+            <pre class="text"><code>已传输的状态：KV[A, B, C]
+已采样的输出：D
+Decode 下一次输入：D
+Decode 下一次新生成：E</code></pre>
+            <p>通常，Prefill 产生的 handoff token <code>D</code>
+            尚未拥有由 <code>D</code> 位置 forward 产生的
+            KV；<code>D</code> 的 KV 会在 Decode 消费它时写入 Decode
+            本地的 KV Cache。</p>
+            <h3 id="p-到-d-需要传输什么">P 到 D 需要传输什么</h3>
+            <h4 id="target-kv-cache">Target KV Cache</h4>
+            <p>最核心的数据是 prompt 对应的 Target KV Cache：</p>
+            <p><span class="math display">\[
+            \mathcal{K}_{\mathrm{P}} =
+            \{K_\ell(X),V_\ell(X)\}_{\ell=0}^{N-1}
+            \]</span></p>
+            <p>Decode 后续每一步需要访问：</p>
+            <p><span class="math display">\[
+            \mathcal{K}_{t} = [\mathcal{K}_{\mathrm{prompt}},
+            \mathcal{K}_{y_0},\ldots,\mathcal{K}_{y_{t-1}}]
+            \]</span></p>
+            <p>SGLang 实际传输的通常是 paged KV Cache 的 page 或
+            block，而不是抽象意义上的一个连续
+            tensor。除数据本身外，还需要处理：</p>
+            <ul>
+            <li>source 和 destination 的 page 映射；</li>
+            <li>page size、KV dtype 和层布局；</li>
+            <li>TP、PP、DCP 等并行维度；</li>
+            <li>bootstrap room、transfer status 和完成信号；</li>
+            <li>特定模型的 MLA、SWA、Mamba 或其他 state。</li>
+            </ul>
+            <p>代码入口主要位于
+            <code>python/sglang/srt/disaggregation/prefill.py</code>、<code>python/sglang/srt/disaggregation/decode.py</code>
+            和
+            <code>python/sglang/srt/disaggregation/utils.py</code>。</p>
+            <h4 id="handoff-token">Handoff token</h4>
+            <p>Prefill 侧从 <code>result.next_token_ids</code> 得到首
+            token，并通过 disaggregation metadata 交给
+            Decode。当前代码中，Prefill 侧会把它写入 metadata
+            buffer：</p>
+            <div class="sourceCode" id="cb5"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="va">self</span>.output_ids[req.metadata_buffer_index][<span class="dv">0</span>] <span class="op">=</span> req.output_ids[<span class="dv">0</span>]</span></code></pre></div>
+            <p>Decode 侧读取后，将其提交到 Decode request：</p>
+            <div class="sourceCode" id="cb6"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>decode_req.req.output_ids.append(committed_output_id)</span></code></pre></div>
+            <p>这也是“sampling 在 Prefill、output state 在
+            Decode”的具体体现。</p>
+            <h4 id="logprobsampling-和统计-metadata">Logprob、sampling
+            和统计 metadata</h4>
+            <p>如果请求 <code>return_logprob=True</code>，首 token 的
+            logprob 也需要从 Prefill 传给 Decode，因为 Decode
+            没有重新计算该 token 的 prompt-last-position logits。相关
+            metadata 可能包括：</p>
+            <ul>
+            <li><code>output_token_logprobs_val</code> 和
+            <code>output_token_logprobs_idx</code>；</li>
+            <li>top-logprobs；</li>
+            <li>sampling mask 和对应 logprob；</li>
+            <li><code>cached_tokens</code> 及 device、host、storage
+            分项；</li>
+            <li>bootstrap room 和 transfer 校验信息。</li>
+            </ul>
+            <p>多模态请求还需要传递 image、audio、video token
+            数量。SGLang 当前复用 <code>cached_tokens</code> buffer
+            的后续槽位保存这些计数。</p>
+            <h4 id="非-transformer-状态">非 Transformer 状态</h4>
+            <p>对于混合或非标准 attention 模型，PD 传输的概念不应局限于
+            KV。还可能包括：</p>
+            <ul>
+            <li>Mamba recurrent state；</li>
+            <li>convolution state；</li>
+            <li>Gated Linear Attention 的 recurrent state；</li>
+            <li>sliding-window attention state；</li>
+            <li>DeepSeek V4 等模型的压缩 attention state。</li>
+            </ul>
+            <p>更一般地说，P 需要传输的是让 D
+            能够从边界继续增量推理的全部上下文状态。</p>
+            <h3 id="开启-mtp-后的边界">开启 MTP 后的边界</h3>
+            <p>MTP 或 speculative decoding
+            的目标不是直接生成并提交多个最终 token，而是让 draft
+            模型提出候选，再由 Target 一次性验证。</p>
+            <p>设一次 speculative iteration 最多提出四个候选：</p>
+            <p><span class="math display">\[
+            (d_1,d_2,d_3,d_4)
+            \]</span></p>
+            <p>它们来自 draft 分布：</p>
+            <p><span class="math display">\[
+            d_i \sim q_\phi(\cdot \mid X,y_0,d_1,\ldots,d_{i-1})
+            \]</span></p>
+            <p>Target 随后计算验证 logits，并决定接受长度 <span
+            class="math inline">\(a\)</span>：</p>
+            <p><span class="math display">\[
+            0 \leq a \leq 4
+            \]</span></p>
+            <p>最终可能提交前 <span class="math inline">\(a\)</span> 个
+            draft token 和一个 bonus token，而不是固定提交四个
+            token。</p>
+            <p>因此，<code>draft_tokens = 4</code>
+            的含义是“一轮最多准备四个候选 token”，不是“Prefill
+            必须提前生成四个已经确定且全部有效的输出 token”。</p>
+            <h3 id="mtp-prefill-做什么">MTP Prefill 做什么</h3>
+            <p>SGLang 的 MTP/EAGLE 类路径在 Target Prefill
+            后，会调用类似下面的 draft extend：</p>
+            <div class="sourceCode" id="cb7"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>batch_output.next_draft_input <span class="op">=</span> draft_worker._draft_extend_for_prefill(</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    batch,</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    batch_output.logits_output.hidden_states,</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    batch_output.next_token_ids,</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+            <p>以
+            <code>python/sglang/srt/speculative/multi_layer_eagle_worker_v2.py</code>
+            为例，MTP prefill 会完成以下工作：</p>
+            <ol type="1">
+            <li>使用 Target 对 prompt 的 hidden states 初始化 draft/MTP
+            边界；</li>
+            <li>使用 Target 的 <code>next_token_ids</code> 作为 handoff
+            或 bonus token；</li>
+            <li>按 MTP depth 执行 draft runner；</li>
+            <li>产生第一轮候选的 <code>topk_p</code> 和
+            <code>topk_index</code>；</li>
+            <li>根据模型结构保存后续 draft 所需的 hidden state；</li>
+            <li>如果该实现拥有独立 draft KV pool，则初始化 prompt 对应的
+            draft KV/state。</li>
+            </ol>
+            <p>多层 MTP 的抽象流程是：</p>
+            <pre class="text"><code>Target prompt forward
+        │
+        ├── target KV[A ... prompt_last]
+        ├── target handoff token y0
+        └── target hidden state
+                │
+                ▼
+        MTP/draft extend step 0 -&gt; d1 candidate
+                │
+                ▼
+        MTP/draft extend step 1 -&gt; d2 candidate
+                │
+                ▼
+        MTP/draft extend step 2 -&gt; d3 candidate
+                │
+                ▼
+        MTP/draft extend step 3 -&gt; d4 candidate</code></pre>
+            <p>对于 chain-style MTP，上一个 MTP step 的 hidden state
+            会作为下一个 step 的输入；非 chain-style MTP 可能只需要
+            Target 的最后 hidden state。SGLang 代码中分别使用
+            <code>CaptureHiddenMode.FULL</code> 或
+            <code>CaptureHiddenMode.LAST</code> 等模式处理这种差异。</p>
+            <h3 id="mtp-draft-kv-的准确理解">MTP draft KV
+            的准确理解</h3>
+            <h4 id="prompt-部分的-draft-kv">Prompt 部分的 draft KV</h4>
+            <p>如果 MTP/draft 模型拥有独立的 draft KV Cache，那么
+            Prefill 可以建立 prompt 对应的 draft context：</p>
+            <p><span class="math display">\[
+            \mathcal{K}_{\mathrm{D,prompt}}
+            = \{K^{\mathrm{draft}}_\ell(X),V^{\mathrm{draft}}_\ell(X)\}
+            \]</span></p>
+            <p>这部分对应已经确定的 prompt token，因此可以在 Prefill
+            阶段计算并缓存。</p>
+            <h4 id="候选-token-部分的-draft-kv">候选 token 部分的 draft
+            KV</h4>
+            <p>对于未来的候选 token，Prefill 只能在 draft loop
+            中逐步提出。候选是否被 Target 接受尚未确定，因此它们对应的
+            draft KV 通常随着 Decode 阶段的 draft forward 动态追加：</p>
+            <p><span class="math display">\[
+            \mathcal{K}_{\mathrm{draft},t}
+            = [\mathcal{K}_{\mathrm{draft,prompt}},
+            \mathcal{K}_{d_1},\ldots,\mathcal{K}_{d_t}]
+            \]</span></p>
+            <p>验证后只保留 accepted prefix，并回收 rejected
+            suffix。这是 speculative decoding 能够回滚的基础。</p>
+            <p>因此，对“<code>draft_tokens = 4</code> 时，Prefill
+            是否只生成 prompt tokens 对应的 draft KV？”的回答是：</p>
+            <blockquote>
+            <p>对于有独立 draft KV 的实现，Prefill 的 draft KV 主要是
+            prompt/context 部分；但 Prefill 还会执行 MTP/draft
+            extend，产生第一轮候选的 token、top-k 概率、hidden state
+            等。未来候选 token 的增量 KV 通常由 Decode
+            侧动态建立、验证和回滚。</p>
+            </blockquote>
+            <h3 id="两种-pd-加-mtp-部署方式">两种 PD 加 MTP
+            部署方式</h3>
+            <h4 id="mtp-只在-decode-侧启用">MTP 只在 Decode 侧启用</h4>
+            <p>一种常见部署方式是 Prefill worker 不运行完整 MTP draft
+            worker：</p>
+            <pre class="text"><code>Prefill:
+    Target prompt forward
+    传 Target KV
+    传 handoff token
+    传 MTP bootstrap 所需的 hidden state 或 metadata
+
+Decode:
+    接收 Target KV
+    在本地运行 MTP draft
+    产生 d1, d2, d3, d4
+    Target verify 并提交 accepted tokens</code></pre>
+            <p>这种方式下 P 到 D 通常不传 draft KV。SGLang 的
+            <code>init_disaggregation</code>
+            附近有注释指出，某些配置只在 Decode 节点启用 MTP，因此不在
+            P/D 之间传 draft KV。</p>
+            <h4 id="pd-两侧都启用-mtp">P/D 两侧都启用 MTP</h4>
+            <p>如果两侧都有 draft worker，并且 transfer 配置包含 draft
+            pool，则可以传输 draft KV：</p>
+            <pre class="text"><code>Prefill:
+    Target KV[prompt]
+    Draft KV[prompt]
+    handoff token
+    draft proposal metadata
+    hidden state
+
+Decode:
+    接收并绑定两类 KV
+    继续 draft forward
+    Target verify
+    接受 prefix，回滚拒绝 suffix</code></pre>
+            <p>SGLang 的 <code>PrefillBootstrapQueue</code> 和 Decode
+            侧的 KV manager 会在存在 <code>draft_token_to_kv_pool</code>
+            时，把 draft KV buffer 追加到 transfer
+            参数中。相关代码包括：</p>
+            <ul>
+            <li><code>python/sglang/srt/disaggregation/prefill.py</code>；</li>
+            <li><code>python/sglang/srt/disaggregation/decode.py</code>；</li>
+            <li><code>python/sglang/srt/disaggregation/utils.py</code>
+            中的 <code>get_transfer_draft_kv_layer_ids</code>；</li>
+            <li><code>python/sglang/srt/managers/scheduler.py</code>
+            中的 draft KV pool 初始化。</li>
+            </ul>
+            <p>是否真的传输 draft KV，取决于 P/D 两侧是否启用对应 draft
+            worker、speculative 配置是否一致，以及 KV layout
+            是否兼容，不能仅根据“开启了 MTP”这一条件判断。</p>
+            <h3 id="一次完整的-pd-加-mtp-流程">一次完整的 PD 加 MTP
+            流程</h3>
+            <p>设 prompt 为 <span
+            class="math inline">\(X\)</span>，Target 首 token 为 <span
+            class="math inline">\(y_0\)</span>，一轮最多四个 draft
+            token。</p>
+            <h4 id="prefill-侧">Prefill 侧</h4>
+            <p><span class="math display">\[
+            H^T(X),\quad
+            \mathcal{K}_{T}(X),\quad
+            y_0 \sim p_\theta(\cdot\mid X)
+            \]</span></p>
+            <p>随后执行 draft extend：</p>
+            <p><span class="math display">\[
+            (d_1,d_2,d_3,d_4),
+            \quad \text{top-}k\text{ scores},
+            \quad \text{draft hidden states}
+            \]</span></p>
+            <p>如果启用 draft KV，则还建立：</p>
+            <p><span class="math display">\[
+            \mathcal{K}_{D}(X)
+            \]</span></p>
+            <h4 id="pd-传输">PD 传输</h4>
+            <p>最小逻辑 payload 可以表示为：</p>
+            <p><span class="math display">\[
+            \mathcal{P}_{P\rightarrow D} =
+            \left(
+            \mathcal{K}_{T}(X),
+            y_0,
+            \text{transfer metadata}
+            \right)
+            \]</span></p>
+            <p>MTP bootstrap 或两侧都启用 draft 时，payload
+            还可能扩展为：</p>
+            <p><span class="math display">\[
+            \mathcal{P}_{P\rightarrow D} =
+            \left(
+            \mathcal{K}_{T}(X),
+            \mathcal{K}_{D}(X),
+            y_0,
+            \text{draft candidates},
+            \text{hidden states},
+            \text{sampling/logprob metadata}
+            \right)
+            \]</span></p>
+            <h4 id="decode-侧">Decode 侧</h4>
+            <p>Decode 首先提交
+            <code>y0</code>，然后用它作为输入继续运行：</p>
+            <p><span class="math display">\[
+            \mathcal{K}_{T}(X) + y_0
+            \xrightarrow{\text{Target decode}}
+            y_1
+            \]</span></p>
+            <p>同时，MTP draft 产生候选并由 Target 验证：</p>
+            <p><span class="math display">\[
+            (d_1,d_2,d_3,d_4)
+            \xrightarrow{\text{Target verify}}
+            (a,\text{bonus token})
+            \]</span></p>
+            <p>最终只提交验证通过的 token 序列。</p>
+            <h3 id="常见误区">常见误区</h3>
+            <h4 id="把首-token-和-draft-token-混为一谈">把首 token 和
+            draft token 混为一谈</h4>
+            <p>Target 的首个 handoff token 是正式生成边界的一部分；MTP
+            的 draft token 是等待 Target
+            验证的候选。前者可以直接成为用户输出，后者必须经过
+            verify。</p>
+            <h4 id="认为-prefill-只传-kv">认为 Prefill 只传 KV</h4>
+            <p>只传 KV 不足以让 Decode 无额外计算地接管请求。至少还需要
+            handoff token，以及 transfer
+            metadata；logprob、多模态统计、hidden state 和非 Transformer
+            state 则取决于请求和模型。</p>
+            <h4 id="认为四个-draft-token-都会被提交">认为四个 draft
+            token 都会被提交</h4>
+            <p><code>draft_tokens = 4</code>
+            只是候选窗口上限。实际接受长度由 Target verify 决定：</p>
+            <p><span class="math display">\[
+            0 \leq a \leq 4
+            \]</span></p>
+            <p>被拒绝的后缀需要回滚其 cache/state。</p>
+            <h4 id="认为-mtp-必然需要传-draft-kv">认为 MTP 必然需要传
+            draft KV</h4>
+            <p>MTP 可以只在 Decode 侧运行，此时 P 到 D 主要传 Target KV
+            和 MTP bootstrap 信息。只有在 Prefill 侧也建立了 draft
+            pool，并且 transfer backend 配置包含它时，才会传输 draft
+            KV。</p>
+            <h3 id="总结">总结</h3>
+            <pre class="text"><code>Prefill = 计算 prompt 上下文 + 建立状态 + 采样 handoff token
+Decode  = 接管 handoff token + 增量生成 + 管理后续输出</code></pre>
+            <p>开启 MTP 后：</p>
+            <pre class="text"><code>Prefill = Target prompt forward
+        + 可选的 MTP/draft extend
+        + 第一轮 draft proposal/bootstrap
+
+Decode  = 继续 draft
+        + Target verify
+        + 接受或回滚候选
+        + 输出最终 token</code></pre>
+            <p>对于 <code>draft_tokens = 4</code>，Prefill
+            的核心不是提前生成四个确定的最终 token，而是初始化 prompt
+            上下文、生成第一轮 draft
+            proposal，并根据具体实现决定是否建立或传输 prompt 对应的
+            draft KV。候选 token 的动态 KV、验证、接受和回滚主要发生在
+            Decode 侧。</p>
+          </main>
+        <aside class="wiki-toc">
+      <ul>
+      <li><a href="#首-token-的归属" id="toc-首-token-的归属">首 token
+      的归属</a></li>
+      <li><a href="#为什么-decode-需要首-token"
+      id="toc-为什么-decode-需要首-token">为什么 Decode 需要首
+      token</a></li>
+      <li><a href="#p-到-d-需要传输什么" id="toc-p-到-d-需要传输什么">P
+      到 D 需要传输什么</a></li>
+      <li><a href="#开启-mtp-后的边界" id="toc-开启-mtp-后的边界">开启
+      MTP 后的边界</a></li>
+      <li><a href="#mtp-prefill-做什么" id="toc-mtp-prefill-做什么">MTP
+      Prefill 做什么</a></li>
+      <li><a href="#mtp-draft-kv-的准确理解"
+      id="toc-mtp-draft-kv-的准确理解">MTP draft KV 的准确理解</a></li>
+      <li><a href="#两种-pd-加-mtp-部署方式"
+      id="toc-两种-pd-加-mtp-部署方式">两种 PD 加 MTP 部署方式</a></li>
+      <li><a href="#一次完整的-pd-加-mtp-流程"
+      id="toc-一次完整的-pd-加-mtp-流程">一次完整的 PD 加 MTP
+      流程</a></li>
+      <li><a href="#常见误区" id="toc-常见误区">常见误区</a></li>
+      <li><a href="#总结" id="toc-总结">总结</a></li>
+      </ul>
+    </aside>
+      </div>
+  <script type="text/javascript">
+    (function () {
+      function markActive() {
+        var here = location.href.split('#')[0];
+        var links = document.querySelectorAll('.wiki-sidebar a');
+        for (var i = 0; i < links.length; i++) {
+          if (links[i].href.split('#')[0] === here) {
+            links[i].classList.add('active');
+          }
+        }
+      }
+      // load the shared site directory once (served from the wiki root);
+      // kept in a standalone file so adding a page needn't rebuild every page.
+      var nav = document.getElementById('wiki-sidebar');
+      if (nav) {
+        fetch('/.wiki_sidebar.html')
+          .then(function (r) { return r.ok ? r.text() : ''; })
+          .then(function (html) {
+            if (html) {
+              nav.innerHTML = html;
+              nav.hidden = false;
+              markActive();
+            }
+          })
+          .catch(function () {});
+      }
+      // keep bootstrap table styling (previously done by sticky_menu.js)
+      var tables = document.getElementsByTagName('table');
+      for (var j = 0; j < tables.length; j++) {
+        tables[j].classList.add('table');
+      }
+    })();
+  </script>
+</body>
+
+</html>

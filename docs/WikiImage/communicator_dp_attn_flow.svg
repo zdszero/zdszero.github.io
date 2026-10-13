@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 560" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="840" height="560" rx="12" fill="#ffffff"/>
+  <text x="420" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">DP Attention 下一层内的数据流动（rank 0 视角）</text>
+  <text x="420" y="56" text-anchor="middle" font-size="13" fill="#868e96">TP=4, DP=2, attn_tp_size=2：Attention 只需本组 token，MLP 需要全部 token</text>
+
+  <!-- vertical connector -->
+  <line x1="250" y1="80" x2="250" y2="500" stroke="#dee2e6" stroke-width="2"/>
+
+  <!-- step 1 input -->
+  <circle cx="250" cy="98" r="7" fill="#4c6ef5"/>
+  <rect x="40" y="80" width="380" height="38" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="56" y="104" font-size="12.5" font-weight="700" fill="#3b5bdb">输入　hidden = [N_local, H]</text>
+  <rect x="470" y="80" width="330" height="38" rx="8" fill="#ffffff" stroke="#e9ecef"/>
+  <text x="486" y="104" font-size="11.5" fill="#3b5bdb">TP_ATTN_FULL · rank0/1 都持有 ab</text>
+
+  <!-- step 2 prepare_attn -->
+  <circle cx="250" cy="150" r="6" fill="#adb5bd"/>
+  <rect x="40" y="132" width="380" height="36" rx="8" fill="#f8f9fa" stroke="#dee2e6"/>
+  <text x="56" y="155" font-size="12" fill="#495057">prepare_attn：input_layernorm</text>
+  <text x="790" y="155" text-anchor="end" font-size="11" fill="#868e96">_trivial（无通信）</text>
+
+  <!-- step 3 attn -->
+  <circle cx="250" cy="202" r="6" fill="#adb5bd"/>
+  <rect x="40" y="182" width="380" height="40" rx="8" fill="#f8f9fa" stroke="#dee2e6"/>
+  <text x="56" y="200" font-size="12" fill="#495057">self_attn：QKV → Attention → o_proj</text>
+  <text x="56" y="216" font-size="10.5" fill="#868e96">o_proj 产出行并行“部分和”（reduce_results=False）</text>
+  <text x="790" y="208" text-anchor="end" font-size="11" fill="#868e96">仍 [N_local, H]</text>
+
+  <!-- comm point 1: AllGather -->
+  <circle cx="250" cy="262" r="8" fill="#e8590c"/>
+  <rect x="40" y="238" width="380" height="48" rx="8" fill="#fff4e6" stroke="#ff922b"/>
+  <text x="56" y="259" font-size="12.5" font-weight="700" fill="#e8590c">② prepare_mlp：AllGather（dp_gather_partial）</text>
+  <text x="56" y="277" font-size="10.5" fill="#b26a00">rank0 先做 hidden += residual，再收集所有 DP 组的 token</text>
+  <rect x="470" y="238" width="330" height="48" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="486" y="260" font-size="12" font-weight="700" fill="#0b7285">[N_local, H] → [N_global, H]</text>
+  <text x="486" y="278" font-size="11" fill="#0b7285">FULL · 每个 rank 都持有 abcd</text>
+
+  <!-- step 5 mlp -->
+  <circle cx="250" cy="326" r="6" fill="#adb5bd"/>
+  <rect x="40" y="306" width="380" height="40" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="56" y="324" font-size="12" font-weight="700" fill="#0b7285">mlp：gate_up → 激活 → down_proj</text>
+  <text x="56" y="340" font-size="10.5" fill="#868e96">在 FULL 模式下按完整 TP 切分权重计算</text>
+  <text x="790" y="330" text-anchor="end" font-size="11" fill="#0b7285">[N_global, H]</text>
+
+  <!-- comm point 2: Scatter -->
+  <circle cx="250" cy="402" r="8" fill="#e8590c"/>
+  <rect x="40" y="378" width="380" height="48" rx="8" fill="#fff4e6" stroke="#ff922b"/>
+  <text x="56" y="399" font-size="12.5" font-weight="700" fill="#e8590c">③ postprocess：Scatter（dp_scatter / ReduceScatter）</text>
+  <text x="56" y="417" font-size="10.5" fill="#b26a00">把结果散回本 attention 组对应的分片</text>
+  <rect x="470" y="378" width="330" height="48" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="486" y="400" font-size="12" font-weight="700" fill="#3b5bdb">[N_global, H] → [N_local, H]</text>
+  <text x="486" y="418" font-size="11" fill="#3b5bdb">回到 TP_ATTN_FULL</text>
+
+  <!-- step 7 output -->
+  <circle cx="250" cy="482" r="7" fill="#4c6ef5"/>
+  <rect x="40" y="464" width="380" height="38" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="56" y="488" font-size="12.5" font-weight="700" fill="#3b5bdb">输出　hidden = [N_local, H]</text>
+  <rect x="470" y="464" width="330" height="38" rx="8" fill="#ffffff" stroke="#e9ecef"/>
+  <text x="486" y="488" font-size="11.5" fill="#3b5bdb">TP_ATTN_FULL · 与输入同形态</text>
+
+  <text x="40" y="532" font-size="11.5" fill="#868e96">只有两处（②③）真正发生跨 rank 通信——它们正是 attn_mode 与 mlp_mode 的 group_size 不同之处。</text>
+</svg>

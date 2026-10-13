@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 470" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="470" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">ScatterMode：同一份数据被多少个 rank 共同持有</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">例：TP=4，DP=2（attn_tp_size=2），系统同时处理请求 a / b / c / d</text>
+
+  <!-- group brackets -->
+  <path d="M200 92 L200 84 L480 84 L480 92" fill="none" stroke="#adb5bd" stroke-width="1.5"/>
+  <text x="340" y="76" text-anchor="middle" font-size="11.5" fill="#868e96">attn TP 组 0（DP rank 0）</text>
+  <path d="M500 92 L500 84 L780 92" fill="none" stroke="#adb5bd" stroke-width="1.5"/>
+  <path d="M500 92 L500 84 L780 84 L780 92" fill="none" stroke="#adb5bd" stroke-width="1.5"/>
+  <text x="640" y="76" text-anchor="middle" font-size="11.5" fill="#868e96">attn TP 组 1（DP rank 1）</text>
+
+  <!-- column headers -->
+  <g font-size="12.5" font-weight="600" fill="#495057" text-anchor="middle">
+    <text x="270" y="108">rank 0</text>
+    <text x="410" y="108">rank 1</text>
+    <text x="550" y="108">rank 2</text>
+    <text x="690" y="108">rank 3</text>
+  </g>
+
+  <!-- row: SCATTERED -->
+  <text x="30" y="152" font-size="13.5" font-weight="700" fill="#5f3dc4">SCATTERED</text>
+  <text x="30" y="172" font-size="11" fill="#868e96">group_size = 1</text>
+  <g font-family="monospace" font-size="18" font-weight="700" text-anchor="middle" fill="#5f3dc4">
+    <rect x="210" y="126" width="120" height="50" rx="8" fill="#f3f0ff" stroke="#9775fa"/><text x="270" y="158">a</text>
+    <rect x="350" y="126" width="120" height="50" rx="8" fill="#f3f0ff" stroke="#9775fa"/><text x="410" y="158">b</text>
+    <rect x="490" y="126" width="120" height="50" rx="8" fill="#f3f0ff" stroke="#9775fa"/><text x="550" y="158">c</text>
+    <rect x="630" y="126" width="120" height="50" rx="8" fill="#f3f0ff" stroke="#9775fa"/><text x="690" y="158">d</text>
+  </g>
+
+  <!-- row: TP_ATTN_FULL -->
+  <text x="30" y="242" font-size="13.5" font-weight="700" fill="#3b5bdb">TP_ATTN_FULL</text>
+  <text x="30" y="262" font-size="11" fill="#868e96">group_size = 2</text>
+  <g font-family="monospace" font-size="18" font-weight="700" text-anchor="middle" fill="#3b5bdb">
+    <rect x="210" y="216" width="120" height="50" rx="8" fill="#edf2ff" stroke="#4c6ef5"/><text x="270" y="248">ab</text>
+    <rect x="350" y="216" width="120" height="50" rx="8" fill="#edf2ff" stroke="#4c6ef5"/><text x="410" y="248">ab</text>
+    <rect x="490" y="216" width="120" height="50" rx="8" fill="#edf2ff" stroke="#4c6ef5"/><text x="550" y="248">cd</text>
+    <rect x="630" y="216" width="120" height="50" rx="8" fill="#edf2ff" stroke="#4c6ef5"/><text x="690" y="248">cd</text>
+  </g>
+
+  <!-- row: FULL -->
+  <text x="30" y="332" font-size="13.5" font-weight="700" fill="#0b7285">FULL</text>
+  <text x="30" y="352" font-size="11" fill="#868e96">group_size = 4</text>
+  <g font-family="monospace" font-size="18" font-weight="700" text-anchor="middle" fill="#0b7285">
+    <rect x="210" y="306" width="120" height="50" rx="8" fill="#e6fcf5" stroke="#0ca678"/><text x="270" y="338">abcd</text>
+    <rect x="350" y="306" width="120" height="50" rx="8" fill="#e6fcf5" stroke="#0ca678"/><text x="410" y="338">abcd</text>
+    <rect x="490" y="306" width="120" height="50" rx="8" fill="#e6fcf5" stroke="#0ca678"/><text x="550" y="338">abcd</text>
+    <rect x="630" y="306" width="120" height="50" rx="8" fill="#e6fcf5" stroke="#0ca678"/><text x="690" y="338">abcd</text>
+  </g>
+
+  <!-- bottom note -->
+  <rect x="30" y="388" width="840" height="60" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="46" y="411" font-size="12.5" fill="#495057" font-weight="600">关键思想：</text>
+  <text x="130" y="411" font-size="12.5" fill="#495057">两个阶段的数据分布是否一致，只需比较它们的 group_size 是否相等。</text>
+  <text x="46" y="434" font-size="12" fill="#868e96">group_size 相等 → 数据已就位，无需通信；不相等 → 需要 AllGather / ReduceScatter / AllReduce 做重分布。</text>
+</svg>

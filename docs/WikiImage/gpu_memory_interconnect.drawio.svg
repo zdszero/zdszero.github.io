@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="860" height="470" viewBox="0 0 860 470" font-family="-apple-system,Helvetica,Arial,sans-serif">
+  <style>
+    .h{font-size:14px;font-weight:800;fill:#111}
+    .b{font-size:11.5px;fill:#fff;font-weight:700;text-anchor:middle}
+    .a{font-size:10.5px;fill:#64748b}
+    .ar{font-size:10.5px;fill:#64748b;text-anchor:end}
+  </style>
+  <rect x="0" y="0" width="860" height="470" fill="#fdfdfd"/>
+  <text x="24" y="30" font-size="17" font-weight="800" fill="#111">喂饱计算单元：存储层级 与 互联层级</text>
+  <text x="24" y="50" font-size="11" fill="#999">算力增长远快于带宽增长，于是「数据怎么到核心」成了架构设计的中心问题</text>
+
+  <text x="40" y="84" class="h">片上/片外 存储层级</text>
+  <text x="820" y="84" class="h" text-anchor="end">互联层级</text>
+
+  <!-- memory hierarchy (left): widening bars = larger & slower -->
+  <g>
+    <rect x="150" y="100" width="150" height="48" rx="5" fill="#ef4444"/><text x="225" y="122" class="b">寄存器文件</text><text x="225" y="138" class="b" font-size="9.5">~数十 TB/s · 每 SM 256 KB</text>
+    <rect x="120" y="156" width="210" height="48" rx="5" fill="#f97316"/><text x="225" y="178" class="b">共享内存 / L1</text><text x="225" y="194" class="b" font-size="9.5">~数 TB/s · 每 SM 可配 ~256 KB</text>
+    <rect x="80" y="212" width="290" height="48" rx="5" fill="#eab308"/><text x="225" y="234" class="b">L2 缓存（全 GPU 共享）</text><text x="225" y="250" class="b" font-size="9.5">Hopper ~50 MB</text>
+    <rect x="40" y="268" width="370" height="56" rx="5" fill="#0ea5e9"/><text x="225" y="292" class="b">HBM 显存（片外，堆叠）</text><text x="225" y="310" class="b" font-size="9.5">HBM3e ~8 TB/s · 数十～百余 GB</text>
+  </g>
+  <text x="40" y="348" class="a">↑ 越往上：越快、越小、越贵</text>
+  <text x="40" y="366" class="a">↓ 越往下：越大、越慢、越便宜（撞「带宽屋顶」）</text>
+
+  <!-- interconnect (right): concentric scale -->
+  <g>
+    <rect x="560" y="100" width="260" height="46" rx="5" fill="#8b5cf6"/><text x="690" y="121" class="b">片内多-die 互联 NV-HBI</text><text x="690" y="137" class="b" font-size="9.5">Blackwell 双 die ~10 TB/s，对软件呈现为一颗 GPU</text>
+    <rect x="560" y="154" width="260" height="46" rx="5" fill="#7c3aed"/><text x="690" y="175" class="b">NVLink（卡间 scale-up）</text><text x="690" y="191" class="b" font-size="9.5">Gen5 1.8 TB/s → Gen6（Rubin）更高</text>
+    <rect x="560" y="208" width="260" height="46" rx="5" fill="#6d28d9"/><text x="690" y="229" class="b">NVSwitch（机柜级 scale-up 域）</text><text x="690" y="245" class="b" font-size="9.5">GB200 NVL72：72 GPU 单一 NVLink 域</text>
+    <rect x="560" y="262" width="260" height="46" rx="5" fill="#5b21b6"/><text x="690" y="283" class="b">scale-out 网络</text><text x="690" y="299" class="b" font-size="9.5">InfiniBand / 以太网 fat-tree，跨机柜扩展</text>
+  </g>
+  <text x="820" y="348" class="ar">↑ 越往上：带宽越高、延迟越低、规模越小</text>
+  <text x="820" y="366" class="ar">↓ 越往下：规模越大、延迟越高</text>
+
+  <text x="430" y="420" font-size="12" font-weight="700" fill="#334155" text-anchor="middle">现代「GPU 架构」= 芯片内核 + 存储层级 + 多级互联 + 整机柜拓扑 的系统工程</text>
+</svg>

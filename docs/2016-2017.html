@@ -24,7 +24,81 @@
     2016-2017
   </title>
     <link rel="stylesheet" href="./WikiTheme/theme/bootstrap.css"  />
-        </head>
+          <style type="text/css">
+    /* ---- three column wiki layout (left: site directory, center: content, right: page TOC) ---- */
+    .wiki-layout {
+      display: flex;
+      align-items: flex-start;
+      gap: 24px;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 20px;
+      box-sizing: border-box;
+    }
+    .wiki-sidebar {
+      flex: 0 0 240px;
+      width: 240px;
+      position: sticky;
+      top: 0;
+      max-height: 100vh;
+      overflow-y: auto;
+      padding: 10px 4px 20px 0;
+      border-right: 1px solid #eee;
+      font-size: 14px;
+    }
+    .wiki-sidebar[hidden] { display: none; }
+    .wiki-toc {
+      flex: 0 0 220px;
+      width: 220px;
+      position: sticky;
+      top: 0;
+      max-height: 100vh;
+      overflow-y: auto;
+      padding: 10px 0 20px 4px;
+      border-left: 1px solid #eee;
+      font-size: 14px;
+    }
+    .wiki-main {
+      flex: 1 1 auto;
+      min-width: 0;
+      max-width: 820px;
+      padding: 10px 0 40px;
+    }
+    /* site directory tree */
+    .wiki-sidebar .wiki-home {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #eee;
+      text-decoration: none;
+      color: #333;
+    }
+    .wiki-sidebar ul { list-style: none; margin: 0 0 0 12px; padding: 0; }
+    .wiki-sidebar > ul { margin-left: 0; }
+    .wiki-sidebar li { line-height: 1.7; }
+    .wiki-sidebar a { text-decoration: none; color: #555; }
+    .wiki-sidebar a:hover { color: #0088cc; text-decoration: underline; }
+    .wiki-sidebar a.active { color: #0088cc; font-weight: bold; }
+    /* page TOC */
+    .wiki-toc ul { list-style: none; margin: 0 0 0 12px; padding: 0; }
+    .wiki-toc > ul { margin-left: 0; }
+    .wiki-toc li { line-height: 1.6; }
+    .wiki-toc a { text-decoration: none; color: #555; }
+    .wiki-toc a:hover { color: #0088cc; }
+    @media (max-width: 980px) {
+      .wiki-layout { flex-direction: column; }
+      .wiki-sidebar, .wiki-toc {
+        position: static;
+        width: 100%;
+        flex-basis: auto;
+        max-height: none;
+        border: 0;
+      }
+      .wiki-main { max-width: none; }
+    }
+  </style>
+</head>
 
 <body>
     <div class="navbar navbar-static-top">
@@ -38,178 +112,208 @@
       </div>
     </div>
   </div>
-    <div class="container">
-    <div class="row">
-            <div id="TOC" class="span3">
-        <div class="well toc">
-          <ul>
-          <li><a href="#散户怎么做" id="toc-散户怎么做">散户怎么做</a>
-          <ul>
-          <li><a href="#预测市场主体的行为而不是预测股价"
-          id="toc-预测市场主体的行为而不是预测股价">预测市场主体的行为，而不是预测股价</a></li>
-          <li><a href="#分层预测" id="toc-分层预测">分层预测</a></li>
-          <li><a href="#等待市场提供证据"
-          id="toc-等待市场提供证据">等待市场提供证据</a></li>
-          </ul></li>
-          </ul>
-        </div>
+    <div class="wiki-layout">
+    <nav class="wiki-sidebar" id="wiki-sidebar" hidden></nav>
+    <main class="wiki-main">
+            <p>2016—2017 年是 A
+            股历史上非常值得研究的一个阶段，因为它发生了一次明显的市场风格切换：从中小盘、题材炒作占优，转向大市值、盈利确定性较高的龙头企业占优。
+            这段历史可以概括为：</p>
+            <p><strong>2015 年股灾 → 2016 年监管收紧、供给侧改革 → 2017
+            年漂亮 50 行情。</strong></p>
+            <p>但这里有三条不同的因果链，不能简单地混为一谈：</p>
+            <ol type="1">
+            <li><strong>监管趋严</strong>：改变了资金参与股票市场的方式，压缩了部分壳资源、重组和题材炒作的空间。</li>
+            <li><strong>供给侧改革</strong>：改变了钢铁、煤炭等传统行业的供需关系，推动部分龙头企业利润快速恢复。</li>
+            <li><strong>漂亮 50
+            行情</strong>：投资者开始更愿意为业绩稳定、竞争优势明确的大公司支付估值溢价。</li>
+            </ol>
+            <h2 id="散户怎么做">散户怎么做</h2>
+            <p>首先要承认一个事实：</p>
+            <p><strong>2015
+            年股灾之后，散户几乎不可能准确预测未来两年的完整政策路径，但有可能比市场更早发现：原来的盈利模式正在失效，某些资产的风险收益比正在改善。</strong></p>
+            <hr />
+            <h3
+            id="预测市场主体的行为而不是预测股价">预测市场主体的行为，而不是预测股价</h3>
+            <p>真正有价值的投资能力，不是预测未来会发生哪些事件，而是在只掌握局部信息的情况下，持续判断：</p>
+            <ol type="1">
+            <li>哪些市场主体的利益和约束正在变化？</li>
+            <li>这些变化会如何影响它们的下一步行动？</li>
+            <li>哪些资产因此获得新的买方，哪些资产失去原有买方？</li>
+            <li>当前股价是否已经反映了这些变化？</li>
+            </ol>
+            <p>而且，<strong>必须避免一种事后诸葛亮式的推理</strong>：2017
+            年白马股涨了，于是把 2015
+            年股灾后所有政策都解释为利好白马股。</p>
+            <p>实际上，站在 2016
+            年初，继续熊市、反弹后再跌、蓝筹行情、小盘成长股复苏，都不是可以轻易排除的路径。</p>
+            <hr />
+            <p>把时间冻结在2016年，看看散户真正知道什么</p>
+            <table>
+            <colgroup>
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>时间</th>
+            <th>当时已经知道的信息</th>
+            <th>当时还不知道的事情</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>2015年下半年</td>
+            <td>杠杆牛市崩溃，股市发生流动性危机</td>
+            <td>是否会出现长期熊市</td>
+            </tr>
+            <tr>
+            <td>2016年1月</td>
+            <td>熔断机制失败，风险偏好进一步受挫</td>
+            <td>蓝筹股能否独立走牛</td>
+            </tr>
+            <tr>
+            <td>2016年6月</td>
+            <td>监管拟进一步收紧借壳上市 (<a
+            href="https://www.csrc.gov.cn/csrc/c100028/c1001724/content.shtml"
+            title="证监会就修改《上市公司重大资产重组管理办法》公开征求意见_中国证券监督管理委员会">csrc.gov.cn</a>)</td>
+            <td>政策能否持续执行</td>
+            </tr>
+            <tr>
+            <td>2016年9月</td>
+            <td>重组新规正式实施，炒壳受到限制 (<a
+            href="https://www.csrc.gov.cn/csrc/c100028/c1001672/content.shtml"
+            title="证监会发布《关于修改〈上市公司重大资产重组管理办法〉的决定》_中国证券监督管理委员会">csrc.gov.cn</a>)</td>
+            <td>资金会转向哪里</td>
+            </tr>
+            <tr>
+            <td>2016年下半年</td>
+            <td>大盘蓝筹相对中小盘开始走强</td>
+            <td>这种风格能持续多久</td>
+            </tr>
+            <tr>
+            <td>2017年上半年</td>
+            <td>龙头股盈利、相对股价表现逐渐验证逻辑</td>
+            <td>2018年是否会发生逆转</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>这里有一个关键点：</p>
+            <p><strong>2016 年 6
+            月之后，已经不需要预测监管是否会收紧借壳，因为政策方向已经公开。需要预测的是政策对估值和资金流向的影响。</strong></p>
+            <p>例如，借壳监管收紧，可以较有把握地推导出壳资源价值承压。但不能直接推导出贵州茅台上涨100%。</p>
+            <p>因为从「炒壳资金退出」到「买入消费白马」，中间还有非常多的可能路径：资金可以流向银行、地产、债券，也可以直接离开股市。</p>
+            <hr />
+            <h3 id="分层预测">分层预测</h3>
+            <p>预测应当分层：</p>
+            <ul>
+            <li><strong>第一层</strong>：
+            原有炒壳逻辑受损，判断把握较高。</li>
+            <li><strong>第二层</strong>：
+            资金更偏好盈利确定性，判断把握中等。</li>
+            <li><strong>第三层</strong>：
+            消费白马会成为市场主线，判断把握较低。</li>
+            <li><strong>第四层</strong>：
+            茅台未来一年翻倍，几乎无法可靠预测。</li>
+            </ul>
+            <p>越往下，预测难度越大。</p>
+            <hr />
+            <h3 id="等待市场提供证据">等待市场提供证据</h3>
+            <p>假设我是 2016
+            年的一名散户，我不会在1月份股灾后立即满仓白马股。建立三个竞争性假设：</p>
+            <table>
+            <colgroup>
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>假设</th>
+            <th>需要看到的证据</th>
+            <th>策略</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>A：熊市继续</td>
+            <td>盈利下修、信用恶化、各类股票普跌</td>
+            <td>保留较高现金</td>
+            </tr>
+            <tr>
+            <td>B：小盘股重新活跃</td>
+            <td>监管放松、并购复苏、小盘股相对走强</td>
+            <td>重新评估成长股</td>
+            </tr>
+            <tr>
+            <td>C：蓝筹股成为主线</td>
+            <td>龙头盈利改善、估值合理、持续跑赢小盘股</td>
+            <td>逐步配置优质龙头</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>接下来不是每天预测，而是用新证据调整对三个假设的信心。</p>
+            <p>比如到了 2016 年下半年，出现以下组合：</p>
+            <ul>
+            <li>借壳监管实际收紧；</li>
+            <li>大盘股开始持续跑赢创业板；</li>
+            <li>一些龙头企业盈利改善；</li>
+            <li>龙头估值与中小盘股估值存在明显差距。</li>
+            </ul>
+            <p>那么就应该提高假设 C 的权重。</p>
+            <p>2017 年 6 月的 <a
+            href="https://www.cs.com.cn/gppd/201706/t20170621_5334535.html">同期市场评论</a>
+            也明确提到，大小盘风格切换从 2016 年下半年已经开始，而不是到
+            2017 年年底才被发现。</p>
+            <p>这意味着散户不一定要买在最低点。<strong>即使错过最早的上涨阶段，仍然可能在基本面和资金趋势得到验证后参与行情。</strong>
+            当然，前提是当时的估值仍有足够安全边际。</p>
+          </main>
+        <aside class="wiki-toc">
+      <ul>
+      <li><a href="#散户怎么做" id="toc-散户怎么做">散户怎么做</a>
+      <ul>
+      <li><a href="#预测市场主体的行为而不是预测股价"
+      id="toc-预测市场主体的行为而不是预测股价">预测市场主体的行为，而不是预测股价</a></li>
+      <li><a href="#分层预测" id="toc-分层预测">分层预测</a></li>
+      <li><a href="#等待市场提供证据"
+      id="toc-等待市场提供证据">等待市场提供证据</a></li>
+      </ul></li>
+      </ul>
+    </aside>
       </div>
-            <div class="span9">
-                <p>2016—2017 年是 A
-                股历史上非常值得研究的一个阶段，因为它发生了一次明显的市场风格切换：从中小盘、题材炒作占优，转向大市值、盈利确定性较高的龙头企业占优。
-                这段历史可以概括为：</p>
-                <p><strong>2015 年股灾 → 2016 年监管收紧、供给侧改革 →
-                2017 年漂亮 50 行情。</strong></p>
-                <p>但这里有三条不同的因果链，不能简单地混为一谈：</p>
-                <ol type="1">
-                <li><strong>监管趋严</strong>：改变了资金参与股票市场的方式，压缩了部分壳资源、重组和题材炒作的空间。</li>
-                <li><strong>供给侧改革</strong>：改变了钢铁、煤炭等传统行业的供需关系，推动部分龙头企业利润快速恢复。</li>
-                <li><strong>漂亮 50
-                行情</strong>：投资者开始更愿意为业绩稳定、竞争优势明确的大公司支付估值溢价。</li>
-                </ol>
-                <h2 id="散户怎么做">散户怎么做</h2>
-                <p>首先要承认一个事实：</p>
-                <p><strong>2015
-                年股灾之后，散户几乎不可能准确预测未来两年的完整政策路径，但有可能比市场更早发现：原来的盈利模式正在失效，某些资产的风险收益比正在改善。</strong></p>
-                <hr />
-                <h3
-                id="预测市场主体的行为而不是预测股价">预测市场主体的行为，而不是预测股价</h3>
-                <p>真正有价值的投资能力，不是预测未来会发生哪些事件，而是在只掌握局部信息的情况下，持续判断：</p>
-                <ol type="1">
-                <li>哪些市场主体的利益和约束正在变化？</li>
-                <li>这些变化会如何影响它们的下一步行动？</li>
-                <li>哪些资产因此获得新的买方，哪些资产失去原有买方？</li>
-                <li>当前股价是否已经反映了这些变化？</li>
-                </ol>
-                <p>而且，<strong>必须避免一种事后诸葛亮式的推理</strong>：2017
-                年白马股涨了，于是把 2015
-                年股灾后所有政策都解释为利好白马股。</p>
-                <p>实际上，站在 2016
-                年初，继续熊市、反弹后再跌、蓝筹行情、小盘成长股复苏，都不是可以轻易排除的路径。</p>
-                <hr />
-                <p>把时间冻结在2016年，看看散户真正知道什么</p>
-                <table>
-                <colgroup>
-                <col style="width: 33%" />
-                <col style="width: 33%" />
-                <col style="width: 33%" />
-                </colgroup>
-                <thead>
-                <tr>
-                <th>时间</th>
-                <th>当时已经知道的信息</th>
-                <th>当时还不知道的事情</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                <td>2015年下半年</td>
-                <td>杠杆牛市崩溃，股市发生流动性危机</td>
-                <td>是否会出现长期熊市</td>
-                </tr>
-                <tr>
-                <td>2016年1月</td>
-                <td>熔断机制失败，风险偏好进一步受挫</td>
-                <td>蓝筹股能否独立走牛</td>
-                </tr>
-                <tr>
-                <td>2016年6月</td>
-                <td>监管拟进一步收紧借壳上市 (<a
-                href="https://www.csrc.gov.cn/csrc/c100028/c1001724/content.shtml"
-                title="证监会就修改《上市公司重大资产重组管理办法》公开征求意见_中国证券监督管理委员会">csrc.gov.cn</a>)</td>
-                <td>政策能否持续执行</td>
-                </tr>
-                <tr>
-                <td>2016年9月</td>
-                <td>重组新规正式实施，炒壳受到限制 (<a
-                href="https://www.csrc.gov.cn/csrc/c100028/c1001672/content.shtml"
-                title="证监会发布《关于修改〈上市公司重大资产重组管理办法〉的决定》_中国证券监督管理委员会">csrc.gov.cn</a>)</td>
-                <td>资金会转向哪里</td>
-                </tr>
-                <tr>
-                <td>2016年下半年</td>
-                <td>大盘蓝筹相对中小盘开始走强</td>
-                <td>这种风格能持续多久</td>
-                </tr>
-                <tr>
-                <td>2017年上半年</td>
-                <td>龙头股盈利、相对股价表现逐渐验证逻辑</td>
-                <td>2018年是否会发生逆转</td>
-                </tr>
-                </tbody>
-                </table>
-                <p>这里有一个关键点：</p>
-                <p><strong>2016 年 6
-                月之后，已经不需要预测监管是否会收紧借壳，因为政策方向已经公开。需要预测的是政策对估值和资金流向的影响。</strong></p>
-                <p>例如，借壳监管收紧，可以较有把握地推导出壳资源价值承压。但不能直接推导出贵州茅台上涨100%。</p>
-                <p>因为从「炒壳资金退出」到「买入消费白马」，中间还有非常多的可能路径：资金可以流向银行、地产、债券，也可以直接离开股市。</p>
-                <hr />
-                <h3 id="分层预测">分层预测</h3>
-                <p>预测应当分层：</p>
-                <ul>
-                <li><strong>第一层</strong>：
-                原有炒壳逻辑受损，判断把握较高。</li>
-                <li><strong>第二层</strong>：
-                资金更偏好盈利确定性，判断把握中等。</li>
-                <li><strong>第三层</strong>：
-                消费白马会成为市场主线，判断把握较低。</li>
-                <li><strong>第四层</strong>：
-                茅台未来一年翻倍，几乎无法可靠预测。</li>
-                </ul>
-                <p>越往下，预测难度越大。</p>
-                <hr />
-                <h3 id="等待市场提供证据">等待市场提供证据</h3>
-                <p>假设我是 2016
-                年的一名散户，我不会在1月份股灾后立即满仓白马股。建立三个竞争性假设：</p>
-                <table>
-                <colgroup>
-                <col style="width: 33%" />
-                <col style="width: 33%" />
-                <col style="width: 33%" />
-                </colgroup>
-                <thead>
-                <tr>
-                <th>假设</th>
-                <th>需要看到的证据</th>
-                <th>策略</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                <td>A：熊市继续</td>
-                <td>盈利下修、信用恶化、各类股票普跌</td>
-                <td>保留较高现金</td>
-                </tr>
-                <tr>
-                <td>B：小盘股重新活跃</td>
-                <td>监管放松、并购复苏、小盘股相对走强</td>
-                <td>重新评估成长股</td>
-                </tr>
-                <tr>
-                <td>C：蓝筹股成为主线</td>
-                <td>龙头盈利改善、估值合理、持续跑赢小盘股</td>
-                <td>逐步配置优质龙头</td>
-                </tr>
-                </tbody>
-                </table>
-                <p>接下来不是每天预测，而是用新证据调整对三个假设的信心。</p>
-                <p>比如到了 2016 年下半年，出现以下组合：</p>
-                <ul>
-                <li>借壳监管实际收紧；</li>
-                <li>大盘股开始持续跑赢创业板；</li>
-                <li>一些龙头企业盈利改善；</li>
-                <li>龙头估值与中小盘股估值存在明显差距。</li>
-                </ul>
-                <p>那么就应该提高假设 C 的权重。</p>
-                <p>2017 年 6 月的 <a
-                href="https://www.cs.com.cn/gppd/201706/t20170621_5334535.html">同期市场评论</a>
-                也明确提到，大小盘风格切换从 2016
-                年下半年已经开始，而不是到 2017 年年底才被发现。</p>
-                <p>这意味着散户不一定要买在最低点。<strong>即使错过最早的上涨阶段，仍然可能在基本面和资金趋势得到验证后参与行情。</strong>
-                当然，前提是当时的估值仍有足够安全边际。</p>
-              </div>
-    </div>
-  </div>
+  <script type="text/javascript">
+    (function () {
+      function markActive() {
+        var here = location.href.split('#')[0];
+        var links = document.querySelectorAll('.wiki-sidebar a');
+        for (var i = 0; i < links.length; i++) {
+          if (links[i].href.split('#')[0] === here) {
+            links[i].classList.add('active');
+          }
+        }
+      }
+      // load the shared site directory once (served from the wiki root);
+      // kept in a standalone file so adding a page needn't rebuild every page.
+      var nav = document.getElementById('wiki-sidebar');
+      if (nav) {
+        fetch('/.wiki_sidebar.html')
+          .then(function (r) { return r.ok ? r.text() : ''; })
+          .then(function (html) {
+            if (html) {
+              nav.innerHTML = html;
+              nav.hidden = false;
+              markActive();
+            }
+          })
+          .catch(function () {});
+      }
+      // keep bootstrap table styling (previously done by sticky_menu.js)
+      var tables = document.getElementsByTagName('table');
+      for (var j = 0; j < tables.length; j++) {
+        tables[j].classList.add('table');
+      }
+    })();
+  </script>
 </body>
 
 </html>

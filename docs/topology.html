@@ -1,0 +1,363 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    Topology
+  </title>
+    <link rel="stylesheet" href="./WikiTheme/theme/bamboo.css"  />
+        <script defer=""
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+        type="text/javascript"></script>
+        <style type="text/css">
+    /* ---- three column wiki layout (left: site directory, center: content, right: page TOC) ---- */
+    .wiki-layout {
+      display: flex;
+      align-items: flex-start;
+      gap: 24px;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 20px;
+      box-sizing: border-box;
+    }
+    .wiki-sidebar {
+      flex: 0 0 240px;
+      width: 240px;
+      position: sticky;
+      top: 0;
+      max-height: 100vh;
+      overflow-y: auto;
+      padding: 10px 4px 20px 0;
+      border-right: 1px solid #eee;
+      font-size: 14px;
+    }
+    .wiki-sidebar[hidden] { display: none; }
+    .wiki-toc {
+      flex: 0 0 220px;
+      width: 220px;
+      position: sticky;
+      top: 0;
+      max-height: 100vh;
+      overflow-y: auto;
+      padding: 10px 0 20px 4px;
+      border-left: 1px solid #eee;
+      font-size: 14px;
+    }
+    .wiki-main {
+      flex: 1 1 auto;
+      min-width: 0;
+      max-width: 820px;
+      padding: 10px 0 40px;
+    }
+    /* site directory tree */
+    .wiki-sidebar .wiki-home {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #eee;
+      text-decoration: none;
+      color: #333;
+    }
+    .wiki-sidebar ul { list-style: none; margin: 0 0 0 12px; padding: 0; }
+    .wiki-sidebar > ul { margin-left: 0; }
+    .wiki-sidebar li { line-height: 1.7; }
+    .wiki-sidebar a { text-decoration: none; color: #555; }
+    .wiki-sidebar a:hover { color: #0088cc; text-decoration: underline; }
+    .wiki-sidebar a.active { color: #0088cc; font-weight: bold; }
+    /* page TOC */
+    .wiki-toc ul { list-style: none; margin: 0 0 0 12px; padding: 0; }
+    .wiki-toc > ul { margin-left: 0; }
+    .wiki-toc li { line-height: 1.6; }
+    .wiki-toc a { text-decoration: none; color: #555; }
+    .wiki-toc a:hover { color: #0088cc; }
+    @media (max-width: 980px) {
+      .wiki-layout { flex-direction: column; }
+      .wiki-sidebar, .wiki-toc {
+        position: static;
+        width: 100%;
+        flex-basis: auto;
+        max-height: none;
+        border: 0;
+      }
+      .wiki-main { max-width: none; }
+    }
+  </style>
+</head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">Topology</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="wiki-layout">
+    <nav class="wiki-sidebar" id="wiki-sidebar" hidden></nav>
+    <main class="wiki-main">
+            <h3 id="带宽层级">带宽层级</h3>
+            <p>从“离计算核心最近”到“最远”，带宽逐级跌落，这条层级是所有通信优化的物理背景：</p>
+            <table>
+            <colgroup>
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>层级</th>
+            <th>介质</th>
+            <th>量级（单卡，双向）</th>
+            <th>典型延迟</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>片上</td>
+            <td>SRAM / Shared Memory</td>
+            <td>~ 数十 TB/s</td>
+            <td>ns</td>
+            </tr>
+            <tr>
+            <td>板上</td>
+            <td>HBM（如 H100 HBM3）</td>
+            <td>~ 3 TB/s</td>
+            <td>数百 ns</td>
+            </tr>
+            <tr>
+            <td>节点内</td>
+            <td>NVLink / NVSwitch</td>
+            <td>0.6 ~ 1.8 TB/s</td>
+            <td>~ 1 µs</td>
+            </tr>
+            <tr>
+            <td>节点间</td>
+            <td>InfiniBand NDR / RoCE</td>
+            <td>~ 0.05 TB/s（400 Gb/s/port）</td>
+            <td>数 µs</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>节点内（NVLink）和节点间（IB）带宽差着约
+            <strong>一个数量级</strong>。这就是为什么：<strong>通信量最大、最频繁的并行（Tensor
+            Parallel）几乎总是限制在单节点 8
+            卡以内</strong>，而通信量较小的并行（Data / Pipeline /
+            Expert Parallel）才跨节点展开。跨节点做 TP 会让 IB
+            成为瓶颈，得不偿失。</p>
+            <h3 id="nvlink-mesh">NVLink mesh</h3>
+            <p>早期的 NVLink 直连是“网格（mesh）”结构：每张卡通过若干条
+            NVLink
+            直接连到其它卡。当卡数增多时，任意两卡之间的链路数不均衡，且无法做到全速全连接。</p>
+            <figure>
+            <img src="./WikiImage/nvlink_fullmesh_8gpu.svg"
+            alt="nvlink fullmesh" />
+            <figcaption aria-hidden="true">nvlink fullmesh</figcaption>
+            </figure>
+            <p>现代服务器（DGX/HGX）用 <strong>NVSwitch</strong>
+            取代了纯 mesh：所有 GPU
+            都接到交换芯片上，任意两卡之间都能跑满单卡的全部 NVLink
+            带宽，且带宽与访问模式无关（all-to-all
+            也不掉速）。这让节点内的集合通信可以近似当作“无阻塞”来建模。</p>
+            <h4 id="bandwidth">bandwidth</h4>
+            <p>需要注意区分单向（unidirectional）和双向带宽（bidirectional）：</p>
+            <table>
+            <thead>
+            <tr>
+            <th>规格</th>
+            <th>双向总带宽</th>
+            <th>单向带宽（填公式用这个）</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>NVLink 3（A100）</td>
+            <td>600 GB/s</td>
+            <td>300 GB/s</td>
+            </tr>
+            <tr>
+            <td>NVLink 4（H100）</td>
+            <td>900 GB/s</td>
+            <td>450 GB/s</td>
+            </tr>
+            <tr>
+            <td>NVLink 5（B200）</td>
+            <td>1800 GB/s</td>
+            <td>900 GB/s</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>NCCL 文档和 <code>nccl-tests</code> 的 busbw
+            换算也是基于单向带宽——<code>nccl-tests</code> 输出的
+            <code>busbw</code> 列实际上是把测量到的 algobw 乘以
+            <code>(P-1)/P</code>（AllGather
+            系数），对应的就是单向链路利用率。</p>
+            <p><strong>厂商标称带宽 vs 有效带宽。</strong></p>
+            <p>上表是硬件峰值，真实集合通信通常只能达到其
+            <strong>70%~85%</strong>：协议开销、同步、流水线未填满、以及算法本身的
+            <code>(P-1)/P</code> 系数都会打折。做容量规划时用实测
+            <code>busbw</code>，不要直接用标称值。</p>
+            <h3 id="fat-tree">Fat Tree</h3>
+            <p>节点内靠
+            NVSwitch，<strong>节点间</strong>则靠数据中心网络。GPU
+            集群普遍采用 <strong>胖树（Fat Tree）</strong> 这种多级 Clos
+            拓扑，目标是让任意两个节点之间都有接近满速、无阻塞的带宽。</p>
+            <figure>
+            <img
+            src="./WikiImage/gpu_cluster_fat_tree_topology.svg"
+            alt="GPU Cluster Fat Tree" />
+            <figcaption aria-hidden="true">GPU Cluster Fat
+            Tree</figcaption>
+            </figure>
+            <p>胖树的核心思想是“<strong>越往上，链路越粗</strong>”，从而消除传统树形网络在根部的带宽瓶颈：</p>
+            <ul>
+            <li><strong>Leaf（接入层 /
+            ToR）</strong>：直接连接一组服务器的网卡（下行），并通过上行链路连到
+            Spine。</li>
+            <li><strong>Spine（汇聚/核心层）</strong>：连接所有
+            Leaf，负责跨机架转发。</li>
+            <li><strong>无阻塞（non-blocking）</strong>：当每个 Leaf
+            的上行总带宽 ≥ 下行总带宽（收敛比
+            1:1）时，网络理论上可以支持所有节点同时满速通信而不发生拥塞。</li>
+            </ul>
+            <p><strong>收敛比（Oversubscription Ratio）</strong>
+            是成本与性能的权衡点。1:1 无阻塞最贵；许多通用集群用 1:2 或
+            1:4 的上行收敛来省交换机和光模块。但 LLM
+            训练/推理的集合通信是<strong>突发且同步</strong>的（所有节点同时
+            AllReduce），对收敛比极其敏感——AI 专用集群通常坚持 1:1
+            无阻塞。</p>
+            <h4 id="rail-optimized-拓扑">Rail-optimized 拓扑</h4>
+            <p>大规模 GPU 集群还会用
+            <strong>rail-optimized（轨道优化）</strong>
+            布线来进一步优化跨节点集合通信：</p>
+            <ul>
+            <li>每台服务器有 8 张 GPU、8 张网卡，第 <span
+            class="math inline">\(i\)</span> 号网卡属于第 <span
+            class="math inline">\(i\)</span> 条“轨道（rail）”。</li>
+            <li><strong>所有服务器上第 <span
+            class="math inline">\(i\)</span> 号 GPU 都连到同一组 rail
+            交换机。</strong></li>
+            </ul>
+            <p>这样，同号 GPU 之间的跨节点通信（这正是 TP/EP
+            切分后最常见的通信模式）只需经过<strong>一跳 leaf
+            交换机</strong>，无需上到
+            spine，既降低延迟又减轻核心层压力。不同 rail
+            之间的通信才需要经由 spine 或节点内 NVLink 中转。</p>
+            <h3 id="拓扑如何映射到并行">拓扑如何映射到并行</h3>
+            <p>把上面的层级和具体的并行策略对应起来，就是分布式部署的排布原则：</p>
+            <table>
+            <colgroup>
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>并行</th>
+            <th>通信原语</th>
+            <th>频次</th>
+            <th>推荐放置层级</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>Tensor Parallel (TP)</td>
+            <td>AllReduce / RS+AG</td>
+            <td>每层多次，极频繁</td>
+            <td>节点内 NVLink</td>
+            </tr>
+            <tr>
+            <td>Expert Parallel (EP)</td>
+            <td>All2All</td>
+            <td>每个 MoE 层一次</td>
+            <td>节点内优先，必要时跨节点（rail）</td>
+            </tr>
+            <tr>
+            <td>Data Parallel (DP)</td>
+            <td>推理期几乎无（无梯度同步）</td>
+            <td>低</td>
+            <td>跨节点 IB</td>
+            </tr>
+            <tr>
+            <td>Pipeline Parallel (PP)</td>
+            <td>P2P（相邻 stage 传激活）</td>
+            <td>每 microbatch 一次</td>
+            <td>跨节点 IB</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>记住这条经验法则：<strong>通信越频繁、数据量越大，越要往带宽高的层级放。</strong>
+            TP 是通信最重的并行，所以它“抢占”最宝贵的 NVLink；PP 只在
+            stage 边界传一次激活，放到较慢的 IB 上也无妨。</p>
+          </main>
+        <aside class="wiki-toc">
+      <ul>
+      <li><a href="#带宽层级" id="toc-带宽层级">带宽层级</a></li>
+      <li><a href="#nvlink-mesh" id="toc-nvlink-mesh">NVLink
+      mesh</a></li>
+      <li><a href="#fat-tree" id="toc-fat-tree">Fat Tree</a></li>
+      <li><a href="#拓扑如何映射到并行"
+      id="toc-拓扑如何映射到并行">拓扑如何映射到并行</a></li>
+      </ul>
+    </aside>
+      </div>
+  <script type="text/javascript">
+    (function () {
+      function markActive() {
+        var here = location.href.split('#')[0];
+        var links = document.querySelectorAll('.wiki-sidebar a');
+        for (var i = 0; i < links.length; i++) {
+          if (links[i].href.split('#')[0] === here) {
+            links[i].classList.add('active');
+          }
+        }
+      }
+      // load the shared site directory once (served from the wiki root);
+      // kept in a standalone file so adding a page needn't rebuild every page.
+      var nav = document.getElementById('wiki-sidebar');
+      if (nav) {
+        fetch('/.wiki_sidebar.html')
+          .then(function (r) { return r.ok ? r.text() : ''; })
+          .then(function (html) {
+            if (html) {
+              nav.innerHTML = html;
+              nav.hidden = false;
+              markActive();
+            }
+          })
+          .catch(function () {});
+      }
+      // keep bootstrap table styling (previously done by sticky_menu.js)
+      var tables = document.getElementsByTagName('table');
+      for (var j = 0; j < tables.length; j++) {
+        tables[j].classList.add('table');
+      }
+    })();
+  </script>
+</body>
+
+</html>

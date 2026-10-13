@@ -1,0 +1,659 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    CPU &amp; GPU
+  </title>
+    <link rel="stylesheet" href="./WikiTheme/theme/bootstrap.css"  />
+        <script defer=""
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+        type="text/javascript"></script>
+      <style type="text/css">
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+      <style type="text/css">
+    /* ---- three column wiki layout (left: site directory, center: content, right: page TOC) ---- */
+    .wiki-layout {
+      display: flex;
+      align-items: flex-start;
+      gap: 24px;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 20px;
+      box-sizing: border-box;
+    }
+    .wiki-sidebar {
+      flex: 0 0 240px;
+      width: 240px;
+      position: sticky;
+      top: 0;
+      max-height: 100vh;
+      overflow-y: auto;
+      padding: 10px 4px 20px 0;
+      border-right: 1px solid #eee;
+      font-size: 14px;
+    }
+    .wiki-sidebar[hidden] { display: none; }
+    .wiki-toc {
+      flex: 0 0 220px;
+      width: 220px;
+      position: sticky;
+      top: 0;
+      max-height: 100vh;
+      overflow-y: auto;
+      padding: 10px 0 20px 4px;
+      border-left: 1px solid #eee;
+      font-size: 14px;
+    }
+    .wiki-main {
+      flex: 1 1 auto;
+      min-width: 0;
+      max-width: 820px;
+      padding: 10px 0 40px;
+    }
+    /* site directory tree */
+    .wiki-sidebar .wiki-home {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #eee;
+      text-decoration: none;
+      color: #333;
+    }
+    .wiki-sidebar ul { list-style: none; margin: 0 0 0 12px; padding: 0; }
+    .wiki-sidebar > ul { margin-left: 0; }
+    .wiki-sidebar li { line-height: 1.7; }
+    .wiki-sidebar a { text-decoration: none; color: #555; }
+    .wiki-sidebar a:hover { color: #0088cc; text-decoration: underline; }
+    .wiki-sidebar a.active { color: #0088cc; font-weight: bold; }
+    /* page TOC */
+    .wiki-toc ul { list-style: none; margin: 0 0 0 12px; padding: 0; }
+    .wiki-toc > ul { margin-left: 0; }
+    .wiki-toc li { line-height: 1.6; }
+    .wiki-toc a { text-decoration: none; color: #555; }
+    .wiki-toc a:hover { color: #0088cc; }
+    @media (max-width: 980px) {
+      .wiki-layout { flex-direction: column; }
+      .wiki-sidebar, .wiki-toc {
+        position: static;
+        width: 100%;
+        flex-basis: auto;
+        max-height: none;
+        border: 0;
+      }
+      .wiki-main { max-width: none; }
+    }
+  </style>
+</head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">CPU &amp; GPU</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="wiki-layout">
+    <nav class="wiki-sidebar" id="wiki-sidebar" hidden></nav>
+    <main class="wiki-main">
+            <p>CPU 和 GPU 是两个独立的执行体。CPU 上跑的 Python/C++
+            代码不会「直接执行」kernel，它只是把命令写进一个队列；GPU
+            在另一端按自己的节奏取命令执行。这个模型和生产者-消费者队列完全同构：</p>
+            <pre class="text"><code>CPU (producer)                        GPU (consumer)
+---------------                       ----------------
+launch kernel A     ---&gt;  [cmd queue] ---&gt;  SM 执行 A
+launch kernel B     ---&gt;  [cmd queue] ---&gt;  SM 执行 B
+memcpy D2H          ---&gt;  [cmd queue] ---&gt;  copy engine 执行</code></pre>
+            <p>由此得到三条基本事实：</p>
+            <ol type="1">
+            <li><code>cudaLaunchKernel</code>
+            这类调用是<strong>异步</strong>的：CPU
+            把命令入队后立刻返回，不等待 GPU；</li>
+            <li>同一个队列内的命令按入队顺序执行，跨队列默认没有任何顺序保证；</li>
+            <li>CPU 不阻塞，就意味着它可以在 GPU 还在算 A 的时候，提前把
+            B、C、D 都排好队——这正是性能的来源。</li>
+            </ol>
+            <p>反过来，一旦 CPU 需要「看到」GPU 的结果，或者需要复用 GPU
+            仍在使用的内存，就必须插入同步点，让两个异步执行体重新对齐。</p>
+            <h3 id="一次-kernel-launch-的开销">一次 kernel launch
+            的开销</h3>
+            <p>一次 launch 的 CPU
+            侧成本（参数检查、驱动调用、写入命令缓冲区）通常在几微秒量级，而一个
+            GPU kernel 的执行时间可以小到 <span
+            class="math inline">\(\mu s\)</span> 以下（例如 elementwise
+            加、LayerNorm），也可以大到 <span
+            class="math inline">\(\text{ms}\)</span> 级（大
+            GEMM、attention）。</p>
+            <p>设第 <span class="math inline">\(i\)</span> 个 kernel 的
+            CPU 提交时间为 <span
+            class="math inline">\(t^{\text{cpu}}_i\)</span>，GPU
+            执行时间为 <span
+            class="math inline">\(t^{\text{gpu}}_i\)</span>，一共 <span
+            class="math inline">\(N\)</span> 个 kernel。在 CPU
+            能持续提前排队的理想流水线下，端到端墙钟时间近似是「谁慢谁说话」：</p>
+            <p><span class="math display">\[
+            T_{\text{wall}} \approx \max\left(\sum_{i=1}^{N}
+            t^{\text{cpu}}_i,\ \sum_{i=1}^{N} t^{\text{gpu}}_i\right)
+            \]</span></p>
+            <p>（严格地说还要加上首个 kernel 的启动延迟 <span
+            class="math inline">\(\mathcal{O}(1)\)</span>
+            量级的填充时间，以及 CPU 未及时跟上的断档。）</p>
+            <p>小 kernel 很多时，<span class="math inline">\(\sum_i
+            t^{\text{cpu}}_i\)</span> 反而成为瓶颈，GPU 会在两次 kernel
+            之间空转，这称为 <strong>launch-bound</strong>；大 kernel 时
+            GPU 满负荷，CPU 有充足的提前量，称为
+            <strong>compute-bound</strong>。CUDA Graph 的核心动机就是把
+            <span class="math inline">\(\sum_i t^{\text{cpu}}_i\)</span>
+            压缩成一次提交，从而消除断档，详见《Cuda Graph》。</p>
+            <h3
+            id="stream命令队列与顺序边界">Stream：命令队列与顺序边界</h3>
+            <h4 id="stream-内保序stream-间无序">stream 内保序，stream
+            间无序</h4>
+            <p>CUDA stream 就是上面那条命令队列。它的语义只有两条：</p>
+            <ul>
+            <li><strong>stream 内严格保序</strong>：同一 stream
+            里先入队的命令一定先完成，后入队的才能开始；</li>
+            <li><strong>stream 间默认无顺序</strong>：不同 stream
+            的命令由 GPU 自行调度，先后不确定。</li>
+            </ul>
+            <p>第一点是关键：<strong>stream
+            内保序是「免费」的依赖保证，不需要任何 CPU
+            参与</strong>。只要把有数据依赖的 kernel 放进同一个
+            stream，正确性就自动成立，CPU 不需要停下来等。</p>
+            <pre class="text"><code>stream 1:  A -&gt; B -&gt; C        (三者严格按序)
+stream 2:  X -&gt; Y             (两者严格按序，但与 stream 1 无关系)</code></pre>
+            <p>如果 A 的输出要给 X 用，就必须在两个 stream
+            之间显式建立依赖——这正是 event 的用途。</p>
+            <h4 id="默认-stream">默认 stream</h4>
+            <p>不指定 stream 时命令进入默认 stream。默认 stream
+            有两种模式：</p>
+            <ul>
+            <li><strong>legacy 默认 stream</strong>：它会与所有其它阻塞
+            stream
+            隐式同步，行为近似于「全局串行」，容易在不知情的情况下破坏并行；</li>
+            <li><strong>per-thread 默认
+            stream</strong>：每个线程一个默认 stream，不与其它 stream
+            隐式同步。</li>
+            </ul>
+            <p>PyTorch 使用默认 stream，并且
+            <code>torch.cuda.Stream()</code> 创建的流带
+            <code>cudaStreamNonBlocking</code>
+            语义，因此与默认流之间<strong>不会</strong>隐式同步。自己写
+            CUDA/C++ 扩展时要显式确认编译选项与运行库对默认 stream
+            语义的处理。</p>
+            <h4 id="典型的-stream-划分">典型的 stream 划分</h4>
+            <p>工程上一般按「资源类型」划分
+            stream，因为只有分开才能让不同硬件单元同时工作：</p>
+            <table>
+            <thead>
+            <tr>
+            <th>stream</th>
+            <th>承载的命令</th>
+            <th>主要占用资源</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>compute stream</td>
+            <td>kernel 计算</td>
+            <td>SM</td>
+            </tr>
+            <tr>
+            <td>copy stream</td>
+            <td>H2D / D2H 拷贝</td>
+            <td>Copy Engine</td>
+            </tr>
+            <tr>
+            <td>comm stream</td>
+            <td>NCCL AllReduce 等</td>
+            <td>NVLink / NIC</td>
+            </tr>
+            </tbody>
+            </table>
+            <h3 id="同步点的三种动机">同步点的三种动机</h3>
+            <p>同步不是为了「让代码看起来顺序正确」，它只解决三类问题：</p>
+            <ol type="1">
+            <li><strong>正确性：CPU 要读 GPU 写的数据。</strong> GPU
+            写显存是异步的，CPU 直接读到的可能是旧值；任何 D2H
+            拷贝之后的 CPU 读取都必须等拷贝完成。</li>
+            <li><strong>资源生命周期：CPU 要释放或复用 GPU
+            仍在使用的内存。</strong>
+            <code>cudaFree</code>、显存池回收、复用 output
+            buffer，都必须保证相关 kernel 已经执行完。</li>
+            <li><strong>背压：防止 CPU 无限制入队。</strong> 如果 CPU
+            完全不等待，队列会无限增长，CPU
+            侧内存与端到端延迟都会失控；同步点是把队列长度控制在有限范围内的闸门。</li>
+            </ol>
+            <p>第 3
+            点最容易被忽略：即使正确性上不需要等待，长期运行的流水线也需要周期性同步来做背压和错误检查。</p>
+            <h3 id="同步原语的粒度与代价">同步原语的粒度与代价</h3>
+            <p>CUDA 提供的同步手段可以按粒度分层：</p>
+            <table>
+            <colgroup>
+            <col style="width: 20%" />
+            <col style="width: 20%" />
+            <col style="width: 20%" />
+            <col style="width: 20%" />
+            <col style="width: 20%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>原语</th>
+            <th>粒度</th>
+            <th>CPU 是否阻塞</th>
+            <th>典型用途</th>
+            <th>代价</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td><code>cudaDeviceSynchronize</code></td>
+            <td>整个 device，所有 stream</td>
+            <td>是</td>
+            <td>调试、benchmark、异常兜底</td>
+            <td>最高</td>
+            </tr>
+            <tr>
+            <td><code>cudaStreamSynchronize</code></td>
+            <td>单个 stream 的全部命令</td>
+            <td>是</td>
+            <td>等一个阶段结束</td>
+            <td>中</td>
+            </tr>
+            <tr>
+            <td><code>cudaEventSynchronize</code></td>
+            <td>event 之前记录的工作</td>
+            <td>是</td>
+            <td>等一个里程碑</td>
+            <td>较低</td>
+            </tr>
+            <tr>
+            <td><code>cudaStreamWaitEvent</code></td>
+            <td>跨 stream 建立依赖</td>
+            <td>否</td>
+            <td>重叠 copy / compute / comm</td>
+            <td>最低</td>
+            </tr>
+            <tr>
+            <td><code>cudaEventQuery</code> /
+            <code>cudaStreamQuery</code></td>
+            <td>查询完成状态</td>
+            <td>否（轮询）</td>
+            <td>非阻塞检查</td>
+            <td>低</td>
+            </tr>
+            </tbody>
+            </table>
+            <h4 id="cpu-阻塞同步与-gpu-内部依赖">CPU 阻塞同步与 GPU
+            内部依赖</h4>
+            <p>这两种同步经常被混为一谈，但语义完全不同：</p>
+            <ul>
+            <li><strong>CPU
+            阻塞同步</strong>（<code>cudaDeviceSynchronize</code>、<code>cudaStreamSynchronize</code>、<code>cudaEventSynchronize</code>）：CPU
+            停下来等，GPU 继续跑。CPU
+            在这段时间无法提交新命令，流水线会断。</li>
+            <li><strong>GPU
+            内部依赖</strong>（<code>cudaStreamWaitEvent</code>，以及同一
+            stream 内的顺序）：CPU 不阻塞，只是给 GPU
+            的命令队列插入一条「依赖边」。GPU 执行到这里时自己等待，CPU
+            可以继续往前排队。</li>
+            </ul>
+            <p>要在流水线里做 overlap，几乎只能用第二种。第一种只在 CPU
+            确实需要数据时才使用。</p>
+            <h3 id="cudaevent跨-stream-依赖与计时">cudaEvent：跨 stream
+            依赖与计时</h3>
+            <h4 id="记录语义">记录语义</h4>
+            <p><code>cudaEventRecord(event, stream)</code> 的语义是：在
+            stream 的命令流中打一个标记，当 stream
+            中<strong>此前所有命令</strong>都执行完毕时，该 event
+            变为完成态。</p>
+            <p>于是可以这样建立跨 stream 依赖：</p>
+            <div class="sourceCode" id="cb3"><pre
+            class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>cudaEventRecord<span class="op">(</span>ev<span class="op">,</span> stream_a<span class="op">);</span>             <span class="co">// 标记 stream_a 的完成点</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>cudaStreamWaitEvent<span class="op">(</span>stream_b<span class="op">,</span> ev<span class="op">,</span> <span class="dv">0</span><span class="op">);</span>      <span class="co">// stream_b 后续工作都等这个点</span></span></code></pre></div>
+            <p><code>cudaStreamWaitEvent</code> 不阻塞 CPU，只往
+            <code>stream_b</code> 队列里插入一条等待边。这是
+            copy/compute 重叠、计算/通信重叠的标准写法。</p>
+            <h4 id="计时正确姿势">计时正确姿势</h4>
+            <p>用 event 计时，而不是 <code>time.time()</code>：</p>
+            <div class="sourceCode" id="cb4"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>start <span class="op">=</span> torch.cuda.Event(enable_timing<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>end <span class="op">=</span> torch.cuda.Event(enable_timing<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>start.record()</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># ... 待测工作 ...</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>end.record()</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>torch.cuda.synchronize()</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>elapsed_ms <span class="op">=</span> start.elapsed_time(end)</span></code></pre></div>
+            <p><code>elapsed_time</code> 得到的是</p>
+            <p><span class="math display">\[
+            \Delta t = t_{\text{end}} - t_{\text{start}}
+            \]</span></p>
+            <p>其中 <span
+            class="math inline">\(t_{\text{start}}\)</span> 与 <span
+            class="math inline">\(t_{\text{end}}\)</span> 都取自 GPU
+            时间线，因此<strong>不包含 CPU
+            提交命令的间隙</strong>。这也是 event 计时往往小于
+            <code>time.time()</code> 的原因：后者会把 CPU
+            排队等待的时间一起算进去。</p>
+            <p>只用 event 做同步、不做计时时，创建时指定
+            <code>enable_timing=False</code>（对应 C API 的
+            <code>cudaEventDisableTiming</code>）可以降低开销。另外
+            event 默认不支持跨进程复用，多进程场景需要
+            <code>cudaEventInterprocess</code>。</p>
+            <h3 id="pytorch-中的对应接口">PyTorch 中的对应接口</h3>
+            <table>
+            <thead>
+            <tr>
+            <th>CUDA 原语</th>
+            <th>PyTorch 接口</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td><code>cudaDeviceSynchronize</code></td>
+            <td><code>torch.cuda.synchronize()</code></td>
+            </tr>
+            <tr>
+            <td><code>cudaStreamSynchronize</code></td>
+            <td><code>stream.synchronize()</code></td>
+            </tr>
+            <tr>
+            <td><code>cudaEventRecord</code></td>
+            <td><code>event.record(stream)</code></td>
+            </tr>
+            <tr>
+            <td><code>cudaEventSynchronize</code></td>
+            <td><code>event.synchronize()</code></td>
+            </tr>
+            <tr>
+            <td><code>cudaStreamWaitEvent</code></td>
+            <td><code>stream.wait_event(event)</code></td>
+            </tr>
+            <tr>
+            <td>新建 stream</td>
+            <td><code>torch.cuda.Stream()</code></td>
+            </tr>
+            <tr>
+            <td>当前 stream</td>
+            <td><code>torch.cuda.current_stream()</code></td>
+            </tr>
+            </tbody>
+            </table>
+            <p>一个典型的跨 stream 依赖在 PyTorch 里写成：</p>
+            <div class="sourceCode" id="cb5"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>ev <span class="op">=</span> torch.cuda.Event()</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> torch.cuda.stream(compute_stream):</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    y <span class="op">=</span> model(x)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    ev.record()</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> torch.cuda.stream(copy_stream):</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    copy_stream.wait_event(ev)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    z <span class="op">=</span> y.to(<span class="st">&quot;cpu&quot;</span>, non_blocking<span class="op">=</span><span class="va">True</span>)</span></code></pre></div>
+            <p>注意 <code>non_blocking=True</code> 只有在源 tensor 位于
+            pinned memory
+            时才是真异步；否则底层仍会退化成同步拷贝。<code>torch.cuda.Stream()</code>
+            本身也有创建开销，通常 2 到 4 条 stream 就足够覆盖
+            copy、compute、通信三类需求，不要按层创建。</p>
+            <h3 id="隐式同步点">隐式同步点</h3>
+            <p>比显式 <code>synchronize()</code>
+            更常见的，是那些<strong>你没有写同步、但框架替你同步了</strong>的操作。典型触发条件：</p>
+            <ul>
+            <li><strong>D2H
+            拷贝</strong>：<code>.item()</code>、<code>.cpu()</code>、<code>.tolist()</code>、<code>float(tensor)</code>、<code>print(tensor)</code>、写日志时取标量值；</li>
+            <li><strong>依赖张量值的控制流</strong>：<code>if tensor &gt; 0:</code>、<code>while tensor.item() &lt; ...</code>、<code>bool(tensor)</code>；</li>
+            <li><strong>动态 shape
+            或索引相关算子</strong>：<code>nonzero</code>、<code>unique</code>、布尔
+            mask 之后的 shape 计算；</li>
+            <li><strong>显存分配</strong>：caching allocator 缺块时调用
+            <code>cudaMalloc</code> /
+            <code>cudaFree</code>，会触发设备同步；</li>
+            <li><strong>调试开关</strong>：<code>CUDA_LAUNCH_BLOCKING=1</code>
+            把每次 launch
+            变成同步，只用于定位问题，绝不能用于生产。</li>
+            </ul>
+            <p>其中每步调用 <code>loss.item()</code>
+            是训练代码里最经典的性能杀手：它强制一次全设备或全 stream
+            的等待，把 CPU 与 GPU
+            之间原本可以重叠的部分全部串行化。正确做法是累积若干步再一次性取出，或者干脆在
+            GPU 上完成数值判断。</p>
+            <p>PyTorch
+            提供了定位工具：<code>torch.cuda.set_sync_debug_mode("warn")</code>
+            会对隐式同步操作发出警告，适合排查「莫名其妙变慢」的代码路径。</p>
+            <h3 id="如何设置同步点">如何设置同步点</h3>
+            <ol type="1">
+            <li><strong>能用 stream 顺序表达的依赖，不要用 CPU
+            同步。</strong> 同一 stream 内保序是免费的。</li>
+            <li><strong>跨 stream 的依赖一律用 event。</strong> 用
+            <code>cudaStreamWaitEvent</code> /
+            <code>stream.wait_event</code>，而不是
+            <code>cudaDeviceSynchronize</code>。</li>
+            <li><strong>把同步点尽量往后推、尽量合并。</strong> 与其每个
+            micro-step 取一次结果，不如积累到一个阶段边界再取一次。</li>
+            <li><strong>同步点落在阶段边界，而不是 kernel
+            边界。</strong> 前向结束、反向结束、optimizer 结束、一个
+            batch 结束，这些才是自然的对齐点。</li>
+            <li><strong>区分「必须等」和「只是想知道」。</strong> 只有
+            CPU 真的要用数据时才必须等；如果只是想判断是否完成，用
+            <code>query</code> 轮询或改成异步回调。</li>
+            <li><strong>给等待留出重叠空间。</strong> 训练里常见做法是等
+            D2H 结果的同时启动下一步 H2D
+            拷贝，用双缓冲把等待藏起来。</li>
+            <li><strong>测量时先 warmup 再同步。</strong> 第一次 kernel
+            包含 JIT、<code>cudaMalloc</code>、库初始化等一次性开销；用
+            event 计时并配合 <code>torch.cuda.synchronize()</code>
+            才能测到真实 GPU 时间。</li>
+            </ol>
+            <h3 id="典型流水线的同步点设计">典型流水线的同步点设计</h3>
+            <h4 id="朴素单流">朴素单流</h4>
+            <pre class="text"><code>CPU:  H2D  -&gt;  fwd  -&gt;  bwd  -&gt;  update
+GPU:         [====]   [====]   [==]</code></pre>
+            <p>如果 CPU 完全不等，这个流水线是正确的，因为 stream
+            内保序已经保证了数据依赖；但队列会无限增长。工程上会定期同步做背压，例如每
+            <span class="math inline">\(K\)</span> 步或每个 epoch
+            同步一次。</p>
+            <h4 id="copy-compute-双缓冲重叠">copy / compute
+            双缓冲重叠</h4>
+            <pre class="text"><code>stream copy   :  H2D(batch 0) -&gt; H2D(batch 1) -&gt; H2D(batch 2)
+stream compute:                  fwd/bwd(0)   -&gt; fwd/bwd(1)
+                        ^ ev0            ^ ev1</code></pre>
+            <ul>
+            <li><code>H2D(batch 1)</code> 与 <code>fwd/bwd(0)</code>
+            并行执行；</li>
+            <li><code>fwd/bwd(1)</code> 通过
+            <code>wait_event(ev1)</code> 等 <code>H2D(batch 1)</code>
+            完成；</li>
+            <li>CPU 只负责提交，不需要在两步之间停下来等待。</li>
+            </ul>
+            <p>这是数据加载与计算重叠的标准模板，也是
+            <code>pin_memory</code> 配合 <code>non_blocking=True</code>
+            想达到的效果。</p>
+            <h4
+            id="推理服务为什么采样通常放在-gpu-上">推理服务：为什么采样通常放在
+            GPU 上</h4>
+            <p>一个自回归推理 step 的时间线大致是：</p>
+            <pre class="text"><code>GPU:  forward  -&gt;  logits  -&gt;  (sample)  -&gt;  next token
+CPU:    调度请求 / 组 batch             ^ 若在此处把 logits 拉回 CPU 采样，就是一次强制同步</code></pre>
+            <p>如果每步都用 <code>.cpu()</code> 把 logits 取回、在 CPU
+            上用 numpy 做 top-k/top-p 采样，再用 <code>.cuda()</code>
+            送回去，那么每步都会产生两次 H2D/D2H 拷贝加至少一次同步，GPU
+            会在采样期间完全空转。把采样（temperature、top-k、top-p、multinomial）整体实现在
+            GPU 上，或者用异步采样与下一步 forward 重叠，是 vLLM、SGLang
+            这类框架的标准做法。采样本身的数学原理见《采样》。</p>
+            <p>同样的逻辑也适用于每步记录 metrics：把统计量累积在 GPU
+            上、定期同步取出，而不是每步 <code>.item()</code>。</p>
+            <h3 id="与-cuda-graph-的关系">与 CUDA Graph 的关系</h3>
+            <p>CUDA Graph 把一段固定的命令序列录制下来，之后每次 replay
+            只需一次提交。它改变的是 CPU 提交命令的成本，不改变 GPU
+            执行命令的成本，也不改变同步语义：</p>
+            <ul>
+            <li>录制期间可以使用 event 与多 stream，但 replay
+            时这些依赖关系被固化在 graph 内部；</li>
+            <li>graph 内部不能有 CPU
+            侧阻塞同步，否则无法正确录制或行为异常；</li>
+            <li>需要 CPU 介入的点（例如根据结果决定下一步）必须放在
+            graph 外面，或使用 conditional node 这类受限机制。</li>
+            </ul>
+            <p>因此「先想清楚同步点在哪里，再决定哪些片段可以 graph
+            化」是更合理的顺序。</p>
+            <h3 id="总结">总结</h3>
+            <p>CPU 与 GPU 是生产者与消费者：CPU 只负责向 stream
+            队列提交命令，GPU 按序消费。同一 stream
+            内的顺序是免费的正确性保证；跨 stream 的依赖要用 event
+            建立，而不是让 CPU 阻塞等待。同步点只服务于三件事——CPU 要读
+            GPU 的数据、内存要被释放或复用、需要背压控制队列长度。</p>
+            <p>实践中最容易出问题的地方不是显式同步，而是
+            <code>.item()</code>、<code>.cpu()</code>、<code>print</code>
+            这类隐式同步，以及把同步点放错位置导致的流水线断档。设置原则可以浓缩成一句：<strong>把
+            CPU 阻塞同步集中到阶段边界，把跨 stream 依赖交给
+            event，剩下的交给 stream 顺序。</strong></p>
+          </main>
+        <aside class="wiki-toc">
+      <ul>
+      <li><a href="#一次-kernel-launch-的开销"
+      id="toc-一次-kernel-launch-的开销">一次 kernel launch
+      的开销</a></li>
+      <li><a href="#stream命令队列与顺序边界"
+      id="toc-stream命令队列与顺序边界">Stream：命令队列与顺序边界</a></li>
+      <li><a href="#同步点的三种动机"
+      id="toc-同步点的三种动机">同步点的三种动机</a></li>
+      <li><a href="#同步原语的粒度与代价"
+      id="toc-同步原语的粒度与代价">同步原语的粒度与代价</a></li>
+      <li><a href="#cudaevent跨-stream-依赖与计时"
+      id="toc-cudaevent跨-stream-依赖与计时">cudaEvent：跨 stream
+      依赖与计时</a></li>
+      <li><a href="#pytorch-中的对应接口"
+      id="toc-pytorch-中的对应接口">PyTorch 中的对应接口</a></li>
+      <li><a href="#隐式同步点" id="toc-隐式同步点">隐式同步点</a></li>
+      <li><a href="#如何设置同步点"
+      id="toc-如何设置同步点">如何设置同步点</a></li>
+      <li><a href="#典型流水线的同步点设计"
+      id="toc-典型流水线的同步点设计">典型流水线的同步点设计</a></li>
+      <li><a href="#与-cuda-graph-的关系"
+      id="toc-与-cuda-graph-的关系">与 CUDA Graph 的关系</a></li>
+      <li><a href="#总结" id="toc-总结">总结</a></li>
+      </ul>
+    </aside>
+      </div>
+  <script type="text/javascript">
+    (function () {
+      function markActive() {
+        var here = location.href.split('#')[0];
+        var links = document.querySelectorAll('.wiki-sidebar a');
+        for (var i = 0; i < links.length; i++) {
+          if (links[i].href.split('#')[0] === here) {
+            links[i].classList.add('active');
+          }
+        }
+      }
+      // load the shared site directory once (served from the wiki root);
+      // kept in a standalone file so adding a page needn't rebuild every page.
+      var nav = document.getElementById('wiki-sidebar');
+      if (nav) {
+        fetch('/.wiki_sidebar.html')
+          .then(function (r) { return r.ok ? r.text() : ''; })
+          .then(function (html) {
+            if (html) {
+              nav.innerHTML = html;
+              nav.hidden = false;
+              markActive();
+            }
+          })
+          .catch(function () {});
+      }
+      // keep bootstrap table styling (previously done by sticky_menu.js)
+      var tables = document.getElementsByTagName('table');
+      for (var j = 0; j < tables.length; j++) {
+        tables[j].classList.add('table');
+      }
+    })();
+  </script>
+</body>
+
+</html>

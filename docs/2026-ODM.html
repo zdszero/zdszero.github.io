@@ -24,7 +24,81 @@
     ODM
   </title>
     <link rel="stylesheet" href="./WikiTheme/theme/bootstrap.css"  />
-        </head>
+          <style type="text/css">
+    /* ---- three column wiki layout (left: site directory, center: content, right: page TOC) ---- */
+    .wiki-layout {
+      display: flex;
+      align-items: flex-start;
+      gap: 24px;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 20px;
+      box-sizing: border-box;
+    }
+    .wiki-sidebar {
+      flex: 0 0 240px;
+      width: 240px;
+      position: sticky;
+      top: 0;
+      max-height: 100vh;
+      overflow-y: auto;
+      padding: 10px 4px 20px 0;
+      border-right: 1px solid #eee;
+      font-size: 14px;
+    }
+    .wiki-sidebar[hidden] { display: none; }
+    .wiki-toc {
+      flex: 0 0 220px;
+      width: 220px;
+      position: sticky;
+      top: 0;
+      max-height: 100vh;
+      overflow-y: auto;
+      padding: 10px 0 20px 4px;
+      border-left: 1px solid #eee;
+      font-size: 14px;
+    }
+    .wiki-main {
+      flex: 1 1 auto;
+      min-width: 0;
+      max-width: 820px;
+      padding: 10px 0 40px;
+    }
+    /* site directory tree */
+    .wiki-sidebar .wiki-home {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #eee;
+      text-decoration: none;
+      color: #333;
+    }
+    .wiki-sidebar ul { list-style: none; margin: 0 0 0 12px; padding: 0; }
+    .wiki-sidebar > ul { margin-left: 0; }
+    .wiki-sidebar li { line-height: 1.7; }
+    .wiki-sidebar a { text-decoration: none; color: #555; }
+    .wiki-sidebar a:hover { color: #0088cc; text-decoration: underline; }
+    .wiki-sidebar a.active { color: #0088cc; font-weight: bold; }
+    /* page TOC */
+    .wiki-toc ul { list-style: none; margin: 0 0 0 12px; padding: 0; }
+    .wiki-toc > ul { margin-left: 0; }
+    .wiki-toc li { line-height: 1.6; }
+    .wiki-toc a { text-decoration: none; color: #555; }
+    .wiki-toc a:hover { color: #0088cc; }
+    @media (max-width: 980px) {
+      .wiki-layout { flex-direction: column; }
+      .wiki-sidebar, .wiki-toc {
+        position: static;
+        width: 100%;
+        flex-basis: auto;
+        max-height: none;
+        border: 0;
+      }
+      .wiki-main { max-width: none; }
+    }
+  </style>
+</head>
 
 <body>
     <div class="navbar navbar-static-top">
@@ -38,106 +112,134 @@
       </div>
     </div>
   </div>
-    <div class="container">
-    <div class="row">
-            <div id="TOC" class="span3">
-        <div class="well toc">
-          <ul>
-          <li><a href="#过往定价" id="toc-过往定价">过往定价</a></li>
-          <li><a href="#价值重估" id="toc-价值重估">价值重估</a></li>
-          </ul>
-        </div>
+    <div class="wiki-layout">
+    <nav class="wiki-sidebar" id="wiki-sidebar" hidden></nav>
+    <main class="wiki-main">
+            <h3 id="过往定价">过往定价</h3>
+            <p>如果你说的是 <strong>AI
+            浪潮真正改变工业富联估值逻辑之前</strong>，我会把时间点放在
+            <strong>2019–2022 年</strong>来看，而不是只看 2022
+            年之前。</p>
+            <p>工业富联当时的市场定位非常明确：<strong>苹果/服务器/通信设备等电子制造
+            ODM
+            龙头，但本质还是制造业，利润率低、资本开支高、成长性一般</strong>。所以市场给它的
+            PE 确实不高。</p>
+            <p>从历史数据看：</p>
+            <table>
+            <thead>
+            <tr>
+            <th>年份</th>
+            <th style="text-align: right;">年度 PE 大致水平</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>2018</td>
+            <td style="text-align: right;">~10×</td>
+            </tr>
+            <tr>
+            <td>2019</td>
+            <td style="text-align: right;">~16×</td>
+            </tr>
+            <tr>
+            <td>2020</td>
+            <td style="text-align: right;">~12×</td>
+            </tr>
+            <tr>
+            <td>2021</td>
+            <td style="text-align: right;">~8.6×</td>
+            </tr>
+            <tr>
+            <td>2022</td>
+            <td style="text-align: right;">~6.3×</td>
+            </tr>
+            <tr>
+            <td>2023</td>
+            <td style="text-align: right;">~12×</td>
+            </tr>
+            <tr>
+            <td>2024</td>
+            <td style="text-align: right;">~17×</td>
+            </tr>
+            <tr>
+            <td>2025</td>
+            <td style="text-align: right;">~34×</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>这个序列来自历史 PE
+            数据；新浪的季度数据也能交叉验证，比如 2019 年末约 23×、2020
+            年末约 18×、2021 年末约 18×、2022 年末约
+            16×，不同口径/股价时点会产生明显差异。<a
+            href="https://www.caibaobang.cn/sanpk/mh-zbs?code=601138&amp;tag=pe&amp;utm_source=chatgpt.com">财报帮官方网站-专研A股财报分析的小程序</a></p>
+            <p><strong>工业富联在 AI 之前的“正常估值中枢”，大概就是
+            10–15 PE。</strong></p>
+            <p>而且在市场最不看好它的时候，<strong>6–10 PE
+            都完全出现过</strong>。</p>
+            <h3 id="价值重估">价值重估</h3>
+            <p><strong>过去：</strong> &gt; 制造业 → 低毛利 → 周期性 →
+            10 PE 左右</p>
+            <p><strong>现在：</strong> &gt; AI Server ODM →
+            NVIDIA/云厂商资本开支受益 → 利润增长加速 → 20–30 PE
+            可以成立</p>
+            <p>这也是为什么我觉得<strong>不能简单拿“工业富联历史 PE 10
+            倍”来证明现在 20–30 倍一定贵</strong>。真正应该问的是：</p>
+            <blockquote>
+            <p><strong>AI 服务器业务到底让工业富联的“长期正常
+            EPS”提高了多少？</strong></p>
+            </blockquote>
+            <p>这才是你这个投资逻辑最核心的估值问题。</p>
+            <p>而且有一个非常有意思的现象：<strong>2022 年工业富联 PE
+            只有约 6.3 倍，但 2023–2024 年逐渐升到 12、17 倍，2025
+            年进一步到 34 倍。</strong>也就是说，市场实际上是在
+            <strong>2023 年以后逐步开始给它
+            AI/服务器成长溢价</strong>，而不是突然一天完成重估。<a
+            href="https://www.caibaobang.cn/sanpk/mh-zbs?code=601138&amp;tag=pe&amp;utm_source=chatgpt.com">财报帮官方网站-专研A股财报分析的小程序</a></p>
+            <p>如果你愿意，我可以继续把 <strong>2018–2026
+            工业富联股价、净利润、PE
+            三条线放在一起</strong>，你会非常直观看到：<strong>这轮工业富联究竟是“利润增长推动股价”，还是“PE
+            重估推动股价”。</strong></p>
+          </main>
+        <aside class="wiki-toc">
+      <ul>
+      <li><a href="#过往定价" id="toc-过往定价">过往定价</a></li>
+      <li><a href="#价值重估" id="toc-价值重估">价值重估</a></li>
+      </ul>
+    </aside>
       </div>
-            <div class="span9">
-                <h3 id="过往定价">过往定价</h3>
-                <p>如果你说的是 <strong>AI
-                浪潮真正改变工业富联估值逻辑之前</strong>，我会把时间点放在
-                <strong>2019–2022 年</strong>来看，而不是只看 2022
-                年之前。</p>
-                <p>工业富联当时的市场定位非常明确：<strong>苹果/服务器/通信设备等电子制造
-                ODM
-                龙头，但本质还是制造业，利润率低、资本开支高、成长性一般</strong>。所以市场给它的
-                PE 确实不高。</p>
-                <p>从历史数据看：</p>
-                <table>
-                <thead>
-                <tr>
-                <th>年份</th>
-                <th style="text-align: right;">年度 PE 大致水平</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                <td>2018</td>
-                <td style="text-align: right;">~10×</td>
-                </tr>
-                <tr>
-                <td>2019</td>
-                <td style="text-align: right;">~16×</td>
-                </tr>
-                <tr>
-                <td>2020</td>
-                <td style="text-align: right;">~12×</td>
-                </tr>
-                <tr>
-                <td>2021</td>
-                <td style="text-align: right;">~8.6×</td>
-                </tr>
-                <tr>
-                <td>2022</td>
-                <td style="text-align: right;">~6.3×</td>
-                </tr>
-                <tr>
-                <td>2023</td>
-                <td style="text-align: right;">~12×</td>
-                </tr>
-                <tr>
-                <td>2024</td>
-                <td style="text-align: right;">~17×</td>
-                </tr>
-                <tr>
-                <td>2025</td>
-                <td style="text-align: right;">~34×</td>
-                </tr>
-                </tbody>
-                </table>
-                <p>这个序列来自历史 PE
-                数据；新浪的季度数据也能交叉验证，比如 2019 年末约
-                23×、2020 年末约 18×、2021 年末约 18×、2022 年末约
-                16×，不同口径/股价时点会产生明显差异。<a
-                href="https://www.caibaobang.cn/sanpk/mh-zbs?code=601138&amp;tag=pe&amp;utm_source=chatgpt.com">财报帮官方网站-专研A股财报分析的小程序</a></p>
-                <p><strong>工业富联在 AI 之前的“正常估值中枢”，大概就是
-                10–15 PE。</strong></p>
-                <p>而且在市场最不看好它的时候，<strong>6–10 PE
-                都完全出现过</strong>。</p>
-                <h3 id="价值重估">价值重估</h3>
-                <p><strong>过去：</strong> &gt; 制造业 → 低毛利 → 周期性
-                → 10 PE 左右</p>
-                <p><strong>现在：</strong> &gt; AI Server ODM →
-                NVIDIA/云厂商资本开支受益 → 利润增长加速 → 20–30 PE
-                可以成立</p>
-                <p>这也是为什么我觉得<strong>不能简单拿“工业富联历史 PE
-                10 倍”来证明现在 20–30
-                倍一定贵</strong>。真正应该问的是：</p>
-                <blockquote>
-                <p><strong>AI 服务器业务到底让工业富联的“长期正常
-                EPS”提高了多少？</strong></p>
-                </blockquote>
-                <p>这才是你这个投资逻辑最核心的估值问题。</p>
-                <p>而且有一个非常有意思的现象：<strong>2022 年工业富联
-                PE 只有约 6.3 倍，但 2023–2024 年逐渐升到 12、17
-                倍，2025 年进一步到 34
-                倍。</strong>也就是说，市场实际上是在 <strong>2023
-                年以后逐步开始给它
-                AI/服务器成长溢价</strong>，而不是突然一天完成重估。<a
-                href="https://www.caibaobang.cn/sanpk/mh-zbs?code=601138&amp;tag=pe&amp;utm_source=chatgpt.com">财报帮官方网站-专研A股财报分析的小程序</a></p>
-                <p>如果你愿意，我可以继续把 <strong>2018–2026
-                工业富联股价、净利润、PE
-                三条线放在一起</strong>，你会非常直观看到：<strong>这轮工业富联究竟是“利润增长推动股价”，还是“PE
-                重估推动股价”。</strong></p>
-              </div>
-    </div>
-  </div>
+  <script type="text/javascript">
+    (function () {
+      function markActive() {
+        var here = location.href.split('#')[0];
+        var links = document.querySelectorAll('.wiki-sidebar a');
+        for (var i = 0; i < links.length; i++) {
+          if (links[i].href.split('#')[0] === here) {
+            links[i].classList.add('active');
+          }
+        }
+      }
+      // load the shared site directory once (served from the wiki root);
+      // kept in a standalone file so adding a page needn't rebuild every page.
+      var nav = document.getElementById('wiki-sidebar');
+      if (nav) {
+        fetch('/.wiki_sidebar.html')
+          .then(function (r) { return r.ok ? r.text() : ''; })
+          .then(function (html) {
+            if (html) {
+              nav.innerHTML = html;
+              nav.hidden = false;
+              markActive();
+            }
+          })
+          .catch(function () {});
+      }
+      // keep bootstrap table styling (previously done by sticky_menu.js)
+      var tables = document.getElementsByTagName('table');
+      for (var j = 0; j < tables.length; j++) {
+        tables[j].classList.add('table');
+      }
+    })();
+  </script>
 </body>
 
 </html>

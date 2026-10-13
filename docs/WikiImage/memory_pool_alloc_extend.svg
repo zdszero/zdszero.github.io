@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 430" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="920" height="430" rx="12" fill="#ffffff"/>
+  <text x="460" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">Prefill 扩展分配：alloc_extend 的三段式切分</text>
+  <text x="460" y="56" text-anchor="middle" font-size="13" fill="#868e96">page_size = 4，prefix_len = 6，seq_len = 15（本次扩展 9 个 token）</text>
+
+  <!-- token cells row -->
+  <g font-size="12" font-family="monospace" text-anchor="middle">
+    <!-- prefix cached: 0..5 -->
+    <g fill="#2b8a3e">
+      <rect x="70"  y="190" width="42" height="42" rx="4" fill="#d3f9d8" stroke="#40c057"/><text x="91"  y="216">0</text>
+      <rect x="118" y="190" width="42" height="42" rx="4" fill="#d3f9d8" stroke="#40c057"/><text x="139" y="216">1</text>
+      <rect x="166" y="190" width="42" height="42" rx="4" fill="#d3f9d8" stroke="#40c057"/><text x="187" y="216">2</text>
+      <rect x="214" y="190" width="42" height="42" rx="4" fill="#d3f9d8" stroke="#40c057"/><text x="235" y="216">3</text>
+      <rect x="262" y="190" width="42" height="42" rx="4" fill="#d3f9d8" stroke="#40c057"/><text x="283" y="216">4</text>
+      <rect x="310" y="190" width="42" height="42" rx="4" fill="#d3f9d8" stroke="#40c057"/><text x="331" y="216">5</text>
+    </g>
+    <!-- num1 reuse remainder of page1: 6,7 -->
+    <g fill="#1864ab">
+      <rect x="358" y="190" width="42" height="42" rx="4" fill="#d0ebff" stroke="#4dabf7"/><text x="379" y="216">6</text>
+      <rect x="406" y="190" width="42" height="42" rx="4" fill="#d0ebff" stroke="#4dabf7"/><text x="427" y="216">7</text>
+    </g>
+    <!-- num2 full new pages: 8..11 -->
+    <g fill="#5f3dc4">
+      <rect x="454" y="190" width="42" height="42" rx="4" fill="#e5dbff" stroke="#9775fa"/><text x="475" y="216">8</text>
+      <rect x="502" y="190" width="42" height="42" rx="4" fill="#e5dbff" stroke="#9775fa"/><text x="523" y="216">9</text>
+      <rect x="550" y="190" width="42" height="42" rx="4" fill="#e5dbff" stroke="#9775fa"/><text x="571" y="216">10</text>
+      <rect x="598" y="190" width="42" height="42" rx="4" fill="#e5dbff" stroke="#9775fa"/><text x="619" y="216">11</text>
+    </g>
+    <!-- num3 tail partial new page: 12,13,14 -->
+    <g fill="#e8590c">
+      <rect x="646" y="190" width="42" height="42" rx="4" fill="#ffe8cc" stroke="#ff922b"/><text x="667" y="216">12</text>
+      <rect x="694" y="190" width="42" height="42" rx="4" fill="#ffe8cc" stroke="#ff922b"/><text x="715" y="216">13</text>
+      <rect x="742" y="190" width="42" height="42" rx="4" fill="#ffe8cc" stroke="#ff922b"/><text x="763" y="216">14</text>
+    </g>
+    <!-- empty tail slot 15 -->
+    <rect x="790" y="190" width="42" height="42" rx="4" fill="#f8f9fa" stroke="#dee2e6" stroke-dasharray="3 3"/><text x="811" y="216" fill="#adb5bd">15</text>
+  </g>
+
+  <!-- page boundaries labels -->
+  <g font-size="11" fill="#868e96" text-anchor="middle">
+    <text x="139" y="252">page 0</text>
+    <text x="331" y="252">page 1</text>
+    <text x="523" y="252">page 2</text>
+    <text x="715" y="252">page 3</text>
+  </g>
+  <g stroke="#ced4da" stroke-width="1.5">
+    <line x1="350" y1="184" x2="350" y2="246"/>
+    <line x1="542" y1="184" x2="542" y2="246"/>
+    <line x1="734" y1="184" x2="734" y2="246"/>
+  </g>
+
+  <!-- brackets above -->
+  <g font-size="12.5" font-weight="600">
+    <path d="M70 178 L70 170 L352 170 L352 178" fill="none" stroke="#40c057" stroke-width="2"/>
+    <text x="211" y="160" text-anchor="middle" fill="#2b8a3e">prefix（已缓存，复用）</text>
+
+    <path d="M358 178 L358 128 L448 128 L448 178" fill="none" stroke="#4dabf7" stroke-width="2"/>
+    <text x="403" y="118" text-anchor="middle" fill="#1864ab">num1：补满 last page</text>
+
+    <path d="M454 178 L454 100 L640 100 L640 178" fill="none" stroke="#9775fa" stroke-width="2"/>
+    <text x="547" y="90" text-anchor="middle" fill="#5f3dc4">num2：整页新分配</text>
+
+    <path d="M646 178 L646 128 L784 128 L784 178" fill="none" stroke="#ff922b" stroke-width="2"/>
+    <text x="715" y="118" text-anchor="middle" fill="#e8590c">num3：尾部新页</text>
+  </g>
+
+  <!-- last_loc marker -->
+  <text x="331" y="286" text-anchor="middle" font-size="11" fill="#1864ab">last_loc = 5（扩展从此处 +1 开始）</text>
+
+  <!-- note -->
+  <g font-size="12.5" fill="#495057">
+    <text x="70" y="330">· num1 直接追加到 prefix 所在未满页之后 → 零浪费地复用半页</text>
+    <text x="70" y="354">· num2 从 free_pages 批量取整页 → 页内 token 物理连续</text>
+    <text x="70" y="378">· num3 为不足一页的尾部再取一页 → 产生少量内部碎片</text>
+    <text x="70" y="402" fill="#868e96">整个切分由 Triton 的 alloc_extend_kernel 在 GPU 上并行完成（paged.py）</text>
+  </g>
+</svg>

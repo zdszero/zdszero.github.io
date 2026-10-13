@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 560" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="920" height="560" rx="12" fill="#ffffff"/>
+  <text x="460" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">两侧流水线：每轮 event loop poll 驱动状态前进</text>
+  <text x="460" y="56" text-anchor="middle" font-size="13" fill="#868e96">唯一真正的差别——Prefill 跑 forward 算 KV，Decode 跳过 forward 直接接管远程传来的 KV</text>
+
+  <!-- column headers -->
+  <rect x="40" y="76" width="400" height="30" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="240" y="97" text-anchor="middle" font-size="13" font-weight="700" fill="#3b5bdb">Prefill 侧（3 阶段）</text>
+  <rect x="480" y="76" width="400" height="30" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="680" y="97" text-anchor="middle" font-size="13" font-weight="700" fill="#0b7285">Decode 侧（预分配 → 传输 → prebuilt）</text>
+
+  <!-- spines -->
+  <line x1="110" y1="120" x2="110" y2="430" stroke="#dee2e6" stroke-width="2"/>
+  <line x1="550" y1="120" x2="550" y2="430" stroke="#dee2e6" stroke-width="2"/>
+
+  <!-- Prefill steps -->
+  <circle cx="110" cy="148" r="6" fill="#4c6ef5"/>
+  <rect x="128" y="130" width="306" height="36" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="142" y="153" font-size="11.5" fill="#495057">创建 KVSender · max_new_tokens=1</text>
+  <circle cx="110" cy="200" r="6" fill="#adb5bd"/>
+  <rect x="128" y="182" width="306" height="36" rx="8" fill="#f8f9fa" stroke="#dee2e6"/>
+  <text x="142" y="205" font-size="11.5" fill="#495057">pop_bootstrapped() 每轮 poll</text>
+  <rect x="340" y="190" width="88" height="20" rx="10" fill="#edf2ff" stroke="#4c6ef5"/><text x="384" y="204" text-anchor="middle" font-size="9.5" font-weight="700" fill="#3b5bdb">Bootstrapping</text>
+  <circle cx="110" cy="252" r="6" fill="#adb5bd"/>
+  <rect x="128" y="234" width="306" height="36" rx="8" fill="#f8f9fa" stroke="#dee2e6"/>
+  <text x="142" y="257" font-size="11.5" fill="#495057">finalize_bootstrap()：init + metadata 槽位</text>
+  <rect x="330" y="242" width="98" height="20" rx="10" fill="#edf2ff" stroke="#4c6ef5"/><text x="379" y="256" text-anchor="middle" font-size="9" font-weight="700" fill="#3b5bdb">WaitingForInput</text>
+  <circle cx="110" cy="304" r="6" fill="#4c6ef5"/>
+  <rect x="128" y="286" width="306" height="36" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="142" y="309" font-size="11.5" font-weight="700" fill="#3b5bdb">Prefill forward（组 batch 算 KV）</text>
+  <circle cx="110" cy="356" r="6" fill="#f08c00"/>
+  <rect x="128" y="338" width="306" height="36" rx="8" fill="#fff4e6" stroke="#f08c00"/>
+  <text x="142" y="361" font-size="11.5" fill="#b26a00">send_kv_chunk() 发起 RDMA 写</text>
+  <rect x="352" y="346" width="76" height="20" rx="10" fill="#fff4e6" stroke="#f08c00"/><text x="390" y="360" text-anchor="middle" font-size="9.5" font-weight="700" fill="#e8590c">Transferring</text>
+  <circle cx="110" cy="408" r="6" fill="#0ca678"/>
+  <rect x="128" y="390" width="306" height="36" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="142" y="413" font-size="11.5" fill="#0b7285">release_kv_cache() + 返回首 token</text>
+  <rect x="368" y="398" width="60" height="20" rx="10" fill="#e6fcf5" stroke="#0ca678"/><text x="398" y="412" text-anchor="middle" font-size="9.5" font-weight="700" fill="#0b7285">Success</text>
+
+  <!-- Decode steps -->
+  <circle cx="550" cy="148" r="6" fill="#0ca678"/>
+  <rect x="568" y="130" width="306" height="36" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="582" y="153" font-size="11.5" fill="#495057">创建 KVReceiver · init(prefill_dp_rank) 握手</text>
+  <circle cx="550" cy="200" r="6" fill="#0ca678"/>
+  <rect x="568" y="182" width="306" height="36" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="582" y="205" font-size="11.5" fill="#495057">pop_preallocated()：_pre_alloc + send_metadata</text>
+  <circle cx="550" cy="252" r="6" fill="#adb5bd"/>
+  <rect x="568" y="234" width="306" height="36" rx="8" fill="#f8f9fa" stroke="#dee2e6"/>
+  <text x="582" y="257" font-size="11.5" fill="#495057">pop_transferred() 只 poll，等 KV 到达</text>
+  <rect x="792" y="242" width="76" height="20" rx="10" fill="#fff4e6" stroke="#f08c00"/><text x="830" y="256" text-anchor="middle" font-size="9.5" font-weight="700" fill="#e8590c">Transferring</text>
+  <circle cx="550" cy="304" r="6" fill="#adb5bd"/>
+  <rect x="568" y="286" width="306" height="36" rx="8" fill="#f8f9fa" stroke="#dee2e6"/>
+  <text x="582" y="309" font-size="11.5" fill="#495057">_commit_transfer_to_req() 读 metadata</text>
+  <rect x="808" y="294" width="60" height="20" rx="10" fill="#e6fcf5" stroke="#0ca678"/><text x="838" y="308" text-anchor="middle" font-size="9.5" font-weight="700" fill="#0b7285">Success</text>
+  <circle cx="550" cy="356" r="6" fill="#7048e8"/>
+  <rect x="568" y="338" width="306" height="36" rx="8" fill="#e5dbff" stroke="#7048e8"/>
+  <text x="582" y="361" font-size="11.5" font-weight="700" fill="#5f3dc4">process_prebuilt()：跳过 forward</text>
+  <rect x="810" y="346" width="58" height="20" rx="10" fill="#e5dbff" stroke="#7048e8"/><text x="839" y="360" text-anchor="middle" font-size="9" font-weight="700" fill="#5f3dc4">PREBUILT</text>
+  <circle cx="550" cy="408" r="6" fill="#0ca678"/>
+  <rect x="568" y="390" width="306" height="36" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="582" y="413" font-size="11.5" fill="#0b7285">并入 Running Batch → 标准自回归</text>
+
+  <!-- AllReduce MIN gate -->
+  <rect x="40" y="446" width="840" height="86" rx="10" fill="#fff9db" stroke="#f0b429"/>
+  <text x="58" y="470" font-size="12.5" font-weight="700" fill="#b26a00">poll_and_all_reduce：状态在 TP/CP 组内做 Gloo AllReduce 取 MIN</text>
+  <text x="58" y="492" font-size="11.5" fill="#996a13">每轮 poll 后，所有 rank 的状态向量按 MIN 对齐——任何一个 rank Failed(=0)，全组都视为 Failed。</text>
+  <text x="58" y="512" font-size="11.5" fill="#996a13">保证分布式下各 rank 对「这个请求走到哪一步了」看法强一致，不会出现半数 rank 发传输、半数还在等。</text>
+  <g font-family="monospace" font-size="11" fill="#b26a00">
+    <text x="700" y="492">rank0: [3,2,3]</text>
+    <text x="700" y="508">rank1: [3,3,2]  → MIN</text>
+    <text x="820" y="500" font-weight="700" fill="#e8590c">[3,2,2]</text>
+  </g>
+</svg>

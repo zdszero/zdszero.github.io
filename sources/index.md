@@ -1,5 +1,72 @@
-% chives research
+% Chives Research
 
+- LLM 基础
+    - [线性代数基础](./linear_algebra.md)
+    - [数学计算符号](./math_symbols.md)
+    - [Attention 计算量](./attention_computation.md)
+    - [Gemm 计算量](./gemm_computation.md)
+    - [Latent 压缩](./latent.md)
+    - [Roofline](./roofline.md)
+    - [Nonderterminsim](./nondeterminism.md)
+    - [Sampling](./sampling.md)
+- 大模型推理
+    - Attention
+        - [Types](./attn_types.md)
+        - [MQA](./mqa.md)
+        - [GQA](./gqa.md)
+        - [MLA](./MLA.md)
+        - [DSA](./dsa.md)
+        - [SWA](./swa.md)
+        - [CSA HCA](./hca_csa.md)
+        - [YOCO](./yoco.md)
+        - [CSA2](./csa2.md)
+        - [Linear Attention](./linear_attention.md)
+        - [Gated Attention](./gated_attention.md)
+        - [Cascade Attention](./cascade_attention.md)
+        - [Paged Attention](./paged_attention.md)
+        - [Chunked Prefill](./chunked_prefill.md)
+    - [MLP](./mlp.md)
+        - [Activation](./activation.md)
+        - [两阶段专家](./fine_grained_expert.md)
+    - [Norm](./normalization.md)
+    - Residual
+        - [mHC](./mhc.md)
+    - [Communication](./communication.md)
+        - [Topology](./topology.md)
+        - [SBO](./sbo.md)
+        - [TBO](./tbo.md)
+    - Parallelism
+        - [EP](./expert_parallelism.md)
+        - [SP](./sequence_parallelism.md)
+        - [DP](./data_parallelism.md)
+        - [TP](./tensor_parallelism.md)
+        - [PP](./pipeline_parallelism.md)
+        - [DCP](./decode_context_parallelism.md)
+        - [Weight Sharding](./weight_sharding.md)
+    - [Disaggregation](./disaggregation.md)
+    - [Quantization](./quantization.md)
+    - Engine Abstraction
+        - [Memory Pool](./memory_pool.md)
+        - [Communicator](./communicator.md)
+        - [PD Design](./disaggregation_design.md)
+- 硬件基础
+    - [GPU 架构演变史](./gpu_arch_history.md)
+    - Hardware
+        - [Cuda Graph](./cuda_graph.md)
+        - [CPU & GPU](./cpu_gpu.md)
+    - Cuda Kernel
+        - [Softmax](./softmax.md)
+        - [LayerNorm](./layernorm.md)
+        - [GELU](./gelu.md)
+- 工作总结
+    - [性能体系建设](./performance_system.md)
+    - 稳定性建设
+    - 模型性能优化
+        - [DeepSeek V3 Prefill 通信优化](./deepseek_v3_comm_opt.md)
+        - [DeepSeek V3 小 batch 双流优化](./deepseek_h200_small_batch_opt.md)
+        - [H200 迁移 B200](./h200_to_b200_mig.md)
+        - [Kimi K25/K26 B200](./kimi_k25_b200.md)
+        - [Kimi K3 B200](./kimi_k3_b200.md)
 - [A 股事件史](./stages.md)
     - [2005-2007](./2005-2007.md)
     - [2008](./2008.md)

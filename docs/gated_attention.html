@@ -1,0 +1,566 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    Gated Attention
+  </title>
+    <link rel="stylesheet" href="./WikiTheme/theme/bootstrap.css"  />
+        <script defer=""
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+        type="text/javascript"></script>
+      <style type="text/css">
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+      <style type="text/css">
+    /* ---- three column wiki layout (left: site directory, center: content, right: page TOC) ---- */
+    .wiki-layout {
+      display: flex;
+      align-items: flex-start;
+      gap: 24px;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 20px;
+      box-sizing: border-box;
+    }
+    .wiki-sidebar {
+      flex: 0 0 240px;
+      width: 240px;
+      position: sticky;
+      top: 0;
+      max-height: 100vh;
+      overflow-y: auto;
+      padding: 10px 4px 20px 0;
+      border-right: 1px solid #eee;
+      font-size: 14px;
+    }
+    .wiki-sidebar[hidden] { display: none; }
+    .wiki-toc {
+      flex: 0 0 220px;
+      width: 220px;
+      position: sticky;
+      top: 0;
+      max-height: 100vh;
+      overflow-y: auto;
+      padding: 10px 0 20px 4px;
+      border-left: 1px solid #eee;
+      font-size: 14px;
+    }
+    .wiki-main {
+      flex: 1 1 auto;
+      min-width: 0;
+      max-width: 820px;
+      padding: 10px 0 40px;
+    }
+    /* site directory tree */
+    .wiki-sidebar .wiki-home {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #eee;
+      text-decoration: none;
+      color: #333;
+    }
+    .wiki-sidebar ul { list-style: none; margin: 0 0 0 12px; padding: 0; }
+    .wiki-sidebar > ul { margin-left: 0; }
+    .wiki-sidebar li { line-height: 1.7; }
+    .wiki-sidebar a { text-decoration: none; color: #555; }
+    .wiki-sidebar a:hover { color: #0088cc; text-decoration: underline; }
+    .wiki-sidebar a.active { color: #0088cc; font-weight: bold; }
+    /* page TOC */
+    .wiki-toc ul { list-style: none; margin: 0 0 0 12px; padding: 0; }
+    .wiki-toc > ul { margin-left: 0; }
+    .wiki-toc li { line-height: 1.6; }
+    .wiki-toc a { text-decoration: none; color: #555; }
+    .wiki-toc a:hover { color: #0088cc; }
+    @media (max-width: 980px) {
+      .wiki-layout { flex-direction: column; }
+      .wiki-sidebar, .wiki-toc {
+        position: static;
+        width: 100%;
+        flex-basis: auto;
+        max-height: none;
+        border: 0;
+      }
+      .wiki-main { max-width: none; }
+    }
+  </style>
+</head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">Gated Attention</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="wiki-layout">
+    <nav class="wiki-sidebar" id="wiki-sidebar" hidden></nav>
+    <main class="wiki-main">
+            <h2 id="gated-mla">Gated MLA</h2>
+            <p>MLA 和 Gated Attention 解决的是两个不同的问题：</p>
+            <ul>
+            <li>MLA 改变的是<strong>状态</strong>：用共享 latent <span
+            class="math inline">\(c_{KV}\)</span> 压缩每个 token 的
+            K/V，让 KV cache 与读取成本大幅下降；</li>
+            <li>Gated Attention
+            改变的是<strong>输出</strong>：在注意力结果上乘一个由输入动态生成的门控，让每个
+            head（或每个 channel）有随 token 变化的输出强度。</li>
+            </ul>
+            <p>Gated MLA
+            就是把后者的门控接到前者的输出上。<strong>压缩路径、KV cache
+            结构、MQA absorb 等 MLA
+            特性全部保持不变，只在注意力输出之后多一条门控支路。</strong>
+            所以它不是一种新的压缩方案，而是对 MLA
+            表达能力与训练稳定性的一次低成本补强。</p>
+            <h3 id="公式">公式</h3>
+            <p>把 MLA 的压缩写开，并用 <span
+            class="math inline">\(d_h\)</span> 表示 QK 的 head
+            维度：</p>
+            <p><span class="math display">\[
+            c_{KV}=XW^{DKV},\qquad
+            K=c_{KV}W^{UK},\qquad
+            V=c_{KV}W^{UV}
+            \]</span></p>
+            <p>在标准 MLA 输出之后加入门控：</p>
+            <p><span class="math display">\[
+            \tilde{\boldsymbol{O}} =
+            \Big(\operatorname{softmax}\!\Big(\frac{\boldsymbol{Q}\boldsymbol{K}^{\mathsf
+            T}}{\sqrt{d_h}}+M\Big)\boldsymbol{V}\Big)
+            \odot
+            \sigma\!\left(\boldsymbol{X}\boldsymbol{W}_g\right)
+            \]</span></p>
+            <p>其中 <span
+            class="math inline">\(\boldsymbol{W}_g\)</span>
+            直接从当前层的 hidden state <span
+            class="math inline">\(\boldsymbol{X}\in\mathbb{R}^{T\times
+            d}\)</span> 生成，与 Q/K/V
+            的四条投影支路并列，因此它的输入永远是当前的 <span
+            class="math inline">\(X\)</span>，<strong>不依赖历史
+            token，也不进入 KV cache</strong>。</p>
+            <h3 id="门控的形状与粒度">门控的形状与粒度</h3>
+            <p>关键在 <span
+            class="math inline">\(\boldsymbol{W}_g\)</span>
+            的输出宽度：</p>
+            <table>
+            <thead>
+            <tr>
+            <th><span class="math inline">\(\boldsymbol{W}_g\)</span>
+            输出宽度</th>
+            <th>门控形状</th>
+            <th>粒度</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td><span class="math inline">\(H\)</span></td>
+            <td><span class="math inline">\([B,S,H]\)</span></td>
+            <td>每个 head 一个标量</td>
+            </tr>
+            <tr>
+            <td><span class="math inline">\(H d_v\)</span></td>
+            <td><span class="math inline">\([B,S,H,d_v]\)</span></td>
+            <td>每个 head 的每个 value 通道一个门控</td>
+            </tr>
+            <tr>
+            <td><span class="math inline">\(d\)</span></td>
+            <td><span class="math inline">\([B,S,d]\)</span></td>
+            <td>与 head 结构无关的通道级门控</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>现代 MLA 实现通常取 <span class="math inline">\(H
+            d_v\)</span>，也就是让门控宽度与 <code>o_proj</code>
+            的输入宽度一致。这样做有两个直接好处：</p>
+            <ol type="1">
+            <li>门控可以 reshape 成 <span
+            class="math inline">\([H,d_v]\)</span>
+            后与注意力输出逐元素相乘，<strong>不需要广播</strong>，kernel
+            融合最简单；</li>
+            <li>粒度为 (head, value channel)，比 head
+            级标量更细，同时保留了 head 之间的区分度。</li>
+            </ol>
+            <p>以 Kimi K3 的 MLA 层为例，<code>g_proj.weight</code>
+            的形状是 <span class="math inline">\(12288\times
+            7168\)</span>，而 <code>o_proj.weight</code> 是 <span
+            class="math inline">\(7168\times
+            12288\)</span>，两者恰好互为转置。<span
+            class="math inline">\(12288=H d_v\)</span> 正是全部 head
+            拼起来的注意力输出宽度，这说明 <code>g_proj</code>
+            产生的门控作用在 <code>o_proj</code> 之前、带 head 结构的
+            value 空间上，而不是 hidden 通道上。</p>
+            <h3 id="门控加在哪里">门控加在哪里</h3>
+            <p>同一个门控放在不同位置，语义和成本都不一样：</p>
+            <table>
+            <colgroup>
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>位置</th>
+            <th>门控结构</th>
+            <th>说明</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td><span class="math inline">\(W^{UV}\)</span>
+            展开之后、<code>o_proj</code> 之前</td>
+            <td><span class="math inline">\([B,S,H,d_v]\)</span></td>
+            <td>最常见，能区分 head，与 <code>o_proj</code>
+            输入对齐</td>
+            </tr>
+            <tr>
+            <td><code>o_proj</code> 之后</td>
+            <td><span class="math inline">\([B,S,d]\)</span></td>
+            <td>退化为 hidden 通道级，失去了 head 维度</td>
+            </tr>
+            <tr>
+            <td>直接乘在 latent <span
+            class="math inline">\(c_{KV}\)</span> 上</td>
+            <td><span class="math inline">\([B,S,d_c]\)</span></td>
+            <td>同时改动所有 head 的 K 与
+            V，语义完全不同，属于另一类设计</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>需要特别强调的是 decode 阶段。MLA 在 decode 时走
+            <strong>MQA absorb 路径</strong>，先把 <span
+            class="math inline">\(W^{UK}\)</span> 吸收进 Q、把输出的
+            <span class="math inline">\(W^{UV}\)</span>
+            展开推迟到最后：</p>
+            <p><span class="math display">\[
+            \Big(\operatorname{softmax}\!\Big(\frac{(c_qW^{UQ}W^{UK\,\mathsf
+            T})c_{KV}^{\mathsf T}}{\sqrt{d_h}}\Big)c_{KV}\Big)W^{UV}
+            \]</span></p>
+            <p>门控乘在这一步<strong>之后</strong>。它只依赖 <span
+            class="math inline">\(X\)</span>，既不影响权重吸收的数学形式，也不影响
+            latent 的缓存方式，所以 MLA 的 decode 优化可以原样保留。</p>
+            <h3 id="为什么-mla-特别需要门控">为什么 MLA
+            特别需要门控</h3>
+            <p>除了 Gated Attention 的通用收益（缓解 softmax
+            凸组合带来的输出幅度约束、attention sink 与 massive
+            activation），MLA 还有两个自身原因：</p>
+            <ul>
+            <li><strong>value 方向的自由度本来就被压缩过</strong>：所有
+            head 的 <span class="math inline">\(V\)</span> 都由同一个
+            <span class="math inline">\(d_c\)</span> 维 latent 经 <span
+            class="math inline">\(W^{UV}\)</span> 展开，<span
+            class="math inline">\(d_c\ll H
+            d_v\)</span>。门控虽然不能改变 <span
+            class="math inline">\(W^{UV}\)</span> 的秩，但它提供了随
+            token
+            变化的乘性调制，这种形式不是一个固定的低秩线性映射能表达的，相当于在不增加
+            cache 的前提下补回一部分区分度。</li>
+            <li><strong>MLA 常与线性注意力层混用</strong>：在 KDA + MLA
+            这类混合架构里，线性/循环层自带衰减门控，而 full attention
+            层原本没有任何门控，两层的写入强度控制能力不对等。给 MLA
+            加输出门控后，两类层都能决定自己往 residual stream
+            里写多少，层间分工更容易平衡。</li>
+            </ul>
+            <h3 id="代价">代价</h3>
+            <p>门控不是“零成本的一行乘法”，它的开销与一张独立投影矩阵相当：</p>
+            <table>
+            <colgroup>
+            <col style="width: 50%" />
+            <col style="width: 50%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>项目</th>
+            <th>代价</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>参数量</td>
+            <td><span class="math inline">\(d\times Hd_v\)</span>。K3
+            中为 <span class="math inline">\(12288\times 7168\approx
+            88\text{M}\)</span>，BF16 约 168 MB</td>
+            </tr>
+            <tr>
+            <td>Prefill 计算</td>
+            <td>每 token <span class="math inline">\(d\cdot
+            Hd_v\)</span> 次乘加，与一次 <code>o_proj</code> 的 GEMM
+            同量级</td>
+            </tr>
+            <tr>
+            <td>Decode 成本</td>
+            <td>每个 step 要完整读取这张权重，约 168
+            MB/层，是<strong>显存带宽</strong>开销而非 cache 开销</td>
+            </tr>
+            <tr>
+            <td>KV cache</td>
+            <td>完全不受影响，门控只依赖当前 hidden state</td>
+            </tr>
+            <tr>
+            <td>精度</td>
+            <td>sigmoid 需要在较高精度下计算，否则饱和区梯度会消失</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>因此在显存与通信预算里，<code>g_proj</code> 必须和
+            <code>q_proj</code>、<code>o_proj</code>
+            一样被当作主矩阵统计，不能因为它是“门控”就按小参数处理。推理实现上，门控通常被融合进
+            attention kernel 的 epilogue 或 <code>o_proj</code>
+            的前置步骤，避免额外的 HBM 往返。</p>
+            <h3 id="与-kda-的-g_proj-的区别">与 KDA 的
+            <code>g_proj</code> 的区别</h3>
+            <p>K3 的 KDA 层里同样有一张 <span
+            class="math inline">\(12288\times7168\)</span> 的
+            <code>g_proj</code>，名字和形状都一样，但含义完全不同：</p>
+            <table>
+            <colgroup>
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>归属</th>
+            <th>门控位置</th>
+            <th>门控作用对象</th>
+            <th>数学形式</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>MLA 层</td>
+            <td>注意力输出之后</td>
+            <td>单次 attention 的输出</td>
+            <td><span
+            class="math inline">\(\boldsymbol{O}\odot\sigma(XW_g)\)</span></td>
+            </tr>
+            <tr>
+            <td>KDA 层</td>
+            <td>递归状态更新中</td>
+            <td>历史状态 <span
+            class="math inline">\(\boldsymbol{S}\)</span>
+            的遗忘与新值写入</td>
+            <td><span class="math inline">\(\alpha_t,\beta_t\)</span>
+            作用在 <span
+            class="math inline">\(\boldsymbol{S}_t=\alpha_t\boldsymbol{S}_{t-1}+\dots\)</span></td>
+            </tr>
+            </tbody>
+            </table>
+            <p>读权重表或做显存分析时，这两者不能互相印证，也不能用 KDA
+            的 gate 语义去解释 MLA 的 <code>g_proj</code>。</p>
+            <h3 id="最小实现">最小实现</h3>
+            <p>下面省略 RoPE、KV cache 与 MQA absorb，只保留 latent
+            压缩与输出门控的位置：</p>
+            <div class="sourceCode" id="cb1"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> GatedMLA(nn.Module):</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, d_model, n_heads, d_qk, d_v, d_c):</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>()</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.n_heads, <span class="va">self</span>.d_qk, <span class="va">self</span>.d_v <span class="op">=</span> n_heads, d_qk, d_v</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>        <span class="co"># MLA 的 latent 压缩：低秩 Q 与共享的 KV latent</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.q_a_proj <span class="op">=</span> nn.Linear(d_model, d_c, bias<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.q_b_proj <span class="op">=</span> nn.Linear(d_c, n_heads <span class="op">*</span> d_qk, bias<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.kv_a_proj <span class="op">=</span> nn.Linear(d_model, d_c, bias<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.kv_b_proj <span class="op">=</span> nn.Linear(d_c, n_heads <span class="op">*</span> (d_qk <span class="op">+</span> d_v), bias<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>        <span class="co"># 门控宽度取 H * d_v，与 o_proj 的输入宽度一致</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.g_proj <span class="op">=</span> nn.Linear(d_model, n_heads <span class="op">*</span> d_v, bias<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.o_proj <span class="op">=</span> nn.Linear(n_heads <span class="op">*</span> d_v, d_model, bias<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> forward(<span class="va">self</span>, x):</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>        B, S, _ <span class="op">=</span> x.shape</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>        q <span class="op">=</span> <span class="va">self</span>.q_b_proj(<span class="va">self</span>.q_a_proj(x)).view(B, S, <span class="va">self</span>.n_heads, <span class="va">self</span>.d_qk)</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>        kv <span class="op">=</span> <span class="va">self</span>.kv_b_proj(<span class="va">self</span>.kv_a_proj(x)).view(</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>            B, S, <span class="va">self</span>.n_heads, <span class="va">self</span>.d_qk <span class="op">+</span> <span class="va">self</span>.d_v</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>        k, v <span class="op">=</span> kv.split([<span class="va">self</span>.d_qk, <span class="va">self</span>.d_v], dim<span class="op">=-</span><span class="dv">1</span>)</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>        q, k, v <span class="op">=</span> (t.transpose(<span class="dv">1</span>, <span class="dv">2</span>) <span class="cf">for</span> t <span class="kw">in</span> (q, k, v))  <span class="co"># [B, H, S, *]</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>        scores <span class="op">=</span> (q <span class="op">@</span> k.transpose(<span class="op">-</span><span class="dv">1</span>, <span class="op">-</span><span class="dv">2</span>)) <span class="op">*</span> <span class="va">self</span>.d_qk <span class="op">**</span> <span class="op">-</span><span class="fl">0.5</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>        out <span class="op">=</span> scores.softmax(dim<span class="op">=-</span><span class="dv">1</span>) <span class="op">@</span> v  <span class="co"># [B, H, S, d_v]，真实实现需先加 causal mask</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>        <span class="co"># [B, S, H, d_v]，每个 head 的每个 value 通道单独门控</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>        gate <span class="op">=</span> torch.sigmoid(<span class="va">self</span>.g_proj(x)).view(B, S, <span class="va">self</span>.n_heads, <span class="va">self</span>.d_v)</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>        out <span class="op">=</span> out.transpose(<span class="dv">1</span>, <span class="dv">2</span>) <span class="op">*</span> gate</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.o_proj(out.reshape(B, S, <span class="op">-</span><span class="dv">1</span>))</span></code></pre></div>
+            <h3 id="常见面试问题">常见面试问题</h3>
+            <ul>
+            <li>Gated MLA 与 Gated Attention 的区别是什么？门控的粒度从
+            head 级标量扩展到 (head, value channel)，并且要与 MLA 的
+            latent 压缩、absorb 路径对齐。</li>
+            <li>门控能不能提高 MLA 的压缩率、减少 KV
+            cache？不能。压缩发生在 token
+            状态维度，门控作用在输出维度，两者互不影响。</li>
+            <li>为什么门控要加在 <code>o_proj</code>
+            之前？因为那里还保留 head 与 value channel 的结构，能按 head
+            区分；过了 <code>o_proj</code> 就只剩 hidden 通道。</li>
+            <li>为什么 decode 阶段的门控不破坏权重吸收？门控只依赖当前
+            hidden state，不参与 <span
+            class="math inline">\(W^{UK}\)</span>、<span
+            class="math inline">\(W^{UV}\)</span> 的吸收变换。</li>
+            <li>Gated MLA 的代价是什么？一张与 <code>o_proj</code>
+            同量级的 <span class="math inline">\(d\times Hd_v\)</span>
+            矩阵，prefill 多一次 GEMM，decode
+            多一份权重读取带宽；收益在表达能力和稳定性上。</li>
+            <li>如何和 KDA 的 <code>g_proj</code> 区分？前者门控
+            attention 输出，后者门控递归状态的遗忘与写入。</li>
+            </ul>
+            <h3 id="小结">小结</h3>
+            <p>Gated MLA 是在 MLA 的注意力输出上乘一个由 hidden state
+            动态生成的门控，门控宽度通常取 <span class="math inline">\(H
+            d_v\)</span>，与 <code>o_proj</code> 的输入对齐，作用位置在
+            <span class="math inline">\(W^{UV}\)</span>
+            展开之后、<code>o_proj</code> 之前。它不改变 MLA
+            的压缩语义、不影响 KV cache 与权重吸收，代价是一张与
+            <code>o_proj</code> 同量级的主矩阵及其 decode
+            带宽，换来的是更细粒度的输出控制、对低秩 value
+            的补偿，以及与线性注意力层更对等的门控能力。</p>
+          </main>
+        <aside class="wiki-toc">
+      <ul>
+      <li><a href="#gated-mla" id="toc-gated-mla">Gated MLA</a>
+      <ul>
+      <li><a href="#公式" id="toc-公式">公式</a></li>
+      <li><a href="#门控的形状与粒度"
+      id="toc-门控的形状与粒度">门控的形状与粒度</a></li>
+      <li><a href="#门控加在哪里"
+      id="toc-门控加在哪里">门控加在哪里</a></li>
+      <li><a href="#为什么-mla-特别需要门控"
+      id="toc-为什么-mla-特别需要门控">为什么 MLA 特别需要门控</a></li>
+      <li><a href="#代价" id="toc-代价">代价</a></li>
+      <li><a href="#与-kda-的-g_proj-的区别"
+      id="toc-与-kda-的-g_proj-的区别">与 KDA 的 <code>g_proj</code>
+      的区别</a></li>
+      <li><a href="#最小实现" id="toc-最小实现">最小实现</a></li>
+      <li><a href="#常见面试问题"
+      id="toc-常见面试问题">常见面试问题</a></li>
+      <li><a href="#小结" id="toc-小结">小结</a></li>
+      </ul></li>
+      </ul>
+    </aside>
+      </div>
+  <script type="text/javascript">
+    (function () {
+      function markActive() {
+        var here = location.href.split('#')[0];
+        var links = document.querySelectorAll('.wiki-sidebar a');
+        for (var i = 0; i < links.length; i++) {
+          if (links[i].href.split('#')[0] === here) {
+            links[i].classList.add('active');
+          }
+        }
+      }
+      // load the shared site directory once (served from the wiki root);
+      // kept in a standalone file so adding a page needn't rebuild every page.
+      var nav = document.getElementById('wiki-sidebar');
+      if (nav) {
+        fetch('/.wiki_sidebar.html')
+          .then(function (r) { return r.ok ? r.text() : ''; })
+          .then(function (html) {
+            if (html) {
+              nav.innerHTML = html;
+              nav.hidden = false;
+              markActive();
+            }
+          })
+          .catch(function () {});
+      }
+      // keep bootstrap table styling (previously done by sticky_menu.js)
+      var tables = document.getElementsByTagName('table');
+      for (var j = 0; j < tables.length; j++) {
+        tables[j].classList.add('table');
+      }
+    })();
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="500" viewBox="0 0 900 500" font-family="-apple-system,Helvetica,Arial,sans-serif">
+  <style>
+    .yr{font-size:12px;font-weight:700;fill:#fff}
+    .nm{font-size:14px;font-weight:700;fill:#111}
+    .ft{font-size:11.5px;fill:#555}
+    .era{font-size:12px;font-weight:700;fill:#888}
+  </style>
+  <rect x="0" y="0" width="900" height="500" fill="#fdfdfd"/>
+  <text x="24" y="34" font-size="18" font-weight="800" fill="#111">NVIDIA GPU 架构代际演进</text>
+  <text x="24" y="54" font-size="12" fill="#999">从图形专用 → 通用并行计算 (GPGPU) → 为 AI 重新专用化</text>
+
+  <!-- legend -->
+  <rect x="620" y="24" width="14" height="14" rx="3" fill="#3b82f6"/><text x="640" y="35" class="ft">图形时代</text>
+  <rect x="710" y="24" width="14" height="14" rx="3" fill="#14b8a6"/><text x="730" y="35" class="ft">GPGPU</text>
+  <rect x="790" y="24" width="14" height="14" rx="3" fill="#22c55e"/><text x="810" y="35" class="ft">AI 时代</text>
+
+  <!-- left column -->
+  <g>
+    <rect x="24" y="74" width="412" height="52" rx="8" fill="#fff" stroke="#eee"/><rect x="24" y="74" width="5" height="52" rx="2" fill="#3b82f6"/>
+    <rect x="40" y="84" width="52" height="20" rx="10" fill="#3b82f6"/><text x="66" y="98" text-anchor="middle" class="yr">1999</text>
+    <text x="104" y="96" class="nm">GeForce 256</text><text x="104" y="114" class="ft">首个被称为「GPU」的芯片，硬件 T&amp;L</text>
+  </g>
+  <g>
+    <rect x="24" y="134" width="412" height="52" rx="8" fill="#fff" stroke="#eee"/><rect x="24" y="134" width="5" height="52" rx="2" fill="#3b82f6"/>
+    <rect x="40" y="144" width="52" height="20" rx="10" fill="#3b82f6"/><text x="66" y="158" text-anchor="middle" class="yr">2001</text>
+    <text x="104" y="156" class="nm">GeForce3 (NV20)</text><text x="104" y="174" class="ft">可编程顶点 / 像素着色器登场</text>
+  </g>
+  <g>
+    <rect x="24" y="194" width="412" height="52" rx="8" fill="#fff" stroke="#eee"/><rect x="24" y="194" width="5" height="52" rx="2" fill="#14b8a6"/>
+    <rect x="40" y="204" width="52" height="20" rx="10" fill="#14b8a6"/><text x="66" y="218" text-anchor="middle" class="yr">2006</text>
+    <text x="104" y="216" class="nm">Tesla (G80)</text><text x="104" y="234" class="ft">统一着色器架构，CUDA 诞生，GPGPU 起点</text>
+  </g>
+  <g>
+    <rect x="24" y="254" width="412" height="52" rx="8" fill="#fff" stroke="#eee"/><rect x="24" y="254" width="5" height="52" rx="2" fill="#14b8a6"/>
+    <rect x="40" y="264" width="52" height="20" rx="10" fill="#14b8a6"/><text x="66" y="278" text-anchor="middle" class="yr">2010</text>
+    <text x="104" y="276" class="nm">Fermi</text><text x="104" y="294" class="ft">完整 L1/L2 缓存层级、ECC、强 FP64</text>
+  </g>
+  <g>
+    <rect x="24" y="314" width="412" height="52" rx="8" fill="#fff" stroke="#eee"/><rect x="24" y="314" width="5" height="52" rx="2" fill="#14b8a6"/>
+    <rect x="40" y="324" width="52" height="20" rx="10" fill="#14b8a6"/><text x="66" y="338" text-anchor="middle" class="yr">2012</text>
+    <text x="104" y="336" class="nm">Kepler</text><text x="104" y="354" class="ft">SMX、动态并行，大规模攻入 HPC</text>
+  </g>
+  <g>
+    <rect x="24" y="374" width="412" height="52" rx="8" fill="#fff" stroke="#eee"/><rect x="24" y="374" width="5" height="52" rx="2" fill="#14b8a6"/>
+    <rect x="40" y="384" width="52" height="20" rx="10" fill="#14b8a6"/><text x="66" y="398" text-anchor="middle" class="yr">2014</text>
+    <text x="104" y="396" class="nm">Maxwell</text><text x="104" y="414" class="ft">能效优先，每瓦性能大幅提升</text>
+  </g>
+  <g>
+    <rect x="24" y="434" width="412" height="52" rx="8" fill="#fff" stroke="#eee"/><rect x="24" y="434" width="5" height="52" rx="2" fill="#14b8a6"/>
+    <rect x="40" y="444" width="52" height="20" rx="10" fill="#14b8a6"/><text x="66" y="458" text-anchor="middle" class="yr">2016</text>
+    <text x="104" y="456" class="nm">Pascal (P100)</text><text x="104" y="474" class="ft">HBM2 + NVLink 1.0，原生 FP16</text>
+  </g>
+
+  <!-- right column -->
+  <g>
+    <rect x="464" y="74" width="412" height="52" rx="8" fill="#fff" stroke="#eee"/><rect x="464" y="74" width="5" height="52" rx="2" fill="#22c55e"/>
+    <rect x="480" y="84" width="52" height="20" rx="10" fill="#22c55e"/><text x="506" y="98" text-anchor="middle" class="yr">2017</text>
+    <text x="544" y="96" class="nm">Volta (V100)</text><text x="544" y="114" class="ft">首个 Tensor Core，AI 算力拐点</text>
+  </g>
+  <g>
+    <rect x="464" y="134" width="412" height="52" rx="8" fill="#fff" stroke="#eee"/><rect x="464" y="134" width="5" height="52" rx="2" fill="#22c55e"/>
+    <rect x="480" y="144" width="52" height="20" rx="10" fill="#22c55e"/><text x="506" y="158" text-anchor="middle" class="yr">2018</text>
+    <text x="544" y="156" class="nm">Turing</text><text x="544" y="174" class="ft">RT Core 光追 + INT8/INT4 推理</text>
+  </g>
+  <g>
+    <rect x="464" y="194" width="412" height="52" rx="8" fill="#fff" stroke="#eee"/><rect x="464" y="194" width="5" height="52" rx="2" fill="#22c55e"/>
+    <rect x="480" y="204" width="52" height="20" rx="10" fill="#22c55e"/><text x="506" y="218" text-anchor="middle" class="yr">2020</text>
+    <text x="544" y="216" class="nm">Ampere (A100)</text><text x="544" y="234" class="ft">TF32/BF16、结构化稀疏、MIG 切分</text>
+  </g>
+  <g>
+    <rect x="464" y="254" width="412" height="52" rx="8" fill="#fff" stroke="#eee"/><rect x="464" y="254" width="5" height="52" rx="2" fill="#22c55e"/>
+    <rect x="480" y="264" width="52" height="20" rx="10" fill="#22c55e"/><text x="506" y="278" text-anchor="middle" class="yr">2022</text>
+    <text x="544" y="276" class="nm">Hopper (H100)</text><text x="544" y="294" class="ft">FP8 + Transformer Engine、NVSwitch</text>
+  </g>
+  <g>
+    <rect x="464" y="314" width="412" height="52" rx="8" fill="#fff" stroke="#eee"/><rect x="464" y="314" width="5" height="52" rx="2" fill="#22c55e"/>
+    <rect x="480" y="324" width="52" height="20" rx="10" fill="#22c55e"/><text x="506" y="338" text-anchor="middle" class="yr">2024</text>
+    <text x="544" y="336" class="nm">Blackwell (B200)</text><text x="544" y="354" class="ft">FP4 + 双 die chiplet、NVLink 5.0</text>
+  </g>
+  <g>
+    <rect x="464" y="374" width="412" height="52" rx="8" fill="#fff" stroke="#eee"/><rect x="464" y="374" width="5" height="52" rx="2" fill="#22c55e"/>
+    <rect x="480" y="384" width="52" height="20" rx="10" fill="#22c55e"/><text x="506" y="398" text-anchor="middle" class="yr">2026</text>
+    <text x="544" y="396" class="nm">Rubin + Vera</text><text x="544" y="414" class="ft">HBM4、NVLink 6；Rubin CPX 拆分 prefill</text>
+  </g>
+  <g>
+    <rect x="464" y="434" width="412" height="52" rx="8" fill="#fff" stroke="#eee"/><rect x="464" y="434" width="5" height="52" rx="2" fill="#16a34a"/>
+    <rect x="480" y="444" width="56" height="20" rx="10" fill="#16a34a"/><text x="508" y="458" text-anchor="middle" class="yr">2027+</text>
+    <text x="544" y="456" class="nm">Rubin Ultra / Feynman</text><text x="544" y="474" class="ft">年度节奏，整合 Groq LPU 推理技术</text>
+  </g>
+</svg>

@@ -1,0 +1,485 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    SP
+  </title>
+    <link rel="stylesheet" href="./WikiTheme/theme/bootstrap.css"  />
+        <script defer=""
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+        type="text/javascript"></script>
+        <style type="text/css">
+    /* ---- three column wiki layout (left: site directory, center: content, right: page TOC) ---- */
+    .wiki-layout {
+      display: flex;
+      align-items: flex-start;
+      gap: 24px;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 20px;
+      box-sizing: border-box;
+    }
+    .wiki-sidebar {
+      flex: 0 0 240px;
+      width: 240px;
+      position: sticky;
+      top: 0;
+      max-height: 100vh;
+      overflow-y: auto;
+      padding: 10px 4px 20px 0;
+      border-right: 1px solid #eee;
+      font-size: 14px;
+    }
+    .wiki-sidebar[hidden] { display: none; }
+    .wiki-toc {
+      flex: 0 0 220px;
+      width: 220px;
+      position: sticky;
+      top: 0;
+      max-height: 100vh;
+      overflow-y: auto;
+      padding: 10px 0 20px 4px;
+      border-left: 1px solid #eee;
+      font-size: 14px;
+    }
+    .wiki-main {
+      flex: 1 1 auto;
+      min-width: 0;
+      max-width: 820px;
+      padding: 10px 0 40px;
+    }
+    /* site directory tree */
+    .wiki-sidebar .wiki-home {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #eee;
+      text-decoration: none;
+      color: #333;
+    }
+    .wiki-sidebar ul { list-style: none; margin: 0 0 0 12px; padding: 0; }
+    .wiki-sidebar > ul { margin-left: 0; }
+    .wiki-sidebar li { line-height: 1.7; }
+    .wiki-sidebar a { text-decoration: none; color: #555; }
+    .wiki-sidebar a:hover { color: #0088cc; text-decoration: underline; }
+    .wiki-sidebar a.active { color: #0088cc; font-weight: bold; }
+    /* page TOC */
+    .wiki-toc ul { list-style: none; margin: 0 0 0 12px; padding: 0; }
+    .wiki-toc > ul { margin-left: 0; }
+    .wiki-toc li { line-height: 1.6; }
+    .wiki-toc a { text-decoration: none; color: #555; }
+    .wiki-toc a:hover { color: #0088cc; }
+    @media (max-width: 980px) {
+      .wiki-layout { flex-direction: column; }
+      .wiki-sidebar, .wiki-toc {
+        position: static;
+        width: 100%;
+        flex-basis: auto;
+        max-height: none;
+        border: 0;
+      }
+      .wiki-main { max-width: none; }
+    }
+  </style>
+</head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">SP</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="wiki-layout">
+    <nav class="wiki-sidebar" id="wiki-sidebar" hidden></nav>
+    <main class="wiki-main">
+            <h3 id="sp-对比-tp">SP 对比 TP</h3>
+            <p>这两个其实都是为了解决 attention 计算的问题，其实 TP
+            的思路比较直接一些：按照 head
+            维度将计算分配到不同的卡上，但是在实践中仍然存在着以下几个问题：</p>
+            <ol type="1">
+            <li>可能 head 维度无法按照 TP size 整数倍切分</li>
+            <li>attention 按照 head 维度 TP 切分之后需要做
+            AllReduce，这一步在通信原语中属于通信量比较大的，如果 TP
+            要跨机的话，那么其效率就会降低。这个缺陷尤其体现在 prefill
+            阶段，因为通信量大，跨机带宽低，并且没法子做 overlap。</li>
+            <li>对于超长序列，如果采用 TP 切分，每个 TP rank 在计算 QKV
+            之前仍然要保存全量的 token embedding <span
+            class="math inline">\(X\)</span>，这个东西本身在超长序列就已经很大了，很容易出现显存放不下的情况。</li>
+            </ol>
+            <p>所以 SP 应用的初衷是为了解决 TP
+            在超长序列下效率不足的问题。</p>
+            <h3 id="ring-attention">Ring Attention</h3>
+            <p>ring attention 将 sequence 的 Q、KV 切成多段，</p>
+            <figure>
+            <img src="./WikiImage/cp_example.drawio.svg"
+            alt="cp example" />
+            <figcaption aria-hidden="true">cp example</figcaption>
+            </figure>
+            <ul>
+            <li><strong>Q</strong>：按序列维度切分 <span
+            class="math display">\[
+            T_q = T / P
+            \]</span></li>
+            <li><strong>K, V</strong>：逻辑上完整，但 <strong>物理上通过
+            ring 分块流动</strong></li>
+            <li>每个 rank：
+            <ul>
+            <li>固定自己的 Q block</li>
+            <li>依次接收来自其他 rank 的 KV block（共 P 次）</li>
+            </ul></li>
+            </ul>
+            <h3 id="stripe-attention">Stripe Attention</h3>
+            <p>标准 <strong>Ring
+            Attention</strong>（尤其是最早那版设计）隐含一个前提：</p>
+            <blockquote>
+            <p><strong>每个 GPU 在每一轮 ring step
+            上，做的计算量大致相同</strong></p>
+            </blockquote>
+            <p>也就是说，假设你把：</p>
+            <ul>
+            <li>Q 均分到 P 个 GPU</li>
+            <li>K/V 也按 block 均分</li>
+            <li>每一轮： 每个 GPU 都拿到一块 KV，算一次
+            <code>Q_local × KV_block</code></li>
+            </ul>
+            <p>如果是 <strong>无 mask / full
+            attention</strong>，这个假设基本成立。</p>
+            <hr />
+            <p>在 <strong>causal attention</strong>
+            下，问题就来了，对不同 GPU 来说：</p>
+            <table>
+            <thead>
+            <tr>
+            <th>GPU</th>
+            <th>Q 所在位置</th>
+            <th>可见的 K 数量</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>GPU 0</td>
+            <td>很靠前</td>
+            <td>很少</td>
+            </tr>
+            <tr>
+            <td>GPU 1</td>
+            <td>稍靠后</td>
+            <td>多一点</td>
+            </tr>
+            <tr>
+            <td>…</td>
+            <td>…</td>
+            <td>…</td>
+            </tr>
+            <tr>
+            <td>GPU P−1</td>
+            <td>最后</td>
+            <td>几乎全部 K</td>
+            </tr>
+            </tbody>
+            </table>
+            <p><strong>每个 GPU 实际参与的有效 attention
+            计算量差异巨大</strong></p>
+            <p>但 ring attention 的调度是：</p>
+            <ul>
+            <li>KV block <strong>照样完整地绕一圈</strong></li>
+            <li>GPU 0 仍然要“看见”后面的 KV block（只不过被 mask
+            掉）</li>
+            </ul>
+            <p>结果</p>
+            <ul>
+            <li><strong>计算被 mask 掉了</strong></li>
+            <li>但 ring 通信等其他操作都 <strong>照常发生</strong></li>
+            </ul>
+            <p>这就是<strong>负载不均 + 低效计算</strong></p>
+            <p>Stripe Attention
+            的核心改动是：<strong>不是“方块（block）划分”，而是“斜条纹（stripe）划分”
+            attention 计算区域</strong></p>
+            <p>首先切分序列不是简单地按照块来切，而是跳跃性地分配：</p>
+            <figure>
+            <img src="./WikiImage/stripe_attention.png"
+            alt="stripe" />
+            <figcaption aria-hidden="true">stripe</figcaption>
+            </figure>
+            <p>从全局视角来看，每一轮每个 partition 计算的 attention
+            部分就从一个 block 变成了分散性的点：</p>
+            <figure>
+            <img src="./WikiImage/stripe_attention_workloads.png"
+            alt="partition" />
+            <figcaption aria-hidden="true">partition</figcaption>
+            </figure>
+            <p>这样每一轮的计算也就更加均衡了：</p>
+            <figure>
+            <img src="./WikiImage/stripe_attention_rounds.png"
+            alt="rounds" />
+            <figcaption aria-hidden="true">rounds</figcaption>
+            </figure>
+            <h3 id="ulysses">Ulysses</h3>
+            <p>在处理超长序列时，单张显卡的显存可能无法满足需求。Deepspeed
+            Ulysses
+            正是为了解决这一问题而设计的。对于超长序列，如果采用张量并行（TP）的方式进行切分，以第
+            i 个计算单元为例：</p>
+            <p><strong>方案 A：纯 TP</strong></p>
+            <pre><code>X (复制到 P 份)
+ → QKV (每卡算 H/P heads)
+ → Attention (本地)
+ → allreduce / concat</code></pre>
+            <p><strong>方案 B：SP + Ulysses</strong></p>
+            <pre><code>X (T 切分)
+ → QKV (本地算)
+ → all2all (attention 前)
+ → Attention
+ → all2all (attention 后)
+ → 后续层继续 SP</code></pre>
+            <p>TP 的 KV cache 是「跨层长期存在的」</p>
+            <ul>
+            <li>decode 阶段</li>
+            <li>每一步都会用到历史 KV</li>
+            <li>所以 TP 的：
+            <ul>
+            <li>KV cache = 全序列 × 部分 head</li>
+            <li><strong>长期驻留显存</strong></li>
+            </ul></li>
+            </ul>
+            <p>而 Ulysses 的：</p>
+            <ul>
+            <li>attention 前的 <code>全序列 × 部分 head</code> KV</li>
+            <li><strong>只在 kernel 内短暂存在</strong></li>
+            <li>用完立刻释放 / 重排</li>
+            </ul>
+            <p>Ulysses + SP 对比 TP 的 <strong>优势：</strong></p>
+            <ul>
+            <li>X / hidden / KV 始终只占 1/P</li>
+            <li>只有 attention 阶段需要通信</li>
+            <li>KV cache 产生阶段完全本地</li>
+            </ul>
+            <h3 id="理论分析">理论分析</h3>
+            <h4 id="计算通信-overlap">计算通信 overlap</h4>
+            <p>Ring Attention（严格说是 <em>ring-based SP
+            attention</em>）的 overlap 指的是：</p>
+            <blockquote>
+            <p><strong>在等待下一块 KV 通过 ring 传输的同时，GPU
+            正在计算当前块的 attention（Q × Kᵀ + softmax +
+            ×V）</strong></p>
+            <p>即在每个 ring step 中，计算 block attention
+            的时间应该能够 overlap 住传输 kv cache 的时间。</p>
+            </blockquote>
+            <h5 id="参数定义">参数定义</h5>
+            <p>首先定义一些参数，和 attention
+            计算量分析一章保持一致：</p>
+            <ul>
+            <li><strong>B</strong>：batch size</li>
+            <li><strong>T</strong>：序列长度</li>
+            <li><strong>N</strong>：attention head 数</li>
+            <li><strong>H</strong>：每个 head 的维度（= D_head）</li>
+            <li><strong>D</strong>：通常等于 H（你这里我直接用 H）</li>
+            <li><strong>P</strong>: SP size，即将序列切分为几份</li>
+            </ul>
+            <h5 id="ring-step">ring step</h5>
+            <p>对 <strong>每一个 ring step（第 i 块 KV）</strong>，GPU
+            需要：</p>
+            <p>1️⃣ <strong>通信（recv KV）</strong></p>
+            <p>接收一个 KV block：</p>
+            <p><span class="math display">\[
+            \text{Bytes}_\text{comm}
+            = B \cdot T_k \cdot N \cdot H \cdot 2 \cdot
+            \text{sizeof(dtype)}
+            \]</span></p>
+            <p>其中： <span class="math display">\[
+            T_k = T / P
+            \]</span></p>
+            <p>2️⃣ 计算（attention on this block）</p>
+            <p>对当前 Q block 和该 KV block：</p>
+            <p>QKᵀ FLOPs</p>
+            <p><span class="math display">\[
+            \text{FLOPs}_{QK}
+            = 2 \cdot B \cdot N \cdot T_q \cdot T_k \cdot H
+            \]</span></p>
+            <p><strong>AV FLOPs</strong></p>
+            <p><span class="math display">\[
+            \text{FLOPs}_{AV}
+            = 2 \cdot B \cdot N \cdot T_q \cdot T_k \cdot H
+            \]</span></p>
+            <p>📌 合计： <span class="math display">\[
+            \text{FLOPs}_\text{step}
+            = 4 \cdot B \cdot N \cdot T_q \cdot T_k \cdot H
+            \]</span></p>
+            <p>代入 <span class="math inline">\(T_q = T_k =
+            T/P\)</span>：</p>
+            <p><span class="math display">\[
+            \boxed{
+            \text{FLOPs}_\text{step}
+            = 4 \cdot B \cdot N \cdot H \cdot \frac{T^2}{P^2}
+            }
+            \]</span></p>
+            <p>关于何时能够实现计算与通信的重叠，其核心判据可以概括为：当单步注意力计算的时间大于或等于单步
+            KV
+            缓存通信的时间时，理论上可以实现完全的重叠。用数学公式表达即：</p>
+            <p><span class="math display">\[
+            T_\text{comp} \ge T_\text{comm}
+            \]</span></p>
+            <p>代入具体的时间模型来看：</p>
+            <p>计算时间 <span
+            class="math inline">\(T_\text{comp}\)</span> 的模型为：
+            <span class="math display">\[
+            T_\text{comp} = \frac{\text{FLOPs} \times
+            \text{step}}{\text{GPU FLOPs/s}} = \frac{4 B N H T^2}{P^2
+            \cdot F_\text{GPU}}
+            \]</span></p>
+            <p>通信时间 <span
+            class="math inline">\(T_\text{comm}\)</span> 的模型（考虑
+            NVLink 或 InfiniBand）为： <span class="math display">\[
+            T_\text{comm} =
+            \frac{\text{Bytes}_\text{comm}}{\text{BW}_\text{eff}} =
+            \frac{2 B N H (T/P) \cdot
+            \text{sizeof(dtype)}}{\text{BW}_\text{eff}}
+            \]</span></p>
+            <p>将重叠条件 <span class="math inline">\(T_\text{comp} \ge
+            T_\text{comm}\)</span>
+            代入并化简，是得到关键结论的步骤：</p>
+            <p><span class="math display">\[
+            \frac{4 B N H T^2}{P^2 F_\text{GPU}} \ge \frac{2 B N H T
+            \cdot \text{sizeof(dtype)}}{P \cdot \text{BW}_\text{eff}}
+            \]</span></p>
+            <p>消去公共项 <span class="math inline">\(B, N, H,
+            T\)</span> 后，得到核心不等式：</p>
+            <p><span class="math display">\[
+            \boxed{\frac{2 T}{P} \ge \frac{F_\text{GPU} \cdot
+            \text{sizeof(dtype)}}{\text{BW}_\text{eff}}}
+            \]</span></p>
+            <p>这个公式的物理意义非常重要，主要有两点：</p>
+            <p>首先，重叠的可能性与批次大小 <span
+            class="math inline">\(B\)</span>、注意力头数 <span
+            class="math inline">\(N\)</span> 或隐藏层维度 <span
+            class="math inline">\(H\)</span>
+            无关。这一点很多讨论未明确提及：即使批次增大，计算和通信时间会同比例增加，因此重叠的条件本身并不改变。</p>
+            <p>其次，核心变量实际上只有三个。是否能够重叠等价于判断比值
+            <span class="math inline">\(T/P\)</span> 是否足够大：</p>
+            <p><span class="math display">\[
+            \boxed{\textbf{是否重叠} \Longleftrightarrow \frac{T}{P}
+            \text{ 够不够大}}
+            \]</span></p>
+            <p>其具体阈值约为：</p>
+            <p><span class="math display">\[
+            \frac{T}{P} \gtrsim
+            \frac{F_\text{GPU}}{\text{BW}_\text{eff}} \times
+            \text{sizeof(dtype)}
+            \]</span></p>
+            <p>为了获得更直观的理解，可以代入一个真实量级进行校准。以
+            A100 SXM GPU 和 FP16 数据类型为例： - <span
+            class="math inline">\(F_\text{GPU} \approx 312 \,
+            \text{TFLOPs}\)</span> - <span
+            class="math inline">\(\text{BW}_\text{eff} \approx 300 \,
+            \text{GB/s}\)</span>（NVLink 有效带宽） - <span
+            class="math inline">\(\text{sizeof(dtype)} = 2 \,
+            \text{bytes}\)</span></p>
+            <p>计算阈值： <span class="math display">\[
+            \frac{F_\text{GPU}}{\text{BW}_\text{eff}} \cdot
+            \text{sizeof(dtype)} \approx \frac{312 \times 10^{12}}{300
+            \times 10^9} \times 2 \approx 2080
+            \]</span></p>
+            <p>由此可以得出一个直观结论： <span class="math display">\[
+            \boxed{\frac{T}{P} \gtrsim \mathcal{O}(10^3)}
+            \]</span> 即当序列长度 <span
+            class="math inline">\(T\)</span> 与流水线并行度 <span
+            class="math inline">\(P\)</span> 的比值达到大约 <span
+            class="math inline">\(10^3\)</span>
+            量级时，计算与通信的重叠才可能实现。</p>
+            <h4 id="对比-tp">对比 TP</h4>
+            <p>如果通信与计算完全 overlap，ring attention
+            的理论效率可以接近甚至优于 TP（Tensor Parallel）</p>
+            <ul>
+            <li>TP 的损耗在于最后的 AllReduce 操作，TP
+            数量越大，这个损耗越大</li>
+            <li>SP 的损耗在于 <strong>第一轮无法 overlap</strong> 以及
+            <strong>pipeline 尾部（drain）损耗</strong></li>
+            </ul>
+            <p>首先把两者抽象成同一个模型：</p>
+            <pre><code>总时间 = max(计算时间, 通信时间) + 无法 overlap 的部分</code></pre>
+            <p>完美情况下，SP 的额外损耗 ≈ 2 × (一个 chunk
+            的传输时间)</p>
+            <p><strong>但前提非常苛刻，而且现实中不容易达到，</strong>
+            原因在于：</p>
+            <ul>
+            <li>在硬件中，通信量大时带宽利用率 &gt;
+            通信量小时带宽利用率，就像一次大 gemm 的 MFU 优于若干次小
+            gemm，一次 AllReduce 大于 N 次
+            hop，这一点在估算时要额外考虑</li>
+            <li>同样，在 SP 的 Attention 中，如果切得太小，attention
+            compute 不够“重”，导致实际 MFU 不高</li>
+            </ul>
+          </main>
+        <aside class="wiki-toc">
+      <ul>
+      <li><a href="#sp-对比-tp" id="toc-sp-对比-tp">SP 对比 TP</a></li>
+      <li><a href="#ring-attention" id="toc-ring-attention">Ring
+      Attention</a></li>
+      <li><a href="#stripe-attention" id="toc-stripe-attention">Stripe
+      Attention</a></li>
+      <li><a href="#ulysses" id="toc-ulysses">Ulysses</a></li>
+      <li><a href="#理论分析" id="toc-理论分析">理论分析</a></li>
+      </ul>
+    </aside>
+      </div>
+  <script type="text/javascript">
+    (function () {
+      function markActive() {
+        var here = location.href.split('#')[0];
+        var links = document.querySelectorAll('.wiki-sidebar a');
+        for (var i = 0; i < links.length; i++) {
+          if (links[i].href.split('#')[0] === here) {
+            links[i].classList.add('active');
+          }
+        }
+      }
+      // load the shared site directory once (served from the wiki root);
+      // kept in a standalone file so adding a page needn't rebuild every page.
+      var nav = document.getElementById('wiki-sidebar');
+      if (nav) {
+        fetch('/.wiki_sidebar.html')
+          .then(function (r) { return r.ok ? r.text() : ''; })
+          .then(function (html) {
+            if (html) {
+              nav.innerHTML = html;
+              nav.hidden = false;
+              markActive();
+            }
+          })
+          .catch(function () {});
+      }
+      // keep bootstrap table styling (previously done by sticky_menu.js)
+      var tables = document.getElementsByTagName('table');
+      for (var j = 0; j < tables.length; j++) {
+        tables[j].classList.add('table');
+      }
+    })();
+  </script>
+</body>
+
+</html>

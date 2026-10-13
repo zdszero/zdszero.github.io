@@ -1,0 +1,605 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    线性代数基础
+  </title>
+    <link rel="stylesheet" href="./WikiTheme/theme/bootstrap.css"  />
+        <script defer=""
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+        type="text/javascript"></script>
+        <style type="text/css">
+    /* ---- three column wiki layout (left: site directory, center: content, right: page TOC) ---- */
+    .wiki-layout {
+      display: flex;
+      align-items: flex-start;
+      gap: 24px;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 20px;
+      box-sizing: border-box;
+    }
+    .wiki-sidebar {
+      flex: 0 0 240px;
+      width: 240px;
+      position: sticky;
+      top: 0;
+      max-height: 100vh;
+      overflow-y: auto;
+      padding: 10px 4px 20px 0;
+      border-right: 1px solid #eee;
+      font-size: 14px;
+    }
+    .wiki-sidebar[hidden] { display: none; }
+    .wiki-toc {
+      flex: 0 0 220px;
+      width: 220px;
+      position: sticky;
+      top: 0;
+      max-height: 100vh;
+      overflow-y: auto;
+      padding: 10px 0 20px 4px;
+      border-left: 1px solid #eee;
+      font-size: 14px;
+    }
+    .wiki-main {
+      flex: 1 1 auto;
+      min-width: 0;
+      max-width: 820px;
+      padding: 10px 0 40px;
+    }
+    /* site directory tree */
+    .wiki-sidebar .wiki-home {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #eee;
+      text-decoration: none;
+      color: #333;
+    }
+    .wiki-sidebar ul { list-style: none; margin: 0 0 0 12px; padding: 0; }
+    .wiki-sidebar > ul { margin-left: 0; }
+    .wiki-sidebar li { line-height: 1.7; }
+    .wiki-sidebar a { text-decoration: none; color: #555; }
+    .wiki-sidebar a:hover { color: #0088cc; text-decoration: underline; }
+    .wiki-sidebar a.active { color: #0088cc; font-weight: bold; }
+    /* page TOC */
+    .wiki-toc ul { list-style: none; margin: 0 0 0 12px; padding: 0; }
+    .wiki-toc > ul { margin-left: 0; }
+    .wiki-toc li { line-height: 1.6; }
+    .wiki-toc a { text-decoration: none; color: #555; }
+    .wiki-toc a:hover { color: #0088cc; }
+    @media (max-width: 980px) {
+      .wiki-layout { flex-direction: column; }
+      .wiki-sidebar, .wiki-toc {
+        position: static;
+        width: 100%;
+        flex-basis: auto;
+        max-height: none;
+        border: 0;
+      }
+      .wiki-main { max-width: none; }
+    }
+  </style>
+</head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">线性代数基础</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="wiki-layout">
+    <nav class="wiki-sidebar" id="wiki-sidebar" hidden></nav>
+    <main class="wiki-main">
+            <h3 id="引言">引言</h3>
+            <p>神经网络中单个计算单元的激活值通常通过边权重向量 <span
+            class="math inline">\(\mathbf{w}\)</span> 与输入向量 <span
+            class="math inline">\(\mathbf{x}\)</span> 的点积加上标量偏置
+            <span class="math inline">\(b\)</span> 来计算：</p>
+            <p><span class="math display">\[z(x) = \sum_{i=1}^{n} w_i
+            x_i + b = \textbf{w} \cdot \textbf{x} + b\]</span></p>
+            <p>函数 <span class="math inline">\(z(x)\)</span>
+            称为该单元的仿射函数，其后接一个修正线性单元（ReLU），该单元会将负值截断为零。</p>
+            <p><strong>训练</strong> 该神经网络意味着选择权重 <span
+            class="math inline">\(\mathbf{w}\)</span> 和偏置 <span
+            class="math inline">\(b\)</span>，使得对于所有 <span
+            class="math inline">\(N\)</span> 个输入 <span
+            class="math inline">\(\mathbf{x}\)</span>，我们都能获得期望的输出。</p>
+            <p>为此，我们最小化损失函数，该函数比较网络对所有输入向量
+            <span class="math inline">\(\mathbf{x}\)</span> 的最终 <span
+            class="math inline">\(\text{activation}(\mathbf{x})\)</span>
+            与目标值 <span
+            class="math inline">\(\text{target}(\mathbf{x})\)</span>。</p>
+            <p>为了最小化损失，我们使用梯度下降的某种变体，例如普通的随机梯度下降（SGD）。所有这些方法都需要计算
+            <span
+            class="math inline">\(\text{activation}(\mathbf{x})\)</span>
+            关于模型参数 <span class="math inline">\(\mathbf{w}\)</span>
+            和 <span class="math inline">\(b\)</span> 的偏导数。
+            我们的目标是逐步调整 <span
+            class="math inline">\(\mathbf{w}\)</span> 和 <span
+            class="math inline">\(b\)</span>，使得对于所有输入 <span
+            class="math inline">\(\mathbf{x}\)</span>，总体损失函数不断减小。</p>
+            <h4 id="向量规范">向量规范</h4>
+            <h5 id="列向量写法">列向量写法</h5>
+            <p>列向量写法一般在数学课本上使用</p>
+            <p>设</p>
+            <ul>
+            <li><span class="math inline">\(q_i, k_j \in \mathbb{R}^{d_k
+            \times 1}\)</span> （列向量），</li>
+            <li><span class="math inline">\(v_j \in \mathbb{R}^{d_v
+            \times 1}\)</span> （列向量）。</li>
+            </ul>
+            <p>那么打分：</p>
+            <p><span class="math display">\[
+            s_{ij} = \frac{q_i^\top k_j}{\sqrt{d_k}} \quad (\text{标量})
+            \]</span></p>
+            <p>Softmax 权重：</p>
+            <p><span class="math display">\[
+            \alpha_{ij} = \frac{\exp(s_{ij})}{\sum_{t=1}^n \exp(s_{it})}
+            \]</span></p>
+            <p>输出：</p>
+            <p><span class="math display">\[
+            o_i = \sum_{j=1}^n \alpha_{ij} v_j \quad \in \mathbb{R}^{d_v
+            \times 1}
+            \]</span></p>
+            <p>矩阵式：</p>
+            <p><span class="math display">\[
+            O =
+            \operatorname{Softmax}\!\left(\frac{QK^\top}{\sqrt{d_k}}\right)V
+            \]</span></p>
+            <p>其中</p>
+            <ul>
+            <li><span class="math inline">\(Q = [q_1^\top; q_2^\top;
+            \dots; q_n^\top] \in \mathbb{R}^{n \times
+            d_k}\)</span>，</li>
+            <li><span class="math inline">\(K = [k_1^\top; k_2^\top;
+            \dots; k_n^\top] \in \mathbb{R}^{n \times
+            d_k}\)</span>，</li>
+            <li><span class="math inline">\(V = [v_1^\top; v_2^\top;
+            \dots; v_n^\top] \in \mathbb{R}^{n \times
+            d_v}\)</span>。</li>
+            </ul>
+            <h5 id="行向量写法">行向量写法</h5>
+            <p>行向量写法在工程上更常见</p>
+            <p>设</p>
+            <ul>
+            <li><span class="math inline">\(q_i, k_j \in \mathbb{R}^{1
+            \times d_k}\)</span> （行向量），</li>
+            <li><span class="math inline">\(v_j \in \mathbb{R}^{1 \times
+            d_v}\)</span> （行向量）。</li>
+            </ul>
+            <p>那么打分：</p>
+            <p><span class="math display">\[
+            s_{ij} = \frac{q_i k_j^\top}{\sqrt{d_k}} \quad (\text{标量})
+            \]</span></p>
+            <p>Softmax 权重：</p>
+            <p><span class="math display">\[
+            \alpha_{ij} = \frac{\exp(s_{ij})}{\sum_{t=1}^n \exp(s_{it})}
+            \]</span></p>
+            <p>输出：</p>
+            <p><span class="math display">\[
+            o_i = \sum_{j=1}^n \alpha_{ij} v_j \quad \in \mathbb{R}^{1
+            \times d_v}
+            \]</span></p>
+            <p>矩阵式同样成立：</p>
+            <p><span class="math display">\[
+            O =
+            \operatorname{Softmax}\!\left(\frac{QK^\top}{\sqrt{d_k}}\right)V
+            \]</span></p>
+            <p>只是这里的</p>
+            <ul>
+            <li><p><span class="math inline">\(Q = \begin{bmatrix} q_1
+            \\ q_2 \\ \vdots \\ q_n \end{bmatrix} \in \mathbb{R}^{n
+            \times d_k}\)</span>， 每一行是一个
+            query（行向量）。</p></li>
+            <li><p><strong>列向量写法</strong>更贴近数学教科书，点积写作
+            <span class="math inline">\(q_i^\top k_j\)</span>。</p></li>
+            <li><p><strong>行向量写法</strong>更贴近实际工程框架（NumPy/PyTorch），点积写作
+            <span class="math inline">\(q_i k_j^\top\)</span>。</p></li>
+            <li><p>矩阵公式 <span class="math inline">\(O =
+            \text{Softmax}(QK^\top / \sqrt{d_k})V\)</span>
+            在两种习惯下都完全一致。</p></li>
+            </ul>
+            <h3 id="矩阵微积分">矩阵微积分</h3>
+            <h4 id="偏导数">偏导数</h4>
+            <p>导数与偏导数的区别：</p>
+            <ul>
+            <li>普通导数用于单变量函数。</li>
+            <li>偏导数用于多变量函数。当我们试图求某个变量的偏导数时，其他变量被视为常数。</li>
+            </ul>
+            <h4 id="梯度">梯度</h4>
+            <p>当我们计算多个变量的偏导数时，与其让它们零散地分布且无组织，不如将它们组织成一个水平向量：</p>
+            <p><span class="math display">\[\nabla f(x, y) = [
+            \frac{\partial f(x, y)}{\partial x}, \frac{\partial f(x,
+            y)}{\partial y}]\]</span></p>
+            <p>因此，<span class="math inline">\(f(x, y)\)</span>
+            的梯度就是其偏导数构成的向量。</p>
+            <p>如果我们有两个函数，则得到<strong>雅可比矩阵</strong>，其中梯度作为行：</p>
+            <p><span class="math display">\[
+            J = \begin{bmatrix}
+            \nabla f(x, y) \\
+            \nabla g(x, y)
+            \end{bmatrix} = \begin{bmatrix}
+            \frac{\partial f(x, y)}{\partial x} &amp; \frac{\partial
+            f(x, y)}{\partial y} \\
+            \frac{\partial g(x, y)}{\partial x} &amp; \frac{\partial
+            g(x, y)}{\partial y}
+            \end{bmatrix}
+            \]</span></p>
+            <p>注意，表示这个雅可比矩阵的方式有很多种。我们使用的是所谓的分子布局，但许多论文会使用分母布局，它只是分子布局的转置。</p>
+            <h4 id="雅可比矩阵的一般定义">雅可比矩阵的一般定义</h4>
+            <p>为了更一般地定义雅可比矩阵，让我们将多个参数组合成一个向量参数：<span
+            class="math inline">\(f(x, y, z) \rightarrow
+            f(\mathbf{x})\)</span></p>
+            <p>让我们明确一下格式：</p>
+            <ul>
+            <li><span class="math inline">\(\mathbf{x}\)</span> 与 <span
+            class="math inline">\(\vec{x}\)</span>
+            相同，是一个向量。</li>
+            <li><span class="math inline">\(x\)</span> 是一个标量。</li>
+            <li><span class="math inline">\(x_i\)</span>
+            是向量中的一个元素。</li>
+            </ul>
+            <p>我们还必须定义向量 <span
+            class="math inline">\(\mathbf{x}\)</span> 的方向：</p>
+            <p><span class="math display">\[x = \begin{bmatrix}
+            x_1 \\
+            x_2 \\
+            \vdots \\
+            x_n
+            \end{bmatrix}\]</span></p>
+            <p>对于多个标量值函数，我们可以像处理参数那样将它们全部组合成一个向量。</p>
+            <p>令 <span class="math inline">\(\mathbf{y} =
+            \mathbf{f(x)}\)</span> 是一个由 <span
+            class="math inline">\(m\)</span>
+            个标量值函数组成的向量，每个函数都接受一个向量 <span
+            class="math inline">\(\mathbf{x}\)</span>。并且 <span
+            class="math inline">\(\mathbf{f}\)</span> 中的每个 <span
+            class="math inline">\(f_i\)</span> 返回一个标量值。</p>
+            <p><span class="math display">\[y_1 =
+            f_1(\mathbf{x})\]</span> <span class="math display">\[y_2 =
+            f_2(\mathbf{x})\]</span> <span
+            class="math display">\[\vdots\]</span> <span
+            class="math display">\[y_m = f_m(\mathbf{x})\]</span></p>
+            <p>一般来说，雅可比矩阵是所有 <span class="math inline">\(m
+            \times n\)</span> 个可能的偏导数的集合，即关于 <span
+            class="math inline">\(\mathbf{x}\)</span> 的 <span
+            class="math inline">\(m\)</span> 个梯度的堆叠。</p>
+            <p><span class="math display">\[
+            \frac{\partial y}{\partial x} =
+            \begin{bmatrix}
+            \nabla f_1(\mathbf{x}) \\
+            \nabla f_2(\mathbf{x}) \\
+            \vdots \\
+            \nabla f_m(\mathbf{x}) \\
+            \end{bmatrix} =
+            \begin{bmatrix}
+            \frac{\partial f_1(\mathbf{x})}{\partial \mathbf{x}} \\
+            \frac{\partial f_2(\mathbf{x})}{\partial \mathbf{x}} \\
+            \vdots \\
+            \frac{\partial f_m(\mathbf{x})}{\partial \mathbf{x}} \\
+            \end{bmatrix} =
+            \begin{bmatrix}
+            \frac{\partial f_1(\mathbf{x})}{\partial x_1} &amp;
+            \frac{\partial f_1(\mathbf{x})}{\partial x_2} &amp; \cdots
+            &amp; \frac{\partial f_1(\mathbf{x})}{\partial x_n} \\
+            \frac{\partial f_2(\mathbf{x})}{\partial x_1} &amp;
+            \frac{\partial f_2(\mathbf{x})}{\partial x_2} &amp; \cdots
+            &amp; \frac{\partial f_2(\mathbf{x})}{\partial x_n} \\
+            \vdots \\
+            \frac{\partial f_m(\mathbf{x})}{\partial x_1} &amp;
+            \frac{\partial f_m(\mathbf{x})}{\partial x_2} &amp; \cdots
+            &amp; \frac{\partial f_m(\mathbf{x})}{\partial x_n} \\
+            \end{bmatrix}
+            \]</span></p>
+            <p>雅可比函数 <span class="math inline">\(\mathbf{f(x)} =
+            \mathbf{x}\)</span>，其中 <span
+            class="math inline">\(f_i(\mathbf{x}) = x_i\)</span>：</p>
+            <p><span class="math display">\[
+            \frac{\partial y}{\partial x} =
+            \begin{bmatrix}
+            1 &amp; 0 &amp; \cdots &amp; 0 \\
+            0 &amp; 1 &amp; \cdots &amp; 0 \\
+            \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+            0 &amp; 0 &amp; 0 &amp; 1
+            \end{bmatrix}
+            \]</span></p>
+            <h4 id="逐元素二元运算符的导数">逐元素二元运算符的导数</h4>
+            <p>所谓“逐元素二元运算”，我们指的是对每个向量的第一个元素应用运算符得到输出的第一个元素，然后对输入的第二个元素应用运算符得到输出的第二个元素，依此类推。</p>
+            <p>我们可以用符号 <span class="math inline">\(\mathbf{y} =
+            \mathbf{f(w)} \bigcirc \mathbf{g(x)}\)</span>
+            来概括逐元素二元运算，其中 <span class="math inline">\(m = n
+            = |y| = |w| = |x|\)</span></p>
+            <p><span class="math display">\[
+            \begin{bmatrix}
+            y_1 \\
+            y_2 \\
+            \vdots \\
+            y_n
+            \end{bmatrix} = \begin{bmatrix}
+            f_1(\mathbf{w}) \bigcirc g_1(\mathbf{x}) \\
+            f_2(\mathbf{w}) \bigcirc g_2(\mathbf{x}) \\
+            \vdots \\
+            f_n(\mathbf{w}) \bigcirc g_n(\mathbf{x}) \\
+            \end{bmatrix}
+            \]</span></p>
+            <p><span class="math display">\[
+            \mathbf{J_{W}} = \frac{\partial \mathbf{y}}{\partial
+            \mathbf{w}} = \begin{bmatrix}
+            \frac{\partial }{\partial w_1}(f_1 (\mathbf{w}) \bigcirc
+            g_1(\mathbf{x})) &amp; \frac{\partial }{\partial w_2}(f_1
+            (\mathbf{w}) \bigcirc g_1(\mathbf{x})) &amp; \cdots &amp;
+            \frac{\partial }{\partial w_n}(f_1 (\mathbf{w}) \bigcirc
+            g_1(\mathbf{x})) \\
+            \frac{\partial }{\partial w_1}(f_2 (\mathbf{w}) \bigcirc
+            g_2(\mathbf{x})) &amp; \frac{\partial }{\partial w_2}(f_2
+            (\mathbf{w}) \bigcirc g_2(\mathbf{x})) &amp; \cdots &amp;
+            \frac{\partial }{\partial w_n}(f_2 (\mathbf{w}) \bigcirc
+            g_2(\mathbf{x})) \\
+            \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+            \frac{\partial }{\partial w_1}(f_n (\mathbf{w}) \bigcirc
+            g_n(\mathbf{x})) &amp; \frac{\partial }{\partial w_2}(f_n
+            (\mathbf{w}) \bigcirc g_n(\mathbf{x})) &amp; \cdots &amp;
+            \frac{\partial }{\partial w_n}(f_n (\mathbf{w}) \bigcirc
+            g_n(\mathbf{x})) \\
+            \end{bmatrix}
+            \]</span></p>
+            <p>考虑到当 <span class="math inline">\(j \ne i\)</span>
+            时，<span class="math inline">\(\frac{\partial}{\partial
+            w_j}(f_i(\mathbf{w}) \bigcirc g_i(\mathbf{x})) =
+            0\)</span>，所以</p>
+            <p><span class="math display">\[
+            \frac{\partial \mathbf{y}}{\partial \mathbf{w}} = diag
+            \big(\frac{\partial}{\partial w_1}(f_1(w_1) \bigcirc
+            g_1(x_1)), \frac{\partial}{\partial w_2}(f_2(w_2) \bigcirc
+            g_2(x_2)), \cdots, \frac{\partial}{\partial w_n}(f_n(w_n)
+            \bigcirc g_n(x_n)) \big)
+            \]</span></p>
+            <p>对于 <span
+            class="math inline">\(\mathbf{x}\)</span>，我们可以得到类似的结果：</p>
+            <p><span class="math display">\[
+            \frac{\partial \mathbf{y}}{\partial \mathbf{x}} = diag
+            \big(\frac{\partial}{\partial x_1}(f_1(w_1) \bigcirc
+            g_1(x_1)), \frac{\partial}{\partial x_2}(f_2(w_2) \bigcirc
+            g_2(x_2)), \cdots, \frac{\partial}{\partial x_n}(f_n(w_n)
+            \bigcirc g_n(x_n)) \big)
+            \]</span></p>
+            <h4 id="向量链式法则">向量链式法则</h4>
+            <p>单变量链式法则：</p>
+            <p><span class="math display">\[\frac{d}{dx} f(g(x)) =
+            \frac{df}{dg} \frac{dg}{dx}\]</span></p>
+            <p>多变量链式法则：</p>
+            <p><span class="math display">\[
+            \frac{\partial}{\partial x}
+            {\mathbf{f}(\mathbf{g}(\mathbf{x}))} =
+            \begin{bmatrix}
+            \frac{\partial f_1}{\partial g_1} &amp; \frac{\partial
+            f_1}{\partial g_2} &amp; \cdots &amp; \frac{\partial
+            f_1}{\partial g_k} \\
+            \frac{\partial f_2}{\partial g_1} &amp; \frac{\partial
+            f_2}{\partial g_2} &amp; \cdots &amp; \frac{\partial
+            f_2}{\partial g_k} \\
+            \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+            \frac{\partial f_m}{\partial g_1} &amp; \frac{\partial
+            f_m}{\partial g_2} &amp; \cdots &amp; \frac{\partial
+            f_m}{\partial g_k} \\
+            \end{bmatrix}
+            \begin{bmatrix}
+            \frac{\partial g_1}{\partial x_1} &amp; \frac{\partial
+            g_1}{\partial x_2} &amp; \cdots &amp; \frac{\partial
+            g_1}{\partial x_n} \\
+            \frac{\partial g_2}{\partial x_1} &amp; \frac{\partial
+            g_2}{\partial x_2} &amp; \cdots &amp; \frac{\partial
+            g_2}{\partial x_n} \\
+            \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+            \frac{\partial g_k}{\partial x_1} &amp; \frac{\partial
+            g_k}{\partial x_2} &amp; \cdots &amp; \frac{\partial
+            g_k}{\partial x_n} \\
+            \end{bmatrix}
+            \]</span></p>
+            <p>其中 <span class="math inline">\(m = |f|\)</span>，<span
+            class="math inline">\(n = |x|\)</span>，<span
+            class="math inline">\(k = |g|\)</span>。 得到的雅可比矩阵是
+            <span class="math inline">\(m \times n\)</span>（一个 <span
+            class="math inline">\(m \times k\)</span> 矩阵乘以 <span
+            class="math inline">\(k \times n\)</span> 矩阵）。</p>
+            <p>有时，对向量 <span
+            class="math inline">\(\mathbf{w}\)</span> 和 <span
+            class="math inline">\(\mathbf{x}\)</span>
+            的逐元素运算会产生对角矩阵，前面的等式可以简化为：</p>
+            <p><span class="math display">\[\frac{\partial
+            \mathbf{f}}{\partial \mathbf{g}} = diag( \frac{\partial
+            f_i}{\partial g_i} )\]</span></p>
+            <p><span class="math display">\[\frac{\partial
+            \mathbf{g}}{\partial \mathbf{x}} = diag( \frac{\partial
+            g_i}{\partial x_i} )\]</span></p>
+            <p><span class="math display">\[\frac{\partial}{\partial x}
+            {\mathbf{f}(\mathbf{g}(\mathbf{x}))} = diag( \frac{\partial
+            f_i}{\partial g_i} \frac{\partial g_i}{\partial x_i}
+            )\]</span></p>
+            <h4 id="矩阵扩展运算">矩阵扩展运算</h4>
+            <ul>
+            <li>点积：<span class="math inline">\(A \cdot
+            B\)</span>，矩阵乘法</li>
+            <li>克罗内克积：<span class="math inline">\(A \otimes
+            B\)</span>，逐元素乘法</li>
+            </ul>
+            <h3 id="神经元激活的梯度">神经元激活的梯度</h3>
+            <p><span class="math inline">\(X = [x_1, x_2, \cdots,
+            x_{N}]^{T}\)</span></p>
+            <p><span class="math inline">\(y = [target(x_1),
+            target(x_2), \cdots, target(x_N)]^T\)</span></p>
+            <p>其中 <span class="math inline">\(y_i\)</span>
+            是标量，则成本函数变为</p>
+            <p><span class="math inline">\(C(w, b, X, y) = \frac{1}{N}
+            \sum_{i=1}^{N} (y_i - \sigma(x_i))^2 = \frac{1}{N}
+            \sum_{i=1}^{N} (y_i - max(0, w \cdot x_i +
+            b))^2\)</span></p>
+            <h3 id="训练">训练</h3>
+            <p>大语言模型的训练本质上是<strong>最大似然估计</strong>。其目标是找到一组模型参数
+            <span class="math inline">\(\theta\)</span>，使得在给定输入
+            <span class="math inline">\(x\)</span>
+            的条件下，观测到真实输出 <span
+            class="math inline">\(y\)</span> 的概率最大。</p>
+            <p>其数学形式为：</p>
+            <p><span class="math display">\[
+            \theta^* = \arg\max_\theta \prod_{i=1}^N P_\theta(y_i | x_i)
+            \]</span></p>
+            <p>为便于优化，通常将其转化为最小化负对数似然：</p>
+            <p><span class="math display">\[
+            \theta^* = \arg\min_\theta -\sum_{i=1}^N \log P_\theta(y_i |
+            x_i)
+            \]</span></p>
+            <p>这个目标函数就是<strong>交叉熵损失</strong>。因此，大模型训练的核心是建模并优化条件概率
+            <span class="math inline">\(P(y|x)\)</span>。</p>
+            <p>对于自回归语言模型，其具体任务是<strong>预测下一个词元的概率</strong>：</p>
+            <p><span class="math display">\[
+            P(x_t | x_1, x_2, ..., x_{t-1})
+            \]</span></p>
+            <h4 id="softmax-与交叉熵梯度">Softmax 与交叉熵梯度</h4>
+            <p>Softmax 函数将模型输出的 logits 向量 <span
+            class="math inline">\(\mathbf{z}\)</span>
+            转换为概率分布：</p>
+            <p><span class="math display">\[
+            P_i = \frac{e^{z_i}}{\sum_{j} e^{z_j}}
+            \]</span></p>
+            <p>在训练中，Softmax
+            与交叉熵损失结合使用。其梯度形式简洁且至关重要：</p>
+            <p><span class="math display">\[
+            \frac{\partial L}{\partial z_i} = P_i - y_i
+            \]</span></p>
+            <p>其中，<span class="math inline">\(y_i\)</span>
+            是目标词元的 one-hot 编码。<strong>这个梯度公式是
+            Transformer 模型训练中最核心的反向传播信号。</strong></p>
+            <h4 id="kl-散度">KL 散度</h4>
+            <p>KL 散度衡量两个概率分布 <span
+            class="math inline">\(P\)</span> 和 <span
+            class="math inline">\(Q\)</span> 之间的差异：</p>
+            <p><span class="math display">\[
+            D_{KL}(P || Q) = \sum_x P(x) \log \frac{P(x)}{Q(x)}
+            \]</span></p>
+            <p>它在高级训练技术中广泛应用： *
+            <strong>知识蒸馏</strong>：让学生模型分布逼近教师模型。 *
+            <strong>RLHF /
+            PPO</strong>：在奖励最大化中约束策略模型，防止其偏离原始参考模型
+            <span class="math inline">\(\pi_{ref}\)</span>，例如： <span
+            class="math display">\[
+                L = L_{policy} + \beta \cdot D_{KL}(\pi || \pi_{ref})
+                \]</span> *
+            <strong>DPO</strong>：直接基于偏好数据优化策略。</p>
+            <h4 id="熵">熵</h4>
+            <p>熵衡量一个概率分布 <span class="math inline">\(P\)</span>
+            的不确定性或随机性：</p>
+            <p><span class="math display">\[
+            H(P) = -\sum_x P(x) \log P(x)
+            \]</span></p>
+            <p>在强化学习和采样策略中，熵项常用于鼓励探索，防止策略过早收敛到单一模式。</p>
+            <h3 id="优化理论">优化理论</h3>
+            <p>训练过程在数学上是一个<strong>最小化损失函数</strong>的优化问题。</p>
+            <h4 id="梯度下降">梯度下降</h4>
+            <p>基础的参数更新方式： <span class="math display">\[
+            \theta_{t} = \theta_{t-1} - \eta \cdot \nabla_\theta
+            L(\theta)
+            \]</span> 其中 <span class="math inline">\(\eta\)</span>
+            是学习率。</p>
+            <h4 id="随机梯度下降">随机梯度下降</h4>
+            <p>在实际训练中，使用小批量数据 <span
+            class="math inline">\(B\)</span>
+            来近似计算梯度，以提升效率： <span class="math display">\[
+            \nabla_\theta L(\theta) \approx \frac{1}{|B|} \sum_{i \in B}
+            \nabla_\theta L_i(\theta)
+            \]</span></p>
+            <h4 id="adam-adamw-优化器">Adam / AdamW 优化器</h4>
+            <p>这是当前训练大模型最主流的优化算法。它引入了动量和自适应学习率。</p>
+            <p><strong>更新步骤：</strong> 1.
+            计算梯度的一阶矩估计（动量）和二阶矩估计： <span
+            class="math display">\[
+                m_t = \beta_1 m_{t-1} + (1 - \beta_1) g_t
+                \]</span> <span class="math display">\[
+                v_t = \beta_2 v_{t-1} + (1 - \beta_2) g_t^2
+                \]</span> 2. 进行偏差校正： <span
+            class="math display">\[
+                \hat{m}_t = \frac{m_t}{1 - \beta_1^t}, \quad \hat{v}_t =
+            \frac{v_t}{1 - \beta_2^t}
+                \]</span> 3. 更新参数： <span class="math display">\[
+                \theta_t = \theta_{t-1} - \eta \cdot
+            \frac{\hat{m}_t}{\sqrt{\hat{v}_t} + \epsilon}
+                \]</span></p>
+            <p><strong>AdamW</strong> 是 Adam
+            的一个变体，它将权重衰减与梯度更新解耦，通常能获得更好的泛化性能，<strong>几乎所有现代大语言模型都使用
+            AdamW 进行训练</strong>。</p>
+          </main>
+        <aside class="wiki-toc">
+      <ul>
+      <li><a href="#引言" id="toc-引言">引言</a></li>
+      <li><a href="#矩阵微积分" id="toc-矩阵微积分">矩阵微积分</a></li>
+      <li><a href="#神经元激活的梯度"
+      id="toc-神经元激活的梯度">神经元激活的梯度</a></li>
+      <li><a href="#训练" id="toc-训练">训练</a></li>
+      <li><a href="#优化理论" id="toc-优化理论">优化理论</a></li>
+      </ul>
+    </aside>
+      </div>
+  <script type="text/javascript">
+    (function () {
+      function markActive() {
+        var here = location.href.split('#')[0];
+        var links = document.querySelectorAll('.wiki-sidebar a');
+        for (var i = 0; i < links.length; i++) {
+          if (links[i].href.split('#')[0] === here) {
+            links[i].classList.add('active');
+          }
+        }
+      }
+      // load the shared site directory once (served from the wiki root);
+      // kept in a standalone file so adding a page needn't rebuild every page.
+      var nav = document.getElementById('wiki-sidebar');
+      if (nav) {
+        fetch('/.wiki_sidebar.html')
+          .then(function (r) { return r.ok ? r.text() : ''; })
+          .then(function (html) {
+            if (html) {
+              nav.innerHTML = html;
+              nav.hidden = false;
+              markActive();
+            }
+          })
+          .catch(function () {});
+      }
+      // keep bootstrap table styling (previously done by sticky_menu.js)
+      var tables = document.getElementsByTagName('table');
+      for (var j = 0; j < tables.length; j++) {
+        tables[j].classList.add('table');
+      }
+    })();
+  </script>
+</body>
+
+</html>

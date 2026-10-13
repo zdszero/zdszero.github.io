@@ -1,0 +1,718 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    dsa
+  </title>
+    <link rel="stylesheet" href="./WikiTheme/theme/bootstrap.css"  />
+        <script defer=""
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+        type="text/javascript"></script>
+      <style type="text/css">
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+      <style type="text/css">
+    /* ---- three column wiki layout (left: site directory, center: content, right: page TOC) ---- */
+    .wiki-layout {
+      display: flex;
+      align-items: flex-start;
+      gap: 24px;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 20px;
+      box-sizing: border-box;
+    }
+    .wiki-sidebar {
+      flex: 0 0 240px;
+      width: 240px;
+      position: sticky;
+      top: 0;
+      max-height: 100vh;
+      overflow-y: auto;
+      padding: 10px 4px 20px 0;
+      border-right: 1px solid #eee;
+      font-size: 14px;
+    }
+    .wiki-sidebar[hidden] { display: none; }
+    .wiki-toc {
+      flex: 0 0 220px;
+      width: 220px;
+      position: sticky;
+      top: 0;
+      max-height: 100vh;
+      overflow-y: auto;
+      padding: 10px 0 20px 4px;
+      border-left: 1px solid #eee;
+      font-size: 14px;
+    }
+    .wiki-main {
+      flex: 1 1 auto;
+      min-width: 0;
+      max-width: 820px;
+      padding: 10px 0 40px;
+    }
+    /* site directory tree */
+    .wiki-sidebar .wiki-home {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #eee;
+      text-decoration: none;
+      color: #333;
+    }
+    .wiki-sidebar ul { list-style: none; margin: 0 0 0 12px; padding: 0; }
+    .wiki-sidebar > ul { margin-left: 0; }
+    .wiki-sidebar li { line-height: 1.7; }
+    .wiki-sidebar a { text-decoration: none; color: #555; }
+    .wiki-sidebar a:hover { color: #0088cc; text-decoration: underline; }
+    .wiki-sidebar a.active { color: #0088cc; font-weight: bold; }
+    /* page TOC */
+    .wiki-toc ul { list-style: none; margin: 0 0 0 12px; padding: 0; }
+    .wiki-toc > ul { margin-left: 0; }
+    .wiki-toc li { line-height: 1.6; }
+    .wiki-toc a { text-decoration: none; color: #555; }
+    .wiki-toc a:hover { color: #0088cc; }
+    @media (max-width: 980px) {
+      .wiki-layout { flex-direction: column; }
+      .wiki-sidebar, .wiki-toc {
+        position: static;
+        width: 100%;
+        flex-basis: auto;
+        max-height: none;
+        border: 0;
+      }
+      .wiki-main { max-width: none; }
+    }
+  </style>
+</head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">dsa</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="wiki-layout">
+    <nav class="wiki-sidebar" id="wiki-sidebar" hidden></nav>
+    <main class="wiki-main">
+            <h3 id="indexer">Indexer</h3>
+            <p>Indexer 在结构上类似一个极简的 attention
+            前半段：它使用少量 head 的低维 <span
+            class="math inline">\(QK^T\)</span> 计算 query–key
+            的相关性分数，但不进行 softmax，也不计算 value 聚合。<br />
+            其输出是一个索引分数，用于评估每个 query token 与历史 token
+            的相关性，从而筛选出需要进入真实 attention 计算的候选
+            token。</p>
+            <p>其中，不同 head 的相关性分数通过由 query token
+            自适应生成的 gating 权重进行加权融合。</p>
+            <p><span class="math display">\[
+            I_{t,s} = \sum_{j=1}^{H^l} w_{t,j}^l \cdot ReLU(q_{t,j}^l
+            \cdot k_s^l)
+            \]</span></p>
+            <p>其中：</p>
+            <ul>
+            <li><span
+            class="math inline">\(H^l\)</span>：索引器头数（数量少，保证轻量化）；</li>
+            <li><span
+            class="math inline">\(w_{t,j}^l\)</span>：由当前查询 token
+            <span class="math inline">\(h_t\)</span> 生成的权重；</li>
+            <li><span class="math inline">\(q_{t,j}^l /
+            k_s^l\)</span>：分别由查询 token、前文 token
+            生成的查询向量与键向量；</li>
+            <li><span
+            class="math inline">\(ReLU\)</span>：激活函数。</li>
+            </ul>
+            <h4 id="shape">Shape</h4>
+            <ul>
+            <li><span class="math inline">\(W Q^{T}\)</span>:
+            <code>[bs, q_len, kv_len, n_heads, 1]</code></li>
+            <li>weight proj: <code>[bs, n_heads]</code></li>
+            <li>index score: <code>[bs, q_len, kv_len]</code></li>
+            </ul>
+            <figure>
+            <img src="./WikiImage/v32_indexer_workflow.drawio.svg"
+            alt="v32 indexer 流程" />
+            <figcaption aria-hidden="true">v32 indexer 流程</figcaption>
+            </figure>
+            <p><span class="math display">\[
+            \begin{aligned}
+            q_{\text{fp8}} &amp;: (Q, H, d) \quad \text{多头 query} \\
+            k_{\text{fp8}} &amp;: (K, d) \quad \text{单头 key (MQA)} \\
+            \text{weights} &amp;: (Q, H) \quad \text{per-head gate} \\
+            \\
+            \text{GEMM} &amp;: (Q \times H, d) \; @ \; (K, d)^T
+            \rightarrow (Q \times H, K) \quad \text{per-head dot
+            products} \\
+            \text{ReLU} &amp;: (Q \times H, K) \quad \text{截断负值} \\
+            \times \text{weight} &amp;: (Q \times H, K) \quad \text{乘
+            per-head gate} \\
+            \Sigma_h &amp;: (Q \times H, K) \rightarrow (Q, K) \quad
+            \text{跨 head 求和（reduce sum）} \\
+            \times k_{\text{scale}} &amp;: (Q, K) \quad \text{乘 KV 的
+            FP8 反量化 scale} \\
+            \\
+            \text{输出} &amp;: \text{logits} \; (Q, K) \; \text{float32}
+            \end{aligned}
+            \]</span></p>
+            <h4 id="scale">Scale</h4>
+            <p>weights_proj 用来从 hidden state 预测每个 head 对 block
+            选择的 <strong>重要性权重</strong>。这是一个
+            <strong>可学习的参数</strong>，在训练中优化。</p>
+            <div class="sourceCode" id="cb1"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> _get_logits_head_gate(<span class="va">self</span>, x, q_scale):</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    weights, _ <span class="op">=</span> <span class="va">self</span>.weights_proj(x)           <span class="co"># (seq_len, n_heads)</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    weights <span class="op">=</span> weights.<span class="bu">float</span>()</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    weights <span class="op">=</span> weights <span class="op">*</span> <span class="va">self</span>.n_heads<span class="op">**-</span><span class="fl">0.5</span>      <span class="co"># scale by 1/√H</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    weights <span class="op">=</span> weights.unsqueeze(<span class="op">-</span><span class="dv">1</span>) <span class="op">*</span> q_scale <span class="op">*</span> <span class="va">self</span>.softmax_scale</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">#         ^(seq_len, n_heads, 1)   ^FP8量化scale  ^1/√d</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> weights</span></code></pre></div>
+            <p><span class="math display">\[
+            \begin{aligned}
+            \text{logit}[q, k] &amp;= \sum_h \left( \text{weight}[q, h]
+            \times \mathbf{q\_fp8}[q, h, :] \cdot \mathbf{k\_fp8}[k, :]
+            \right) \times k\_scale[k] \\
+            &amp;= \sum_h \left( \frac{g[q,h]}{\sqrt{H}} \times
+            q\_scale[q,h] \times \frac{1}{\sqrt{d}} \times
+            \mathbf{q\_fp8}[q,h] \cdot \mathbf{k\_fp8}[k] \times
+            k\_scale[k] \right) \\
+            &amp;= \sum_h \left( \frac{g[q,h]}{\sqrt{H}} \times
+            \frac{\mathbf{q}[q,h] \cdot \mathbf{k}[k]}{\sqrt{d}} \right)
+            \\
+            &amp;= \sum_h \left( \frac{g[q,h]}{\sqrt{H}} \times
+            \text{attn\_logit\_h}[q,k] \right)
+            \end{aligned}
+            \]</span></p>
+            <h4 id="topk">TopK</h4>
+            <h3 id="theory">theory</h3>
+            <h4 id="kv-cache">kv cache</h4>
+            <p>Indexer 有<strong>独立的 KV
+            cache</strong>（<code>index_k_with_scale_buffer</code>），和
+            MLA 主 KV cache 是分开的。</p>
+            <p>每个 token 每层存储的是 indexer 的 <strong>key</strong>：
+            - <strong>head 数 = 1</strong>（MQA 风格，只有一个 key
+            head） - <strong>head_dim = 128</strong></p>
+            <p>代码中有明确 assert：</p>
+            <div class="sourceCode" id="cb2"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># memory_pool.py:1772-1773</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># num head == 1 and head dim == 128 for index_k in NSA</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> index_head_dim <span class="op">==</span> <span class="dv">128</span></span></code></pre></div>
+            <p><strong>存储数据类型：FP8 + FP32 scale</strong></p>
+            <p>存储类型是 <strong><code>torch.uint8</code></strong>（即
+            FP8 映射到 uint8），加上 per-block FP32 量化 scale：</p>
+            <div class="sourceCode" id="cb3"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># memory_pool.py:1732</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>index_k_with_scale_buffer_dtype <span class="op">=</span> torch.uint8</span></code></pre></div>
+            <p>然后 block size 是 128，也就是 128 个数据单元共用一个
+            fp32 4 字节的 scale。</p>
+            <p><strong>对比 MLA 主 KV cache</strong></p>
+            <table>
+            <colgroup>
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th></th>
+            <th>Indexer KV cache</th>
+            <th>MLA 主 KV cache (bf16)</th>
+            <th>MLA 主 KV cache (fp8)</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td><strong>存什么</strong></td>
+            <td>indexer key（hadamard 旋转后）</td>
+            <td><span class="math inline">\(k\_\text{nope} +
+            k\_\text{rope}\)</span>（latent）</td>
+            <td><span class="math inline">\(k\_\text{nope\_fp8} +
+            \text{scale} + k\_\text{rope\_bf16}\)</span></td>
+            </tr>
+            <tr>
+            <td><strong>维度</strong></td>
+            <td>128 (<span class="math inline">\(1\ \text{head} \times
+            128\ \text{dim}\)</span>)</td>
+            <td>576 (<span class="math inline">\(512 + 64\)</span>)</td>
+            <td>656 (<span class="math inline">\(512 + 16 +
+            128\)</span>)</td>
+            </tr>
+            <tr>
+            <td><strong>数据类型</strong></td>
+            <td>fp8 + fp32 scale</td>
+            <td>bf16</td>
+            <td>fp8 + fp32 scale + bf16 rope</td>
+            </tr>
+            <tr>
+            <td><strong>每 token 每层</strong></td>
+            <td><strong>132 bytes</strong></td>
+            <td><strong>1152 bytes</strong></td>
+            <td><strong>656 bytes</strong></td>
+            </tr>
+            <tr>
+            <td><strong>独立 buffer</strong></td>
+            <td><code>index_k_with_scale_buffer</code></td>
+            <td><code>kv_buffer</code></td>
+            <td><code>kv_buffer</code></td>
+            </tr>
+            </tbody>
+            </table>
+            <p><strong>总显存开销</strong></p>
+            <p>每个 token 每层的 <strong>总 KV cache</strong> = MLA 主
+            cache + indexer cache： - bf16 模式：<span
+            class="math display">\[1152 + 132 = \mathbf{1284\
+            bytes/token/layer}\]</span> - fp8 模式：<span
+            class="math display">\[656 + 132 = \mathbf{788\
+            bytes/token/layer}\]</span></p>
+            <p>常用经验值：</p>
+            <ul>
+            <li>在 dense 的 mla 路径中，一个 token 61 层总共需要 <span
+            class="math inline">\(70\text{kb}\)</span> 左右的显存。</li>
+            <li>在 sparse 的 mla 路径中，一个 token 61 层的 mla latent
+            cahce 总共需要 <span
+            class="math inline">\(40\text{kb}\)</span> 左右的显存。</li>
+            <li>在 sparse 的 mla 路径中，一个 token 61 层 mla latent
+            cahce + index k cache 总共需要 <span
+            class="math inline">\(48\text{kb}\)</span> 左右的显存。</li>
+            </ul>
+            <h4 id="decode-flops">decode flops</h4>
+            <p>如果不使用稀疏注意力，attention 计算量在 decode
+            阶段线性增长为 <span
+            class="math inline">\(2BTSNH\)</span></p>
+            <p>其中： - <span class="math inline">\(B\)</span>: batch
+            size - <span class="math inline">\(T\)</span>: q_len - <span
+            class="math inline">\(S\)</span>: kv_len - <span
+            class="math inline">\(N\)</span>: number of q heads - <span
+            class="math inline">\(H\)</span>: head dim</p>
+            <p>实现 DSA 之后，当 kv_len 长度超过 2048
+            的时候，稀疏注意力部分的计算量就不再增长了，但是 indexer
+            阶段的注意力还是线性增长的，不过这个斜率比较小，因为 <span
+            class="math inline">\(N=64,
+            H=64\)</span>，这个参数还是比较小的。</p>
+            <p>假设 window_size 为 <span class="math inline">\(W =
+            2048\)</span>，那么 decode 阶段 dsa 每个 step 计算量为：</p>
+            <p>$4BT min(S, W) NH)</p>
+            <h3 id="tp-vs-cp">TP vs CP</h3>
+            <p><strong>如果采用 TP，indexer 阶段不按照 TP
+            切分</strong></p>
+            <p>如果采用 TP，不能切 indexer 的 mqa
+            过程，因为后续有一个按照不同 head sum 的过程，如果按照 TP
+            进行切分的话，需要有一个 AllReduce 通信，而这个通信量是大于
+            CP 切分的 index kv all gather 的。</p>
+            <p>同样，对于 sparse mqa + o_proj 的 TP 切分导致的 all
+            reduce 通信量也大于 kv all gather 的通信量。</p>
+            <ul>
+            <li>indexer
+            <ul>
+            <li>CP
+            通信量：<code>T / cp_size * index_v_hdim</code>，数据量为
+            <span class="math inline">\(O(T)\)</span></li>
+            <li>TP
+            通信量：<code>T * T / tp_size * (tp_size - 1) * 2 * sizeof(float32)</code>，数据量为
+            <span class="math inline">\(O(T^2)\)</span></li>
+            </ul></li>
+            <li>sparse mqa
+            <ul>
+            <li>CP 通信量：<code>T / cp_size * 576</code></li>
+            <li>TP
+            通信量：<code>T / tp_size * (tp_size - 1) * 7168 * 2</code></li>
+            </ul></li>
+            </ul>
+            <p>两种模式下都是 CP 的通信量小于 TP。</p>
+            <p><strong>再对比一下 sparse mqa 模式的 TP 和
+            CP</strong></p>
+            <table>
+            <colgroup>
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th style="text-align: left;">维度</th>
+            <th style="text-align: left;">TP（切 head）</th>
+            <th style="text-align: left;">CP（切序列）</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td style="text-align: left;"><strong>Indexer
+            计算量</strong></td>
+            <td style="text-align: left;">不减少（每个 rank 处理全部
+            token）</td>
+            <td style="text-align: left;">线性缩减（只处理局部
+            token）</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;"><strong>QKV Proj
+            计算量</strong></td>
+            <td style="text-align: left;">按 head 数缩减</td>
+            <td style="text-align: left;">按 token 数缩减</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;"><strong>Attention
+            计算量</strong></td>
+            <td style="text-align: left;">Q head 数缩减，KV
+            长度不变</td>
+            <td style="text-align: left;">Q 长度缩减，KV 通过 AllGather
+            完整</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;"><strong>通信</strong></td>
+            <td style="text-align: left;">O proj 的
+            all-reduce（大）</td>
+            <td style="text-align: left;">压缩 KV 的 AllGather（小，因为
+            MLA）</td>
+            </tr>
+            </tbody>
+            </table>
+            <h3 id="dsa-cp">DSA + CP</h3>
+            <h4 id="allgather-cp">AllGather CP</h4>
+            <p><strong>Ring Attention vs AllGather CP</strong></p>
+            <table>
+            <colgroup>
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th></th>
+            <th>Ring Attention</th>
+            <th>SGLang 这里的 CP</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>通信方式</td>
+            <td>P2P send/recv，KV 绕环传递</td>
+            <td>AllGather 一次收集所有 KV</td>
+            </tr>
+            <tr>
+            <td>通信轮次</td>
+            <td>CP=8 需要 7 轮</td>
+            <td><strong>1 轮 AllGather</strong></td>
+            </tr>
+            <tr>
+            <td>每轮计算</td>
+            <td>每轮用当前 KV chunk 做部分 attention</td>
+            <td>收齐后做<strong>完整 attention</strong></td>
+            </tr>
+            <tr>
+            <td>overlap</td>
+            <td>第 i 轮计算与第 i+1 轮传输重叠</td>
+            <td>AllGather 与其他计算重叠</td>
+            </tr>
+            </tbody>
+            </table>
+            <p><strong>为什么能用 AllGather？关键在于 MLA</strong></p>
+            <p>DeepSeek V3 使用 MLA（Multi-head Latent Attention），KV
+            cache 是<strong>高度压缩</strong>的——每个 token 的 KV 只有
+            <code>kv_lora_rank + qk_rope_head_dim</code>（约 512+64=576
+            维），而不是传统 MHA 的
+            <code>num_heads * head_dim</code>（128*128=16384 维）。</p>
+            <p><strong>KV cache 体积小了约 28 倍</strong>，使得
+            AllGather 整段 KV 的通信量可以接受。</p>
+            <h4 id="q-split">Q Split</h4>
+            <h5 id="zig-zag">zig-zag</h5>
+            <p>先切成 <code>cp_size * 2</code> 块，然后交叉配对：</p>
+            <div class="sourceCode" id="cb4"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># nsa/utils.py:499-516</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>cp_segment_num <span class="op">=</span> cp_size <span class="op">*</span> <span class="dv">2</span>  <span class="co"># = 8</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># zigzag_index: 每个rank拿一个靠前的block + 一个靠后的block</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>zigzag_index <span class="op">=</span> [cp_rank, ...(前)] <span class="op">+</span> [cp_segment_num <span class="op">-</span> cp_rank <span class="op">-</span> <span class="dv">1</span>, ...(后)]</span></code></pre></div>
+            <p>结果：</p>
+            <pre><code>block:  b0   b1   b2   b3   b4   b5   b6   b7
+        ↓    ↓    ↓    ↓    ↓    ↓    ↓    ↓
+rank0: b0 + b7  (最前 + 最后)
+rank1: b1 + b6
+rank2: b2 + b5
+rank3: b3 + b4  (中间两块)</code></pre>
+            <p>每个 rank 的计算量（N=8000, 每块 1000 token）：</p>
+            <pre><code>rank0: b0(Q attend 0~999,    avg_kv≈500)   + b7(Q attend 7000~7999, avg_kv≈7500)
+       = 1000*500 + 1000*7500 = 8M
+
+rank1: b1(avg_kv≈1500) + b6(avg_kv≈6500)
+       = 1000*1500 + 1000*6500 = 8M
+
+rank2: b2(avg_kv≈2500) + b5(avg_kv≈5500)
+       = 1000*2500 + 1000*5500 = 8M
+
+rank3: b3(avg_kv≈3500) + b4(avg_kv≈4500)
+       = 1000*3500 + 1000*4500 = 8M</code></pre>
+            <p>每个 rank 的计算量完全一致——因为配对的两个 block 的平均
+            KV 长度之和总是 <code>(i + (N-i)) = N</code>。</p>
+            <h5 id="round-robin">round-robin</h5>
+            <p>按 token 逐个分配：</p>
+            <pre><code># token_idx % cp_size 分配
+rank0: token0, token4, token8,  token12, ...
+rank1: token1, token5, token9,  token13, ...
+rank2: token2, token6, token10, token14, ...
+rank3: token3, token7, token11, token15, ...</code></pre>
+            <p>这种方式更彻底——每个 rank 的 token
+            均匀散布在整个序列中，天然负载均衡。代价是后续需要更复杂的
+            index 重组。</p>
+            <h4 id="workflow">Workflow</h4>
+            <p>以 CP=4, in-seq-split 为例</p>
+            <p><strong>Step 1: 切分输入</strong></p>
+            <blockquote>
+            <p>代码位置: <code>deepseek_v2.py:2685-2688</code></p>
+            </blockquote>
+            <p>假设总序列长 8000 tokens，先切成
+            <code>cp_size*2 = 8</code> 块，再 zigzag 分配：</p>
+            <pre><code>原始: block0 | block1 | block2 | block3 | block4 | block5 | block6 | block7
+                                    ↓ zigzag 重排
+rank0: block0, block7  (头+尾, 平衡 causal mask 计算量)
+rank1: block1, block6
+rank2: block2, block5
+rank3: block3, block4</code></pre>
+            <p>每个 rank 只处理约 1/4 的 token，各自独立过 embedding →
+            layernorm → QKV projection。</p>
+            <p><strong>Step 2: AllGather KV Cache</strong></p>
+            <blockquote>
+            <p>代码位置: <code>deepseek_v2.py:1731-1735</code></p>
+            </blockquote>
+            <p>这是关键步骤。在 <code>forward_absorb_prepare</code>
+            中，每个 rank 计算出自己那部分 token 的
+            <code>latent_cache</code>（k_nope + k_pe），然后：</p>
+            <div class="sourceCode" id="cb9"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> rebuild_cp_kv_cache(<span class="va">self</span>, latent_cache, forward_batch, k_nope, k_pe):</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 把 k_nope 和 k_pe 打包成 latent_cache</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    latent_cache[..., :<span class="va">self</span>.kv_lora_rank] <span class="op">=</span> k_nope.squeeze(<span class="dv">1</span>)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    latent_cache[..., <span class="va">self</span>.kv_lora_rank:] <span class="op">=</span> k_pe.squeeze(<span class="dv">1</span>)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 一次 AllGather：每个 rank 的局部 KV → 所有 rank 拿到完整 KV</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    latent_cache_output <span class="op">=</span> cp_all_gather_rerange_output(</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>        latent_cache.contiguous(), <span class="va">self</span>.cp_size, forward_batch, stream)</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 拆回 k_nope, k_pe</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    k_nope <span class="op">=</span> latent_cache_output[..., :<span class="va">self</span>.kv_lora_rank].unsqueeze(<span class="dv">1</span>)</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    k_pe <span class="op">=</span> latent_cache_output[..., <span class="va">self</span>.kv_lora_rank:].unsqueeze(<span class="dv">1</span>)</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> k_nope, k_pe</span></code></pre></div>
+            <p>AllGather 之后，<strong>每个 rank 都拥有完整的 8000 个
+            token 的 KV cache</strong>。</p>
+            <p><strong>Step 3: 本地做完整的 Causal
+            Attention</strong></p>
+            <p>每个 rank 拿自己的 Q（只有 ~2000 tokens）和完整的
+            KV（8000 tokens）做 attention。因为是 causal mask，所以： -
+            rank0 的 Q 对应 block0 和 block7 的位置，只需要 attend
+            到各自因果范围内的 KV - 各 rank 独立计算，不需要多轮迭代</p>
+            <p><strong>Step 4: AllGather 最终输出</strong></p>
+            <blockquote>
+            <p>代码位置: <code>deepseek_v2.py:2768-2775</code></p>
+            </blockquote>
+            <p>最后一层结束后，各 rank 的 hidden_states（各约 1/4）再
+            AllGather + rerange 拼回完整序列。</p>
+            <h4 id="kv-allgather">KV AllGather</h4>
+            <blockquote>
+            <p>代码位置: <code>nsa/utils.py:291-332</code></p>
+            </blockquote>
+            <div class="sourceCode" id="cb10"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> cp_attn_tp_all_gather_reorganazied_into_tensor(...):</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Step 1: pad 到统一长度（AllGather 要求各 rank shape 相同）</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    max_len <span class="op">=</span> (total_len <span class="op">+</span> attn_tp_size <span class="op">-</span> <span class="dv">1</span>) <span class="op">//</span> attn_tp_size</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    input_ <span class="op">=</span> F.pad(input_, ...)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Step 2: 异步 AllGather（用 pynccl 避免 event 同步开销）</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    get_attention_cp_group().cp_all_gather_into_tensor_async(</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>        input_tensor_all, input_, stream_op)</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Step 3: 去掉 padding，按 zigzag 逆序重排回原始顺序</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    outputs <span class="op">=</span> torch.cat([...去padding拼接...])</span></code></pre></div>
+            <h4 id="overlap">Overlap</h4>
+            <p>不是在 attention kernel 内部，而是：</p>
+            <ol type="1">
+            <li><strong>AllGather KV 与 Q projection
+            计算重叠</strong>：AllGather
+            是异步发起的（<code>cp_all_gather_into_tensor_async</code>），Q
+            的投影计算可以同时进行</li>
+            <li><strong>层间通信与 MLP
+            计算重叠</strong>：<code>NSACPCommunicator</code> 在
+            attention→MLP 转换时做 allgather/reduce_scatter，与
+            layernorm 等计算重叠</li>
+            </ol>
+            <hr />
+            <p><strong>总结</strong></p>
+            <pre><code>Ring Attention (传统方案):
+  for round in 0..CP-1:
+    send_recv(kv_chunk)        ← P2P 通信
+    partial_attn(q, kv_chunk)  ← 与通信 overlap
+  reduce(partial_results)
+
+SGLang 这里的 AllGather CP:
+  each rank: compute local KV from local tokens
+  AllGather(all KV)             ← 一次通信，拿到完整 KV
+  each rank: full_attn(local_Q, full_KV)  ← 本地完整计算
+  AllGather(output)             ← 拼回完整输出</code></pre>
+            <h3 id="prefill-dsa-vs-mha">Prefill DSA vs MHA</h3>
+            <p>在 prefill 使用 sparse mla 的判断逻辑：</p>
+            <div class="sourceCode" id="cb12"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="va">self</span>.use_mha <span class="op">=</span> (</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    device_sm <span class="kw">in</span> [<span class="dv">90</span>, <span class="fl">100..109</span>]</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">and</span> max_kv_len <span class="op">&lt;=</span> <span class="va">self</span>.nsa_index_topk      <span class="co"># 条件 1: 最长序列 ≤ 2048</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">and</span> dtype <span class="kw">in</span> [bf16, fp8_e4m3]</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">and</span> sum_seq_lens <span class="op">&lt;=</span> max_chunk_capacity      <span class="co"># 条件 2: 总 token 数能放进 chunk</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">and</span> <span class="kw">not</span> CP</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+            <p>V3.2 非 trtllm backend 下，当 batch
+            中最长请求的完整上下文长度 ≤ 2048 且总 token 数能装进一个
+            chunk 时，走 MHA；否则走 sparse MLA。</p>
+            <p>这个设计的核心逻辑是：<strong>当 sparse 等于 dense
+            时，跳过 sparse 的开销，直接做 dense
+            attention。</strong></p>
+            <p>为什么阈值是 <code>index_topk = 2048</code></p>
+            <p>NSA indexer 从所有 KV token 中选 top-2048 个 block 做
+            sparse attention。如果总 KV 长度本身就 ≤ 2048，那 top-2048
+            会选中<strong>全部</strong> token，sparse =
+            dense。此时可以节省掉 indexer 的开销，并且本身 MHA
+            的效率也不低于 sparse MQA。</p>
+            <blockquote>
+            <p>由于 MQA 的计算量是 MHA 的三倍，所以 6k 的场景下都是 MHA
+            &gt; 2k sparse MQA + indexer</p>
+            </blockquote>
+            <p>为什么要检查
+            <code>sum_seq_lens ≤ max_chunk_capacity</code></p>
+            <p>MHA_ONE_SHOT 把整个 batch 的 Q 和 KV 一次性放入一个
+            kernel
+            调用。这要求所有数据能装进显存中的一块连续工作区（chunk）。如果
+            batch 中虽然每条请求都短（≤ 2048），但请求数量很多，总 token
+            数可能超出 chunk 容量。这时候无法 one-shot，只能退回 sparse
+            MLA（sparse MLA 走 paged KV cache，没有这个限制）。</p>
+            <pre><code>seq_len ≤ 2048 且 batch 装得下 → MHA（省 indexer 开销，sparse 无意义）
+seq_len &gt; 2048                  → sparse MLA（indexer 选出 2048 个 block，真正稀疏）
+seq_len ≤ 2048 但 batch 太大   → sparse MLA（MHA one-shot 放不下，退回 paged 路径）</code></pre>
+          </main>
+        <aside class="wiki-toc">
+      <ul>
+      <li><a href="#indexer" id="toc-indexer">Indexer</a></li>
+      <li><a href="#theory" id="toc-theory">theory</a></li>
+      <li><a href="#tp-vs-cp" id="toc-tp-vs-cp">TP vs CP</a></li>
+      <li><a href="#dsa-cp" id="toc-dsa-cp">DSA + CP</a></li>
+      <li><a href="#prefill-dsa-vs-mha"
+      id="toc-prefill-dsa-vs-mha">Prefill DSA vs MHA</a></li>
+      </ul>
+    </aside>
+      </div>
+  <script type="text/javascript">
+    (function () {
+      function markActive() {
+        var here = location.href.split('#')[0];
+        var links = document.querySelectorAll('.wiki-sidebar a');
+        for (var i = 0; i < links.length; i++) {
+          if (links[i].href.split('#')[0] === here) {
+            links[i].classList.add('active');
+          }
+        }
+      }
+      // load the shared site directory once (served from the wiki root);
+      // kept in a standalone file so adding a page needn't rebuild every page.
+      var nav = document.getElementById('wiki-sidebar');
+      if (nav) {
+        fetch('/.wiki_sidebar.html')
+          .then(function (r) { return r.ok ? r.text() : ''; })
+          .then(function (html) {
+            if (html) {
+              nav.innerHTML = html;
+              nav.hidden = false;
+              markActive();
+            }
+          })
+          .catch(function () {});
+      }
+      // keep bootstrap table styling (previously done by sticky_menu.js)
+      var tables = document.getElementsByTagName('table');
+      for (var j = 0; j < tables.length; j++) {
+        tables[j].classList.add('table');
+      }
+    })();
+  </script>
+</body>
+
+</html>

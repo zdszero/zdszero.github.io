@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 430" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="430" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">Prebuilt Batch：用伪造的 forward 结果接管标准 Decode</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">KV 已在显存里，与其改调度器去适配「远程 KV」，不如骗它「刚算完一次 Prefill」</text>
+
+  <!-- inputs -->
+  <rect x="40" y="92" width="260" height="70" rx="10" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="56" y="114" font-size="12" font-weight="700" fill="#0b7285">已到位的事实</text>
+  <text x="56" y="134" font-size="11" fill="#495057">· KV Cache 已被 RDMA 写入 GPU</text>
+  <text x="56" y="151" font-size="11" fill="#495057">· 首 token 在 MetadataBuffers 里</text>
+
+  <!-- normal path (greyed, "本应") -->
+  <rect x="40" y="188" width="260" height="64" rx="10" fill="#f8f9fa" stroke="#dee2e6" stroke-dasharray="5 3"/>
+  <text x="56" y="210" font-size="12" font-weight="700" fill="#868e96">普通节点本应做的</text>
+  <text x="56" y="230" font-size="11" fill="#868e96">跑一次 Prefill forward 才能得到</text>
+  <text x="56" y="247" font-size="11" fill="#868e96">KV 和首 token —— 这里跳过</text>
+
+  <!-- process_prebuilt -->
+  <rect x="340" y="120" width="250" height="110" rx="10" fill="#e5dbff" stroke="#7048e8"/>
+  <rect x="340" y="120" width="250" height="26" rx="10" fill="#7048e8"/>
+  <text x="356" y="138" font-size="12.5" font-weight="700" fill="#ffffff">process_prebuilt()</text>
+  <text x="356" y="166" font-size="11" fill="#5f3dc4">forward_mode = PREBUILT</text>
+  <text x="356" y="184" font-size="11" fill="#5f3dc4">（永不进入模型 forward）</text>
+  <text x="356" y="206" font-size="11" fill="#5f3dc4">把 metadata 首 token 当作</text>
+  <text x="356" y="222" font-size="11" fill="#5f3dc4">「forward 输出」塞进 output_ids</text>
+
+  <!-- output -->
+  <rect x="630" y="120" width="230" height="110" rx="10" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="630" y="120" width="230" height="26" rx="10" fill="#0ca678"/>
+  <text x="646" y="138" font-size="12.5" font-weight="700" fill="#ffffff">标准 Decode 代码路径</text>
+  <text x="646" y="166" font-size="11" fill="#495057">并入 Running Batch</text>
+  <text x="646" y="186" font-size="11" fill="#495057">get_next_disagg_decode_</text>
+  <text x="646" y="202" font-size="11" fill="#495057">batch_to_run()</text>
+  <text x="646" y="222" font-size="11" font-weight="700" fill="#0b7285">→ 自回归，代码零改动</text>
+
+  <!-- arrows -->
+  <path d="M300 136 L338 150" stroke="#868e96" stroke-width="1.8" marker-end="url(#arpb)"/>
+  <path d="M300 210 Q320 200 338 192" fill="none" stroke="#adb5bd" stroke-width="1.4" stroke-dasharray="4 3" marker-end="url(#arpb)"/>
+  <path d="M590 175 L628 175" stroke="#868e96" stroke-width="2" marker-end="url(#arpb)"/>
+
+  <!-- EAGLE note -->
+  <rect x="40" y="280" width="820" height="52" rx="10" fill="#fff9db" stroke="#f0b429"/>
+  <text x="56" y="302" font-size="12" font-weight="700" fill="#b26a00">投机解码（EAGLE）：</text>
+  <text x="56" y="322" font-size="11.5" fill="#996a13">metadata 里还带了 topk 概率 / 索引 / hidden_states，build_disagg_draft_input() 据此恢复 draft 模型输入，让 prebuilt 也能无缝衔接投机解码。</text>
+
+  <!-- takeaway -->
+  <rect x="40" y="346" width="820" height="60" rx="10" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="56" y="368" font-size="12.5" font-weight="700" fill="#495057">核心价值：一次「假 batch」把 disaggregation 的特殊性全部吸收在 Decode 侧入口。</text>
+  <text x="56" y="390" font-size="12" fill="#495057">调度器以为自己刚做完 Prefill，后续所有自回归逻辑原样复用——这是整个设计里改动面最小、复用度最高的一招。</text>
+
+  <defs>
+    <marker id="arpb" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#868e96"/></marker>
+  </defs>
+</svg>

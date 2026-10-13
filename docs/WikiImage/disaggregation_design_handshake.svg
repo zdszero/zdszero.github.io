@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 580" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="580" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">三层协调协议与 KVSender 状态机</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">HTTP 解决「去哪找」· ZMQ 解决「写到哪」· RDMA 解决「怎么快速写」</text>
+
+  <!-- lifeline headers -->
+  <rect x="60" y="78" width="180" height="40" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="150" y="103" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0b7285">Decode (Receiver)</text>
+  <rect x="360" y="78" width="180" height="40" rx="8" fill="#fff9db" stroke="#f08c00"/>
+  <text x="450" y="103" text-anchor="middle" font-size="12.5" font-weight="700" fill="#e8590c">Bootstrap Server</text>
+  <rect x="660" y="78" width="180" height="40" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="750" y="103" text-anchor="middle" font-size="12.5" font-weight="700" fill="#3b5bdb">Prefill (Sender)</text>
+
+  <!-- lifelines -->
+  <line x1="150" y1="118" x2="150" y2="520" stroke="#dee2e6" stroke-width="2"/>
+  <line x1="450" y1="118" x2="450" y2="520" stroke="#dee2e6" stroke-width="2"/>
+  <line x1="750" y1="118" x2="750" y2="520" stroke="#dee2e6" stroke-width="2"/>
+
+  <!-- HTTP phase -->
+  <text x="300" y="140" text-anchor="middle" font-size="10.5" font-weight="700" fill="#0b7285">HTTP · 服务发现（低频）</text>
+  <path d="M152 156 L448 156" stroke="#0ca678" stroke-width="1.8" marker-end="url(#arh)"/>
+  <text x="300" y="151" text-anchor="middle" font-size="10.5" fill="#495057">GET /route?prefill_dp_rank=-1（查拓扑）</text>
+  <path d="M448 176 L152 176" stroke="#0ca678" stroke-width="1.4" stroke-dasharray="5 3" marker-end="url(#arh)"/>
+  <text x="300" y="171" text-anchor="middle" font-size="10" fill="#868e96">← PrefillServerInfo（TP/DP/PP, page_size）</text>
+  <path d="M152 202 L448 202" stroke="#0ca678" stroke-width="1.8" marker-end="url(#arh)"/>
+  <text x="300" y="197" text-anchor="middle" font-size="10.5" fill="#495057">GET /route（查目标 worker 地址）</text>
+  <path d="M448 222 L152 222" stroke="#0ca678" stroke-width="1.4" stroke-dasharray="5 3" marker-end="url(#arh)"/>
+  <text x="300" y="217" text-anchor="middle" font-size="10" fill="#868e96">← rank_ip / rank_port</text>
+
+  <!-- ZMQ phase -->
+  <text x="450" y="256" text-anchor="middle" font-size="10.5" font-weight="700" fill="#5f3dc4">ZMQ · 点对点（每请求）</text>
+  <path d="M152 282 L748 282" stroke="#7048e8" stroke-width="1.8" marker-end="url(#arz)"/>
+  <text x="440" y="277" text-anchor="middle" font-size="10.5" fill="#495057">注册 GPU 指针 + session_id（首次一次性）→ 存为 KVArgsRegisterInfo</text>
+  <path d="M152 322 L748 322" stroke="#7048e8" stroke-width="1.8" marker-end="url(#arz)"/>
+  <text x="440" y="317" text-anchor="middle" font-size="10.5" fill="#495057">send_metadata：room + 目标页索引 + aux → 存为 TransferInfo</text>
+
+  <!-- state badges on prefill side -->
+  <rect x="690" y="292" width="120" height="20" rx="10" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="750" y="306" text-anchor="middle" font-size="10" font-weight="700" fill="#3b5bdb">Bootstrapping</text>
+  <rect x="684" y="332" width="132" height="20" rx="10" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="750" y="346" text-anchor="middle" font-size="10" font-weight="700" fill="#3b5bdb">WaitingForInput</text>
+
+  <!-- waiting band -->
+  <rect x="60" y="366" width="780" height="30" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="450" y="385" text-anchor="middle" font-size="11" fill="#868e96">此刻 Decode 侧只是 poll 等待　|　Prefill 侧正常执行 forward，算出 KV 与首 token</text>
+
+  <!-- RDMA phase -->
+  <text x="450" y="420" text-anchor="middle" font-size="10.5" font-weight="700" fill="#e8590c">RDMA · 单边写（高吞吐）</text>
+  <path d="M748 442 L152 442" stroke="#f08c00" stroke-width="2.4" marker-end="url(#aro2)"/>
+  <text x="450" y="437" text-anchor="middle" font-size="10.5" fill="#b26a00">单边写 KV Cache 进 Decode 显存（Decode CPU 不介入）</text>
+  <rect x="700" y="452" width="100" height="20" rx="10" fill="#fff4e6" stroke="#f08c00"/>
+  <text x="750" y="466" text-anchor="middle" font-size="10" font-weight="700" fill="#e8590c">Transferring</text>
+  <path d="M748 490 L152 490" stroke="#7048e8" stroke-width="1.4" stroke-dasharray="5 3" marker-end="url(#arz)"/>
+  <text x="450" y="485" text-anchor="middle" font-size="10.5" fill="#495057">ZMQ 传输完成通知</text>
+  <rect x="708" y="500" width="84" height="20" rx="10" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="750" y="514" text-anchor="middle" font-size="10" font-weight="700" fill="#0b7285">Success</text>
+
+  <text x="60" y="560" font-size="11.5" fill="#868e96">状态单调前进：update_status() 用 max(...) 更新，Failed=0 &lt; Bootstrapping=1 &lt; WaitingForInput=2 &lt; Transferring=3 &lt; Success=4。</text>
+
+  <defs>
+    <marker id="arh" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#0ca678"/></marker>
+    <marker id="arz" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#7048e8"/></marker>
+    <marker id="aro2" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#f08c00"/></marker>
+  </defs>
+</svg>

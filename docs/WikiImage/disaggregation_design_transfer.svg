@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 470" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="470" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">单边 RDMA 写：源页 → 目标页的地址映射</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">Prefill 直接写进 Decode 的 GPU 显存，页号由两侧各自分配、互不相同</text>
+
+  <!-- Prefill GPU -->
+  <rect x="60" y="86" width="250" height="300" rx="10" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="60" y="86" width="250" height="28" rx="10" fill="#4c6ef5"/>
+  <text x="76" y="105" font-size="12.5" font-weight="700" fill="#ffffff">Prefill GPU（源）</text>
+  <text x="76" y="132" font-size="10.5" fill="#868e96" font-family="monospace">src_ptr（本地注册 buffer）</text>
+
+  <!-- Decode GPU -->
+  <rect x="590" y="86" width="250" height="300" rx="10" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="590" y="86" width="250" height="28" rx="10" fill="#0ca678"/>
+  <text x="606" y="105" font-size="12.5" font-weight="700" fill="#ffffff">Decode GPU（目标）</text>
+  <text x="606" y="132" font-size="10.5" fill="#868e96" font-family="monospace">dst_ptr（握手时拿到）</text>
+
+  <!-- prefill cells -->
+  <g font-family="monospace" font-size="11.5">
+    <rect x="76" y="146" width="150" height="30" rx="6" fill="#dbe4ff" stroke="#4c6ef5"/><text x="151" y="166" text-anchor="middle" fill="#3b5bdb">KV Page [3]</text>
+    <rect x="76" y="186" width="150" height="30" rx="6" fill="#dbe4ff" stroke="#4c6ef5"/><text x="151" y="206" text-anchor="middle" fill="#3b5bdb">KV Page [5]</text>
+    <rect x="76" y="226" width="150" height="30" rx="6" fill="#dbe4ff" stroke="#4c6ef5"/><text x="151" y="246" text-anchor="middle" fill="#3b5bdb">KV Page [8]</text>
+    <rect x="76" y="272" width="150" height="30" rx="6" fill="#fff4e6" stroke="#f08c00"/><text x="151" y="292" text-anchor="middle" fill="#e8590c">Metadata [i]</text>
+  </g>
+  <!-- decode cells -->
+  <g font-family="monospace" font-size="11.5">
+    <rect x="674" y="146" width="150" height="30" rx="6" fill="#c3fae8" stroke="#0ca678"/><text x="749" y="166" text-anchor="middle" fill="#0b7285">KV Page [7]</text>
+    <rect x="674" y="186" width="150" height="30" rx="6" fill="#c3fae8" stroke="#0ca678"/><text x="749" y="206" text-anchor="middle" fill="#0b7285">KV Page [12]</text>
+    <rect x="674" y="226" width="150" height="30" rx="6" fill="#c3fae8" stroke="#0ca678"/><text x="749" y="246" text-anchor="middle" fill="#0b7285">KV Page [20]</text>
+    <rect x="674" y="272" width="150" height="30" rx="6" fill="#fff4e6" stroke="#f08c00"/><text x="749" y="292" text-anchor="middle" fill="#e8590c">Metadata [j]</text>
+  </g>
+
+  <!-- mapping arrows -->
+  <text x="450" y="138" text-anchor="middle" font-size="11" font-weight="700" fill="#e8590c">RDMA Write（single-sided）</text>
+  <path d="M228 161 L672 161" stroke="#f08c00" stroke-width="2" marker-end="url(#art)"/>
+  <path d="M228 201 L672 201" stroke="#f08c00" stroke-width="2" marker-end="url(#art)"/>
+  <path d="M228 241 L672 241" stroke="#f08c00" stroke-width="2" marker-end="url(#art)"/>
+  <path d="M228 287 L672 287" stroke="#f08c00" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#art)"/>
+
+  <!-- address formula -->
+  <rect x="60" y="322" width="780" height="64" rx="10" fill="#f1f3f5" stroke="#ced4da"/>
+  <g font-family="monospace" font-size="12">
+    <text x="76" y="345" fill="#3b5bdb">src_addr = src_ptr + prefill_index[0] * item_len</text>
+    <text x="520" y="345" fill="#0b7285">dst_addr = dst_ptr + decode_index[0] * item_len</text>
+    <text x="76" y="368" fill="#495057">length   = item_len * len(prefill_index)</text>
+    <text x="520" y="368" fill="#868e96">// engine.batch_transfer_sync(session, src, dst, len)</text>
+  </g>
+
+  <text x="60" y="412" font-size="11.5" fill="#868e96">传什么：① 每层 KV 页（核心）② Metadata（首 token / logprobs / EAGLE，走定长 MetadataBuffers）③ 可选 State（Mamba / SWA / NSA）。</text>
+  <text x="60" y="432" font-size="11.5" fill="#868e96">怎么传：启动时 register_buffer_to_engine() 批量注册；传输时多个 transfer_worker 线程并行，默认把所有层打包进一次 batch_transfer_sync。</text>
+  <text x="60" y="452" font-size="11.5" fill="#868e96">为什么快：Decode CPU 全程不介入，页号在两侧各自分配（源 [3,5,8] ≠ 目标 [7,12,20]），只靠握手交换的指针对齐。</text>
+
+  <defs>
+    <marker id="art" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#f08c00"/></marker>
+  </defs>
+</svg>

@@ -24,7 +24,84 @@
     A 股中的博弈势力
   </title>
     <link rel="stylesheet" href="./WikiTheme/theme/bootstrap.css"  />
-        </head>
+        <script defer=""
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+        type="text/javascript"></script>
+        <style type="text/css">
+    /* ---- three column wiki layout (left: site directory, center: content, right: page TOC) ---- */
+    .wiki-layout {
+      display: flex;
+      align-items: flex-start;
+      gap: 24px;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 20px;
+      box-sizing: border-box;
+    }
+    .wiki-sidebar {
+      flex: 0 0 240px;
+      width: 240px;
+      position: sticky;
+      top: 0;
+      max-height: 100vh;
+      overflow-y: auto;
+      padding: 10px 4px 20px 0;
+      border-right: 1px solid #eee;
+      font-size: 14px;
+    }
+    .wiki-sidebar[hidden] { display: none; }
+    .wiki-toc {
+      flex: 0 0 220px;
+      width: 220px;
+      position: sticky;
+      top: 0;
+      max-height: 100vh;
+      overflow-y: auto;
+      padding: 10px 0 20px 4px;
+      border-left: 1px solid #eee;
+      font-size: 14px;
+    }
+    .wiki-main {
+      flex: 1 1 auto;
+      min-width: 0;
+      max-width: 820px;
+      padding: 10px 0 40px;
+    }
+    /* site directory tree */
+    .wiki-sidebar .wiki-home {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #eee;
+      text-decoration: none;
+      color: #333;
+    }
+    .wiki-sidebar ul { list-style: none; margin: 0 0 0 12px; padding: 0; }
+    .wiki-sidebar > ul { margin-left: 0; }
+    .wiki-sidebar li { line-height: 1.7; }
+    .wiki-sidebar a { text-decoration: none; color: #555; }
+    .wiki-sidebar a:hover { color: #0088cc; text-decoration: underline; }
+    .wiki-sidebar a.active { color: #0088cc; font-weight: bold; }
+    /* page TOC */
+    .wiki-toc ul { list-style: none; margin: 0 0 0 12px; padding: 0; }
+    .wiki-toc > ul { margin-left: 0; }
+    .wiki-toc li { line-height: 1.6; }
+    .wiki-toc a { text-decoration: none; color: #555; }
+    .wiki-toc a:hover { color: #0088cc; }
+    @media (max-width: 980px) {
+      .wiki-layout { flex-direction: column; }
+      .wiki-sidebar, .wiki-toc {
+        position: static;
+        width: 100%;
+        flex-basis: auto;
+        max-height: none;
+        border: 0;
+      }
+      .wiki-main { max-width: none; }
+    }
+  </style>
+</head>
 
 <body>
     <div class="navbar navbar-static-top">
@@ -38,532 +115,562 @@
       </div>
     </div>
   </div>
-    <div class="container">
-    <div class="row">
-            <div id="TOC" class="span3">
-        <div class="well toc">
-          <ul>
-          <li><a href="#一.-a-股主要有哪些博弈势力"
-          id="toc-一.-a-股主要有哪些博弈势力">一. A
-          股主要有哪些博弈势力？</a></li>
-          <li><a href="#二不同资金的买卖函数不同"
-          id="toc-二不同资金的买卖函数不同">二、不同资金的买卖函数不同</a></li>
-          <li><a href="#三哪些势力会相互强化形成牛市和熊市"
-          id="toc-三哪些势力会相互强化形成牛市和熊市">三、哪些势力会相互强化，形成牛市和熊市？</a></li>
-          <li><a href="#四对-a-股定价最有影响的几种特殊力量"
-          id="toc-四对-a-股定价最有影响的几种特殊力量">四、对 A
-          股定价最有影响的几种特殊力量</a>
-          <ul>
-          <li><a href="#国家队目标函数不完全是投资收益"
-          id="toc-国家队目标函数不完全是投资收益">1.
-          国家队：目标函数不完全是投资收益</a></li>
-          <li><a href="#公募基金经理和基民之间存在委托代理关系"
-          id="toc-公募基金经理和基民之间存在委托代理关系">2.
-          公募：基金经理和基民之间存在委托代理关系</a></li>
-          <li><a href="#量化它不一定提供稳定的反向流动性"
-          id="toc-量化它不一定提供稳定的反向流动性">3.
-          量化：它不一定提供稳定的反向流动性</a></li>
-          </ul></li>
-          <li><a href="#五用一个二维框架理解各方势力"
-          id="toc-五用一个二维框架理解各方势力">五、用一个二维框架理解各方势力</a></li>
-          <li><a href="#六应该如何应用"
-          id="toc-六应该如何应用">六、应该如何应用？</a></li>
-          <li><a href="#七.-散户的结构优势"
-          id="toc-七.-散户的结构优势">七. 散户的结构优势</a>
-          <ul>
-          <li><a href="#最大优势没有必须交易的约束"
-          id="toc-最大优势没有必须交易的约束">1.
-          最大优势：没有“必须交易”的约束</a></li>
-          <li><a href="#没有基准考核所以可以做非共识交易"
-          id="toc-没有基准考核所以可以做非共识交易">2.
-          没有基准考核，所以可以做“非共识交易”</a></li>
-          <li><a href="#资金小其实也是优势"
-          id="toc-资金小其实也是优势">3. 资金小其实也是优势</a></li>
-          <li><a href="#可以进入小容量机会"
-          id="toc-可以进入小容量机会">4. 可以进入“小容量机会”</a></li>
-          <li><a href="#你可以忍受极低流动性的资产"
-          id="toc-你可以忍受极低流动性的资产">5.
-          你可以忍受极低流动性的资产</a></li>
-          <li><a href="#你可以真正做长期博弈"
-          id="toc-你可以真正做长期博弈">6.
-          你可以真正做“长期博弈”</a></li>
-          <li><a href="#散户最大的劣势恰恰也是自己"
-          id="toc-散户最大的劣势恰恰也是自己">7.
-          散户最大的劣势恰恰也是自己</a></li>
-          </ul></li>
-          </ul>
-        </div>
+    <div class="wiki-layout">
+    <nav class="wiki-sidebar" id="wiki-sidebar" hidden></nav>
+    <main class="wiki-main">
+            <h2 id="一.-a-股主要有哪些博弈势力">一. A
+            股主要有哪些博弈势力？</h2>
+            <p>我把它们划分为 12
+            类。这里是按照实际博弈行为建立的分析框架，不是监管部门的正式分类。</p>
+            <table>
+            <colgroup>
+            <col style="width: 26%" />
+            <col style="width: 22%" />
+            <col style="width: 22%" />
+            <col style="width: 28%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>博弈主体</th>
+            <th>核心目标</th>
+            <th>主要约束</th>
+            <th>典型行为</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>1. 散户</td>
+            <td>资本增值、投机收益</td>
+            <td>信息、情绪、资金规模</td>
+            <td>追涨杀跌、抄底、长期持有</td>
+            </tr>
+            <tr>
+            <td>2. 游资</td>
+            <td>获取短期价格波动收益</td>
+            <td>流动性、退出成本</td>
+            <td>打板、接力、题材炒作</td>
+            </tr>
+            <tr>
+            <td>3. 公募主动基金</td>
+            <td>相对业绩、排名、规模增长</td>
+            <td>基准、赎回、风控</td>
+            <td>机构抱团、调仓、风格切换</td>
+            </tr>
+            <tr>
+            <td>4. 被动指数资金</td>
+            <td>跟踪指数</td>
+            <td>申赎、指数权重</td>
+            <td>按规则买卖成分股</td>
+            </tr>
+            <tr>
+            <td>5. 量化私募</td>
+            <td>获取统计性超额收益</td>
+            <td>模型、容量、回撤</td>
+            <td>多因子、短周期交易、对冲</td>
+            </tr>
+            <tr>
+            <td>6. 主观私募</td>
+            <td>获取绝对或相对收益</td>
+            <td>回撤、客户赎回</td>
+            <td>价值、成长、宏观、趋势策略</td>
+            </tr>
+            <tr>
+            <td>7. 外资</td>
+            <td>全球资产配置、超额收益</td>
+            <td>汇率、地缘风险、全球配置</td>
+            <td>价值配置、指数交易、跨市场套利</td>
+            </tr>
+            <tr>
+            <td>8. 保险、社保、养老金</td>
+            <td>长期资产增值、负债匹配</td>
+            <td>偿付能力、风险预算</td>
+            <td>高股息配置、长期持有</td>
+            </tr>
+            <tr>
+            <td>9. 国家队及政策性资金</td>
+            <td>市场稳定等特定政策目标</td>
+            <td>政策授权、资金安排</td>
+            <td>ETF 增持、特殊时期稳定市场</td>
+            </tr>
+            <tr>
+            <td>10. 产业资本</td>
+            <td>控制权、融资、产业战略</td>
+            <td>经营现金流、股权结构</td>
+            <td>减持、增持、回购、并购</td>
+            </tr>
+            <tr>
+            <td>11. 券商自营及衍生品机构</td>
+            <td>做市、套利、自营收益</td>
+            <td>资本金、对冲风险</td>
+            <td>ETF 套利、期现套利、对冲</td>
+            </tr>
+            <tr>
+            <td>12. 杠杆及融资资金</td>
+            <td>放大投资收益</td>
+            <td>保证金、融资成本、强平线</td>
+            <td>上涨加杠杆、下跌被动平仓</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>注意第 12
+            类和其他类别重叠：公募、私募、个人投资者都可能使用杠杆。它是一种特别重要的资金状态，而非独立的最终所有者。</p>
+            <p>从持股规模看，2026 年二季度华源证券估算，A
+            股流通市值中一般法人占 41.2%，个人投资者占
+            35.0%，境内专业机构占 19.4%，外资占
+            4.4%。这说明不能因为游资、量化交易活跃，就误以为它们持有了市场绝大部分股票。</p>
+            <h2
+            id="二不同资金的买卖函数不同">二、不同资金的买卖函数不同</h2>
+            <p>假设工业富联公布一份超预期财报，所有参与者看到的是同一份信息，但行为可能截然相反。</p>
+            <figure>
+            <img
+            src="data:image/svg+xml;charset=utf-8,%3Csvg%20font-family%3D%22-apple-system-body%2C%20ui-sans-serif%2C%20-apple-system%2C%20system-ui%2C%20%26quot%3BSegoe%20UI%26quot%3B%2C%20Helvetica%2C%20%26quot%3BApple%20Color%20Emoji%26quot%3B%2C%20Arial%2C%20sans-serif%2C%20%26quot%3BSegoe%20UI%20Emoji%26quot%3B%2C%20%26quot%3BSegoe%20UI%20Symbol%26quot%3B%22%20font-weight%3D%22400%22%20data-d-component%3D%22svg%22%20fill%3D%22currentColor%22%20style%3D%22color%3Argb(13%2C%2013%2C%2013)%22%20viewBox%3D%220%200%20340%20278%22%20width%3D%22100%25%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Crect%20x%3D%2291%22%20y%3D%225%22%20width%3D%22158%22%20height%3D%2243%22%20rx%3D%229%22%20fill%3D%22%232563eb%22%20fill-opacity%3D%22.13%22%20stroke%3D%22%232563eb%22%2F%3E%3Ctext%20x%3D%22170%22%20y%3D%2222%22%20font-size%3D%2212%22%20font-weight%3D%22600%22%20text-anchor%3D%22middle%22%20fill%3D%22currentColor%22%3E%E5%B7%A5%E4%B8%9A%E5%AF%8C%E8%81%94%E8%B4%A2%E6%8A%A5%E8%B6%85%E9%A2%84%E6%9C%9F%3C%2Ftext%3E%3Ctext%20x%3D%22170%22%20y%3D%2237%22%20font-size%3D%2210%22%20text-anchor%3D%22middle%22%20fill%3D%22currentColor%22%3EEPS%20%E9%A2%84%E6%9C%9F%E4%B8%8A%E4%BF%AE%3C%2Ftext%3E%3Cpath%20d%3D%22M170%2048%20V63%20M44%2063%20H296%20M44%2063%20V79%20M170%2063%20V79%20M296%2063%20V79%22%20stroke%3D%22currentColor%22%20stroke-opacity%3D%22.45%22%20fill%3D%22none%22%2F%3E%3Crect%20x%3D%223%22%20y%3D%2279%22%20width%3D%22106%22%20height%3D%2252%22%20rx%3D%228%22%20fill%3D%22%2316a34a%22%20fill-opacity%3D%22.10%22%20stroke%3D%22%2316a34a%22%20stroke-opacity%3D%22.6%22%2F%3E%3Ctext%20x%3D%2256%22%20y%3D%2299%22%20font-size%3D%2211%22%20text-anchor%3D%22middle%22%20font-weight%3D%22600%22%20fill%3D%22currentColor%22%3E%E4%BB%B7%E5%80%BC%E6%8A%95%E8%B5%84%E8%80%85%3C%2Ftext%3E%3Ctext%20x%3D%2256%22%20y%3D%22116%22%20font-size%3D%2210%22%20text-anchor%3D%22middle%22%20fill%3D%22currentColor%22%3E%E4%BC%B0%E5%80%BC%E6%98%AF%E5%90%A6%E4%BE%BF%E5%AE%9C%3C%2Ftext%3E%3Crect%20x%3D%22117%22%20y%3D%2279%22%20width%3D%22106%22%20height%3D%2252%22%20rx%3D%228%22%20fill%3D%22%2364748b%22%20fill-opacity%3D%22.10%22%20stroke%3D%22%2364748b%22%20stroke-opacity%3D%22.6%22%2F%3E%3Ctext%20x%3D%22170%22%20y%3D%2299%22%20font-size%3D%2211%22%20text-anchor%3D%22middle%22%20font-weight%3D%22600%22%20fill%3D%22currentColor%22%3E%E4%B8%BB%E5%8A%A8%E5%85%AC%E5%8B%9F%3C%2Ftext%3E%3Ctext%20x%3D%22170%22%20y%3D%22116%22%20font-size%3D%2210%22%20text-anchor%3D%22middle%22%20fill%3D%22currentColor%22%3E%E8%83%BD%E5%90%A6%E8%B7%91%E8%B5%A2%E5%9F%BA%E5%87%86%3C%2Ftext%3E%3Crect%20x%3D%22231%22%20y%3D%2279%22%20width%3D%22106%22%20height%3D%2252%22%20rx%3D%228%22%20fill%3D%22%23d97706%22%20fill-opacity%3D%22.10%22%20stroke%3D%22%23d97706%22%20stroke-opacity%3D%22.6%22%2F%3E%3Ctext%20x%3D%22284%22%20y%3D%2299%22%20font-size%3D%2211%22%20text-anchor%3D%22middle%22%20font-weight%3D%22600%22%20fill%3D%22currentColor%22%3E%E8%B6%8B%E5%8A%BF%E8%B5%84%E9%87%91%3C%2Ftext%3E%3Ctext%20x%3D%22284%22%20y%3D%22116%22%20font-size%3D%2210%22%20text-anchor%3D%22middle%22%20fill%3D%22currentColor%22%3E%E6%98%AF%E5%90%A6%E5%B7%B2%E7%BB%8F%E6%B6%A8%E8%B5%B7%E6%9D%A5%3C%2Ftext%3E%3Cpath%20d%3D%22M56%20131%20V151%20M170%20131%20V151%20M284%20131%20V151%22%20stroke%3D%22currentColor%22%20stroke-opacity%3D%22.45%22%2F%3E%3Crect%20x%3D%223%22%20y%3D%22151%22%20width%3D%22106%22%20height%3D%2248%22%20rx%3D%228%22%20fill%3D%22%2316a34a%22%20fill-opacity%3D%22.09%22%20stroke%3D%22%2316a34a%22%20stroke-opacity%3D%22.4%22%2F%3E%3Ctext%20x%3D%2256%22%20y%3D%22169%22%20font-size%3D%2211%22%20font-weight%3D%22600%22%20text-anchor%3D%22middle%22%20fill%3D%22currentColor%22%3E%E5%8F%AF%E8%83%BD%E5%8A%A0%E4%BB%93%3C%2Ftext%3E%3Ctext%20x%3D%2256%22%20y%3D%22186%22%20font-size%3D%2210%22%20text-anchor%3D%22middle%22%20fill%3D%22currentColor%22%3E%E4%BB%B7%E6%A0%BC%E4%BD%8E%E4%BA%8E%E4%BC%B0%E5%80%BC%3C%2Ftext%3E%3Crect%20x%3D%22117%22%20y%3D%22151%22%20width%3D%22106%22%20height%3D%2248%22%20rx%3D%228%22%20fill%3D%22%23dc2626%22%20fill-opacity%3D%22.09%22%20stroke%3D%22%23dc2626%22%20stroke-opacity%3D%22.4%22%2F%3E%3Ctext%20x%3D%22170%22%20y%3D%22169%22%20font-size%3D%2211%22%20font-weight%3D%22600%22%20text-anchor%3D%22middle%22%20fill%3D%22currentColor%22%3E%E5%8F%AF%E8%83%BD%E5%87%8F%E4%BB%93%3C%2Ftext%3E%3Ctext%20x%3D%22170%22%20y%3D%22186%22%20font-size%3D%2210%22%20text-anchor%3D%22middle%22%20fill%3D%22currentColor%22%3E%E5%B7%B2%E8%B6%85%E9%85%8D%E6%88%96%E9%9C%80%E8%B0%83%E4%BB%93%3C%2Ftext%3E%3Crect%20x%3D%22231%22%20y%3D%22151%22%20width%3D%22106%22%20height%3D%2248%22%20rx%3D%228%22%20fill%3D%22%2316a34a%22%20fill-opacity%3D%22.09%22%20stroke%3D%22%2316a34a%22%20stroke-opacity%3D%22.4%22%2F%3E%3Ctext%20x%3D%22284%22%20y%3D%22169%22%20font-size%3D%2211%22%20font-weight%3D%22600%22%20text-anchor%3D%22middle%22%20fill%3D%22currentColor%22%3E%E5%8F%AF%E8%83%BD%E8%BF%BD%E6%B6%A8%3C%2Ftext%3E%3Ctext%20x%3D%22284%22%20y%3D%22186%22%20font-size%3D%2210%22%20text-anchor%3D%22middle%22%20fill%3D%22currentColor%22%3E%E8%B6%8B%E5%8A%BF%E4%BF%A1%E5%8F%B7%E8%A7%A6%E5%8F%91%3C%2Ftext%3E%3Cpath%20d%3D%22M56%20199%20V218%20H284%20V199%20M170%20199%20V218%20V231%22%20stroke%3D%22currentColor%22%20stroke-opacity%3D%22.4%22%20fill%3D%22none%22%2F%3E%3Crect%20x%3D%2248%22%20y%3D%22231%22%20width%3D%22244%22%20height%3D%2238%22%20rx%3D%229%22%20fill%3D%22%2364748b%22%20fill-opacity%3D%22.11%22%20stroke%3D%22%2364748b%22%20stroke-opacity%3D%22.5%22%2F%3E%3Ctext%20x%3D%22170%22%20y%3D%22247%22%20font-size%3D%2212%22%20text-anchor%3D%22middle%22%20font-weight%3D%22600%22%20fill%3D%22currentColor%22%3E%E6%9C%80%E7%BB%88%E8%82%A1%E4%BB%B7%E7%94%B1%E8%BE%B9%E9%99%85%E4%B9%B0%E5%8D%96%E7%9B%98%E5%86%B3%E5%AE%9A%3C%2Ftext%3E%3Ctext%20x%3D%22170%22%20y%3D%22261%22%20font-size%3D%2210%22%20text-anchor%3D%22middle%22%20fill%3D%22currentColor%22%3E%E8%80%8C%E4%B8%8D%E6%98%AF%E7%94%B1%E8%B4%A2%E6%8A%A5%E6%9C%AC%E8%BA%AB%E6%9C%BA%E6%A2%B0%E5%86%B3%E5%AE%9A%3C%2Ftext%3E%3C%2Fsvg%3E"
+            style="width:80.0%" alt="同一个利好，不同的决策函数" />
+            <figcaption
+            aria-hidden="true">同一个利好，不同的决策函数</figcaption>
+            </figure>
+            <p>这里面有几个非常值得研究的机制。</p>
+            <ol type="1">
+            <li>公募基金可能被迫在低位卖出。</li>
+            </ol>
+            <p>假设一只主动基金经理认为某股票低估了
+            30%，但是基金持续遭遇赎回。</p>
+            <p>他可能必须卖出部分股票支付赎回款。</p>
+            <ol start="2" type="1">
+            <li>产业资本可能根本不关心短期估值。</li>
+            </ol>
+            <p>一家上市公司的大股东可能因为偿还债务、改善自身流动性而减持。</p>
+            <p>哪怕股票 PE 只有 15 倍，也可能卖。</p>
+            <ol start="3" type="1">
+            <li>趋势资金可能在高估时继续买入。</li>
+            </ol>
+            <p>它的决策变量可能不是 PE，而是：</p>
+            <ul>
+            <li>过去 20 日或 60 日收益率</li>
+            <li>成交量变化</li>
+            <li>波动率</li>
+            <li>趋势强度与风险预算</li>
+            </ul>
+            <p>这意味着股价上涨本身就可能产生新的买盘。</p>
+            <h2
+            id="三哪些势力会相互强化形成牛市和熊市">三、哪些势力会相互强化，形成牛市和熊市？</h2>
+            <p>典型正反馈：牛市资金循环</p>
+            <p><img
+            src="data:image/svg+xml;charset=utf-8,%3Csvg%20font-family%3D%22-apple-system-body%2C%20ui-sans-serif%2C%20-apple-system%2C%20system-ui%2C%20%26quot%3BSegoe%20UI%26quot%3B%2C%20Helvetica%2C%20%26quot%3BApple%20Color%20Emoji%26quot%3B%2C%20Arial%2C%20sans-serif%2C%20%26quot%3BSegoe%20UI%20Emoji%26quot%3B%2C%20%26quot%3BSegoe%20UI%20Symbol%26quot%3B%22%20font-weight%3D%22400%22%20data-d-component%3D%22svg%22%20fill%3D%22currentColor%22%20style%3D%22color%3Argb(13%2C%2013%2C%2013)%22%20viewBox%3D%220%200%20320%20265%22%20width%3D%22100%25%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Crect%20x%3D%2219%22%20y%3D%224%22%20width%3D%22282%22%20height%3D%2238%22%20rx%3D%228%22%20fill%3D%22%232563eb%22%20fill-opacity%3D%22.14%22%20stroke%3D%22%232563eb%22%20stroke-opacity%3D%22.65%22%2F%3E%3Ctext%20x%3D%22160%22%20y%3D%2227%22%20font-size%3D%2212%22%20text-anchor%3D%22middle%22%20fill%3D%22currentColor%22%3E%E5%9F%BA%E6%9C%AC%E9%9D%A2%E6%94%B9%E5%96%84%20%2F%20%E6%94%BF%E7%AD%96%E5%86%B2%E5%87%BB%20%2F%20%E5%A4%96%E9%83%A8%E8%B5%84%E9%87%91%E6%B5%81%E5%85%A5%3C%2Ftext%3E%3Cpath%20d%3D%22M160%2042%20v16%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%221.5%22%2F%3E%3Cpath%20d%3D%22M156%2053%20l4%205%204%20-5%22%20fill%3D%22none%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%221.5%22%2F%3E%3Crect%20x%3D%2219%22%20y%3D%2258%22%20width%3D%22282%22%20height%3D%2238%22%20rx%3D%228%22%20fill%3D%22%2364748b%22%20fill-opacity%3D%22.10%22%20stroke%3D%22%2394a3b8%22%20stroke-opacity%3D%22.65%22%2F%3E%3Ctext%20x%3D%22160%22%20y%3D%2281%22%20font-size%3D%2212%22%20text-anchor%3D%22middle%22%20fill%3D%22currentColor%22%3E%E8%82%A1%E4%BB%B7%E4%B8%8A%E6%B6%A8%E3%80%81%E8%B5%9A%E9%92%B1%E6%95%88%E5%BA%94%E5%A2%9E%E5%BC%BA%3C%2Ftext%3E%3Cpath%20d%3D%22M160%2096%20v16%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%221.5%22%2F%3E%3Cpath%20d%3D%22M156%20107%20l4%205%204%20-5%22%20fill%3D%22none%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%221.5%22%2F%3E%3Crect%20x%3D%2219%22%20y%3D%22112%22%20width%3D%22282%22%20height%3D%2238%22%20rx%3D%228%22%20fill%3D%22%2364748b%22%20fill-opacity%3D%22.10%22%20stroke%3D%22%2394a3b8%22%20stroke-opacity%3D%22.65%22%2F%3E%3Ctext%20x%3D%22160%22%20y%3D%22135%22%20font-size%3D%2212%22%20text-anchor%3D%22middle%22%20fill%3D%22currentColor%22%3E%E8%B6%8B%E5%8A%BF%E7%AD%96%E7%95%A5%E5%8A%A0%E4%BB%93%E3%80%81%E6%95%A3%E6%88%B7%E7%94%B3%E8%B4%AD%E5%9F%BA%E9%87%91%3C%2Ftext%3E%3Cpath%20d%3D%22M160%20150%20v16%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%221.5%22%2F%3E%3Cpath%20d%3D%22M156%20161%20l4%205%204%20-5%22%20fill%3D%22none%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%221.5%22%2F%3E%3Crect%20x%3D%2219%22%20y%3D%22166%22%20width%3D%22282%22%20height%3D%2238%22%20rx%3D%228%22%20fill%3D%22%2364748b%22%20fill-opacity%3D%22.10%22%20stroke%3D%22%2394a3b8%22%20stroke-opacity%3D%22.65%22%2F%3E%3Ctext%20x%3D%22160%22%20y%3D%22189%22%20font-size%3D%2212%22%20text-anchor%3D%22middle%22%20fill%3D%22currentColor%22%3E%E5%85%AC%E5%8B%9F%E8%8E%B7%E5%BE%97%E5%A2%9E%E9%87%8F%E8%B5%84%E9%87%91%E3%80%81%E8%9E%8D%E8%B5%84%E7%9B%98%E6%89%A9%E5%A4%A7%3C%2Ftext%3E%3Cpath%20d%3D%22M160%20204%20V218%20H9%20V77%20H19%22%20stroke%3D%22%2316a34a%22%20stroke-width%3D%221.8%22%20fill%3D%22none%22%2F%3E%3Cpath%20d%3D%22M14%2073%20L19%2077%20L14%2081%22%20stroke%3D%22%2316a34a%22%20fill%3D%22none%22%20stroke-width%3D%221.8%22%2F%3E%3Ctext%20x%3D%22160%22%20y%3D%22244%22%20text-anchor%3D%22middle%22%20font-size%3D%2212%22%20fill%3D%22%2316a34a%22%20font-weight%3D%22600%22%3E%E5%A2%9E%E9%87%8F%E4%B9%B0%E7%9B%98%E7%BB%A7%E7%BB%AD%E6%8E%A8%E9%AB%98%E4%BB%B7%E6%A0%BC%3C%2Ftext%3E%3C%2Fsvg%3E"
+            style="width:80.0%" /></p>
+            <p>这是一个可能形成的正反馈循环，而不是每轮牛市必然遵循的固定顺序。</p>
+            <p>反过来，熊市也可能形成负反馈：</p>
+            <p>股价下跌 → 净值回撤 → 赎回与风控减仓 → 融资保证金不足 →
+            被动卖出 → 股价进一步下跌。</p>
+            <p>关键区别是主动交易和被动交易。</p>
+            <p>例如 2018 年股票质押风险，就是一个很好的研究对象：</p>
+            <p>企业大股东原本不想卖股票，但股价下跌使质押担保比例恶化，补仓压力和潜在平仓风险又进一步影响市场预期。</p>
+            <p>这不是简单的“大家都看空经济”，而是金融契约把价格下跌转化成了新的卖出压力。</p>
+            <h2 id="四对-a-股定价最有影响的几种特殊力量">四、对 A
+            股定价最有影响的几种特殊力量</h2>
+            <p>我认为你尤其需要关注以下四种机制。</p>
+            <h3 id="国家队目标函数不完全是投资收益">1.
+            国家队：目标函数不完全是投资收益</h3>
+            <p>国家队不是一个统一交易账户，包括不同性质、不同授权和目标的主体。</p>
+            <p>它们可能承担市场稳定、长期投资等任务。部分资金即使短期浮亏，也不一定像普通私募一样遭遇客户赎回。</p>
+            <p>因此在市场极端波动时，它们的行为可能与商业化资金不同。</p>
+            <h3 id="公募基金经理和基民之间存在委托代理关系">2.
+            公募：基金经理和基民之间存在委托代理关系</h3>
+            <p>这是理解 2021 年机构抱团的重要切入点。</p>
+            <p>假设某个赛道连续上涨：</p>
+            <p>基金净值表现好 → 投资者申购 → 基金规模增加 →
+            基金继续配置该赛道。</p>
+            <p>但当资金流向逆转，原本的正反馈可能变成负反馈。</p>
+            <p>所以机构抱团不一定意味着所有基金经理都独立判断该行业有极高投资价值，也可能包含业绩比较、申购资金流入和持仓趋同的影响。</p>
+            <h3 id="量化它不一定提供稳定的反向流动性">3.
+            量化：它不一定提供稳定的反向流动性</h3>
+            <p>量化是一个大集合，包括：</p>
+            <ul>
+            <li>高频做市和套利</li>
+            <li>市场中性多因子</li>
+            <li>指数增强</li>
+            <li>CTA 趋势策略</li>
+            <li>高频或中低频选股策略</li>
+            </ul>
+            <p>这些策略的交易方向甚至可能完全相反。</p>
+            <p>尤其值得研究的是：不同量化机构采用相似信号时，是否会在风险事件中同时减仓。</p>
+            <p>如果发生策略拥挤，原本分散的机构也可能产生高度相关的行为。</p>
+            <h2
+            id="五用一个二维框架理解各方势力">五、用一个二维框架理解各方势力</h2>
+            <p>比单纯记住 12
+            类资金更有用的，是看它们通常如何对待价格波动。</p>
+            <figure>
+            <img
+            src="data:image/svg+xml;charset=utf-8,%3Csvg%20font-family%3D%22-apple-system-body%2C%20ui-sans-serif%2C%20-apple-system%2C%20system-ui%2C%20%26quot%3BSegoe%20UI%26quot%3B%2C%20Helvetica%2C%20%26quot%3BApple%20Color%20Emoji%26quot%3B%2C%20Arial%2C%20sans-serif%2C%20%26quot%3BSegoe%20UI%20Emoji%26quot%3B%2C%20%26quot%3BSegoe%20UI%20Symbol%26quot%3B%22%20font-weight%3D%22400%22%20data-d-component%3D%22svg%22%20fill%3D%22currentColor%22%20style%3D%22color%3Argb(13%2C%2013%2C%2013)%22%20viewBox%3D%220%200%20340%20270%22%20width%3D%22100%25%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Crect%20x%3D%2241%22%20y%3D%2217%22%20width%3D%22284%22%20height%3D%22213%22%20rx%3D%223%22%20fill%3D%22%2364748b%22%20fill-opacity%3D%22.04%22%2F%3E%3Cpath%20d%3D%22M183%2017%20V230%20M41%20123%20H325%22%20stroke%3D%22currentColor%22%20stroke-opacity%3D%22.25%22%20stroke-dasharray%3D%224%204%22%2F%3E%3Cpath%20d%3D%22M41%20230%20V17%20M41%20230%20H325%22%20stroke%3D%22currentColor%22%20stroke-width%3D%221.3%22%20fill%3D%22none%22%2F%3E%3Ctext%20x%3D%229%22%20y%3D%2215%22%20font-size%3D%2210%22%20fill%3D%22currentColor%22%3E%E9%95%BF%3C%2Ftext%3E%3Ctext%20x%3D%229%22%20y%3D%22235%22%20font-size%3D%2210%22%20fill%3D%22currentColor%22%3E%E7%9F%AD%3C%2Ftext%3E%3Ctext%20x%3D%228%22%20y%3D%22126%22%20font-size%3D%2210%22%20fill%3D%22currentColor%22%20transform%3D%22rotate(-90%208%20126)%22%3E%E6%8C%81%E6%9C%89%E5%91%A8%E6%9C%9F%3C%2Ftext%3E%3Ctext%20x%3D%2241%22%20y%3D%22249%22%20font-size%3D%2210%22%20fill%3D%22currentColor%22%3E%E9%80%86%E5%90%91%2F%E4%BC%B0%E5%80%BC%E9%A9%B1%E5%8A%A8%3C%2Ftext%3E%3Ctext%20x%3D%22325%22%20y%3D%22249%22%20font-size%3D%2210%22%20fill%3D%22currentColor%22%20text-anchor%3D%22end%22%3E%E9%A1%BA%E5%8A%BF%2F%E4%BB%B7%E6%A0%BC%E9%A9%B1%E5%8A%A8%3C%2Ftext%3E%3Crect%20x%3D%2243%22%20y%3D%2241%22%20width%3D%22112%22%20height%3D%2225%22%20rx%3D%226%22%20fill%3D%22%2316a34a%22%20fill-opacity%3D%22.12%22%20stroke%3D%22%2316a34a%22%20stroke-opacity%3D%22.5%22%2F%3E%3Ctext%20x%3D%2299%22%20y%3D%2257%22%20font-size%3D%2210.5%22%20fill%3D%22currentColor%22%20text-anchor%3D%22middle%22%3E%E9%95%BF%E6%9C%9F%E4%BB%B7%E5%80%BC%E8%B5%84%E9%87%91%3C%2Ftext%3E%3Crect%20x%3D%2256%22%20y%3D%2276%22%20width%3D%22112%22%20height%3D%2225%22%20rx%3D%226%22%20fill%3D%22%2316a34a%22%20fill-opacity%3D%22.12%22%20stroke%3D%22%2316a34a%22%20stroke-opacity%3D%22.5%22%2F%3E%3Ctext%20x%3D%22112%22%20y%3D%2292%22%20font-size%3D%2210.5%22%20fill%3D%22currentColor%22%20text-anchor%3D%22middle%22%3E%E9%99%A9%E8%B5%84%2F%E5%85%BB%E8%80%81%E9%87%91%3C%2Ftext%3E%3Crect%20x%3D%22189%22%20y%3D%2251%22%20width%3D%22112%22%20height%3D%2225%22%20rx%3D%226%22%20fill%3D%22%232563eb%22%20fill-opacity%3D%22.12%22%20stroke%3D%22%232563eb%22%20stroke-opacity%3D%22.5%22%2F%3E%3Ctext%20x%3D%22245%22%20y%3D%2267%22%20font-size%3D%2210.5%22%20fill%3D%22currentColor%22%20text-anchor%3D%22middle%22%3E%E6%88%90%E9%95%BF%E5%9E%8B%E5%85%AC%E5%8B%9F%3C%2Ftext%3E%3Crect%20x%3D%22196%22%20y%3D%2292%22%20width%3D%22112%22%20height%3D%2225%22%20rx%3D%226%22%20fill%3D%22%232563eb%22%20fill-opacity%3D%22.12%22%20stroke%3D%22%232563eb%22%20stroke-opacity%3D%22.5%22%2F%3E%3Ctext%20x%3D%22252%22%20y%3D%22108%22%20font-size%3D%2210.5%22%20fill%3D%22currentColor%22%20text-anchor%3D%22middle%22%3E%E8%B6%8B%E5%8A%BF%E9%85%8D%E7%BD%AE%3C%2Ftext%3E%3Crect%20x%3D%2242%22%20y%3D%22153%22%20width%3D%22112%22%20height%3D%2225%22%20rx%3D%226%22%20fill%3D%22%23d97706%22%20fill-opacity%3D%22.12%22%20stroke%3D%22%23d97706%22%20stroke-opacity%3D%22.5%22%2F%3E%3Ctext%20x%3D%2298%22%20y%3D%22169%22%20font-size%3D%2210.5%22%20fill%3D%22currentColor%22%20text-anchor%3D%22middle%22%3E%E5%A5%97%E5%88%A9%2F%E5%9D%87%E5%80%BC%E5%9B%9E%E5%BD%92%3C%2Ftext%3E%3Crect%20x%3D%22195%22%20y%3D%22152%22%20width%3D%22112%22%20height%3D%2225%22%20rx%3D%226%22%20fill%3D%22%23dc2626%22%20fill-opacity%3D%22.12%22%20stroke%3D%22%23dc2626%22%20stroke-opacity%3D%22.5%22%2F%3E%3Ctext%20x%3D%22251%22%20y%3D%22168%22%20font-size%3D%2210.5%22%20fill%3D%22currentColor%22%20text-anchor%3D%22middle%22%3E%E6%B8%B8%E8%B5%84%2F%E5%8A%A8%E9%87%8F%3C%2Ftext%3E%3Crect%20x%3D%22195%22%20y%3D%22188%22%20width%3D%22112%22%20height%3D%2225%22%20rx%3D%226%22%20fill%3D%22%23dc2626%22%20fill-opacity%3D%22.12%22%20stroke%3D%22%23dc2626%22%20stroke-opacity%3D%22.5%22%2F%3E%3Ctext%20x%3D%22251%22%20y%3D%22204%22%20font-size%3D%2210.5%22%20fill%3D%22currentColor%22%20text-anchor%3D%22middle%22%3E%E7%9F%AD%E7%BA%BF%E8%B6%8B%E5%8A%BF%E9%87%8F%E5%8C%96%3C%2Ftext%3E%3C%2Fsvg%3E"
+            alt="资金行为矩阵（概念示意）" />
+            <figcaption
+            aria-hidden="true">资金行为矩阵（概念示意）</figcaption>
+            </figure>
+            <p>这个图揭示一个重要现象：</p>
+            <p>价值资金和趋势资金之间存在天然的博弈。</p>
+            <p>价值投资者可能因为上涨导致预期收益率下降而卖出，趋势资金却可能因为上涨而买入。</p>
+            <p>但价格未必立即回归价值，因为趋势资金可以持续吸引新增资金。</p>
+            <p>这也是为什么基本面正确，不等于短期股价判断正确。</p>
+            <h2 id="六应该如何应用">六、应该如何应用？</h2>
+            <p>对于工业富联这样的 AI 产业链大型公司，我会特别关注：</p>
+            <table>
+            <thead>
+            <tr>
+            <th>资金</th>
+            <th>需要研究的问题</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>主动公募</td>
+            <td>当前是否超配？是否存在集体调仓压力？</td>
+            </tr>
+            <tr>
+            <td>被动 ETF</td>
+            <td>是否有持续申购？成分股权重变化如何？</td>
+            </tr>
+            <tr>
+            <td>外资</td>
+            <td>全球 AI 硬件资产配置是否发生变化？</td>
+            </tr>
+            <tr>
+            <td>产业资本</td>
+            <td>大股东是否存在减持计划、融资或股权安排？</td>
+            </tr>
+            <tr>
+            <td>趋势与量化</td>
+            <td>价格动量、成交拥挤程度是否过高？</td>
+            </tr>
+            <tr>
+            <td>杠杆资金</td>
+            <td>融资余额是否快速扩张？</td>
+            </tr>
+            <tr>
+            <td>长期价值资金</td>
+            <td>当前价格隐含了怎样的未来利润增长？</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>这里最重要的区别是：</p>
+            <p>企业未来三年的净利润决定长期价值的重要基础，但未来三个月的边际资金供需可能决定短期股价。</p>
+            <p>即使未来净利润预测完全正确，如果当前机构已经普遍超配、预期高度一致，仍可能出现股价长期不涨的情况。</p>
+            <p>反过来，如果业绩持续超预期，而大量机构原本低配，就可能出现盈利增长和估值扩张相互强化的戴维斯双击。</p>
+            <p>我建议你接下来研究 A
+            股历史时，把每个阶段都拆成三个问题：</p>
+            <ol type="1">
+            <li>谁掌握 <strong>增量资金</strong>？
+            例如居民申购公募、融资资金扩张、ETF 获得净申购。</li>
+            <li>谁 <strong>被迫交易</strong>？
+            例如赎回、质押平仓、风控降仓、指数调整。</li>
+            <li>谁掌握 <strong>边际定价权</strong>？
+            不一定是持股最多的人，而是在当时价格附近愿意持续买卖的人。</li>
+            </ol>
+            <p>这样看 2005–2007 年股改牛市、2016–2017 年漂亮 50、2021
+            年机构抱团，以及 2024 年 924
+            后的行情，就能逐渐建立一个统一的分析框架。</p>
+            <p>最终要研究的不是简单的“主力资金流入流出”，而是：</p>
+            <p>不同资金受到怎样的约束，这些约束如何随着价格变化而改变交易行为，又如何通过市场反馈形成新的价格。</p>
+            <p>这比单纯研究 K 线、资金流向或者某个机构的持仓，更接近 A
+            股市场的实际运作机制。</p>
+            <h2 id="七.-散户的结构优势">七. 散户的结构优势</h2>
+            <p>有，而且我认为<strong>散户真正的优势恰恰不是信息、速度、资金量，而是博弈结构本身</strong>。</p>
+            <p>如果从博弈论看，可以把机构/量化和散户理解成两种完全不同的玩家。</p>
+            <h3 id="最大优势没有必须交易的约束">1.
+            最大优势：没有“必须交易”的约束</h3>
+            <p>这是最核心的。</p>
+            <p>机构实际上受到很多外部约束：基金合同 → 风险控制 → 基准 →
+            季度排名 → 申赎 → 流动性 → 仓位限制 → 风控模型</p>
+            <p>量化则更多受到：模型 → 杠杆 → 回撤 → 风控 → 融资成本 →
+            因子拥挤 约束。</p>
+            <p>而散户可以：<strong>今天什么都不做。</strong></p>
+            <p>这在博弈论里面非常重要。</p>
+            <p>假设你认为：</p>
+            <blockquote>
+            <p>股票合理价值 80 元，现在 55 元。</p>
+            </blockquote>
+            <p>你可以选择：</p>
+            <blockquote>
+            <p>55 元买入，然后两年不动。</p>
+            </blockquote>
+            <p>但一个管理 100 亿资金的基金经理未必能这么做。</p>
+            <p>如果连续三个月：</p>
+            <blockquote>
+            <p>横盘甚至下跌 20%</p>
+            </blockquote>
+            <p>基民开始赎回，基金经理就可能被迫卖。</p>
+            <p>所以你拥有一种机构很难拥有的：</p>
+            <blockquote>
+            <p><strong>无限期等待的期权。</strong></p>
+            </blockquote>
+            <hr />
+            <h3 id="没有基准考核所以可以做非共识交易">2.
+            没有基准考核，所以可以做“非共识交易”</h3>
+            <p>这是第二个巨大优势。</p>
+            <p>假设：</p>
+            <blockquote>
+            <p>沪深300 +10%</p>
+            </blockquote>
+            <p>而你：</p>
+            <blockquote>
+            <p>+2%</p>
+            </blockquote>
+            <p>从绝对收益来看，你赚钱。</p>
+            <p>但基金经理可能已经非常难受：</p>
+            <blockquote>
+            <p><strong>-8% relative performance</strong></p>
+            </blockquote>
+            <p>因为投资者会问：</p>
+            <blockquote>
+            <p>“为什么别人赚 10%，你只赚 2%？”</p>
+            </blockquote>
+            <p>于是基金经理会被迫向：</p>
+            <blockquote>
+            <p><strong>市场共识</strong></p>
+            </blockquote>
+            <p>靠拢。</p>
+            <p>而你没有这个问题。</p>
+            <p>你完全可以说：</p>
+            <blockquote>
+            <p>“我认为这个公司被低估了，两年后兑现。”</p>
+            </blockquote>
+            <p>然后两年不管别人。</p>
+            <p>这就是为什么个人投资者理论上可以做很多<strong>机构无法承受的非共识投资</strong>。</p>
+            <hr />
+            <h3 id="资金小其实也是优势">3. 资金小其实也是优势</h3>
+            <p>这听起来非常反直觉。</p>
+            <p>比如：</p>
+            <blockquote>
+            <p>你有 100 万。</p>
+            </blockquote>
+            <p>工业富联成交量足够大，所以你：</p>
+            <blockquote>
+            <p>100 万 → 买进去</p>
+            </blockquote>
+            <p>几乎没有影响。</p>
+            <p>但如果一个机构：</p>
+            <blockquote>
+            <p>管理 1000 亿</p>
+            </blockquote>
+            <p>它想建立一个：</p>
+            <blockquote>
+            <p>10% = 100 亿</p>
+            </blockquote>
+            <p>的工业富联仓位。</p>
+            <p>问题来了：</p>
+            <p><strong>它根本不能悄悄完成。</strong></p>
+            <p>它的交易本身就会改变价格。</p>
+            <p>于是出现一个非常经典的博弈问题：</p>
+            <blockquote>
+            <p><strong>你的行动会不会被市场观察到？</strong></p>
+            </blockquote>
+            <p>小资金：</p>
+            <blockquote>
+            <p>行动 ≈ 不改变市场。</p>
+            </blockquote>
+            <p>大资金：</p>
+            <blockquote>
+            <p>行动 → 改变市场 → 其他人观察到 → 对手调整策略。</p>
+            </blockquote>
+            <p>所以散户拥有：</p>
+            <blockquote>
+            <p><strong>低市场冲击（low market impact）</strong></p>
+            </blockquote>
+            <p>的优势。</p>
+            <hr />
+            <h3 id="可以进入小容量机会">4. 可以进入“小容量机会”</h3>
+            <p>这是量化最头疼的问题之一。</p>
+            <p>假设某个策略：</p>
+            <blockquote>
+            <p>每年能赚 30%</p>
+            </blockquote>
+            <p>但容量只有：</p>
+            <blockquote>
+            <p>5000 万。</p>
+            </blockquote>
+            <p>对你来说：</p>
+            <blockquote>
+            <p>非常好。</p>
+            </blockquote>
+            <p>对一个：</p>
+            <blockquote>
+            <p>500 亿量化基金</p>
+            </blockquote>
+            <p>来说：</p>
+            <blockquote>
+            <p><strong>完全没意义。</strong></p>
+            </blockquote>
+            <p>因为你把 500 亿放进去以后，策略收益可能从：</p>
+            <blockquote>
+            <p>30%</p>
+            </blockquote>
+            <p>变成：</p>
+            <blockquote>
+            <p>3%</p>
+            </blockquote>
+            <p>甚至直接失效。</p>
+            <p>所以散户实际上拥有一个巨大的：</p>
+            <blockquote>
+            <p><strong>机会集合。</strong></p>
+            </blockquote>
+            <p>很多“小而有效”的机会，机构根本吃不下。</p>
+            <hr />
+            <h3 id="你可以忍受极低流动性的资产">5.
+            你可以忍受极低流动性的资产</h3>
+            <p>机构不能随便买：</p>
+            <blockquote>
+            <p>一只每天成交 2000 万的股票。</p>
+            </blockquote>
+            <p>因为如果基金规模 100 亿：</p>
+            <blockquote>
+            <p>想卖的时候卖不掉。</p>
+            </blockquote>
+            <p>而你买：</p>
+            <blockquote>
+            <p>20 万</p>
+            </blockquote>
+            <p>完全没有这个问题。</p>
+            <p>因此：</p>
+            <p><strong>散户可以在流动性折价中寻找机会。</strong></p>
+            <p>这也是为什么小盘股、冷门股、特殊情形（special
+            situations）理论上更适合小资金。</p>
+            <hr />
+            <h3 id="你可以真正做长期博弈">6. 你可以真正做“长期博弈”</h3>
+            <p>这个我觉得特别适合你理解工业富联。</p>
+            <p>假设：</p>
+            <blockquote>
+            <p>市场参与者 A：今天赚 2%</p>
+            <p>市场参与者 B：一个季度排名</p>
+            <p>市场参与者 C：一年收益</p>
+            <p>你：两年后企业盈利兑现</p>
+            </blockquote>
+            <p>你们实际上<strong>不是在玩同一个博弈</strong>。</p>
+            <p>机构的 payoff：</p>
+            <p><span class="math display">\[
+            U_{\text{institution}} = 收益 - 回撤惩罚 相对排名惩罚
+            赎回风险
+            \]</span></p>
+            <p>你的 payoff 更简单：</p>
+            <p><span class="math display">\[
+            U_{\text{you}} = 最终财富
+            \]</span></p>
+            <p>只要你没有杠杆、没有融资平仓，你甚至可以承受：</p>
+            <blockquote>
+            <p><strong>中间两年非常难看。</strong></p>
+            </blockquote>
+            <p>这其实是非常大的优势。</p>
+            <hr />
+            <h3 id="散户最大的劣势恰恰也是自己">7.
+            散户最大的劣势恰恰也是自己</h3>
+            <p>博弈论上，这就是最有意思的地方：</p>
+            <blockquote>
+            <p><strong>散户拥有“自由”，但很容易把自由浪费掉。</strong></p>
+            </blockquote>
+            <p>机构：</p>
+            <blockquote>
+            <p>模型告诉我减仓 → 减仓。</p>
+            </blockquote>
+            <p>散户：</p>
+            <blockquote>
+            <p>今天涨 5% → 兴奋</p>
+            <p>明天跌 5% → 恐慌</p>
+            <p>后天看雪球 → 怀疑人生</p>
+            <p>一周以后 → 换股</p>
+            </blockquote>
+            <p>于是机构的约束反而成为优势：</p>
+            <blockquote>
+            <p><strong>纪律。</strong></p>
+            </blockquote>
+            <p>散户的自由反而成为劣势：</p>
+            <blockquote>
+            <p><strong>情绪。</strong></p>
+            </blockquote>
+            <p>所以散户真正应该做的，是
+            <strong>主动把自己变成一个有规则的长期玩家</strong>。</p>
+          </main>
+        <aside class="wiki-toc">
+      <ul>
+      <li><a href="#一.-a-股主要有哪些博弈势力"
+      id="toc-一.-a-股主要有哪些博弈势力">一. A
+      股主要有哪些博弈势力？</a></li>
+      <li><a href="#二不同资金的买卖函数不同"
+      id="toc-二不同资金的买卖函数不同">二、不同资金的买卖函数不同</a></li>
+      <li><a href="#三哪些势力会相互强化形成牛市和熊市"
+      id="toc-三哪些势力会相互强化形成牛市和熊市">三、哪些势力会相互强化，形成牛市和熊市？</a></li>
+      <li><a href="#四对-a-股定价最有影响的几种特殊力量"
+      id="toc-四对-a-股定价最有影响的几种特殊力量">四、对 A
+      股定价最有影响的几种特殊力量</a>
+      <ul>
+      <li><a href="#国家队目标函数不完全是投资收益"
+      id="toc-国家队目标函数不完全是投资收益">1.
+      国家队：目标函数不完全是投资收益</a></li>
+      <li><a href="#公募基金经理和基民之间存在委托代理关系"
+      id="toc-公募基金经理和基民之间存在委托代理关系">2.
+      公募：基金经理和基民之间存在委托代理关系</a></li>
+      <li><a href="#量化它不一定提供稳定的反向流动性"
+      id="toc-量化它不一定提供稳定的反向流动性">3.
+      量化：它不一定提供稳定的反向流动性</a></li>
+      </ul></li>
+      <li><a href="#五用一个二维框架理解各方势力"
+      id="toc-五用一个二维框架理解各方势力">五、用一个二维框架理解各方势力</a></li>
+      <li><a href="#六应该如何应用"
+      id="toc-六应该如何应用">六、应该如何应用？</a></li>
+      <li><a href="#七.-散户的结构优势" id="toc-七.-散户的结构优势">七.
+      散户的结构优势</a>
+      <ul>
+      <li><a href="#最大优势没有必须交易的约束"
+      id="toc-最大优势没有必须交易的约束">1.
+      最大优势：没有“必须交易”的约束</a></li>
+      <li><a href="#没有基准考核所以可以做非共识交易"
+      id="toc-没有基准考核所以可以做非共识交易">2.
+      没有基准考核，所以可以做“非共识交易”</a></li>
+      <li><a href="#资金小其实也是优势" id="toc-资金小其实也是优势">3.
+      资金小其实也是优势</a></li>
+      <li><a href="#可以进入小容量机会" id="toc-可以进入小容量机会">4.
+      可以进入“小容量机会”</a></li>
+      <li><a href="#你可以忍受极低流动性的资产"
+      id="toc-你可以忍受极低流动性的资产">5.
+      你可以忍受极低流动性的资产</a></li>
+      <li><a href="#你可以真正做长期博弈"
+      id="toc-你可以真正做长期博弈">6. 你可以真正做“长期博弈”</a></li>
+      <li><a href="#散户最大的劣势恰恰也是自己"
+      id="toc-散户最大的劣势恰恰也是自己">7.
+      散户最大的劣势恰恰也是自己</a></li>
+      </ul></li>
+      </ul>
+    </aside>
       </div>
-            <div class="span9">
-                <h2 id="一.-a-股主要有哪些博弈势力">一. A
-                股主要有哪些博弈势力？</h2>
-                <p>我把它们划分为 12
-                类。这里是按照实际博弈行为建立的分析框架，不是监管部门的正式分类。</p>
-                <table>
-                <colgroup>
-                <col style="width: 26%" />
-                <col style="width: 22%" />
-                <col style="width: 22%" />
-                <col style="width: 28%" />
-                </colgroup>
-                <thead>
-                <tr>
-                <th>博弈主体</th>
-                <th>核心目标</th>
-                <th>主要约束</th>
-                <th>典型行为</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                <td>1. 散户</td>
-                <td>资本增值、投机收益</td>
-                <td>信息、情绪、资金规模</td>
-                <td>追涨杀跌、抄底、长期持有</td>
-                </tr>
-                <tr>
-                <td>2. 游资</td>
-                <td>获取短期价格波动收益</td>
-                <td>流动性、退出成本</td>
-                <td>打板、接力、题材炒作</td>
-                </tr>
-                <tr>
-                <td>3. 公募主动基金</td>
-                <td>相对业绩、排名、规模增长</td>
-                <td>基准、赎回、风控</td>
-                <td>机构抱团、调仓、风格切换</td>
-                </tr>
-                <tr>
-                <td>4. 被动指数资金</td>
-                <td>跟踪指数</td>
-                <td>申赎、指数权重</td>
-                <td>按规则买卖成分股</td>
-                </tr>
-                <tr>
-                <td>5. 量化私募</td>
-                <td>获取统计性超额收益</td>
-                <td>模型、容量、回撤</td>
-                <td>多因子、短周期交易、对冲</td>
-                </tr>
-                <tr>
-                <td>6. 主观私募</td>
-                <td>获取绝对或相对收益</td>
-                <td>回撤、客户赎回</td>
-                <td>价值、成长、宏观、趋势策略</td>
-                </tr>
-                <tr>
-                <td>7. 外资</td>
-                <td>全球资产配置、超额收益</td>
-                <td>汇率、地缘风险、全球配置</td>
-                <td>价值配置、指数交易、跨市场套利</td>
-                </tr>
-                <tr>
-                <td>8. 保险、社保、养老金</td>
-                <td>长期资产增值、负债匹配</td>
-                <td>偿付能力、风险预算</td>
-                <td>高股息配置、长期持有</td>
-                </tr>
-                <tr>
-                <td>9. 国家队及政策性资金</td>
-                <td>市场稳定等特定政策目标</td>
-                <td>政策授权、资金安排</td>
-                <td>ETF 增持、特殊时期稳定市场</td>
-                </tr>
-                <tr>
-                <td>10. 产业资本</td>
-                <td>控制权、融资、产业战略</td>
-                <td>经营现金流、股权结构</td>
-                <td>减持、增持、回购、并购</td>
-                </tr>
-                <tr>
-                <td>11. 券商自营及衍生品机构</td>
-                <td>做市、套利、自营收益</td>
-                <td>资本金、对冲风险</td>
-                <td>ETF 套利、期现套利、对冲</td>
-                </tr>
-                <tr>
-                <td>12. 杠杆及融资资金</td>
-                <td>放大投资收益</td>
-                <td>保证金、融资成本、强平线</td>
-                <td>上涨加杠杆、下跌被动平仓</td>
-                </tr>
-                </tbody>
-                </table>
-                <p>注意第 12
-                类和其他类别重叠：公募、私募、个人投资者都可能使用杠杆。它是一种特别重要的资金状态，而非独立的最终所有者。</p>
-                <p>从持股规模看，2026 年二季度华源证券估算，A
-                股流通市值中一般法人占 41.2%，个人投资者占
-                35.0%，境内专业机构占 19.4%，外资占
-                4.4%。这说明不能因为游资、量化交易活跃，就误以为它们持有了市场绝大部分股票。</p>
-                <h2
-                id="二不同资金的买卖函数不同">二、不同资金的买卖函数不同</h2>
-                <p>假设工业富联公布一份超预期财报，所有参与者看到的是同一份信息，但行为可能截然相反。</p>
-                <figure>
-                <img
-                src="data:image/svg+xml;charset=utf-8,%3Csvg%20font-family%3D%22-apple-system-body%2C%20ui-sans-serif%2C%20-apple-system%2C%20system-ui%2C%20%26quot%3BSegoe%20UI%26quot%3B%2C%20Helvetica%2C%20%26quot%3BApple%20Color%20Emoji%26quot%3B%2C%20Arial%2C%20sans-serif%2C%20%26quot%3BSegoe%20UI%20Emoji%26quot%3B%2C%20%26quot%3BSegoe%20UI%20Symbol%26quot%3B%22%20font-weight%3D%22400%22%20data-d-component%3D%22svg%22%20fill%3D%22currentColor%22%20style%3D%22color%3Argb(13%2C%2013%2C%2013)%22%20viewBox%3D%220%200%20340%20278%22%20width%3D%22100%25%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Crect%20x%3D%2291%22%20y%3D%225%22%20width%3D%22158%22%20height%3D%2243%22%20rx%3D%229%22%20fill%3D%22%232563eb%22%20fill-opacity%3D%22.13%22%20stroke%3D%22%232563eb%22%2F%3E%3Ctext%20x%3D%22170%22%20y%3D%2222%22%20font-size%3D%2212%22%20font-weight%3D%22600%22%20text-anchor%3D%22middle%22%20fill%3D%22currentColor%22%3E%E5%B7%A5%E4%B8%9A%E5%AF%8C%E8%81%94%E8%B4%A2%E6%8A%A5%E8%B6%85%E9%A2%84%E6%9C%9F%3C%2Ftext%3E%3Ctext%20x%3D%22170%22%20y%3D%2237%22%20font-size%3D%2210%22%20text-anchor%3D%22middle%22%20fill%3D%22currentColor%22%3EEPS%20%E9%A2%84%E6%9C%9F%E4%B8%8A%E4%BF%AE%3C%2Ftext%3E%3Cpath%20d%3D%22M170%2048%20V63%20M44%2063%20H296%20M44%2063%20V79%20M170%2063%20V79%20M296%2063%20V79%22%20stroke%3D%22currentColor%22%20stroke-opacity%3D%22.45%22%20fill%3D%22none%22%2F%3E%3Crect%20x%3D%223%22%20y%3D%2279%22%20width%3D%22106%22%20height%3D%2252%22%20rx%3D%228%22%20fill%3D%22%2316a34a%22%20fill-opacity%3D%22.10%22%20stroke%3D%22%2316a34a%22%20stroke-opacity%3D%22.6%22%2F%3E%3Ctext%20x%3D%2256%22%20y%3D%2299%22%20font-size%3D%2211%22%20text-anchor%3D%22middle%22%20font-weight%3D%22600%22%20fill%3D%22currentColor%22%3E%E4%BB%B7%E5%80%BC%E6%8A%95%E8%B5%84%E8%80%85%3C%2Ftext%3E%3Ctext%20x%3D%2256%22%20y%3D%22116%22%20font-size%3D%2210%22%20text-anchor%3D%22middle%22%20fill%3D%22currentColor%22%3E%E4%BC%B0%E5%80%BC%E6%98%AF%E5%90%A6%E4%BE%BF%E5%AE%9C%3C%2Ftext%3E%3Crect%20x%3D%22117%22%20y%3D%2279%22%20width%3D%22106%22%20height%3D%2252%22%20rx%3D%228%22%20fill%3D%22%2364748b%22%20fill-opacity%3D%22.10%22%20stroke%3D%22%2364748b%22%20stroke-opacity%3D%22.6%22%2F%3E%3Ctext%20x%3D%22170%22%20y%3D%2299%22%20font-size%3D%2211%22%20text-anchor%3D%22middle%22%20font-weight%3D%22600%22%20fill%3D%22currentColor%22%3E%E4%B8%BB%E5%8A%A8%E5%85%AC%E5%8B%9F%3C%2Ftext%3E%3Ctext%20x%3D%22170%22%20y%3D%22116%22%20font-size%3D%2210%22%20text-anchor%3D%22middle%22%20fill%3D%22currentColor%22%3E%E8%83%BD%E5%90%A6%E8%B7%91%E8%B5%A2%E5%9F%BA%E5%87%86%3C%2Ftext%3E%3Crect%20x%3D%22231%22%20y%3D%2279%22%20width%3D%22106%22%20height%3D%2252%22%20rx%3D%228%22%20fill%3D%22%23d97706%22%20fill-opacity%3D%22.10%22%20stroke%3D%22%23d97706%22%20stroke-opacity%3D%22.6%22%2F%3E%3Ctext%20x%3D%22284%22%20y%3D%2299%22%20font-size%3D%2211%22%20text-anchor%3D%22middle%22%20font-weight%3D%22600%22%20fill%3D%22currentColor%22%3E%E8%B6%8B%E5%8A%BF%E8%B5%84%E9%87%91%3C%2Ftext%3E%3Ctext%20x%3D%22284%22%20y%3D%22116%22%20font-size%3D%2210%22%20text-anchor%3D%22middle%22%20fill%3D%22currentColor%22%3E%E6%98%AF%E5%90%A6%E5%B7%B2%E7%BB%8F%E6%B6%A8%E8%B5%B7%E6%9D%A5%3C%2Ftext%3E%3Cpath%20d%3D%22M56%20131%20V151%20M170%20131%20V151%20M284%20131%20V151%22%20stroke%3D%22currentColor%22%20stroke-opacity%3D%22.45%22%2F%3E%3Crect%20x%3D%223%22%20y%3D%22151%22%20width%3D%22106%22%20height%3D%2248%22%20rx%3D%228%22%20fill%3D%22%2316a34a%22%20fill-opacity%3D%22.09%22%20stroke%3D%22%2316a34a%22%20stroke-opacity%3D%22.4%22%2F%3E%3Ctext%20x%3D%2256%22%20y%3D%22169%22%20font-size%3D%2211%22%20font-weight%3D%22600%22%20text-anchor%3D%22middle%22%20fill%3D%22currentColor%22%3E%E5%8F%AF%E8%83%BD%E5%8A%A0%E4%BB%93%3C%2Ftext%3E%3Ctext%20x%3D%2256%22%20y%3D%22186%22%20font-size%3D%2210%22%20text-anchor%3D%22middle%22%20fill%3D%22currentColor%22%3E%E4%BB%B7%E6%A0%BC%E4%BD%8E%E4%BA%8E%E4%BC%B0%E5%80%BC%3C%2Ftext%3E%3Crect%20x%3D%22117%22%20y%3D%22151%22%20width%3D%22106%22%20height%3D%2248%22%20rx%3D%228%22%20fill%3D%22%23dc2626%22%20fill-opacity%3D%22.09%22%20stroke%3D%22%23dc2626%22%20stroke-opacity%3D%22.4%22%2F%3E%3Ctext%20x%3D%22170%22%20y%3D%22169%22%20font-size%3D%2211%22%20font-weight%3D%22600%22%20text-anchor%3D%22middle%22%20fill%3D%22currentColor%22%3E%E5%8F%AF%E8%83%BD%E5%87%8F%E4%BB%93%3C%2Ftext%3E%3Ctext%20x%3D%22170%22%20y%3D%22186%22%20font-size%3D%2210%22%20text-anchor%3D%22middle%22%20fill%3D%22currentColor%22%3E%E5%B7%B2%E8%B6%85%E9%85%8D%E6%88%96%E9%9C%80%E8%B0%83%E4%BB%93%3C%2Ftext%3E%3Crect%20x%3D%22231%22%20y%3D%22151%22%20width%3D%22106%22%20height%3D%2248%22%20rx%3D%228%22%20fill%3D%22%2316a34a%22%20fill-opacity%3D%22.09%22%20stroke%3D%22%2316a34a%22%20stroke-opacity%3D%22.4%22%2F%3E%3Ctext%20x%3D%22284%22%20y%3D%22169%22%20font-size%3D%2211%22%20font-weight%3D%22600%22%20text-anchor%3D%22middle%22%20fill%3D%22currentColor%22%3E%E5%8F%AF%E8%83%BD%E8%BF%BD%E6%B6%A8%3C%2Ftext%3E%3Ctext%20x%3D%22284%22%20y%3D%22186%22%20font-size%3D%2210%22%20text-anchor%3D%22middle%22%20fill%3D%22currentColor%22%3E%E8%B6%8B%E5%8A%BF%E4%BF%A1%E5%8F%B7%E8%A7%A6%E5%8F%91%3C%2Ftext%3E%3Cpath%20d%3D%22M56%20199%20V218%20H284%20V199%20M170%20199%20V218%20V231%22%20stroke%3D%22currentColor%22%20stroke-opacity%3D%22.4%22%20fill%3D%22none%22%2F%3E%3Crect%20x%3D%2248%22%20y%3D%22231%22%20width%3D%22244%22%20height%3D%2238%22%20rx%3D%229%22%20fill%3D%22%2364748b%22%20fill-opacity%3D%22.11%22%20stroke%3D%22%2364748b%22%20stroke-opacity%3D%22.5%22%2F%3E%3Ctext%20x%3D%22170%22%20y%3D%22247%22%20font-size%3D%2212%22%20text-anchor%3D%22middle%22%20font-weight%3D%22600%22%20fill%3D%22currentColor%22%3E%E6%9C%80%E7%BB%88%E8%82%A1%E4%BB%B7%E7%94%B1%E8%BE%B9%E9%99%85%E4%B9%B0%E5%8D%96%E7%9B%98%E5%86%B3%E5%AE%9A%3C%2Ftext%3E%3Ctext%20x%3D%22170%22%20y%3D%22261%22%20font-size%3D%2210%22%20text-anchor%3D%22middle%22%20fill%3D%22currentColor%22%3E%E8%80%8C%E4%B8%8D%E6%98%AF%E7%94%B1%E8%B4%A2%E6%8A%A5%E6%9C%AC%E8%BA%AB%E6%9C%BA%E6%A2%B0%E5%86%B3%E5%AE%9A%3C%2Ftext%3E%3C%2Fsvg%3E"
-                style="width:80.0%" alt="同一个利好，不同的决策函数" />
-                <figcaption
-                aria-hidden="true">同一个利好，不同的决策函数</figcaption>
-                </figure>
-                <p>这里面有几个非常值得研究的机制。</p>
-                <ol type="1">
-                <li>公募基金可能被迫在低位卖出。</li>
-                </ol>
-                <p>假设一只主动基金经理认为某股票低估了
-                30%，但是基金持续遭遇赎回。</p>
-                <p>他可能必须卖出部分股票支付赎回款。</p>
-                <ol start="2" type="1">
-                <li>产业资本可能根本不关心短期估值。</li>
-                </ol>
-                <p>一家上市公司的大股东可能因为偿还债务、改善自身流动性而减持。</p>
-                <p>哪怕股票 PE 只有 15 倍，也可能卖。</p>
-                <ol start="3" type="1">
-                <li>趋势资金可能在高估时继续买入。</li>
-                </ol>
-                <p>它的决策变量可能不是 PE，而是：</p>
-                <ul>
-                <li>过去 20 日或 60 日收益率</li>
-                <li>成交量变化</li>
-                <li>波动率</li>
-                <li>趋势强度与风险预算</li>
-                </ul>
-                <p>这意味着股价上涨本身就可能产生新的买盘。</p>
-                <h2
-                id="三哪些势力会相互强化形成牛市和熊市">三、哪些势力会相互强化，形成牛市和熊市？</h2>
-                <p>典型正反馈：牛市资金循环</p>
-                <p><img
-                src="data:image/svg+xml;charset=utf-8,%3Csvg%20font-family%3D%22-apple-system-body%2C%20ui-sans-serif%2C%20-apple-system%2C%20system-ui%2C%20%26quot%3BSegoe%20UI%26quot%3B%2C%20Helvetica%2C%20%26quot%3BApple%20Color%20Emoji%26quot%3B%2C%20Arial%2C%20sans-serif%2C%20%26quot%3BSegoe%20UI%20Emoji%26quot%3B%2C%20%26quot%3BSegoe%20UI%20Symbol%26quot%3B%22%20font-weight%3D%22400%22%20data-d-component%3D%22svg%22%20fill%3D%22currentColor%22%20style%3D%22color%3Argb(13%2C%2013%2C%2013)%22%20viewBox%3D%220%200%20320%20265%22%20width%3D%22100%25%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Crect%20x%3D%2219%22%20y%3D%224%22%20width%3D%22282%22%20height%3D%2238%22%20rx%3D%228%22%20fill%3D%22%232563eb%22%20fill-opacity%3D%22.14%22%20stroke%3D%22%232563eb%22%20stroke-opacity%3D%22.65%22%2F%3E%3Ctext%20x%3D%22160%22%20y%3D%2227%22%20font-size%3D%2212%22%20text-anchor%3D%22middle%22%20fill%3D%22currentColor%22%3E%E5%9F%BA%E6%9C%AC%E9%9D%A2%E6%94%B9%E5%96%84%20%2F%20%E6%94%BF%E7%AD%96%E5%86%B2%E5%87%BB%20%2F%20%E5%A4%96%E9%83%A8%E8%B5%84%E9%87%91%E6%B5%81%E5%85%A5%3C%2Ftext%3E%3Cpath%20d%3D%22M160%2042%20v16%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%221.5%22%2F%3E%3Cpath%20d%3D%22M156%2053%20l4%205%204%20-5%22%20fill%3D%22none%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%221.5%22%2F%3E%3Crect%20x%3D%2219%22%20y%3D%2258%22%20width%3D%22282%22%20height%3D%2238%22%20rx%3D%228%22%20fill%3D%22%2364748b%22%20fill-opacity%3D%22.10%22%20stroke%3D%22%2394a3b8%22%20stroke-opacity%3D%22.65%22%2F%3E%3Ctext%20x%3D%22160%22%20y%3D%2281%22%20font-size%3D%2212%22%20text-anchor%3D%22middle%22%20fill%3D%22currentColor%22%3E%E8%82%A1%E4%BB%B7%E4%B8%8A%E6%B6%A8%E3%80%81%E8%B5%9A%E9%92%B1%E6%95%88%E5%BA%94%E5%A2%9E%E5%BC%BA%3C%2Ftext%3E%3Cpath%20d%3D%22M160%2096%20v16%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%221.5%22%2F%3E%3Cpath%20d%3D%22M156%20107%20l4%205%204%20-5%22%20fill%3D%22none%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%221.5%22%2F%3E%3Crect%20x%3D%2219%22%20y%3D%22112%22%20width%3D%22282%22%20height%3D%2238%22%20rx%3D%228%22%20fill%3D%22%2364748b%22%20fill-opacity%3D%22.10%22%20stroke%3D%22%2394a3b8%22%20stroke-opacity%3D%22.65%22%2F%3E%3Ctext%20x%3D%22160%22%20y%3D%22135%22%20font-size%3D%2212%22%20text-anchor%3D%22middle%22%20fill%3D%22currentColor%22%3E%E8%B6%8B%E5%8A%BF%E7%AD%96%E7%95%A5%E5%8A%A0%E4%BB%93%E3%80%81%E6%95%A3%E6%88%B7%E7%94%B3%E8%B4%AD%E5%9F%BA%E9%87%91%3C%2Ftext%3E%3Cpath%20d%3D%22M160%20150%20v16%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%221.5%22%2F%3E%3Cpath%20d%3D%22M156%20161%20l4%205%204%20-5%22%20fill%3D%22none%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%221.5%22%2F%3E%3Crect%20x%3D%2219%22%20y%3D%22166%22%20width%3D%22282%22%20height%3D%2238%22%20rx%3D%228%22%20fill%3D%22%2364748b%22%20fill-opacity%3D%22.10%22%20stroke%3D%22%2394a3b8%22%20stroke-opacity%3D%22.65%22%2F%3E%3Ctext%20x%3D%22160%22%20y%3D%22189%22%20font-size%3D%2212%22%20text-anchor%3D%22middle%22%20fill%3D%22currentColor%22%3E%E5%85%AC%E5%8B%9F%E8%8E%B7%E5%BE%97%E5%A2%9E%E9%87%8F%E8%B5%84%E9%87%91%E3%80%81%E8%9E%8D%E8%B5%84%E7%9B%98%E6%89%A9%E5%A4%A7%3C%2Ftext%3E%3Cpath%20d%3D%22M160%20204%20V218%20H9%20V77%20H19%22%20stroke%3D%22%2316a34a%22%20stroke-width%3D%221.8%22%20fill%3D%22none%22%2F%3E%3Cpath%20d%3D%22M14%2073%20L19%2077%20L14%2081%22%20stroke%3D%22%2316a34a%22%20fill%3D%22none%22%20stroke-width%3D%221.8%22%2F%3E%3Ctext%20x%3D%22160%22%20y%3D%22244%22%20text-anchor%3D%22middle%22%20font-size%3D%2212%22%20fill%3D%22%2316a34a%22%20font-weight%3D%22600%22%3E%E5%A2%9E%E9%87%8F%E4%B9%B0%E7%9B%98%E7%BB%A7%E7%BB%AD%E6%8E%A8%E9%AB%98%E4%BB%B7%E6%A0%BC%3C%2Ftext%3E%3C%2Fsvg%3E"
-                style="width:80.0%" /></p>
-                <p>这是一个可能形成的正反馈循环，而不是每轮牛市必然遵循的固定顺序。</p>
-                <p>反过来，熊市也可能形成负反馈：</p>
-                <p>股价下跌 → 净值回撤 → 赎回与风控减仓 → 融资保证金不足
-                → 被动卖出 → 股价进一步下跌。</p>
-                <p>关键区别是主动交易和被动交易。</p>
-                <p>例如 2018
-                年股票质押风险，就是一个很好的研究对象：</p>
-                <p>企业大股东原本不想卖股票，但股价下跌使质押担保比例恶化，补仓压力和潜在平仓风险又进一步影响市场预期。</p>
-                <p>这不是简单的“大家都看空经济”，而是金融契约把价格下跌转化成了新的卖出压力。</p>
-                <h2 id="四对-a-股定价最有影响的几种特殊力量">四、对 A
-                股定价最有影响的几种特殊力量</h2>
-                <p>我认为你尤其需要关注以下四种机制。</p>
-                <h3 id="国家队目标函数不完全是投资收益">1.
-                国家队：目标函数不完全是投资收益</h3>
-                <p>国家队不是一个统一交易账户，包括不同性质、不同授权和目标的主体。</p>
-                <p>它们可能承担市场稳定、长期投资等任务。部分资金即使短期浮亏，也不一定像普通私募一样遭遇客户赎回。</p>
-                <p>因此在市场极端波动时，它们的行为可能与商业化资金不同。</p>
-                <h3 id="公募基金经理和基民之间存在委托代理关系">2.
-                公募：基金经理和基民之间存在委托代理关系</h3>
-                <p>这是理解 2021 年机构抱团的重要切入点。</p>
-                <p>假设某个赛道连续上涨：</p>
-                <p>基金净值表现好 → 投资者申购 → 基金规模增加 →
-                基金继续配置该赛道。</p>
-                <p>但当资金流向逆转，原本的正反馈可能变成负反馈。</p>
-                <p>所以机构抱团不一定意味着所有基金经理都独立判断该行业有极高投资价值，也可能包含业绩比较、申购资金流入和持仓趋同的影响。</p>
-                <h3 id="量化它不一定提供稳定的反向流动性">3.
-                量化：它不一定提供稳定的反向流动性</h3>
-                <p>量化是一个大集合，包括：</p>
-                <ul>
-                <li>高频做市和套利</li>
-                <li>市场中性多因子</li>
-                <li>指数增强</li>
-                <li>CTA 趋势策略</li>
-                <li>高频或中低频选股策略</li>
-                </ul>
-                <p>这些策略的交易方向甚至可能完全相反。</p>
-                <p>尤其值得研究的是：不同量化机构采用相似信号时，是否会在风险事件中同时减仓。</p>
-                <p>如果发生策略拥挤，原本分散的机构也可能产生高度相关的行为。</p>
-                <h2
-                id="五用一个二维框架理解各方势力">五、用一个二维框架理解各方势力</h2>
-                <p>比单纯记住 12
-                类资金更有用的，是看它们通常如何对待价格波动。</p>
-                <figure>
-                <img
-                src="data:image/svg+xml;charset=utf-8,%3Csvg%20font-family%3D%22-apple-system-body%2C%20ui-sans-serif%2C%20-apple-system%2C%20system-ui%2C%20%26quot%3BSegoe%20UI%26quot%3B%2C%20Helvetica%2C%20%26quot%3BApple%20Color%20Emoji%26quot%3B%2C%20Arial%2C%20sans-serif%2C%20%26quot%3BSegoe%20UI%20Emoji%26quot%3B%2C%20%26quot%3BSegoe%20UI%20Symbol%26quot%3B%22%20font-weight%3D%22400%22%20data-d-component%3D%22svg%22%20fill%3D%22currentColor%22%20style%3D%22color%3Argb(13%2C%2013%2C%2013)%22%20viewBox%3D%220%200%20340%20270%22%20width%3D%22100%25%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Crect%20x%3D%2241%22%20y%3D%2217%22%20width%3D%22284%22%20height%3D%22213%22%20rx%3D%223%22%20fill%3D%22%2364748b%22%20fill-opacity%3D%22.04%22%2F%3E%3Cpath%20d%3D%22M183%2017%20V230%20M41%20123%20H325%22%20stroke%3D%22currentColor%22%20stroke-opacity%3D%22.25%22%20stroke-dasharray%3D%224%204%22%2F%3E%3Cpath%20d%3D%22M41%20230%20V17%20M41%20230%20H325%22%20stroke%3D%22currentColor%22%20stroke-width%3D%221.3%22%20fill%3D%22none%22%2F%3E%3Ctext%20x%3D%229%22%20y%3D%2215%22%20font-size%3D%2210%22%20fill%3D%22currentColor%22%3E%E9%95%BF%3C%2Ftext%3E%3Ctext%20x%3D%229%22%20y%3D%22235%22%20font-size%3D%2210%22%20fill%3D%22currentColor%22%3E%E7%9F%AD%3C%2Ftext%3E%3Ctext%20x%3D%228%22%20y%3D%22126%22%20font-size%3D%2210%22%20fill%3D%22currentColor%22%20transform%3D%22rotate(-90%208%20126)%22%3E%E6%8C%81%E6%9C%89%E5%91%A8%E6%9C%9F%3C%2Ftext%3E%3Ctext%20x%3D%2241%22%20y%3D%22249%22%20font-size%3D%2210%22%20fill%3D%22currentColor%22%3E%E9%80%86%E5%90%91%2F%E4%BC%B0%E5%80%BC%E9%A9%B1%E5%8A%A8%3C%2Ftext%3E%3Ctext%20x%3D%22325%22%20y%3D%22249%22%20font-size%3D%2210%22%20fill%3D%22currentColor%22%20text-anchor%3D%22end%22%3E%E9%A1%BA%E5%8A%BF%2F%E4%BB%B7%E6%A0%BC%E9%A9%B1%E5%8A%A8%3C%2Ftext%3E%3Crect%20x%3D%2243%22%20y%3D%2241%22%20width%3D%22112%22%20height%3D%2225%22%20rx%3D%226%22%20fill%3D%22%2316a34a%22%20fill-opacity%3D%22.12%22%20stroke%3D%22%2316a34a%22%20stroke-opacity%3D%22.5%22%2F%3E%3Ctext%20x%3D%2299%22%20y%3D%2257%22%20font-size%3D%2210.5%22%20fill%3D%22currentColor%22%20text-anchor%3D%22middle%22%3E%E9%95%BF%E6%9C%9F%E4%BB%B7%E5%80%BC%E8%B5%84%E9%87%91%3C%2Ftext%3E%3Crect%20x%3D%2256%22%20y%3D%2276%22%20width%3D%22112%22%20height%3D%2225%22%20rx%3D%226%22%20fill%3D%22%2316a34a%22%20fill-opacity%3D%22.12%22%20stroke%3D%22%2316a34a%22%20stroke-opacity%3D%22.5%22%2F%3E%3Ctext%20x%3D%22112%22%20y%3D%2292%22%20font-size%3D%2210.5%22%20fill%3D%22currentColor%22%20text-anchor%3D%22middle%22%3E%E9%99%A9%E8%B5%84%2F%E5%85%BB%E8%80%81%E9%87%91%3C%2Ftext%3E%3Crect%20x%3D%22189%22%20y%3D%2251%22%20width%3D%22112%22%20height%3D%2225%22%20rx%3D%226%22%20fill%3D%22%232563eb%22%20fill-opacity%3D%22.12%22%20stroke%3D%22%232563eb%22%20stroke-opacity%3D%22.5%22%2F%3E%3Ctext%20x%3D%22245%22%20y%3D%2267%22%20font-size%3D%2210.5%22%20fill%3D%22currentColor%22%20text-anchor%3D%22middle%22%3E%E6%88%90%E9%95%BF%E5%9E%8B%E5%85%AC%E5%8B%9F%3C%2Ftext%3E%3Crect%20x%3D%22196%22%20y%3D%2292%22%20width%3D%22112%22%20height%3D%2225%22%20rx%3D%226%22%20fill%3D%22%232563eb%22%20fill-opacity%3D%22.12%22%20stroke%3D%22%232563eb%22%20stroke-opacity%3D%22.5%22%2F%3E%3Ctext%20x%3D%22252%22%20y%3D%22108%22%20font-size%3D%2210.5%22%20fill%3D%22currentColor%22%20text-anchor%3D%22middle%22%3E%E8%B6%8B%E5%8A%BF%E9%85%8D%E7%BD%AE%3C%2Ftext%3E%3Crect%20x%3D%2242%22%20y%3D%22153%22%20width%3D%22112%22%20height%3D%2225%22%20rx%3D%226%22%20fill%3D%22%23d97706%22%20fill-opacity%3D%22.12%22%20stroke%3D%22%23d97706%22%20stroke-opacity%3D%22.5%22%2F%3E%3Ctext%20x%3D%2298%22%20y%3D%22169%22%20font-size%3D%2210.5%22%20fill%3D%22currentColor%22%20text-anchor%3D%22middle%22%3E%E5%A5%97%E5%88%A9%2F%E5%9D%87%E5%80%BC%E5%9B%9E%E5%BD%92%3C%2Ftext%3E%3Crect%20x%3D%22195%22%20y%3D%22152%22%20width%3D%22112%22%20height%3D%2225%22%20rx%3D%226%22%20fill%3D%22%23dc2626%22%20fill-opacity%3D%22.12%22%20stroke%3D%22%23dc2626%22%20stroke-opacity%3D%22.5%22%2F%3E%3Ctext%20x%3D%22251%22%20y%3D%22168%22%20font-size%3D%2210.5%22%20fill%3D%22currentColor%22%20text-anchor%3D%22middle%22%3E%E6%B8%B8%E8%B5%84%2F%E5%8A%A8%E9%87%8F%3C%2Ftext%3E%3Crect%20x%3D%22195%22%20y%3D%22188%22%20width%3D%22112%22%20height%3D%2225%22%20rx%3D%226%22%20fill%3D%22%23dc2626%22%20fill-opacity%3D%22.12%22%20stroke%3D%22%23dc2626%22%20stroke-opacity%3D%22.5%22%2F%3E%3Ctext%20x%3D%22251%22%20y%3D%22204%22%20font-size%3D%2210.5%22%20fill%3D%22currentColor%22%20text-anchor%3D%22middle%22%3E%E7%9F%AD%E7%BA%BF%E8%B6%8B%E5%8A%BF%E9%87%8F%E5%8C%96%3C%2Ftext%3E%3C%2Fsvg%3E"
-                alt="资金行为矩阵（概念示意）" />
-                <figcaption
-                aria-hidden="true">资金行为矩阵（概念示意）</figcaption>
-                </figure>
-                <p>这个图揭示一个重要现象：</p>
-                <p>价值资金和趋势资金之间存在天然的博弈。</p>
-                <p>价值投资者可能因为上涨导致预期收益率下降而卖出，趋势资金却可能因为上涨而买入。</p>
-                <p>但价格未必立即回归价值，因为趋势资金可以持续吸引新增资金。</p>
-                <p>这也是为什么基本面正确，不等于短期股价判断正确。</p>
-                <h2 id="六应该如何应用">六、应该如何应用？</h2>
-                <p>对于工业富联这样的 AI
-                产业链大型公司，我会特别关注：</p>
-                <table>
-                <thead>
-                <tr>
-                <th>资金</th>
-                <th>需要研究的问题</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                <td>主动公募</td>
-                <td>当前是否超配？是否存在集体调仓压力？</td>
-                </tr>
-                <tr>
-                <td>被动 ETF</td>
-                <td>是否有持续申购？成分股权重变化如何？</td>
-                </tr>
-                <tr>
-                <td>外资</td>
-                <td>全球 AI 硬件资产配置是否发生变化？</td>
-                </tr>
-                <tr>
-                <td>产业资本</td>
-                <td>大股东是否存在减持计划、融资或股权安排？</td>
-                </tr>
-                <tr>
-                <td>趋势与量化</td>
-                <td>价格动量、成交拥挤程度是否过高？</td>
-                </tr>
-                <tr>
-                <td>杠杆资金</td>
-                <td>融资余额是否快速扩张？</td>
-                </tr>
-                <tr>
-                <td>长期价值资金</td>
-                <td>当前价格隐含了怎样的未来利润增长？</td>
-                </tr>
-                </tbody>
-                </table>
-                <p>这里最重要的区别是：</p>
-                <p>企业未来三年的净利润决定长期价值的重要基础，但未来三个月的边际资金供需可能决定短期股价。</p>
-                <p>即使未来净利润预测完全正确，如果当前机构已经普遍超配、预期高度一致，仍可能出现股价长期不涨的情况。</p>
-                <p>反过来，如果业绩持续超预期，而大量机构原本低配，就可能出现盈利增长和估值扩张相互强化的戴维斯双击。</p>
-                <p>我建议你接下来研究 A
-                股历史时，把每个阶段都拆成三个问题：</p>
-                <ol type="1">
-                <li>谁掌握 <strong>增量资金</strong>？
-                例如居民申购公募、融资资金扩张、ETF 获得净申购。</li>
-                <li>谁 <strong>被迫交易</strong>？
-                例如赎回、质押平仓、风控降仓、指数调整。</li>
-                <li>谁掌握 <strong>边际定价权</strong>？
-                不一定是持股最多的人，而是在当时价格附近愿意持续买卖的人。</li>
-                </ol>
-                <p>这样看 2005–2007 年股改牛市、2016–2017 年漂亮
-                50、2021 年机构抱团，以及 2024 年 924
-                后的行情，就能逐渐建立一个统一的分析框架。</p>
-                <p>最终要研究的不是简单的“主力资金流入流出”，而是：</p>
-                <p>不同资金受到怎样的约束，这些约束如何随着价格变化而改变交易行为，又如何通过市场反馈形成新的价格。</p>
-                <p>这比单纯研究 K 线、资金流向或者某个机构的持仓，更接近
-                A 股市场的实际运作机制。</p>
-                <h2 id="七.-散户的结构优势">七. 散户的结构优势</h2>
-                <p>有，而且我认为<strong>散户真正的优势恰恰不是信息、速度、资金量，而是博弈结构本身</strong>。</p>
-                <p>如果从博弈论看，可以把机构/量化和散户理解成两种完全不同的玩家。</p>
-                <h3 id="最大优势没有必须交易的约束">1.
-                最大优势：没有“必须交易”的约束</h3>
-                <p>这是最核心的。</p>
-                <p>机构实际上受到很多外部约束：基金合同 → 风险控制 →
-                基准 → 季度排名 → 申赎 → 流动性 → 仓位限制 →
-                风控模型</p>
-                <p>量化则更多受到：模型 → 杠杆 → 回撤 → 风控 → 融资成本
-                → 因子拥挤 约束。</p>
-                <p>而散户可以：<strong>今天什么都不做。</strong></p>
-                <p>这在博弈论里面非常重要。</p>
-                <p>假设你认为：</p>
-                <blockquote>
-                <p>股票合理价值 80 元，现在 55 元。</p>
-                </blockquote>
-                <p>你可以选择：</p>
-                <blockquote>
-                <p>55 元买入，然后两年不动。</p>
-                </blockquote>
-                <p>但一个管理 100 亿资金的基金经理未必能这么做。</p>
-                <p>如果连续三个月：</p>
-                <blockquote>
-                <p>横盘甚至下跌 20%</p>
-                </blockquote>
-                <p>基民开始赎回，基金经理就可能被迫卖。</p>
-                <p>所以你拥有一种机构很难拥有的：</p>
-                <blockquote>
-                <p><strong>无限期等待的期权。</strong></p>
-                </blockquote>
-                <hr />
-                <h3 id="没有基准考核所以可以做非共识交易">2.
-                没有基准考核，所以可以做“非共识交易”</h3>
-                <p>这是第二个巨大优势。</p>
-                <p>假设：</p>
-                <blockquote>
-                <p>沪深300 +10%</p>
-                </blockquote>
-                <p>而你：</p>
-                <blockquote>
-                <p>+2%</p>
-                </blockquote>
-                <p>从绝对收益来看，你赚钱。</p>
-                <p>但基金经理可能已经非常难受：</p>
-                <blockquote>
-                <p><strong>-8% relative performance</strong></p>
-                </blockquote>
-                <p>因为投资者会问：</p>
-                <blockquote>
-                <p>“为什么别人赚 10%，你只赚 2%？”</p>
-                </blockquote>
-                <p>于是基金经理会被迫向：</p>
-                <blockquote>
-                <p><strong>市场共识</strong></p>
-                </blockquote>
-                <p>靠拢。</p>
-                <p>而你没有这个问题。</p>
-                <p>你完全可以说：</p>
-                <blockquote>
-                <p>“我认为这个公司被低估了，两年后兑现。”</p>
-                </blockquote>
-                <p>然后两年不管别人。</p>
-                <p>这就是为什么个人投资者理论上可以做很多<strong>机构无法承受的非共识投资</strong>。</p>
-                <hr />
-                <h3 id="资金小其实也是优势">3. 资金小其实也是优势</h3>
-                <p>这听起来非常反直觉。</p>
-                <p>比如：</p>
-                <blockquote>
-                <p>你有 100 万。</p>
-                </blockquote>
-                <p>工业富联成交量足够大，所以你：</p>
-                <blockquote>
-                <p>100 万 → 买进去</p>
-                </blockquote>
-                <p>几乎没有影响。</p>
-                <p>但如果一个机构：</p>
-                <blockquote>
-                <p>管理 1000 亿</p>
-                </blockquote>
-                <p>它想建立一个：</p>
-                <blockquote>
-                <p>10% = 100 亿</p>
-                </blockquote>
-                <p>的工业富联仓位。</p>
-                <p>问题来了：</p>
-                <p><strong>它根本不能悄悄完成。</strong></p>
-                <p>它的交易本身就会改变价格。</p>
-                <p>于是出现一个非常经典的博弈问题：</p>
-                <blockquote>
-                <p><strong>你的行动会不会被市场观察到？</strong></p>
-                </blockquote>
-                <p>小资金：</p>
-                <blockquote>
-                <p>行动 ≈ 不改变市场。</p>
-                </blockquote>
-                <p>大资金：</p>
-                <blockquote>
-                <p>行动 → 改变市场 → 其他人观察到 → 对手调整策略。</p>
-                </blockquote>
-                <p>所以散户拥有：</p>
-                <blockquote>
-                <p><strong>低市场冲击（low market impact）</strong></p>
-                </blockquote>
-                <p>的优势。</p>
-                <hr />
-                <h3 id="可以进入小容量机会">4. 可以进入“小容量机会”</h3>
-                <p>这是量化最头疼的问题之一。</p>
-                <p>假设某个策略：</p>
-                <blockquote>
-                <p>每年能赚 30%</p>
-                </blockquote>
-                <p>但容量只有：</p>
-                <blockquote>
-                <p>5000 万。</p>
-                </blockquote>
-                <p>对你来说：</p>
-                <blockquote>
-                <p>非常好。</p>
-                </blockquote>
-                <p>对一个：</p>
-                <blockquote>
-                <p>500 亿量化基金</p>
-                </blockquote>
-                <p>来说：</p>
-                <blockquote>
-                <p><strong>完全没意义。</strong></p>
-                </blockquote>
-                <p>因为你把 500 亿放进去以后，策略收益可能从：</p>
-                <blockquote>
-                <p>30%</p>
-                </blockquote>
-                <p>变成：</p>
-                <blockquote>
-                <p>3%</p>
-                </blockquote>
-                <p>甚至直接失效。</p>
-                <p>所以散户实际上拥有一个巨大的：</p>
-                <blockquote>
-                <p><strong>机会集合。</strong></p>
-                </blockquote>
-                <p>很多“小而有效”的机会，机构根本吃不下。</p>
-                <hr />
-                <h3 id="你可以忍受极低流动性的资产">5.
-                你可以忍受极低流动性的资产</h3>
-                <p>机构不能随便买：</p>
-                <blockquote>
-                <p>一只每天成交 2000 万的股票。</p>
-                </blockquote>
-                <p>因为如果基金规模 100 亿：</p>
-                <blockquote>
-                <p>想卖的时候卖不掉。</p>
-                </blockquote>
-                <p>而你买：</p>
-                <blockquote>
-                <p>20 万</p>
-                </blockquote>
-                <p>完全没有这个问题。</p>
-                <p>因此：</p>
-                <p><strong>散户可以在流动性折价中寻找机会。</strong></p>
-                <p>这也是为什么小盘股、冷门股、特殊情形（special
-                situations）理论上更适合小资金。</p>
-                <hr />
-                <h3 id="你可以真正做长期博弈">6.
-                你可以真正做“长期博弈”</h3>
-                <p>这个我觉得特别适合你理解工业富联。</p>
-                <p>假设：</p>
-                <blockquote>
-                <p>市场参与者 A：今天赚 2%</p>
-                <p>市场参与者 B：一个季度排名</p>
-                <p>市场参与者 C：一年收益</p>
-                <p>你：两年后企业盈利兑现</p>
-                </blockquote>
-                <p>你们实际上<strong>不是在玩同一个博弈</strong>。</p>
-                <p>机构的 payoff：</p>
-                <p>[ U_{} = 收益 - 回撤惩罚 相对排名惩罚 赎回风险 ]</p>
-                <p>你的 payoff 更简单：</p>
-                <p>[ U_{} = 最终财富 ]</p>
-                <p>只要你没有杠杆、没有融资平仓，你甚至可以承受：</p>
-                <blockquote>
-                <p><strong>中间两年非常难看。</strong></p>
-                </blockquote>
-                <p>这其实是非常大的优势。</p>
-                <hr />
-                <h3 id="散户最大的劣势恰恰也是自己">7.
-                散户最大的劣势恰恰也是自己</h3>
-                <p>博弈论上，这就是最有意思的地方：</p>
-                <blockquote>
-                <p><strong>散户拥有“自由”，但很容易把自由浪费掉。</strong></p>
-                </blockquote>
-                <p>机构：</p>
-                <blockquote>
-                <p>模型告诉我减仓 → 减仓。</p>
-                </blockquote>
-                <p>散户：</p>
-                <blockquote>
-                <p>今天涨 5% → 兴奋</p>
-                <p>明天跌 5% → 恐慌</p>
-                <p>后天看雪球 → 怀疑人生</p>
-                <p>一周以后 → 换股</p>
-                </blockquote>
-                <p>于是机构的约束反而成为优势：</p>
-                <blockquote>
-                <p><strong>纪律。</strong></p>
-                </blockquote>
-                <p>散户的自由反而成为劣势：</p>
-                <blockquote>
-                <p><strong>情绪。</strong></p>
-                </blockquote>
-                <p>所以散户真正应该做的，是
-                <strong>主动把自己变成一个有规则的长期玩家</strong>。</p>
-              </div>
-    </div>
-  </div>
+  <script type="text/javascript">
+    (function () {
+      function markActive() {
+        var here = location.href.split('#')[0];
+        var links = document.querySelectorAll('.wiki-sidebar a');
+        for (var i = 0; i < links.length; i++) {
+          if (links[i].href.split('#')[0] === here) {
+            links[i].classList.add('active');
+          }
+        }
+      }
+      // load the shared site directory once (served from the wiki root);
+      // kept in a standalone file so adding a page needn't rebuild every page.
+      var nav = document.getElementById('wiki-sidebar');
+      if (nav) {
+        fetch('/.wiki_sidebar.html')
+          .then(function (r) { return r.ok ? r.text() : ''; })
+          .then(function (html) {
+            if (html) {
+              nav.innerHTML = html;
+              nav.hidden = false;
+              markActive();
+            }
+          })
+          .catch(function () {});
+      }
+      // keep bootstrap table styling (previously done by sticky_menu.js)
+      var tables = document.getElementsByTagName('table');
+      for (var j = 0; j < tables.length; j++) {
+        tables[j].classList.add('table');
+      }
+    })();
+  </script>
 </body>
 
 </html>

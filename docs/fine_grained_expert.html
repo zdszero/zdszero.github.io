@@ -1,0 +1,225 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    两阶段专家
+  </title>
+    <link rel="stylesheet" href="./WikiTheme/theme/bootstrap.css"  />
+          <style type="text/css">
+    /* ---- three column wiki layout (left: site directory, center: content, right: page TOC) ---- */
+    .wiki-layout {
+      display: flex;
+      align-items: flex-start;
+      gap: 24px;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 20px;
+      box-sizing: border-box;
+    }
+    .wiki-sidebar {
+      flex: 0 0 240px;
+      width: 240px;
+      position: sticky;
+      top: 0;
+      max-height: 100vh;
+      overflow-y: auto;
+      padding: 10px 4px 20px 0;
+      border-right: 1px solid #eee;
+      font-size: 14px;
+    }
+    .wiki-sidebar[hidden] { display: none; }
+    .wiki-toc {
+      flex: 0 0 220px;
+      width: 220px;
+      position: sticky;
+      top: 0;
+      max-height: 100vh;
+      overflow-y: auto;
+      padding: 10px 0 20px 4px;
+      border-left: 1px solid #eee;
+      font-size: 14px;
+    }
+    .wiki-main {
+      flex: 1 1 auto;
+      min-width: 0;
+      max-width: 820px;
+      padding: 10px 0 40px;
+    }
+    /* site directory tree */
+    .wiki-sidebar .wiki-home {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #eee;
+      text-decoration: none;
+      color: #333;
+    }
+    .wiki-sidebar ul { list-style: none; margin: 0 0 0 12px; padding: 0; }
+    .wiki-sidebar > ul { margin-left: 0; }
+    .wiki-sidebar li { line-height: 1.7; }
+    .wiki-sidebar a { text-decoration: none; color: #555; }
+    .wiki-sidebar a:hover { color: #0088cc; text-decoration: underline; }
+    .wiki-sidebar a.active { color: #0088cc; font-weight: bold; }
+    /* page TOC */
+    .wiki-toc ul { list-style: none; margin: 0 0 0 12px; padding: 0; }
+    .wiki-toc > ul { margin-left: 0; }
+    .wiki-toc li { line-height: 1.6; }
+    .wiki-toc a { text-decoration: none; color: #555; }
+    .wiki-toc a:hover { color: #0088cc; }
+    @media (max-width: 980px) {
+      .wiki-layout { flex-direction: column; }
+      .wiki-sidebar, .wiki-toc {
+        position: static;
+        width: 100%;
+        flex-basis: auto;
+        max-height: none;
+        border: 0;
+      }
+      .wiki-main { max-width: none; }
+    }
+  </style>
+</head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">两阶段专家</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="wiki-layout">
+    <nav class="wiki-sidebar" id="wiki-sidebar" hidden></nav>
+    <main class="wiki-main">
+            <p>当专家数量比较多时，不是通过一次 gate + topk 就选出来 K
+            个专家，而是通过一种【两阶段专家】的方式：<strong>先组内竞争，再组间竞争</strong>。</p>
+            <p>比如说对于 deepseek v3，其配置中包含以下专家配置：</p>
+            <ul>
+            <li><code>n_routed_experts</code>: 256，总共 256 个专家</li>
+            <li><code>num_experts_per_tok</code>: 8，每个 token 选择 8
+            个动态专家</li>
+            <li><code>n_group</code>：将动态专家分为 8
+            组，在不使用冗余专家的情况下每组 32 个</li>
+            <li><code>topk_group</code>：在第一阶段选取 4
+            个专家组，最终每个 token 选取的 8 个专家从这 4
+            个专家组中诞生</li>
+            </ul>
+            <h4 id="组内筛选与打分">组内筛选与打分</h4>
+            <ol type="1">
+            <li><strong>输入</strong>：Token 表示 <code>X</code>
+            <ul>
+            <li>形状：<code>[num_tokens, num_experts]</code></li>
+            <li>每个 token 对每个专家有一个初始的“兴趣度”分数。</li>
+            </ul></li>
+            <li><strong>分数归一化与校正</strong>
+            <ul>
+            <li><code>S = sigmoid(X)</code>：将原始分数映射到
+            <code>(0, 1)</code> 区间，作为基础专家权重。</li>
+            <li><code>S_corrected = S + correction_bias</code>：引入一个可学习的偏置项，用于调整专家选择的倾向性（例如，缓解专家负载不均衡）。</li>
+            </ul></li>
+            <li><strong>分组与组内竞争</strong>
+            <ul>
+            <li>将 <code>num_experts</code> 个专家均匀分为
+            <code>n_group</code> 组。</li>
+            <li><strong>形状变换</strong>：<code>S_corrected</code> 从
+            <code>[num_tokens, num_experts]</code> 变为
+            <code>[num_tokens, n_group, num_experts_per_group]</code>。</li>
+            <li><strong>组内打分</strong>：在每个组内，为每个 token 选取
+            Top-2
+            的专家，并<strong>将它们的分数求和</strong>，作为该组的“组得分”。</li>
+            <li><strong>输出</strong>：组得分矩阵，形状为
+            <code>[num_tokens, n_group, 1]</code>。这代表了每个 token
+            对每个组的“兴趣度”。</li>
+            </ul></li>
+            </ol>
+            <h4 id="组间竞争与专家选择">组间竞争与专家选择</h4>
+            <ol start="4" type="1">
+            <li><strong>选择候选组</strong>
+            <ul>
+            <li>基于组得分，为每个 token 选择得分最高的 <strong>Top-4
+            个组</strong>。</li>
+            <li>输出形状：<code>[num_tokens, 4]</code>（存储选中的组索引）。</li>
+            </ul></li>
+            <li><strong>生成组掩码并映射到专家</strong>
+            <ul>
+            <li>创建一个组掩码 <code>group_mask</code>，形状为
+            <code>[num_tokens, n_groups, 1]</code>。对于每个
+            token，被选中的组对应位置为 1，否则为 0。</li>
+            <li>将组掩码扩展（<code>expand</code>）到专家维度，得到初始的专家候选掩码
+            <code>expert_candidate_mask</code>，形状为
+            <code>[num_tokens, num_experts, 1]</code>。其逻辑是：<strong>一个专家所属的组若被选中，则该专家进入候选池</strong>。</li>
+            </ul></li>
+            <li><strong>最终专家筛选</strong>
+            <ul>
+            <li>在候选专家池（由掩码定义）内，为每个 token
+            进行<strong>全局 Top-8</strong>
+            筛选。这确保了最终从所有被选中的组里挑出最优秀的 8
+            个专家。</li>
+            <li><strong>权重计算</strong>：最终这 8
+            个专家的融合权重，使用<strong>第一阶段计算的原始
+            <code>sigmoid</code> 分数
+            <code>S</code></strong>（而非校正后的分数或组得分），以确保权重的直接性与可解释性。</li>
+            </ul></li>
+            </ol>
+          </main>
+      </div>
+  <script type="text/javascript">
+    (function () {
+      function markActive() {
+        var here = location.href.split('#')[0];
+        var links = document.querySelectorAll('.wiki-sidebar a');
+        for (var i = 0; i < links.length; i++) {
+          if (links[i].href.split('#')[0] === here) {
+            links[i].classList.add('active');
+          }
+        }
+      }
+      // load the shared site directory once (served from the wiki root);
+      // kept in a standalone file so adding a page needn't rebuild every page.
+      var nav = document.getElementById('wiki-sidebar');
+      if (nav) {
+        fetch('/.wiki_sidebar.html')
+          .then(function (r) { return r.ok ? r.text() : ''; })
+          .then(function (html) {
+            if (html) {
+              nav.innerHTML = html;
+              nav.hidden = false;
+              markActive();
+            }
+          })
+          .catch(function () {});
+      }
+      // keep bootstrap table styling (previously done by sticky_menu.js)
+      var tables = document.getElementsByTagName('table');
+      for (var j = 0; j < tables.length; j++) {
+        tables[j].classList.add('table');
+      }
+    })();
+  </script>
+</body>
+
+</html>

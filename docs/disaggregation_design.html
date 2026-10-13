@@ -1,0 +1,703 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    PD Design
+  </title>
+    <link rel="stylesheet" href="./WikiTheme/theme/bootstrap.css"  />
+        <style type="text/css">
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+      <style type="text/css">
+    /* ---- three column wiki layout (left: site directory, center: content, right: page TOC) ---- */
+    .wiki-layout {
+      display: flex;
+      align-items: flex-start;
+      gap: 24px;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 20px;
+      box-sizing: border-box;
+    }
+    .wiki-sidebar {
+      flex: 0 0 240px;
+      width: 240px;
+      position: sticky;
+      top: 0;
+      max-height: 100vh;
+      overflow-y: auto;
+      padding: 10px 4px 20px 0;
+      border-right: 1px solid #eee;
+      font-size: 14px;
+    }
+    .wiki-sidebar[hidden] { display: none; }
+    .wiki-toc {
+      flex: 0 0 220px;
+      width: 220px;
+      position: sticky;
+      top: 0;
+      max-height: 100vh;
+      overflow-y: auto;
+      padding: 10px 0 20px 4px;
+      border-left: 1px solid #eee;
+      font-size: 14px;
+    }
+    .wiki-main {
+      flex: 1 1 auto;
+      min-width: 0;
+      max-width: 820px;
+      padding: 10px 0 40px;
+    }
+    /* site directory tree */
+    .wiki-sidebar .wiki-home {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #eee;
+      text-decoration: none;
+      color: #333;
+    }
+    .wiki-sidebar ul { list-style: none; margin: 0 0 0 12px; padding: 0; }
+    .wiki-sidebar > ul { margin-left: 0; }
+    .wiki-sidebar li { line-height: 1.7; }
+    .wiki-sidebar a { text-decoration: none; color: #555; }
+    .wiki-sidebar a:hover { color: #0088cc; text-decoration: underline; }
+    .wiki-sidebar a.active { color: #0088cc; font-weight: bold; }
+    /* page TOC */
+    .wiki-toc ul { list-style: none; margin: 0 0 0 12px; padding: 0; }
+    .wiki-toc > ul { margin-left: 0; }
+    .wiki-toc li { line-height: 1.6; }
+    .wiki-toc a { text-decoration: none; color: #555; }
+    .wiki-toc a:hover { color: #0088cc; }
+    @media (max-width: 980px) {
+      .wiki-layout { flex-direction: column; }
+      .wiki-sidebar, .wiki-toc {
+        position: static;
+        width: 100%;
+        flex-basis: auto;
+        max-height: none;
+        border: 0;
+      }
+      .wiki-main { max-width: none; }
+    }
+  </style>
+</head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">PD Design</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="wiki-layout">
+    <nav class="wiki-sidebar" id="wiki-sidebar" hidden></nav>
+    <main class="wiki-main">
+            <h3
+            id="要解决的问题prefill-和-decode-互相拖累">要解决的问题：Prefill
+            和 Decode 互相拖累</h3>
+            <p>一次 LLM 推理分两个阶段，它们的性格截然相反：</p>
+            <ul>
+            <li><strong>Prefill</strong>：一次性处理整段
+            prompt，是计算密集（compute-bound）的大
+            batch，吃满算力。</li>
+            <li><strong>Decode</strong>：逐个 token
+            自回归生成，是访存密集（memory-bound）的小步快跑，吃满显存带宽。</li>
+            </ul>
+            <p>把两者放在同一组 GPU 上调度，会互相伤害：一个长 prompt 的
+            Prefill 占满算力，正在生成的 Decode 请求就被卡住，首 token
+            延迟（TTFT）和 token
+            间延迟（ITL）彼此牵连，谁都做不到最优。</p>
+            <p><strong>Disaggregation（PD
+            分离）的思路</strong>是把两个阶段拆到不同的 GPU
+            集群上，各自独立调度：Prefill 集群专注吞吐，Decode
+            集群专注延迟。好处很直接：</p>
+            <ol type="1">
+            <li><strong>消除干扰</strong>：Prefill 不再阻塞
+            Decode，两个阶段各自背独立的 SLO。</li>
+            <li><strong>异构部署</strong>：Prefill 用计算型卡，Decode
+            用带宽型卡，资源更匹配。</li>
+            <li><strong>独立扩缩容</strong>：按流量特征分别调整两类实例的数量。</li>
+            </ol>
+            <p>但拆开也立刻带来一个新问题：<strong>Prefill 算出来的 KV
+            Cache 在 Prefill 的显存里，而后续 Decode
+            要在另一台机器上读它</strong>。于是整个设计的核心任务就变成一句话——<em>把一段
+            KV Cache 从 Prefill 的 GPU 高效搬到 Decode 的
+            GPU</em>，并且要让两个互不相识的进程知道「搬给谁、搬到哪、搬完了没」。</p>
+            <hr />
+            <h3
+            id="核心抽象两个独立调度器靠一个-room-号会合">核心抽象：两个独立调度器，靠一个
+            room 号会合</h3>
+            <p>最朴素的想法是让 Prefill 算完以后「把 KV 发给
+            Decode」。但 Prefill 和 Decode
+            是两个独立进程、在不同机器上，发之前要先解决三件事：<strong>找到对方、约定目标地址、确认完成</strong>。SGLang
+            的抽象把这三件事拆开，用三层协议分别承担：</p>
+            <ul>
+            <li><strong>请求同时发往两侧</strong>。接入层把同一个请求<em>同时</em>投递给一个
+            Prefill worker 和一个 Decode worker，两边各自带上相同的
+            <code>bootstrap_room</code>（一个随机生成的唯一 ID）。这个
+            room 号就是两侧的「暗号」——后续所有协调都围绕它展开。</li>
+            <li><strong>一个 Bootstrap Server 当电话簿</strong>。Prefill
+            启动时把自己的地址登记进去，Decode 收到请求时按 room
+            去查目标 Prefill 的地址。它只做服务发现，不碰数据。</li>
+            <li><strong>点对点交换「写到哪」</strong>。真正关键的洞察是：<strong>必须由
+            Decode 先分配好显存，再把目标地址告诉
+            Prefill</strong>——因为只有 Decode 知道自己 GPU
+            上哪些页是空的。于是 Decode 预分配 KV 页、算出目标地址，通过
+            ZMQ 发给 Prefill。</li>
+            <li><strong>单边 RDMA 搬数据</strong>。Prefill
+            拿到目标地址后，用单边 RDMA 写（one-sided write）直接把 KV
+            Cache 写进 Decode 的显存，Decode 的 CPU 全程不介入。</li>
+            </ul>
+            <p>三层协议各司其职：<strong>HTTP 解决「去哪找」，ZMQ
+            解决「写到哪」，RDMA
+            解决「怎么快速写」</strong>。下图是一个请求的完整生命周期——注意
+            Prefill 和 Decode 是两个独立的 Scheduler
+            进程，各自维护一套队列，只通过 room 号会合。</p>
+            <figure>
+            <img
+            src="./WikiImage/disaggregation_design_overview.svg"
+            alt="一个请求在 PD 分离下的完整生命周期" />
+            <figcaption aria-hidden="true">一个请求在 PD
+            分离下的完整生命周期</figcaption>
+            </figure>
+            <p>还有一个更精妙的抽象藏在 Decode 侧：KV 已经被 RDMA
+            写进显存后，Decode <strong>不需要再跑一次 Prefill
+            forward</strong>。它构造一个假的 “Prebuilt
+            Batch”，让调度器误以为自己刚算完
+            Prefill，从而无缝接入后续标准的自回归 Decode
+            流程。这一步后面单独讲。</p>
+            <hr />
+            <h3
+            id="三层协调协议两端如何找到对方约定写到哪里">三层协调协议：两端如何找到对方、约定写到哪里</h3>
+            <h4 id="bootstrap-server轻量级注册中心">Bootstrap
+            Server：轻量级注册中心</h4>
+            <p>Bootstrap Server 是一个 aiohttp HTTP
+            服务（<code>CommonKVBootstrapServer</code>，Mooncake
+            后端下为
+            <code>MooncakeKVBootstrapServer</code>），角色就是服务发现。核心接口是
+            <code>/route</code>：</p>
+            <ul>
+            <li><strong>Prefill
+            启动时</strong>：<code>HTTP PUT /route</code> 注册自己的
+            <code>rank_ip</code>、ZMQ 端口和 attn-tp/cp/dp/pp 的 rank
+            信息。</li>
+            <li><strong>Decode
+            收到请求时</strong>：<code>HTTP GET /route</code> 按目标
+            dp_rank 查询对应 Prefill worker 的地址。</li>
+            <li><strong>查询拓扑</strong>：Decode 还要先知道 Prefill
+            侧的并行拓扑（TP/CP/DP/PP
+            sizes、page_size、dtype）。这里有个小技巧——复用同一个
+            <code>/route</code> GET，用哨兵参数
+            <code>prefill_dp_rank=-1</code> 请求，服务端返回一个
+            <code>PrefillServerInfo</code> 而不是地址。</li>
+            </ul>
+            <p>Bootstrap Server 不参与数据传输，只是一本「电话簿」。</p>
+            <h4
+            id="握手从服务发现到地址交换">握手：从服务发现到地址交换</h4>
+            <p>Decode 侧查到地址后，走 ZMQ
+            点对点通道完成握手。握手分两层，交换的东西不一样：</p>
+            <ul>
+            <li><strong>一次性注册（首次连接）</strong>：Decode
+            把自己所有 GPU buffer
+            的原始指针（<code>kv_data_ptrs</code>、<code>aux_data_ptrs</code>、state
+            指针）和 <code>session_id</code> 发给 Prefill。Prefill
+            把它存进
+            <code>decode_kv_args_table[session_id]</code>，封装为
+            <code>KVArgsRegisterInfo</code>。这些地址对一条连接只发一次。</li>
+            <li><strong>每请求发送（逐请求）</strong>：Decode 预分配好
+            KV 页后，把 <code>bootstrap_room</code> + 本请求的目标页索引
+            + aux 索引发给 Prefill，Prefill 存成一个
+            <code>TransferInfo</code>。这才是「写到哪」。</li>
+            </ul>
+            <figure>
+            <img
+            src="./WikiImage/disaggregation_design_handshake.svg"
+            alt="三层协调协议与 KVSender 状态机" />
+            <figcaption aria-hidden="true">三层协调协议与 KVSender
+            状态机</figcaption>
+            </figure>
+            <p>传输过程中 sender 的状态由 <code>KVPoll</code>
+            描述（它是一个普通的整型常量类，不是 enum）：</p>
+            <pre><code>Failed = 0, Bootstrapping = 1, WaitingForInput = 2, Transferring = 3, Success = 4</code></pre>
+            <p>状态只会单调前进——<code>update_status()</code> 用
+            <code>max(...)</code> 更新，保证不会倒退。</p>
+            <p>注意三个层面的通信各自的频率：</p>
+            <ul>
+            <li><strong>HTTP</strong>（Bootstrap
+            Server）：服务发现，低频。</li>
+            <li><strong>ZMQ</strong>（点对点 PUSH/PULL）：地址交换 +
+            状态通知，每请求。</li>
+            <li><strong>RDMA</strong>（Mooncake 引擎）：KV Cache
+            数据搬运，高吞吐。</li>
+            </ul>
+            <hr />
+            <h3 id="两侧的流水线">两侧的流水线</h3>
+            <p>Prefill 和 Decode
+            各自维护一套队列系统，分别对应请求在本侧的几个生命阶段。所有
+            poll 结果都会通过 <code>poll_and_all_reduce</code>（在 TP/CP
+            组内做 Gloo AllReduce 取 <strong>MIN</strong>）在各 rank
+            间对齐——任何一个 rank 失败，所有 rank
+            都视为失败，状态强一致。</p>
+            <figure>
+            <img
+            src="./WikiImage/disaggregation_design_pipelines.svg"
+            alt="Prefill 三阶段与 Decode 多阶段流水线" />
+            <figcaption aria-hidden="true">Prefill 三阶段与 Decode
+            多阶段流水线</figcaption>
+            </figure>
+            <h4 id="prefill-侧三阶段">Prefill 侧：三阶段</h4>
+            <p>对应三个队列：<code>disagg_prefill_bootstrap_queue</code>（<code>PrefillBootstrapQueue</code>）→
+            共享的 <code>waiting_queue</code> →
+            <code>disagg_prefill_inflight_queue</code>。</p>
+            <ol type="1">
+            <li><strong>Bootstrap Queue ——
+            等待握手</strong>。请求进入时，<code>create_sender()</code>
+            创建 <code>KVSender</code> 并把请求放入队列；同时
+            <code>_process_req()</code> 把
+            <code>sampling_params.max_new_tokens</code> 设成
+            <strong>1</strong>（Prefill 只需算出 KV 和第一个
+            token，不做自回归，这样内存估算才准）。每轮 event loop 调用
+            <code>pop_bootstrapped()</code> poll
+            状态：<code>Bootstrapping</code>
+            继续等，<code>WaitingForInput</code> 则
+            <code>finalize_bootstrap()</code>（分配 metadata buffer
+            槽位、调
+            <code>sender.init(num_pages, metadata_buffer_index)</code>）后移入
+            <code>waiting_queue</code>，<code>Failed</code> 则
+            abort。</li>
+            <li><strong>Waiting Queue —— 正常 Prefill
+            调度</strong>。和普通请求一样参与 batch
+            调度，<code>get_next_disagg_prefill_batch_to_run()</code>
+            取出组 batch 执行 forward。</li>
+            <li><strong>Inflight Queue —— KV 传输中</strong>。forward
+            完成后调用 <code>send_kv_chunk()</code> 发起传输：从
+            <code>req_to_token_pool</code> 读 KV 的物理位置 →
+            <code>kv_to_page_indices()</code> 转页索引 → 最后一个 chunk
+            时 <code>disagg_metadata_buffers.set_buf(req)</code> 写入首
+            token/logprobs →
+            <code>disagg_kv_sender.send(page_indices, state_indices, num_kv_tokens=...)</code>。请求移入
+            Inflight Queue，poll 到 <code>Success</code> 后
+            <code>release_kv_cache()</code> 释放本地 KV 并
+            <code>sender.clear()</code>，首 token
+            随流式输出返回给用户。</li>
+            </ol>
+            <div class="sourceCode" id="cb2"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># send_kv_chunk 核心逻辑（prefill.py，简化）</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> send_kv_chunk(<span class="va">self</span>, req, last_chunk<span class="op">=</span><span class="va">False</span>, end_idx<span class="op">=</span><span class="va">None</span>):</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    kv_indices <span class="op">=</span> <span class="va">self</span>.req_to_token_pool.req_to_token[req.req_pool_idx, start:end]</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    page_indices <span class="op">=</span> kv_to_page_indices(kv_indices, page_size)   <span class="co"># token 级 → page 级</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> last_chunk:</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.disagg_metadata_buffers.set_buf(req)              <span class="co"># 写首 token、logprobs</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    req.disagg_kv_sender.send(page_indices, state_indices, num_kv_tokens<span class="op">=</span>end <span class="op">-</span> start)</span></code></pre></div>
+            <h4 id="decode-侧预分配-传输-prebuilt">Decode 侧：预分配 →
+            传输 → prebuilt</h4>
+            <p>Decode
+            侧更复杂，因为它必须<strong>先分配内存</strong>才能告诉
+            Prefill「写到哪」。只有两个专用队列
+            <code>disagg_decode_prealloc_queue</code>（<code>DecodePreallocQueue</code>）和
+            <code>disagg_decode_transfer_queue</code>（<code>DecodeTransferQueue</code>），第三阶段复用调度器通用的
+            <code>waiting_queue</code>，整个流程由
+            <code>SchedulerDisaggregationDecodeMixin.process_decode_queue()</code>
+            驱动。</p>
+            <ol type="1">
+            <li><strong>Prealloc Queue —— 握手 +
+            内存预分配</strong>。创建 <code>KVReceiver</code>，先
+            <code>init(prefill_dp_rank)</code> 完成握手。然后
+            <code>pop_preallocated()</code> 做预分配：用
+            <code>_allocatable_token_budgets()</code> 检查空间 →
+            <code>_pre_alloc()</code> 分配 req 槽位和 KV 页 →
+            <code>kv_to_page_indices()</code> 算出页索引 →
+            <code>kv_receiver.send_metadata(page_indices, metadata_buffer_index, state_indices, ...)</code>
+            把目标地址发给 Prefill。</li>
+            <li><strong>Transfer Queue —— 等待 KV 数据</strong>。这里
+            Decode 只需 poll（<code>pop_transferred()</code>），数据是
+            Prefill 单边 RDMA 推过来的。poll 到 <code>Success</code> 后
+            <code>_commit_transfer_to_req()</code> 从
+            <code>metadata_buffers.get_buf(idx)</code> 读出 Prefill
+            写入的首 token、cached_tokens、logprobs，并用
+            <code>bootstrap_room</code> 校验 buffer 没串台。</li>
+            <li><strong>Waiting Queue —— 构造 Prebuilt
+            Batch</strong>。KV 已在 GPU 上，<strong>不再跑 Prefill
+            forward</strong>，而是构造 <code>ForwardMode.PREBUILT</code>
+            的假 batch 接入标准 Decode（下一节详述）。</li>
+            <li><strong>Running Batch —— 正常 Decode</strong>。prebuilt
+            batch 并入 running batch，后续就是标准自回归，不再有
+            disaggregation 的特殊逻辑。</li>
+            </ol>
+            <p><strong>关键设计</strong>：<code>DecodeReqToTokenPool</code>
+            有一块独立的 <code>pre_alloc_size</code>
+            预留池（池子被撑大到
+            <code>size + pre_alloc_size + 1</code>），使预分配的内存不挤占正在运行的
+            Decode 请求。因为预分配的页可能要等较久才被用上（取决于
+            Prefill 何时算完），若和 running batch 共享，会直接拖垮
+            Decode 吞吐。</p>
+            <hr />
+            <h3 id="prebuilt-batch整个设计里最精妙的一步">Prebuilt
+            Batch：整个设计里最精妙的一步</h3>
+            <p>KV 到达后，Decode 侧面临一个尴尬：KV Cache
+            已经在显存里了，但调度器的所有后续逻辑（自回归
+            Decode）都假设「刚刚跑完一次 forward，拿到了上一步的 KV
+            和输出 token」。要么改一大片调度代码去适配「KV
+            是远程传来的」这种特殊情况，要么——<strong>伪造一次 forward
+            的结果</strong>。</p>
+            <p>SGLang 选了后者。它构造一个
+            <code>ForwardMode.PREBUILT</code> 的特殊 batch：</p>
+            <ul>
+            <li><code>prepare_for_prebuilt()</code>：和
+            <code>prepare_for_extend()</code> 类似地准备 batch，但把
+            <code>forward_mode</code> 设为 <code>PREBUILT</code>——这种
+            batch <strong>永远不会进入模型 forward</strong>。KV Cache
+            位置直接从 <code>req_to_token_pool</code> 读（已被 RDMA
+            写入）。</li>
+            <li><code>process_prebuilt()</code>：把从 metadata buffer
+            拿到的首 token 当作「forward 的输出」塞进
+            <code>output_ids</code>。如果开了 EAGLE 投机解码，还要用
+            <code>build_disagg_draft_input()</code> 从传来的
+            <code>output_topk_p</code>/<code>output_topk_index</code>/<code>hidden_states</code>
+            恢复 draft 模型的输入。</li>
+            </ul>
+            <figure>
+            <img
+            src="./WikiImage/disaggregation_design_prebuilt.svg"
+            alt="Prebuilt Batch：用假 forward 结果接管标准 Decode" />
+            <figcaption aria-hidden="true">Prebuilt Batch：用假 forward
+            结果接管标准 Decode</figcaption>
+            </figure>
+            <p>精妙之处在于：<strong>Prebuilt Batch 让 Decode
+            调度器以为自己刚做完一次 Prefill，而真相是 KV Cache
+            从远端传来的</strong>。于是后续
+            <code>get_next_disagg_decode_batch_to_run()</code> 把它并入
+            running batch，所有标准 Decode
+            代码路径原样复用，一行都不用改。这两个方法混入在
+            <code>ScheduleBatchDisaggregationDecodeMixin</code>（<code>decode_schedule_batch_mixin.py</code>）。</p>
+            <hr />
+            <h3 id="kv-cache-传输传了什么怎么传">KV Cache
+            传输：传了什么、怎么传</h3>
+            <h4 id="传输的内容">传输的内容</h4>
+            <p>传输分三类数据，走同一条 RDMA 通道但逻辑独立：</p>
+            <table>
+            <colgroup>
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>类别</th>
+            <th>内容</th>
+            <th>用途</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td><strong>KV Data</strong></td>
+            <td>每层 Attention 的 Key/Value Cache 页</td>
+            <td>Decode 推理的核心输入</td>
+            </tr>
+            <tr>
+            <td><strong>Metadata</strong></td>
+            <td>首 output token、cached_tokens、logprobs、EAGLE 的 topk
+            概率/索引/hidden states、<code>bootstrap_room</code></td>
+            <td>让 Decode 构造 Prebuilt Batch 并校验</td>
+            </tr>
+            <tr>
+            <td><strong>State</strong>（可选）</td>
+            <td>Mamba SSM state、SWA 滑动窗口 KV、NSA 索引</td>
+            <td>混合架构模型（Mamba+Attention）需要</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>Metadata 走一块预分配的定长
+            buffer（<code>MetadataBuffers</code>，由
+            <code>ReqToMetadataIdxAllocator</code>
+            按请求分配槽位），Prefill 侧 <code>set_buf(req)</code>
+            写、Decode 侧 <code>get_buf(idx)</code> 读；里面冗余存了
+            <code>bootstrap_room</code> 用来防止 buffer 串台。</p>
+            <h4 id="单边-rdma-写mooncake-后端">单边 RDMA 写（Mooncake
+            后端）</h4>
+            <p>传输引擎的核心是<strong>单边 RDMA 写</strong>：Prefill
+            直接把数据写进 Decode 的 GPU 显存，Decode 的 CPU
+            不参与。地址按页算：</p>
+            <figure>
+            <img
+            src="./WikiImage/disaggregation_design_transfer.svg"
+            alt="单边 RDMA 写：源页 → 目标页的地址映射" />
+            <figcaption aria-hidden="true">单边 RDMA 写：源页 →
+            目标页的地址映射</figcaption>
+            </figure>
+            <div class="sourceCode" id="cb3"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># set_transfer_blocks（mooncake/conn.py，简化）</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>src_addr <span class="op">=</span> src_ptr <span class="op">+</span> <span class="bu">int</span>(prefill_index[<span class="dv">0</span>]) <span class="op">*</span> item_len   <span class="co"># 本地 KV 页</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>dst_addr <span class="op">=</span> dst_ptr <span class="op">+</span> <span class="bu">int</span>(decode_index[<span class="dv">0</span>]) <span class="op">*</span> item_len    <span class="co"># 远端目标页（握手时拿到的指针）</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>length   <span class="op">=</span> item_len <span class="op">*</span> <span class="bu">len</span>(prefill_index)</span></code></pre></div>
+            <p>实现要点：</p>
+            <ol type="1">
+            <li><strong>启动时</strong>：<code>MooncakeKVManager.register_buffer_to_engine()</code>
+            把所有 GPU buffer 批量注册进 RDMA
+            引擎（<code>engine.batch_register(...)</code>）。</li>
+            <li><strong>握手时</strong>：Decode 通过 ZMQ 发来
+            <code>kv_data_ptrs</code>（GPU 原始指针），Prefill 存为
+            <code>KVArgsRegisterInfo</code>。</li>
+            <li><strong>传输时</strong>：若干
+            <code>transfer_worker</code> 守护线程从
+            <code>FastQueue</code> 取 <code>TransferKVChunk</code>
+            任务，调用
+            <code>engine.batch_transfer_sync(session_id, src_addrs, dst_addrs, lengths)</code>。<strong>默认把所有层打包进一次
+            <code>batch_transfer_sync</code></strong>；只有开启
+            <code>enable_custom_mem_pool</code> 时才改成逐层提交。</li>
+            </ol>
+            <p>传输是<strong>异步流水线化</strong>的——多请求、多线程并行推进。</p>
+            <h4 id="page-索引转换">Page 索引转换</h4>
+            <p>KV Cache 按页（page）管理，一页含 <code>page_size</code>
+            个 token 的 KV。传输前把 token 级索引转成 page
+            级（<code>kv_to_page_indices</code>，实现在
+            <code>mem_cache/common.py</code>）：</p>
+            <div class="sourceCode" id="cb4"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> kv_to_page_indices(kv_indices, page_size):</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (kv_indices[::page_size] <span class="op">//</span> page_size).cpu().numpy()</span></code></pre></div>
+            <hr />
+            <h3 id="与-scheduler-的集成mixin-模式">与 Scheduler
+            的集成：Mixin 模式</h3>
+            <p>Disaggregation 通过 <strong>Mixin</strong> 注入
+            Scheduler，而不改 Scheduler
+            核心逻辑。<code>Scheduler.init_disaggregation()</code> 按
+            <code>disaggregation_mode</code> 创建组件：</p>
+            <pre><code>DisaggregationMode.PREFILL:
+    → MetadataBuffers + ReqToMetadataIdxAllocator
+    → PrefillBootstrapQueue
+    → disagg_prefill_inflight_queue (list)
+
+DisaggregationMode.DECODE:
+    → MetadataBuffers + ReqToMetadataIdxAllocator
+    → DecodePreallocQueue + DecodeTransferQueue
+    （Waiting 阶段复用通用 waiting_queue）</code></pre>
+            <p><code>Scheduler._add_request_to_queue()</code>
+            按模式分流：<code>NULL → waiting_queue</code>（标准路径）、<code>PREFILL → disagg_prefill_bootstrap_queue.add()</code>、<code>DECODE → disagg_decode_prealloc_queue.add()</code>。</p>
+            <p>最核心的差异在 event
+            loop，启动时按模式选择不同循环函数：</p>
+            <table>
+            <colgroup>
+            <col style="width: 23%" />
+            <col style="width: 38%" />
+            <col style="width: 38%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>模式</th>
+            <th>事件循环</th>
+            <th>核心差异</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>NULL</td>
+            <td><code>event_loop_normal</code></td>
+            <td>标准 prefill + decode</td>
+            </tr>
+            <tr>
+            <td>PREFILL</td>
+            <td><code>event_loop_normal_disagg_prefill</code></td>
+            <td>多了 bootstrap poll + inflight poll，forward 后发起 KV
+            传输</td>
+            </tr>
+            <tr>
+            <td>DECODE</td>
+            <td><code>event_loop_normal_disagg_decode</code></td>
+            <td>多了 prealloc + transfer poll，用 Prebuilt Batch 替代
+            prefill forward</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>（两侧都另有 <code>event_loop_overlap_*</code> 的 overlap
+            变体。）Mixin 的好处是：<strong>disaggregation
+            的逻辑都在独立文件里</strong>（<code>prefill.py</code> 的
+            <code>SchedulerDisaggregationPrefillMixin</code>、<code>decode.py</code>
+            的
+            <code>SchedulerDisaggregationDecodeMixin</code>、<code>decode_schedule_batch_mixin.py</code>），不污染主循环。这也让新后端（Mooncake、Nixl、Mori、Ascend）只需实现
+            <code>BaseKVManager/Sender/Receiver</code>
+            接口即可接入。</p>
+            <hr />
+            <h3 id="代码地图">代码地图</h3>
+            <p>关键抽象关系</p>
+            <pre><code>BaseKVManager (每个 worker 一个)
+ ├── 持有 KVArgs（所有 GPU buffer 地址、拓扑信息）
+ ├── 创建 Sender/Receiver（每请求一个）
+ └── 管理 transfer worker 线程池
+
+BaseKVSender (Prefill 侧, 每请求)
+ ├── init(num_kv_indices, aux_index)         → 设置传输参数
+ ├── send(kv_indices, state_indices, num_kv_tokens) → 发起 RDMA 写
+ └── poll() / clear() / abort()
+
+BaseKVReceiver (Decode 侧, 每请求)
+ ├── init(prefill_dp_rank)                    → 握手
+ ├── send_metadata(kv_indices, aux_index, state_indices) → 告知目标地址
+ └── poll() / clear() / abort()
+
+MetadataBuffers (两侧各一份)
+ ├── set_buf(req)  → Prefill 写首 token、logprobs、EAGLE 等
+ └── get_buf(idx)  → Decode 读</code></pre>
+            <hr />
+            <h3 id="小结">小结</h3>
+            <p>PD
+            分离把一次推理里性格相反的两个阶段彻底解耦到独立集群，换来消除干扰、异构部署和独立扩缩容。它的全部复杂度都压在一件事上：<strong>把
+            KV Cache 从 Prefill 的显存可靠、高效地搬到 Decode
+            的显存</strong>。SGLang 的解法是一套清晰的分层抽象——用
+            <code>bootstrap_room</code> 让两个独立进程会合，用
+            HTTP/ZMQ/RDMA
+            三层协议分别承担「找谁/写哪/怎么写」，用「Decode
+            先分配、Prefill 后单边写」的顺序绕开地址协商，再用 Prebuilt
+            Batch 这一记巧劲让远程传来的 KV 无缝接入既有的 Decode
+            代码路径。真正的工程价值不在任何单点，而在这套抽象让新的传输后端只需实现三个接口就能接入。</p>
+          </main>
+        <aside class="wiki-toc">
+      <ul>
+      <li><a href="#要解决的问题prefill-和-decode-互相拖累"
+      id="toc-要解决的问题prefill-和-decode-互相拖累">要解决的问题：Prefill
+      和 Decode 互相拖累</a></li>
+      <li><a href="#核心抽象两个独立调度器靠一个-room-号会合"
+      id="toc-核心抽象两个独立调度器靠一个-room-号会合">核心抽象：两个独立调度器，靠一个
+      room 号会合</a></li>
+      <li><a href="#三层协调协议两端如何找到对方约定写到哪里"
+      id="toc-三层协调协议两端如何找到对方约定写到哪里">三层协调协议：两端如何找到对方、约定写到哪里</a></li>
+      <li><a href="#两侧的流水线"
+      id="toc-两侧的流水线">两侧的流水线</a></li>
+      <li><a href="#prebuilt-batch整个设计里最精妙的一步"
+      id="toc-prebuilt-batch整个设计里最精妙的一步">Prebuilt
+      Batch：整个设计里最精妙的一步</a></li>
+      <li><a href="#kv-cache-传输传了什么怎么传"
+      id="toc-kv-cache-传输传了什么怎么传">KV Cache
+      传输：传了什么、怎么传</a></li>
+      <li><a href="#与-scheduler-的集成mixin-模式"
+      id="toc-与-scheduler-的集成mixin-模式">与 Scheduler 的集成：Mixin
+      模式</a></li>
+      <li><a href="#代码地图" id="toc-代码地图">代码地图</a></li>
+      <li><a href="#小结" id="toc-小结">小结</a></li>
+      </ul>
+    </aside>
+      </div>
+  <script type="text/javascript">
+    (function () {
+      function markActive() {
+        var here = location.href.split('#')[0];
+        var links = document.querySelectorAll('.wiki-sidebar a');
+        for (var i = 0; i < links.length; i++) {
+          if (links[i].href.split('#')[0] === here) {
+            links[i].classList.add('active');
+          }
+        }
+      }
+      // load the shared site directory once (served from the wiki root);
+      // kept in a standalone file so adding a page needn't rebuild every page.
+      var nav = document.getElementById('wiki-sidebar');
+      if (nav) {
+        fetch('/.wiki_sidebar.html')
+          .then(function (r) { return r.ok ? r.text() : ''; })
+          .then(function (html) {
+            if (html) {
+              nav.innerHTML = html;
+              nav.hidden = false;
+              markActive();
+            }
+          })
+          .catch(function () {});
+      }
+      // keep bootstrap table styling (previously done by sticky_menu.js)
+      var tables = document.getElementsByTagName('table');
+      for (var j = 0; j < tables.length; j++) {
+        tables[j].classList.add('table');
+      }
+    })();
+  </script>
+</body>
+
+</html>

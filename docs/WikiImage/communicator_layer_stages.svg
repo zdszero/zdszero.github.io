@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 430" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="920" height="430" rx="12" fill="#ffffff"/>
+  <text x="460" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">一层之内：5 个分布状态 + 3 个衔接点</text>
+  <text x="460" y="56" text-anchor="middle" font-size="13" fill="#868e96">每个衔接点在初始化时比较相邻状态的 group_size，提前决定要不要通信、通信做什么</text>
+
+  <!-- stage boxes -->
+  <g>
+    <rect x="20" y="120" width="150" height="76" rx="10" fill="#f1f3f5" stroke="#adb5bd"/>
+    <text x="95" y="150" text-anchor="middle" font-size="12.5" font-weight="700" fill="#495057">layer_input</text>
+    <text x="95" y="172" text-anchor="middle" font-size="10.5" fill="#868e96">= 上一层输出</text>
+    <text x="95" y="188" text-anchor="middle" font-size="10.5" fill="#868e96">(动态)</text>
+
+    <rect x="250" y="120" width="150" height="76" rx="10" fill="#edf2ff" stroke="#4c6ef5"/>
+    <text x="325" y="150" text-anchor="middle" font-size="12.5" font-weight="700" fill="#3b5bdb">attn</text>
+    <text x="325" y="172" text-anchor="middle" font-size="10.5" fill="#3b5bdb">TP_ATTN_FULL</text>
+    <text x="325" y="188" text-anchor="middle" font-size="10.5" fill="#868e96">(固定)</text>
+
+    <rect x="480" y="120" width="150" height="76" rx="10" fill="#e6fcf5" stroke="#0ca678"/>
+    <text x="555" y="150" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0b7285">mlp</text>
+    <text x="555" y="172" text-anchor="middle" font-size="10.5" fill="#0b7285">FULL / SCATTERED</text>
+    <text x="555" y="188" text-anchor="middle" font-size="10.5" fill="#868e96">(由层类型决定)</text>
+
+    <rect x="710" y="120" width="150" height="76" rx="10" fill="#f1f3f5" stroke="#adb5bd"/>
+    <text x="785" y="150" text-anchor="middle" font-size="12.5" font-weight="700" fill="#495057">layer_output</text>
+    <text x="785" y="172" text-anchor="middle" font-size="10.5" fill="#868e96">= 下一层输入</text>
+    <text x="785" y="188" text-anchor="middle" font-size="10.5" fill="#868e96">(动态)</text>
+  </g>
+
+  <!-- arrows + connection point labels -->
+  <g>
+    <path d="M170 158 L248 158" stroke="#868e96" stroke-width="2" marker-end="url(#arc)"/>
+    <text x="209" y="104" text-anchor="middle" font-size="11.5" font-weight="700" fill="#e8590c">① prepare_attn</text>
+    <text x="209" y="212" text-anchor="middle" font-size="9.5" fill="#adb5bd">Simple</text>
+
+    <path d="M400 158 L478 158" stroke="#868e96" stroke-width="2" marker-end="url(#arc)"/>
+    <text x="439" y="104" text-anchor="middle" font-size="11.5" font-weight="700" fill="#e8590c">② prepare_mlp</text>
+    <text x="439" y="212" text-anchor="middle" font-size="9.5" fill="#adb5bd">AllReduce+Norm</text>
+
+    <path d="M630 158 L708 158" stroke="#868e96" stroke-width="2" marker-end="url(#arc)"/>
+    <text x="669" y="104" text-anchor="middle" font-size="11.5" font-weight="700" fill="#e8590c">③ postprocess</text>
+    <text x="669" y="212" text-anchor="middle" font-size="9.5" fill="#adb5bd">SummablePair</text>
+  </g>
+
+  <!-- residual lane -->
+  <rect x="20" y="250" width="610" height="52" rx="10" fill="#fff9db" stroke="#f0b429" stroke-dasharray="5 3"/>
+  <text x="36" y="272" font-size="12" font-weight="700" fill="#b26a00">residual 支线</text>
+  <text x="36" y="291" font-size="11" fill="#996a13">layer_input_mode  ──保持──▶  middle_residual_mode（跟随 mlp_mode 推导）</text>
+  <path d="M95 196 L95 248" stroke="#f0b429" stroke-width="1.6" stroke-dasharray="4 3" marker-end="url(#ary)"/>
+
+  <!-- decision note -->
+  <rect x="20" y="328" width="840" height="76" rx="10" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="36" y="351" font-size="12.5" font-weight="700" fill="#495057">衔接点的判定（初始化时一次性完成）：</text>
+  <text x="36" y="373" font-size="12" fill="#495057">· 相邻状态 group_size 相等 → 透传（_trivial），运行时零开销；标准 TP 的全部衔接点都是这种。</text>
+  <text x="36" y="393" font-size="12" fill="#495057">· group_size 变大（如 2→4）→ AllGather 收集；变小（如 4→2）→ ReduceScatter 分片；TP 组内部分和 → AllReduce 合并。</text>
+
+  <defs>
+    <marker id="arc" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#868e96"/></marker>
+    <marker id="ary" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#f0b429"/></marker>
+  </defs>
+</svg>

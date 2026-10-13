@@ -1,0 +1,939 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    Nonderterminsim
+  </title>
+    <link rel="stylesheet" href="./WikiTheme/theme/bootstrap.css"  />
+        <script defer=""
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+        type="text/javascript"></script>
+      <style type="text/css">
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+      <style type="text/css">
+    /* ---- three column wiki layout (left: site directory, center: content, right: page TOC) ---- */
+    .wiki-layout {
+      display: flex;
+      align-items: flex-start;
+      gap: 24px;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 20px;
+      box-sizing: border-box;
+    }
+    .wiki-sidebar {
+      flex: 0 0 240px;
+      width: 240px;
+      position: sticky;
+      top: 0;
+      max-height: 100vh;
+      overflow-y: auto;
+      padding: 10px 4px 20px 0;
+      border-right: 1px solid #eee;
+      font-size: 14px;
+    }
+    .wiki-sidebar[hidden] { display: none; }
+    .wiki-toc {
+      flex: 0 0 220px;
+      width: 220px;
+      position: sticky;
+      top: 0;
+      max-height: 100vh;
+      overflow-y: auto;
+      padding: 10px 0 20px 4px;
+      border-left: 1px solid #eee;
+      font-size: 14px;
+    }
+    .wiki-main {
+      flex: 1 1 auto;
+      min-width: 0;
+      max-width: 820px;
+      padding: 10px 0 40px;
+    }
+    /* site directory tree */
+    .wiki-sidebar .wiki-home {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #eee;
+      text-decoration: none;
+      color: #333;
+    }
+    .wiki-sidebar ul { list-style: none; margin: 0 0 0 12px; padding: 0; }
+    .wiki-sidebar > ul { margin-left: 0; }
+    .wiki-sidebar li { line-height: 1.7; }
+    .wiki-sidebar a { text-decoration: none; color: #555; }
+    .wiki-sidebar a:hover { color: #0088cc; text-decoration: underline; }
+    .wiki-sidebar a.active { color: #0088cc; font-weight: bold; }
+    /* page TOC */
+    .wiki-toc ul { list-style: none; margin: 0 0 0 12px; padding: 0; }
+    .wiki-toc > ul { margin-left: 0; }
+    .wiki-toc li { line-height: 1.6; }
+    .wiki-toc a { text-decoration: none; color: #555; }
+    .wiki-toc a:hover { color: #0088cc; }
+    @media (max-width: 980px) {
+      .wiki-layout { flex-direction: column; }
+      .wiki-sidebar, .wiki-toc {
+        position: static;
+        width: 100%;
+        flex-basis: auto;
+        max-height: none;
+        border: 0;
+      }
+      .wiki-main { max-width: none; }
+    }
+  </style>
+</head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">Nonderterminsim</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="wiki-layout">
+    <nav class="wiki-sidebar" id="wiki-sidebar" hidden></nav>
+    <main class="wiki-main">
+            <p><code>temperature=0</code>
+            时采样退化为贪心解码，也就是每步都选概率最高的
+            token，理论上应该是确定的。但实践中并非如此：</p>
+            <ul>
+            <li>商业 LLM API 用同一个 prompt
+            反复请求，返回的内容会不一样；</li>
+            <li>自建推理服务（vLLM、SGLang
+            等）用相同输入重复推理，logprob 也会有差异。</li>
+            </ul>
+            <p>一个流传很广的解释是「并发 + 浮点」假设：GPU
+            高度并行，浮点又不满足结合律，并发线程的完成顺序不确定，导致累加顺序不确定，于是输出不确定。</p>
+            <p>这个假设并不完全错，但它解释不了下面这个反例：</p>
+            <div class="sourceCode" id="cb1"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>A <span class="op">=</span> torch.randn(<span class="dv">2048</span>, <span class="dv">2048</span>, device<span class="op">=</span><span class="st">&#39;cuda&#39;</span>, dtype<span class="op">=</span>torch.bfloat16)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>B <span class="op">=</span> torch.randn(<span class="dv">2048</span>, <span class="dv">2048</span>, device<span class="op">=</span><span class="st">&#39;cuda&#39;</span>, dtype<span class="op">=</span>torch.bfloat16)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>ref <span class="op">=</span> torch.mm(A, B)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1000</span>):</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> (torch.mm(A, B) <span class="op">-</span> ref).<span class="bu">abs</span>().<span class="bu">max</span>().item() <span class="op">==</span> <span class="dv">0</span></span></code></pre></div>
+            <p>同一个 matmul、同一份数据，跑 1000
+            次，按位完全相同。这里既用了浮点，也有大量并发，却没有任何
+            run-to-run 不确定性。所以真正的原因要更细一层。</p>
+            <p>下面四句话看起来互相矛盾，但它们同时成立：</p>
+            <table>
+            <thead>
+            <tr>
+            <th>陈述</th>
+            <th>是否成立</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>GPU 上确实存在不确定的 kernel</td>
+            <td>成立</td>
+            </tr>
+            <tr>
+            <td>LLM 前向用到的 kernel 全都是确定的</td>
+            <td>成立</td>
+            </tr>
+            <tr>
+            <td>因此推理服务的前向过程也可以说是确定的</td>
+            <td>成立</td>
+            </tr>
+            <tr>
+            <td>但从使用服务的用户视角看，结果就是不确定的</td>
+            <td>成立</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>前两条不冲突，是因为 LLM 前向里几乎不含不确定的
+            kernel（下文解释）；第三条和第四条不冲突，是因为「给定完全相同的输入，服务是确定的」并不足以让系统整体确定——用户的请求还要和「别人同时在请求什么」这个不确定因素组合。真正缺失的性质叫
+            <strong>batch invariance</strong>。</p>
+            <h3
+            id="浮点非结合性差异从哪里来">浮点非结合性：差异从哪里来</h3>
+            <p>在真实硬件上，浮点计算不像数学那样严格满足结合律：</p>
+            <p><span class="math display">\[
+            (a+b)+c \ne a+(b+c)
+            \]</span></p>
+            <div class="sourceCode" id="cb2"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>(<span class="fl">0.1</span> <span class="op">+</span> <span class="fl">1e20</span>) <span class="op">-</span> <span class="fl">1e20</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> <span class="dv">0</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fl">0.1</span> <span class="op">+</span> (<span class="fl">1e20</span> <span class="op">-</span> <span class="fl">1e20</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> <span class="fl">0.1</span></span></code></pre></div>
+            <p>本质原因是浮点数采用 <strong>有限精度 +
+            舍入（rounding）</strong>：</p>
+            <p><span class="math display">\[
+            \text{float} = (-1)^{s} \times m \times 2^{e}
+            \]</span></p>
+            <p>其中 <span class="math inline">\(s\)</span>
+            是符号位，<span class="math inline">\(m\)</span>
+            是尾数（mantissa），<span class="math inline">\(e\)</span>
+            是指数（exponent）。为了便于说明，下面用 10 进制、3
+            位尾数、1 位指数来举例，结论与二进制完全一致。</p>
+            <p>浮点的价值在于
+            <strong>有效数字位数恒定、量级可以任意伸缩</strong>：<span
+            class="math inline">\(3450\)</span> 写成 <span
+            class="math inline">\(3.45\times10^{3}\)</span>，<span
+            class="math inline">\(0.486\)</span> 写成 <span
+            class="math inline">\(4.86\times10^{-1}\)</span>，都只用 3
+            位有效数字。代价是 <strong>绝对精度随指数变化</strong>。</p>
+            <p>看一次加法 <span class="math inline">\(1230 +
+            23.4\)</span>：</p>
+            <ul>
+            <li>精确结果是 <span
+            class="math inline">\(1253.4\)</span>，需要 5
+            位有效数字；</li>
+            <li>但格式只能保留 3 位，对齐指数时 <span
+            class="math inline">\(23.4\)</span> 实际上被舍入成了 <span
+            class="math inline">\(20.0\)</span>；</li>
+            <li>结果只能得到 <span
+            class="math inline">\(1.25\times10^{3}\)</span>。</li>
+            </ul>
+            <p>信息在加法中被永久破坏了。这就是所谓的
+            <strong>大数吃小数</strong>（swamping）：只要两个数的指数相差足够大，小的那个就会被整个吞掉。也正因为如此，<strong>每一次改变加法顺序，都可能得到完全不同的结果</strong>。</p>
+            <h4 id="用单位舍入误差量化">用单位舍入误差量化</h4>
+            <p>尾数精度为 <span class="math inline">\(p\)</span>
+            位时（IEEE-754 的 round-to-nearest），单位舍入误差（unit
+            roundoff）为：</p>
+            <p><span class="math display">\[
+            u = 2^{-p}
+            \]</span></p>
+            <table>
+            <thead>
+            <tr>
+            <th>类型</th>
+            <th>尾数精度 <span class="math inline">\(p\)</span></th>
+            <th><span class="math inline">\(u = 2^{-p}\)</span></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>fp64</td>
+            <td>53</td>
+            <td><span
+            class="math inline">\(1.11\times10^{-16}\)</span></td>
+            </tr>
+            <tr>
+            <td>fp32</td>
+            <td>24</td>
+            <td><span
+            class="math inline">\(5.96\times10^{-8}\)</span></td>
+            </tr>
+            <tr>
+            <td>fp16</td>
+            <td>11</td>
+            <td><span
+            class="math inline">\(4.88\times10^{-4}\)</span></td>
+            </tr>
+            <tr>
+            <td>bf16</td>
+            <td>8</td>
+            <td><span
+            class="math inline">\(3.91\times10^{-3}\)</span></td>
+            </tr>
+            </tbody>
+            </table>
+            <p>单次加法的相对误差可以写成：</p>
+            <p><span class="math display">\[
+            fl(a+b) = (a+b)(1+\delta), \qquad |\delta| \le u
+            \]</span></p>
+            <p>于是顺序求和的误差界是：</p>
+            <p><span class="math display">\[
+            \left|\hat{s} - \sum_{i=1}^{n} x_i\right| \le
+            \gamma_{n-1}\sum_{i=1}^{n}|x_i|,
+            \qquad
+            \gamma_{n} = \frac{n u}{1 - n u}
+            \]</span></p>
+            <p>如果换成树形（pairwise / 分块）求和，误差界变成：</p>
+            <p><span class="math display">\[
+            \left|\hat{s} - s\right| \le \lceil \log_2 n \rceil\, u
+            \sum_{i=1}^{n}|x_i|
+            \]</span></p>
+            <p>两者相差一个 <span class="math inline">\(n\)</span> 与
+            <span class="math inline">\(\log_2 n\)</span>
+            的因子，这就是「归约顺序会实质影响数值」的定量来源。注意
+            <span class="math inline">\(u\)</span>
+            越小并不代表差异越小：误差界同时正比于 <span
+            class="math inline">\(\sum_i|x_i|\)</span>，而 LLM
+            里的累加规模（<span class="math inline">\(K\)</span>
+            维、序列长度）很大，所以即便 fp32
+            累加也会累积出可观偏差。</p>
+            <p>一个极端例子：取 <code>[1e-10, 1e-5, 1e-2, 1]</code>
+            以及它们各自的相反数，共 8 个数，随机打乱后求和：</p>
+            <div class="sourceCode" id="cb3"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> random</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>vals <span class="op">=</span> [<span class="fl">1e-10</span>, <span class="fl">1e-5</span>, <span class="fl">1e-2</span>, <span class="dv">1</span>]</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>vals <span class="op">=</span> vals <span class="op">+</span> [<span class="op">-</span>v <span class="cf">for</span> v <span class="kw">in</span> vals]</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> []</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>random.seed(<span class="dv">42</span>)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">10000</span>):</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    random.shuffle(vals)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    results.append(<span class="bu">sum</span>(vals))</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">len</span>(<span class="bu">set</span>(results)))</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="co"># There are 102 unique results: [-8.326672684688674e-17, ..., 8.326672684688674e-17]</span></span></code></pre></div>
+            <p>数学上这 8 个数的和恒为 0，实际却出现了 102
+            个不同的结果。</p>
+            <p>{{&lt; region note &gt;}}
+            浮点非结合性只解释了「为什么会有数值差异」，<strong>没有</strong>解释「为什么会有不确定性」。只要
+            kernel 每次都用同一个顺序累加，结果就是确定的——前面那个跑
+            1000 次都按位相同的 matmul
+            正是如此。所以真正要问的是：<strong>什么情况下累加顺序会变？</strong>
+            {{&lt; /region &gt;}}</p>
+            <h3
+            id="三种必须区分开的确定性">三种必须区分开的「确定性」</h3>
+            <p>讨论确定性时，至少有三个不同的性质容易混为一谈：</p>
+            <table>
+            <colgroup>
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>性质</th>
+            <th>含义</th>
+            <th>典型的破坏者</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>run-to-run 确定性</td>
+            <td>相同输入、相同软件栈，重复执行结果按位相同</td>
+            <td>atomic add、并发归约</td>
+            </tr>
+            <tr>
+            <td>batch invariance</td>
+            <td>某条样本的结果与其所在 batch 的大小、以及同 batch
+            中其他样本无关</td>
+            <td>随形状变化的 tile / split 策略</td>
+            </tr>
+            <tr>
+            <td>硬件与版本不变性</td>
+            <td>换 GPU、换 PyTorch / CUDA / 库版本后结果仍按位相同</td>
+            <td>不同指令集、不同 kernel 实现</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>前两者的区别是本主题的关键。</p>
+            <h4 id="atomic-add-会造成-run-to-run-不确定性">atomic add
+            会造成 run-to-run 不确定性</h4>
+            <p>GPU 会把程序并发地铺到许多 SM 上，SM
+            之间没有天然同步。如果多个 core 需要累加到同一个元素，就要用
+            <strong>atomic add</strong>（fetch-and-add）：硬件保证每个
+            core
+            的贡献都会被加进去，但<strong>不保证顺序</strong>，顺序完全取决于谁先算完。</p>
+            <p>比如用 100 个 core 归约一个 100 维向量（类似
+            <code>torch.sum()</code>）：可以并行读入 100
+            个元素，但最终必须归约成一个标量，如果直接用 atomic add
+            累加，结果就依赖 core 的完成顺序。这就是通常意义上说的不确定
+            kernel，重复执行同一个程序会得到不同输出。</p>
+            <p>但关键在于：<strong>LLM 前向里通常一次 atomic add
+            都没有</strong>。原因是：</p>
+            <ol type="1">
+            <li>batch
+            维往往已经提供了足够的并行度，不需要再沿归约维切分。例如与其归约
+            1 个 100 维向量，不如让每个 core 各归约一个向量，500
+            个向量并行处理；</li>
+            <li>主流神经网络库为了可复现性，长期采用确定性的归约策略（固定
+            tile、固定归约树、确定性 split reduction 等）。</li>
+            </ol>
+            <p>所以「并发 + 浮点」假设指出的机制存在于 GPU 上，但它不是
+            LLM 推理不确定性的来源。</p>
+            <p>{{&lt; region note &gt;}}
+            一个相关的实用事实：并行本身引入的归约（TP / EP / DP 里的
+            AllReduce 等）是否确定，取决于通信实现。文章提到 NVLink 的
+            SHARP in-switch reduction 在 Blackwell，以及 Hopper + CUDA
+            12.8+ 上是确定的。这部分不在本文讨论范围内，但原则和单卡
+            kernel 相同。 {{&lt; /region &gt;}}</p>
+            <h3
+            id="batch-invariancebatch-大小为什么会污染单条请求">batch
+            invariance：batch 大小为什么会污染单条请求</h3>
+            <p>从数学上看，矩阵乘法沿 batch 维是可分解的：</p>
+            <p><span class="math display">\[
+            \begin{bmatrix}
+            A \\
+            B
+            \end{bmatrix}
+            C = \begin{bmatrix}
+            AC \\
+            BC
+            \end{bmatrix}
+            \]</span></p>
+            <p>也就是说：无论怎么切 batch（哪怕 batch size =
+            1），每个样本的结果都应该只由它自己决定。</p>
+            <div class="sourceCode" id="cb4"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 一次性算</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>Y <span class="op">=</span> X <span class="op">@</span> W</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 分 batch 算</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>Y <span class="op">=</span> torch.cat([X[:k] <span class="op">@</span> W, X[k:] <span class="op">@</span> W], dim<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div>
+            <p>但工程实现上并非如此。GPU kernel 把工作切成 tile 分配给
+            SM，而 <strong>tile 划分、split 数量、wave
+            数量都会随形状变化</strong>，从而改变累加顺序。矩阵乘法的
+            tile 划分通常在 <span class="math inline">\(M\)</span> 和
+            <span class="math inline">\(N\)</span> 两个维度上进行，因此
+            batch 大小（<span
+            class="math inline">\(M\)</span>）会直接改变数值。</p>
+            <div class="sourceCode" id="cb5"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>torch.set_default_device(<span class="st">&#39;cuda&#39;</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>B <span class="op">=</span> <span class="dv">2048</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>D <span class="op">=</span> <span class="dv">4096</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> torch.linspace(<span class="op">-</span><span class="dv">1000</span>, <span class="dv">1000</span>, B <span class="op">*</span> D).reshape(B, D)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> torch.linspace(<span class="op">-</span><span class="dv">1000</span>, <span class="dv">1000</span>, D <span class="op">*</span> D).reshape(D, D)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 取 batch 的第 0 个元素做矩阵-向量乘</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>out1 <span class="op">=</span> torch.mm(a[:<span class="dv">1</span>], b)</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 做完整的矩阵-矩阵乘，再取第 0 个元素</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>out2 <span class="op">=</span> torch.mm(a, b)[:<span class="dv">1</span>]</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>((out1 <span class="op">-</span> out2).<span class="bu">abs</span>().<span class="bu">max</span>())  <span class="co"># tensor(1669.2500, device=&#39;cuda:0&#39;)</span></span></code></pre></div>
+            <p>同一行输入、同一个权重，两次结果的差异高达 <span
+            class="math inline">\(1669\)</span>。注意这个 kernel 仍然是
+            <strong>run-to-run
+            确定的</strong>：脚本重复跑结果一致。它不满足的是 batch
+            invariance，也不满足跨硬件/版本的不变性。</p>
+            <h4 id="组合出端到端的不确定性">组合出端到端的不确定性</h4>
+            <p>把「kernel
+            对某个属性不具不变性」和「这个属性本身是随机的」组合起来，就得到了不确定的系统：</p>
+            <p><span class="math display">\[
+            \text{非 batch-invariant 的 kernel} \;\circ\; \text{不确定的
+            batch size}
+            \;\Rightarrow\; \text{不确定的输出}
+            \]</span></p>
+            <p>用户发请求时，服务端负载是未知的，负载决定 batch
+            size，batch size
+            决定数值，于是每条请求的结果都受其他并发请求影响。单个请求无法知道别人会同时请求什么，所以从它的视角看，整个推理系统就是不确定的。</p>
+            <p>这也不是 GPU 独有的：CPU 或 TPU
+            上的推理服务有完全相同的这一层不确定性来源。<strong>只要
+            kernel 的结果依赖 batch
+            大小，服务端负载就会变成用户可见的随机性。</strong></p>
+            <h3 id="需要处理的三个算子">需要处理的三个算子</h3>
+            <p>要让整个 Transformer 实现 batch-invariant，就要让每个
+            kernel 都 batch-invariant。</p>
+            <ul>
+            <li><strong>逐元素（pointwise）算子天然满足。</strong>
+            输出第 <span class="math inline">\(i\)</span>
+            个元素只依赖输入第 <span class="math inline">\(i\)</span>
+            个元素，没有跨元素交互。不过这不是无条件的：某些 CPU
+            实现会对同一数组的不同区段使用不同的（向量化 /
+            非向量化）指令，二者不保证按位一致。</li>
+            <li><strong>真正需要额外处理的是三个含 reduction
+            的算子</strong>：RMSNorm、矩阵乘法、attention，难度依次递增。</li>
+            </ul>
+            <p>核心判据是：</p>
+            <blockquote>
+            <p><strong>只有当 batch size 改变了 reduction 策略时，才破坏
+            batch invariance。</strong></p>
+            </blockquote>
+            <p>这里有个容易误读的地方：它不等于「永远只能用同一个
+            reduction
+            策略」。如果被归约的元素个数本身就变了（例如序列长度不同），换策略仍然是
+            batch-invariant 的。问题出在
+            <strong>被归约的元素个数相同，但因为 batch
+            变大或变小而换了策略</strong>。</p>
+            <p>另一个实用的观察对象是 <strong>线程块数量与 SM
+            数量的比值</strong>：工程实现通常在并行度不足以喂满 GPU
+            时才切换策略，而这个阈值点正是 batch invariance
+            断裂的地方。</p>
+            <h4 id="batch-invariant-rmsnorm">Batch-invariant
+            RMSNorm</h4>
+            <p>RMSNorm 的定义是：</p>
+            <p><span class="math display">\[
+            \operatorname{RMSNorm}(x_i)
+            =
+            \frac{x_i}{\sqrt{\frac{1}{d}\sum_{j=1}^{d} x_{ij}^{2} +
+            \epsilon}}
+            \odot \gamma
+            \]</span></p>
+            <p>实现上就是一次沿特征维的归约：</p>
+            <div class="sourceCode" id="cb6"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># x: [batch_size, hidden_dim]</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co"># weight: [hidden_dim]</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> rms_norm(x, weight):</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> x <span class="op">*</span> torch.rsqrt(torch.mean(x <span class="op">**</span> <span class="dv">2</span>, dim<span class="op">=-</span><span class="dv">1</span>, keepdim<span class="op">=</span><span class="va">True</span>)) <span class="op">*</span> weight</span></code></pre></div>
+            <p>最自然的策略是 <strong>数据并行</strong>：一个 core
+            负责一行 batch，整行的归约完全留在核内，不需要跨核通信。</p>
+            <ul>
+            <li><strong>batch 变大</strong>：让每个 core
+            依次处理多行即可，每行的归约顺序不变，仍然
+            batch-invariant。batch size 从 200 涨到
+            2000，并行度只会更充足。</li>
+            <li><strong>batch 变小</strong>：一旦 batch 小于 core
+            数量，就会有 core 空闲。这时 kernel 工程师的本能是 split
+            reduction（把一行的归约切给多个 core 再合并）或 atomic
+            add——两者都改变归约顺序，破坏 batch invariance。</li>
+            </ul>
+            <p>面对小 batch，有两个选择：</p>
+            <ol type="1">
+            <li><strong>不为这种情况优化。</strong> batch 很小时 kernel
+            本身执行很快，性能损失通常可以接受。</li>
+            <li><strong>固定使用一种「即使 batch = 1
+            也有足够并行度」的归约策略。</strong> 代价是大 batch
+            时并行度过剩，只能达到次优但尚可的性能，换来了全形状范围内的一致数值。</li>
+            </ol>
+            <h4 id="batch-invariant-矩阵乘法">Batch-invariant
+            矩阵乘法</h4>
+            <p>矩阵乘法的标准策略同样是数据并行：把输出切成二维
+            tile，一个 tile 交给一个 core，整个 <span
+            class="math inline">\(K\)</span> 维归约留在核内：</p>
+            <p><span class="math display">\[
+            C_{ij} = \sum_{k} A_{ik} B_{kj}
+            \]</span></p>
+            <p>与 RMSNorm 的区别是：出于算术强度和 tensorcore
+            利用率的要求，矩阵乘法必须按二维 tile
+            切分，而不能按单个输出元素切分。</p>
+            <p>破坏不变性的情况有三种：</p>
+            <ol type="1">
+            <li><strong>Split-K matmul。</strong> <span
+            class="math inline">\(M\)</span> 和 <span
+            class="math inline">\(N\)</span> 同时很小时并行度不足。例如
+            <span class="math inline">\([1024, K] \times [K,
+            1024]\)</span> 配 <span class="math inline">\([128,
+            128]\)</span> 的 tile，只能切出 64 个 tile，喂不饱
+            GPU。于是改为沿 <span class="math inline">\(K\)</span>
+            切分，每个 core
+            各算一部分、最后再合并——归约顺序被改变。</li>
+            <li><strong>Stream-K。</strong>
+            它为了更好的负载均衡，会对不同的输出 tile 采用不同的 <span
+            class="math inline">\(K\)</span> 切分方式。普通的 matmul
+            库至少还满足更弱的 <strong>batch-position
+            invariance</strong>（同 batch 内元素换位置不影响数值），而
+            stream-k 连这一点都不满足。</li>
+            <li><strong>tensorcore 指令的粒度。</strong> 一条 tensorcore
+            指令（例如
+            <code>wgmma.mma_async.sync.aligned.m64n128k16</code>）内部有自己的归约顺序。batch
+            很小时，即便一个 <span class="math inline">\([128,
+            128]\)</span> 的 tile
+            也放不下，最快的内核会退化成更小的指令，甚至完全不用
+            tensorcore，数值随之改变。</li>
+            </ol>
+            <p>解决方式很直接：<strong>只编译一种 kernel
+            配置，所有形状都用它</strong>。性能损失通常可以接受，因为
+            split-K 主要用在 <span
+            class="math inline">\(M\)</span>、<span
+            class="math inline">\(N\)</span> 同时很小的场合，而 LLM 里
+            <span
+            class="math inline">\(N\)</span>（模型维度）通常很大。文章中的实现比
+            cuBLAS 慢约 20%，而且它是未优化的 Triton
+            kernel（例如没有使用 TMA）。</p>
+            <p>性能曲线上的两个特征值得记下来：</p>
+            <ul>
+            <li>极小 batch 时明显变慢，因为 instruction
+            过大而并行度不足；</li>
+            <li>中等 batch 区间出现「锯齿」（jigsaw）形状，来自 tile
+            量化与 wave 量化效应。常规库会通过切换 tile size
+            来消除这种锯齿，而固定配置意味着必须接受它。</li>
+            </ul>
+            <h4 id="batch-invariant-attention">Batch-invariant
+            attention</h4>
+            <p>FlashAttention2 的策略是沿 Q 并行、沿 K/V
+            归约，本质上也是数据并行：一次归约完整地留在单个 core
+            内。</p>
+            <p>Attention 比前两者多两个麻烦：</p>
+            <ol type="1">
+            <li><strong>归约维度有两个</strong>，既有特征维 <span
+            class="math inline">\(d\)</span>，也有序列维：</li>
+            </ol>
+            <p><span class="math display">\[
+            O_i = \sum_{j \le i}
+            \operatorname{softmax}\!\left(\frac{q_i^{\mathsf T}
+            k_j}{\sqrt{d}}\right) v_j
+            \]</span></p>
+            <p>其中 <span class="math inline">\(j \le i\)</span> 体现
+            causal mask。decode 阶段 query 长度通常只有 1，而 <span
+            class="math inline">\(L\)</span> 是整个上下文长度（包含 KV
+            Cache）。</p>
+            <ol start="2" type="1">
+            <li><strong>推理引擎会用各种方式切分序列</strong>：chunked
+            prefill、prefix caching
+            等。因此数值必须同时对「一次处理多少请求」和「一条请求被切成几段」保持不变。</li>
+            </ol>
+            <p><strong>KV Cache 的边界条件问题。</strong> 假设 block
+            size 是 32，KV Cache 里已有 80 个元素，本次又要处理 48
+            个新元素：</p>
+            <ul>
+            <li>计算 cache 部分的注意力，需要 3 个 block（2 个满块 + 1
+            个 masked 块）；</li>
+            <li>计算本次新 token 部分，需要 2 个 block（1 个满块 + 1 个
+            masked 块）；</li>
+            <li>合计 5 个 block 的归约。</li>
+            </ul>
+            <p>如果这 128 个元素是一次性处理的（KV Cache 为空），只需要
+            4 个满块。两种情况归约顺序不同，因而不满足 batch
+            invariance。按文章的说法，处理某条序列的第 1000 个 token
+            时，无论前面 999 个 token 是已在 KV Cache
+            里还是本次一起计算，结果都必须完全一致。</p>
+            <p>解法是把 KV Cache 与 page table 的更新放到 attention
+            kernel <strong>之前</strong>执行，使 K/V
+            的排布与「本次处理多少 token」无关。</p>
+            <p><strong>固定 split size 的 Split-KV。</strong> 与 matmul
+            不同，decode 阶段的 attention
+            经常<strong>必须</strong>切分归约（Split-KV，也叫
+            FlashDecoding）：如果不沿归约维切分，就只能沿 batch、head 和
+            query 长度并行，而 decode 时 query 长度很小，batch
+            也不大时就无法打满 GPU。而且这种情况不能像 RMSNorm
+            那样「直接忽略」——KV Cache 很长时，attention kernel
+            即便只处理一条请求也可能非常慢。</p>
+            <p>常用的 split 策略是「按需要多少并行度把 KV
+            维平均切分」：KV 长度 1000、需要 4 份，每份就是
+            250。这个切法与当前处理多少 query token 相关，因此破坏 batch
+            invariance。FlashInfer 的 balanced scheduling
+            也是类似思路：选取仍能打满所有 core 的最大 split size。</p>
+            <p>正确做法是反过来——<strong>固定每个 split
+            的大小，而不是固定 split 的数量</strong>：</p>
+            <ul>
+            <li>破坏不变性：KV 长度 1000 切成 4 份，每份 250；</li>
+            <li>保持不变性：KV 长度 1000 切成 3 个长度 256 的定长块 + 1
+            个长度 232 的块。</li>
+            </ul>
+            <p>这样无论一次处理多少
+            token，归约顺序都完全相同。（文章指出这需要在 FlexAttention
+            内部做修改，未包含在其开源代码中。）</p>
+            <h3 id="实现方式与可用开关">实现方式与可用开关</h3>
+            <ul>
+            <li>该工作基于 vLLM 的 FlexAttention backend
+            演示确定性推理，并通过 <code>torch.Library</code>
+            在不侵入上游代码的前提下替换相关 PyTorch 算子。</li>
+            <li>batch-invariant kernel 集合开源在
+            <code>thinking-machines-lab/batch-invariant-ops</code>。</li>
+            <li>vLLM 上游也提供了开关
+            <code>VLLM_BATCH_INVARIANT</code>：默认关闭，开启后要求
+            NVIDIA GPU 且 compute capability <span
+            class="math inline">\(\ge 9.0\)</span>（Hopper /
+            Blackwell），对应上文中 SHARP in-switch reduction
+            的确定性条件。</li>
+            <li>PyTorch 自带的
+            <code>torch.use_deterministic_algorithms(True)</code> 与
+            <code>CUBLAS_WORKSPACE_CONFIG</code> 解决的是
+            <strong>run-to-run</strong> 不确定性（禁用 atomic add
+            等），<strong>不</strong>保证 batch
+            invariance。两者不能互相替代：前者开启后，同一个 batch
+            形状重复跑会一致，但换一个 batch
+            形状仍可能得到不同数值。</li>
+            </ul>
+            <h3
+            id="实验不确定性到底有多大">实验：不确定性到底有多大</h3>
+            <p>设置：<code>Qwen/Qwen3-235B-A22B-Instruct-2507</code>，<code>temperature=0</code>，prompt
+            为 “Tell me about Richard Feynman”，每条输出 1000
+            token，共采样 1000 次。</p>
+            <table>
+            <thead>
+            <tr>
+            <th>现象</th>
+            <th>数值</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>不同的 completion 数量</td>
+            <td>80</td>
+            </tr>
+            <tr>
+            <td>最常见 completion 的出现次数</td>
+            <td>78</td>
+            </tr>
+            <tr>
+            <td>首次出现分歧的位置</td>
+            <td>第 103 个 token</td>
+            </tr>
+            <tr>
+            <td>生成 “Queens, New York”</td>
+            <td>992 次</td>
+            </tr>
+            <tr>
+            <td>生成 “New York City”</td>
+            <td>8 次</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>前 102 个 token 完全一致，都生成了 “Feynman was born on
+            May 11, 1918, in”，到第 103 个 token 才分成两支。开启
+            batch-invariant kernel 后，1000 次采样完全相同——这正是
+            <code>temperature=0</code> 在数学上应该给出的结果。</p>
+            <p>性能方面，单卡 Qwen3-8B，请求 1000 条、输出长度 90 到
+            110：</p>
+            <table>
+            <thead>
+            <tr>
+            <th>配置</th>
+            <th>耗时（秒）</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>vLLM 默认</td>
+            <td>26</td>
+            </tr>
+            <tr>
+            <td>未优化的确定性 vLLM</td>
+            <td>55</td>
+            </tr>
+            <tr>
+            <td>上一行 + 改进的 attention kernel</td>
+            <td>42</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>作者强调这部分 kernel 并未认真优化（vLLM 里的
+            FlexAttention
+            集成也没怎么调），所以结论是「性能没有灾难性下降」，而不是「确定性几乎免费」。</p>
+            <h3 id="true-on-policy-rl">True on-policy RL</h3>
+            <p>训练与推理之间的数值差异，会把名义上的 on-policy RL
+            变成隐式的 off-policy
+            RL。既然连两次相同的推理请求都无法按位一致，就更不可能让采样与训练按位一致。</p>
+            <p>实验设置：RLVR，数据集 Bigmath，策略初始化自 Qwen 2.5-VL
+            instruct 8B，max rollout length 为
+            4096。三种配置的对比：</p>
+            <table>
+            <colgroup>
+            <col style="width: 50%" />
+            <col style="width: 50%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>配置</th>
+            <th>行为</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>不加 off-policy correction（importance weighting）</td>
+            <td>reward 在训练中途崩溃，约 step 318 出现 loss spike，同时
+            logprob 的 KL 散度出现对应尖峰</td>
+            </tr>
+            <tr>
+            <td>加 importance weighting</td>
+            <td>KL 维持在约 <span
+            class="math inline">\(0.001\)</span>，偶有尖峰，训练平稳</td>
+            </tr>
+            <tr>
+            <td>sampler 与 trainer 按位一致（True On-Policy）</td>
+            <td>KL 恒为 <span
+            class="math inline">\(0\)</span>，训练平稳</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>也就是说，只要推理与训练的数值完全对齐（<span
+            class="math inline">\(0\)</span> KL 散度），不加任何
+            off-policy 修正也能稳定训练。</p>
+            <h3 id="如何度量不确定性">如何度量不确定性</h3>
+            <p>最直接的指标是逐 token 的 logprob 差的平方均值：</p>
+            <p><span class="math display">\[
+            \operatorname{MSE} = \frac{1}{n} \sum_{i=1}^{n} (x_i -
+            y_i)^2
+            \]</span></p>
+            <p>其中：</p>
+            <ul>
+            <li><span
+            class="math inline">\(x_i\)</span>：单条推理（batch size =
+            1）第 <span class="math inline">\(i\)</span> 个 token 的
+            logprob；</li>
+            <li><span class="math inline">\(y_i\)</span>：batch
+            推理时同一 token 的 logprob。</li>
+            </ul>
+            <p>实际排查时通常配合另外两个指标：</p>
+            <ul>
+            <li><strong>top-1 分歧率</strong>：两条推理中 argmax token
+            不同的比例。它最贴近用户可见的行为，因为贪心解码只看
+            argmax，MSE 很小也可能导致 top-1 翻转；</li>
+            <li><strong>KL 散度</strong> <span
+            class="math inline">\(\operatorname{KL}(p_{\text{sampler}}
+            \| p_{\text{trainer}})\)</span>：直接对应 on-policy 与
+            off-policy 的偏离程度，是 RL 场景里最有说服力的指标。</li>
+            </ul>
+            <h3 id="工程上的取舍">工程上的取舍</h3>
+            <ul>
+            <li><strong>可以不管的场景</strong>：本来就依赖采样随机性工作的流程，例如
+            <code>temperature &gt; 0</code>
+            的多样本生成、取了平均的评测。此时 batch invariance
+            带来的差异会被采样噪声淹没。</li>
+            <li><strong>必须管的场景</strong>：<code>temperature = 0</code>
+            的可复现评测、on-policy RL、需要精确复现 bug
+            的调试，以及任何「同一请求两次结果不同」会被当成故障的线上系统。</li>
+            <li><strong>另一种规避方式</strong>是把 batch
+            固定填充到同一个大小（或让服务在某一时刻只处理一条请求）。代价是吞吐下降：这与
+            batch-invariant kernel
+            的目标相同（消除形状依赖），只是把成本从 kernel
+            性能转移到了并行度上。</li>
+            <li><strong>注意结论的边界</strong>：batch-invariant kernel
+            保证的是「同一软件栈、同一硬件上的可复现」，它不保证跨 GPU
+            架构或跨库版本按位一致。</li>
+            </ul>
+            <h3 id="总结">总结</h3>
+            <ul>
+            <li>浮点非结合性 <span class="math inline">\((a+b)+c \ne
+            a+(b+c)\)</span>
+            解释的是「为什么会有数值差异」，不是「为什么会有不确定性」；</li>
+            <li>atomic add 会破坏 run-to-run 确定性，但 LLM
+            前向里基本不出现，因此「并发 + 浮点」不是主因；</li>
+            <li>端到端不确定性的真正来源是 kernel 缺少 batch
+            invariance，与「服务负载即 batch size
+            本身随机」组合而成；</li>
+            <li>需要处理的是三个含归约的算子：RMSNorm（数据并行）、矩阵乘法（固定
+            tile 配置）、attention（固定 split size，并统一 KV Cache
+            排布）；</li>
+            <li>代价是性能（文章实现约比 cuBLAS 慢
+            20%），收益是可复现的贪心解码与真正的 on-policy RL。</li>
+            </ul>
+            <hr />
+            <ul>
+            <li>Horace He, Thinking Machines Lab, <a
+            href="https://thinkingmachines.ai/blog/defeating-nondeterminism-in-llm-inference/">Defeating
+            Nondeterminism in LLM Inference</a>, 2025.</li>
+            <li>batch-invariant kernel
+            实现：<code>thinking-machines-lab/batch-invariant-ops</code>。</li>
+            <li>浮点误差界与求和分析：Higham, <em>Accuracy and Stability
+            of Numerical Algorithms</em>。</li>
+            </ul>
+          </main>
+        <aside class="wiki-toc">
+      <ul>
+      <li><a href="#浮点非结合性差异从哪里来"
+      id="toc-浮点非结合性差异从哪里来">浮点非结合性：差异从哪里来</a></li>
+      <li><a href="#三种必须区分开的确定性"
+      id="toc-三种必须区分开的确定性">三种必须区分开的「确定性」</a></li>
+      <li><a href="#batch-invariancebatch-大小为什么会污染单条请求"
+      id="toc-batch-invariancebatch-大小为什么会污染单条请求">batch
+      invariance：batch 大小为什么会污染单条请求</a></li>
+      <li><a href="#需要处理的三个算子"
+      id="toc-需要处理的三个算子">需要处理的三个算子</a></li>
+      <li><a href="#实现方式与可用开关"
+      id="toc-实现方式与可用开关">实现方式与可用开关</a></li>
+      <li><a href="#实验不确定性到底有多大"
+      id="toc-实验不确定性到底有多大">实验：不确定性到底有多大</a></li>
+      <li><a href="#true-on-policy-rl" id="toc-true-on-policy-rl">True
+      on-policy RL</a></li>
+      <li><a href="#如何度量不确定性"
+      id="toc-如何度量不确定性">如何度量不确定性</a></li>
+      <li><a href="#工程上的取舍"
+      id="toc-工程上的取舍">工程上的取舍</a></li>
+      <li><a href="#总结" id="toc-总结">总结</a></li>
+      </ul>
+    </aside>
+      </div>
+  <script type="text/javascript">
+    (function () {
+      function markActive() {
+        var here = location.href.split('#')[0];
+        var links = document.querySelectorAll('.wiki-sidebar a');
+        for (var i = 0; i < links.length; i++) {
+          if (links[i].href.split('#')[0] === here) {
+            links[i].classList.add('active');
+          }
+        }
+      }
+      // load the shared site directory once (served from the wiki root);
+      // kept in a standalone file so adding a page needn't rebuild every page.
+      var nav = document.getElementById('wiki-sidebar');
+      if (nav) {
+        fetch('/.wiki_sidebar.html')
+          .then(function (r) { return r.ok ? r.text() : ''; })
+          .then(function (html) {
+            if (html) {
+              nav.innerHTML = html;
+              nav.hidden = false;
+              markActive();
+            }
+          })
+          .catch(function () {});
+      }
+      // keep bootstrap table styling (previously done by sticky_menu.js)
+      var tables = document.getElementsByTagName('table');
+      for (var j = 0; j < tables.length; j++) {
+        tables[j].classList.add('table');
+      }
+    })();
+  </script>
+</body>
+
+</html>

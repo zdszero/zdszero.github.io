@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="400" viewBox="0 0 900 400" font-family="-apple-system,Helvetica,Arial,sans-serif">
+  <style>
+    .h{font-size:15px;font-weight:800;fill:#fff}
+    .k{font-size:12px;font-weight:700;fill:#333}
+    .v{font-size:11.5px;fill:#555}
+    .bx{font-size:11px;fill:#fff;font-weight:600}
+  </style>
+  <rect x="0" y="0" width="900" height="400" fill="#fdfdfd"/>
+  <text x="24" y="30" font-size="17" font-weight="800" fill="#111">两条路线：GPU 的动态并行 vs Groq LPU 的确定性数据流</text>
+
+  <!-- GPU column -->
+  <rect x="30" y="52" width="400" height="34" rx="6" fill="#22c55e"/>
+  <text x="50" y="75" class="h">NVIDIA GPU</text>
+  <text x="250" y="74" font-size="11" fill="#e9fbe9">吞吐优先 · 训练+推理通用</text>
+
+  <rect x="30" y="96" width="400" height="258" rx="8" fill="#fff" stroke="#e5e7eb"/>
+  <g fill="#86efac">
+    <rect x="48" y="112" width="80" height="34" rx="4"/><rect x="138" y="112" width="80" height="34" rx="4"/><rect x="228" y="112" width="80" height="34" rx="4"/><rect x="318" y="112" width="80" height="34" rx="4"/>
+    <rect x="48" y="152" width="80" height="34" rx="4"/><rect x="138" y="152" width="80" height="34" rx="4"/><rect x="228" y="152" width="80" height="34" rx="4"/><rect x="318" y="152" width="80" height="34" rx="4"/>
+  </g>
+  <text x="229" y="134" text-anchor="middle" font-size="10.5" fill="#166534" font-weight="700">数十～上百个 SM（动态调度）</text>
+  <rect x="48" y="198" width="350" height="30" rx="4" fill="#15803d"/><text x="223" y="218" text-anchor="middle" class="bx">片外 HBM 高带宽显存</text>
+
+  <text x="48" y="256" class="k">调度</text><text x="110" y="256" class="v">硬件动态调度 warp，隐藏延迟</text>
+  <text x="48" y="282" class="k">内存</text><text x="110" y="282" class="v">寄存器 / 共享内存 / L2 / HBM 多级</text>
+  <text x="48" y="308" class="k">擅长</text><text x="110" y="308" class="v">大 batch 吞吐、训练、prefill</text>
+  <text x="48" y="334" class="k">代价</text><text x="110" y="334" class="v">单请求延迟受访存与调度抖动影响</text>
+
+  <!-- LPU column -->
+  <rect x="470" y="52" width="400" height="34" rx="6" fill="#f97316"/>
+  <text x="490" y="75" class="h">Groq LPU</text>
+  <text x="672" y="74" font-size="11" fill="#fff5ec">低延迟优先 · 自回归解码专用</text>
+
+  <rect x="470" y="96" width="400" height="258" rx="8" fill="#fff" stroke="#e5e7eb"/>
+  <rect x="488" y="112" width="364" height="74" rx="5" fill="#fdba74"/>
+  <text x="670" y="138" text-anchor="middle" font-size="10.5" fill="#7c2d12" font-weight="700">单一逻辑核心 · 编译期静态调度</text>
+  <text x="670" y="160" text-anchor="middle" font-size="10.5" fill="#7c2d12">功能单元像流水线一样被编排，执行时序完全确定</text>
+  <rect x="488" y="198" width="364" height="30" rx="4" fill="#ea580c"/><text x="670" y="218" text-anchor="middle" class="bx">全部权重 / 激活驻留片上 SRAM（无 HBM）</text>
+
+  <text x="488" y="256" class="k">调度</text><text x="550" y="256" class="v">编译器静态编排，确定性无抖动</text>
+  <text x="488" y="282" class="k">内存</text><text x="550" y="282" class="v">仅片上 SRAM，带宽极高容量有限</text>
+  <text x="488" y="308" class="k">擅长</text><text x="550" y="308" class="v">单请求 token 生成的极低延迟</text>
+  <text x="488" y="334" class="k">代价</text><text x="550" y="334" class="v">容量小，需多芯片拼大模型；不做训练</text>
+</svg>

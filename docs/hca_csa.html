@@ -1,0 +1,1160 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    CSA HCA
+  </title>
+    <link rel="stylesheet" href="./WikiTheme/theme/bootstrap.css"  />
+        <script defer=""
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+        type="text/javascript"></script>
+      <style type="text/css">
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+      <style type="text/css">
+    /* ---- three column wiki layout (left: site directory, center: content, right: page TOC) ---- */
+    .wiki-layout {
+      display: flex;
+      align-items: flex-start;
+      gap: 24px;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 20px;
+      box-sizing: border-box;
+    }
+    .wiki-sidebar {
+      flex: 0 0 240px;
+      width: 240px;
+      position: sticky;
+      top: 0;
+      max-height: 100vh;
+      overflow-y: auto;
+      padding: 10px 4px 20px 0;
+      border-right: 1px solid #eee;
+      font-size: 14px;
+    }
+    .wiki-sidebar[hidden] { display: none; }
+    .wiki-toc {
+      flex: 0 0 220px;
+      width: 220px;
+      position: sticky;
+      top: 0;
+      max-height: 100vh;
+      overflow-y: auto;
+      padding: 10px 0 20px 4px;
+      border-left: 1px solid #eee;
+      font-size: 14px;
+    }
+    .wiki-main {
+      flex: 1 1 auto;
+      min-width: 0;
+      max-width: 820px;
+      padding: 10px 0 40px;
+    }
+    /* site directory tree */
+    .wiki-sidebar .wiki-home {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #eee;
+      text-decoration: none;
+      color: #333;
+    }
+    .wiki-sidebar ul { list-style: none; margin: 0 0 0 12px; padding: 0; }
+    .wiki-sidebar > ul { margin-left: 0; }
+    .wiki-sidebar li { line-height: 1.7; }
+    .wiki-sidebar a { text-decoration: none; color: #555; }
+    .wiki-sidebar a:hover { color: #0088cc; text-decoration: underline; }
+    .wiki-sidebar a.active { color: #0088cc; font-weight: bold; }
+    /* page TOC */
+    .wiki-toc ul { list-style: none; margin: 0 0 0 12px; padding: 0; }
+    .wiki-toc > ul { margin-left: 0; }
+    .wiki-toc li { line-height: 1.6; }
+    .wiki-toc a { text-decoration: none; color: #555; }
+    .wiki-toc a:hover { color: #0088cc; }
+    @media (max-width: 980px) {
+      .wiki-layout { flex-direction: column; }
+      .wiki-sidebar, .wiki-toc {
+        position: static;
+        width: 100%;
+        flex-basis: auto;
+        max-height: none;
+        border: 0;
+      }
+      .wiki-main { max-width: none; }
+    }
+  </style>
+</head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">CSA HCA</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="wiki-layout">
+    <nav class="wiki-sidebar" id="wiki-sidebar" hidden></nav>
+    <main class="wiki-main">
+            <h3 id="kv-compress">KV Compress</h3>
+            <p>V32 中解决了长上下文计算量的问题，但是没有解决 kv cache
+            过大的问题，V4 的核心工作在于对于 kv cache 的压缩，采用了
+            SWA + Compressed KV Attention 的混合架构：</p>
+            <ul>
+            <li>SWA 用来看近处的信息</li>
+            <li>Compressed Attention 用来关注远方的信息</li>
+            </ul>
+            <p>两种方案的计算结果会被结合：</p>
+            <p>融合方式在数学上等价于：</p>
+            <p><span class="math display">\[
+            \text{Attn} =
+            \text{softmax}\bigl([\underbrace{QK_{\text{swa}}^\top}_{\text{近处}},
+            \underbrace{QK_{\text{comp}}^\top}_{\text{远处}},
+            \underbrace{\text{sink}}_{\text{逃生口}}]\bigr) \cdot
+            [V_{\text{swa}}, V_{\text{comp}}, 0]
+            \]</span></p>
+            <ul>
+            <li>两路 logits 拼在一起做<strong>联合
+            softmax</strong>（不是两次独立 attention 相加）</li>
+            <li><code>attn_sink</code> 是每个 head
+            一个可学习标量，相当于”如果近处远处都不重要就放水”的逃生出口</li>
+            <li>这样模型自动学会”什么时候依赖近处、什么时候依赖远处摘要”</li>
+            </ul>
+            <p>{{&lt; svg “/images/kv_compression_routing_diagram.svg”
+            &gt;}}</p>
+            <ul>
+            <li><strong>SWA 的 128 个原始 KV 不会被压缩</strong></li>
+            <li><strong>压缩 KV 只服务于两种远程 attention</strong>：
+            <ol type="1">
+            <li>CSA 中按照 c4 压缩，然后做 sparse attention, topk =
+            512</li>
+            <li>HCA 中按照 c128 压缩，然后做 global attention</li>
+            </ol></li>
+            </ul>
+            <h3 id="kv-cache">KV cache</h3>
+            <div class="sourceCode" id="cb1"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>bytes_per_full_token <span class="op">=</span> (</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ① SWA 原始 KV（每层都有，按 swa_ratio 保留近期）</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    swa_ratio <span class="op">*</span> kv_bytes <span class="op">*</span> num_layers_total</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ② CSA 压缩 KV：每 4 token 产 1 条</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> (<span class="dv">1</span><span class="op">/</span><span class="dv">4</span>) <span class="op">*</span> kv_bytes <span class="op">*</span> num_layers_ca4</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ③ HCA 压缩 KV：每 128 token 产 1 条</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> (<span class="dv">1</span><span class="op">/</span><span class="dv">128</span>) <span class="op">*</span> kv_bytes <span class="op">*</span> num_layers_ca128</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ④ CSA 层的 Indexer 压缩（也是 1/4）</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> (<span class="dv">1</span><span class="op">/</span><span class="dv">4</span>) <span class="op">*</span> indexer_bytes <span class="op">*</span> num_layers_ca4</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ⑤ CSA 的环形 state buffer（双流 + score）</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> swa_ratio <span class="op">*</span> c4_state_ratio <span class="op">*</span> c4_state_bytes <span class="op">*</span> num_layers_ca4</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ⑥ HCA 的环形 state buffer</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> swa_ratio <span class="op">*</span> c128_state_ratio <span class="op">*</span> c128_state_bytes <span class="op">*</span> num_layers_ca128</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ⑦ CSA Indexer 的 state buffer</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> swa_ratio <span class="op">*</span> c4_state_ratio <span class="op">*</span> c4_indexer_state_bytes <span class="op">*</span> num_layers_ca4</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>    <span class="op">=</span> </span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>        <span class="fl">0.1</span> <span class="op">*</span> <span class="dv">584</span> <span class="op">*</span> <span class="dv">62</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>      <span class="op">+</span> <span class="fl">0.25</span> <span class="op">*</span> <span class="dv">584</span> <span class="op">*</span> <span class="dv">30</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>      <span class="op">+</span> <span class="fl">0.0078125</span> <span class="op">*</span> <span class="dv">584</span> <span class="op">*</span> <span class="dv">31</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>      <span class="op">+</span> <span class="fl">0.25</span> <span class="op">*</span> <span class="dv">132</span> <span class="op">*</span> <span class="dv">30</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>      <span class="op">+</span> <span class="fl">0.1</span> <span class="op">*</span> <span class="fl">0.0625</span> <span class="op">*</span> <span class="dv">8192</span> <span class="op">*</span> <span class="dv">30</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>      <span class="op">+</span> <span class="fl">0.1</span> <span class="op">*</span> <span class="fl">1.0</span> <span class="op">*</span> <span class="dv">4096</span> <span class="op">*</span> <span class="dv">31</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>      <span class="op">+</span> <span class="fl">0.1</span> <span class="op">*</span> <span class="fl">0.0625</span> <span class="op">*</span> <span class="dv">2048</span> <span class="op">*</span> <span class="dv">30</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>    <span class="op">=</span> </span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>        <span class="fl">3620.8</span>  </span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>      <span class="op">+</span> <span class="dv">4380</span>  </span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>      <span class="op">+</span> <span class="fl">141.4375</span>  </span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>      <span class="op">+</span> <span class="dv">990</span>  </span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>      <span class="op">+</span> <span class="dv">1536</span>  </span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>      <span class="op">+</span> <span class="fl">12697.6</span>  </span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>      <span class="op">+</span> <span class="dv">384</span>  </span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>    <span class="op">=</span> <span class="fl">23749.8375</span></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+            <h4 id="usage">Usage</h4>
+            <p>假设每个 DP 接收到的请求为
+            <code>[bs, kv_len]</code>，那么所需要的 cache 空间为：</p>
+            <ul>
+            <li>swa:
+            <code>[swa_layers, bs, window_size, 576]</code></li>
+            <li>csa: <code>[c4_layers, bs, kv_len // 4, 576]</code></li>
+            <li>hca:
+            <code>[c128_layers, bs, kv_len // 128, 576]</code></li>
+            <li>csa_indexer:
+            <code>[c4_layers, bs, kv_len // 4, 128 + 4]</code>
+            <ul>
+            <li>indexer_head_dim=128, scale_group_size=128</li>
+            </ul></li>
+            <li>csa state buffer: <code>[c4_layers, bs ]</code></li>
+            <li>csa indxer state buffer:</li>
+            <li>hca state buffer:</li>
+            </ul>
+            <h4 id="state-buffer">State Buffer</h4>
+            <p><span class="math display">\[
+            \begin{array}{c}
+            \text{每来一个 token } x_t \\[5pt]
+            \downarrow \\[10pt]
+            \begin{array}{|c|}
+            \hline
+            w_{kv\_gate}(x_t) \\
+            \Rightarrow [C_t^b, C_t^a, Z_t^b, Z_t^a] \\
+            \hline
+            \end{array} \\[15pt]
+            \downarrow \quad \text{写入} \\[10pt]
+            \begin{array}{|c|}
+            \hline
+            \text{【State Buffer】(ring)} \\
+            \text{容量：} 2m = 8 \text{ 个 token 条目} \\
+            \text{存的就是 per-token 的 } [C^b, C^a, Z^b, Z^a] \\
+            \hline
+            \end{array} \\[15pt]
+            \downarrow \quad \text{每凑够 } m=4 \text{ 个 token
+            触发一次} \\[10pt]
+            \begin{array}{|c|}
+            \hline
+            \text{flash\_c4\_decode kernel} \\
+            \text{读 8 个 state 条目} \\
+            \text{做 per-channel softmax} \\
+            C^{\text{Comp}} = \sum S \cdot C \\
+            \hline
+            \end{array} \\[15pt]
+            \downarrow \quad \text{写入（成品）} \\[10pt]
+            \begin{array}{|c|}
+            \hline
+            \text{【压缩 KV 池】c4\_kv\_pool} \\
+            \text{容量：} n/4 \text{ 条 } C^{\text{Comp}} \\
+            \text{每条 = 1 个 512 维向量} \\
+            \hline
+            \end{array} \\[15pt]
+            \downarrow \quad \text{attention 读} \\[10pt]
+            \begin{array}{|c|}
+            \hline
+            \text{模块 4: flash\_mla attention} \\
+            Q @ K(=C^{\text{Comp}}_{\text{topk}}) \\
+            \text{softmax} \rightarrow \text{weighted } V \\
+            \hline
+            \end{array}
+            \end{array}
+            \]</span></p>
+            <h3 id="csa">CSA</h3>
+            <table>
+            <colgroup>
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>论文符号</th>
+            <th>代码字段 / 行号</th>
+            <th>配置值（<code>compress_ratio=4</code>）</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td><span class="math inline">\(H \in \mathbb{R}^{n \times
+            d}\)</span></td>
+            <td><code>x</code>（<code>MQALayer._forward_prepare</code>
+            入参）</td>
+            <td><code>d = hidden_size = 7168</code></td>
+            </tr>
+            <tr>
+            <td><span class="math inline">\(m\)</span> 每 <span
+            class="math inline">\(m\)</span> token 压成 <span
+            class="math inline">\(1\)</span></td>
+            <td><code>Compressor.ratio</code>
+            (<code>deepseek_v4.py:190</code>)</td>
+            <td><code>m = 4</code> (overlap) 或 <code>128</code></td>
+            </tr>
+            <tr>
+            <td><span class="math inline">\(c\)</span> head 维度</td>
+            <td><code>Compressor.head_dim</code>
+            (<code>:186</code>)</td>
+            <td>512（主 KV）/ 128（Indexer KV）</td>
+            </tr>
+            <tr>
+            <td><span class="math inline">\(W^{aKV}, W^{bKV}, W^{aZ},
+            W^{bZ}\)</span> 四个 <span class="math inline">\(d \times
+            c\)</span> 矩阵</td>
+            <td><code>Compressor.wkv_gate</code>，输出维度 <span
+            class="math inline">\(2 \cdot \text{coff} \cdot c\)</span>
+            (<code>:199-206</code>)</td>
+            <td><span
+            class="math inline">\(\text{coff}=1+\text{overlap}=2\)</span>，总输出
+            <span class="math inline">\(4c\)</span></td>
+            </tr>
+            <tr>
+            <td><span class="math inline">\(C^a, C^b\)</span></td>
+            <td><code>kv_score[:, :2c]</code>（<span
+            class="math inline">\(C^a\)</span> 对应 <span
+            class="math inline">\(\text{coff}\)</span> 块的后半 <span
+            class="math inline">\([c:2c]\)</span>，<span
+            class="math inline">\(C^b\)</span> 对应前半 <span
+            class="math inline">\([0:c]\)</span>，与 overlap
+            布局相关）</td>
+            <td><code>kv_score = linear_bf16_fp32(x, wkv_gate.weight)</code>
+            (<code>:292</code>)</td>
+            </tr>
+            <tr>
+            <td><span class="math inline">\(Z^a, Z^b\)</span></td>
+            <td><code>kv_score[:, 2c:4c]</code></td>
+            <td>同上一个 GEMM 的另一半输出</td>
+            </tr>
+            <tr>
+            <td><span class="math inline">\(B^a, B^b \in \mathbb{R}^{m
+            \times c}\)</span></td>
+            <td><code>Compressor.ape</code> (<code>:195-197</code>)
+            shape=<code>[ratio, coff·c]</code></td>
+            <td><span class="math inline">\([4, 2 \cdot 512]\)</span> →
+            拆成 <span class="math inline">\(B^a, B^b\)</span></td>
+            </tr>
+            <tr>
+            <td><span class="math inline">\(C^{\text{Comp}} \in
+            \mathbb{R}^{(n/m) \times c}\)</span></td>
+            <td><code>kv_compressed</code>
+            (<code>compressor.py:82-91</code>)</td>
+            <td>存入 <code>attention_compress_states</code>
+            (<code>:230</code>)</td>
+            </tr>
+            <tr>
+            <td><span class="math inline">\(K^{\text{IComp}} \in
+            \mathbb{R}^{(n/m) \times c^I}\)</span></td>
+            <td><code>C4Indexer.compressor</code>（独立
+            <code>Compressor</code>，<code>rotate=True</code>，<code>is_in_indexer=True</code>,
+            <code>head_dim=128</code>）(<code>:340-350</code>)</td>
+            <td>存入 <code>indexer_compress_states</code>
+            (<code>:228</code>)</td>
+            </tr>
+            <tr>
+            <td><span class="math inline">\(c^Q_t = h_t \cdot
+            W^{DQ}\)</span>（eq 13）</td>
+            <td><code>q_lora = self.wq_a(x)</code> → <code>q_norm</code>
+            (<code>MQALayer._compute_q_a:621-632</code>)</td>
+            <td><span class="math inline">\(W^{DQ}\)</span> ≡
+            <code>wq_a</code>，<span class="math inline">\(d_c =
+            \text{q\_lora\_rank} = 1024\)</span></td>
+            </tr>
+            <tr>
+            <td><span class="math inline">\(q^I_t = c^Q_t \cdot
+            W^{IUQ}\)</span>（eq 14）</td>
+            <td><code>C4Indexer.wq_b(q_lora)</code>
+            (<code>:324-331, 357</code>)</td>
+            <td><span class="math inline">\(W^{IUQ}\)</span> ≡
+            <code>C4Indexer.wq_b</code>，输出 <span
+            class="math inline">\(n^I_h \cdot c^I = 64 \cdot
+            128\)</span></td>
+            </tr>
+            <tr>
+            <td><span class="math inline">\(w^I_t = h_t \cdot
+            W^w\)</span>（eq 15）</td>
+            <td><code>C4Indexer.weights_proj(x)</code>
+            (<code>:332-339, 368-372</code>)</td>
+            <td><span class="math inline">\(W^w \in \mathbb{R}^{d \times
+            n^I_h}\)</span>，<span
+            class="math inline">\(n^I_h=64\)</span></td>
+            </tr>
+            <tr>
+            <td><span class="math inline">\(I_{t,s} = \sum_h w^I_{t,h}
+            \cdot \text{ReLU}(q^I_{t,h} \cdot
+            K^{\text{IComp}}_s)\)</span>（eq 16）</td>
+            <td><code>deep_gemm.fp8_paged_mqa_logits(q_fp8, kv_fp8, weights,…)</code>
+            (<code>nsa_indexer.py:423</code>)</td>
+            <td>ReLU 内嵌在 kernel</td>
+            </tr>
+            <tr>
+            <td><span class="math inline">\(C^{\text{SprsComp}}_t = \{
+            C_s^{\text{Comp}} \mid I_{t,s} \in \text{Top-k}
+            \}\)</span>（eq 17）</td>
+            <td><code>metadata.topk_transform(logits, index_topk)</code>
+            (<code>nsa_indexer.py:435</code>)</td>
+            <td><code>index_topk = 512</code></td>
+            </tr>
+            <tr>
+            <td>主 attention 只在 <span
+            class="math inline">\(C^{\text{SprsComp}}_t\)</span>
+            上计算</td>
+            <td><code>attn_backend.forward(..., compress_ratio=4, attn_sink, …)</code>
+            + topk_idx (<code>MQALayer.forward:862</code>)</td>
+            <td>FlashMLA <code>flash_c4_decode</code> kernel</td>
+            </tr>
+            </tbody>
+            </table>
+            <h4 id="prepare-attn">Prepare Attn</h4>
+            <p>生成 <span
+            class="math inline">\(c_{Q}\)</span>，参与后续的 Indexer 和
+            Attention 阶段</p>
+            <p><span class="math display">\[
+            \mathbf{c}_t^Q = \mathbf{h}_t \cdot W^{DQ}
+            \]</span></p>
+            <h4 id="attn-c4">Attn C4</h4>
+            <p>产生压缩过的 KV</p>
+            <p><span class="math display">\[
+            \begin{aligned}
+            &amp;\left[ C^b_t \mid C^a_t \mid Z^b_t \mid Z^a_t \right] =
+            W_{\text{kv\_gate}} \, x_t \\[6pt]
+            &amp;\left[ S^b_{m,0:4} ;\; S^a_{m,0:4} \right] =
+            \operatorname{Softmax}\!\left(
+            \left[ Z^b_{4m-4:4m} + B^b ;\; Z^a_{4m:4m+4} + B^a \right]
+            \right) \\[10pt]
+            &amp;C^{\text{Comp}}_m =
+            \operatorname{RoPE}\!\Big(
+            \operatorname{Norm}\!\Big(
+            \sum_{j=0}^{3} S^a_{m,j} \odot C^a_{4m+j}
+            +
+            \sum_{k=0}^{3} S^b_{m,k} \odot C^b_{4m-4+k}
+            \Big)
+            \Big)
+            \end{aligned}
+            \]</span></p>
+            <hr />
+            <p>{{&lt; svg “/images/c4_compress.drawio.svg” &gt;}}</p>
+            <p><strong>Compress m</strong></p>
+            <p>如果是对于 m 的 kv 进行压缩的话，通用的公式如下：</p>
+            <p><span class="math display">\[
+            \left[S_{mi:m(i+1)-1}^a; S_{m(i-1):mi-1}^b\right] =
+            \operatorname{Softmax}_{\text{row}}\left(\left[Z_{mi:m(i+1)-1}^a
+            + B^a; Z_{m(i-1):mi-1}^b + B^b\right]\right),
+            \]</span></p>
+            <p><span class="math display">\[
+            C_i^{\text{Comp}} = \sum_{j=mi}^{m(i+1)-1} S_j^a \odot C_j^a
+            + \sum_{j=m(i-1)}^{mi-1} S_j^b \odot C_j^b,
+            \]</span></p>
+            <p>{{&lt; region note &gt;}} <span
+            class="math inline">\(\odot\)</span> denotes the Hadamard
+            product;</p>
+            <p><span
+            class="math inline">\(\text{Softmax}_{\text{row}}(\cdot)\)</span>
+            denotes the softmax operation along the row dimension, which
+            performs normalization across the total of <span
+            class="math inline">\(2m\)</span> elements from both <span
+            class="math inline">\(Z^a\)</span> and <span
+            class="math inline">\(Z^b\)</span>.</p>
+            <p>When <span class="math inline">\(i = 0\)</span>, <span
+            class="math inline">\(Z^b_{m(i-1):mi-1}\)</span> is padded
+            with negative infinity and <span
+            class="math inline">\(C^b_{m(i-1):mi-1}\)</span> is padded
+            with zeros. Note that each <span
+            class="math inline">\(C_i^{\text{Comp}}\)</span> is derived
+            from <span class="math inline">\(2m\)</span> KV entries, but
+            the indexes of <span class="math inline">\(C^b\)</span> used
+            for <span class="math inline">\(C_i^{\text{Comp}}\)</span>
+            and the indexes of <span class="math inline">\(C^a\)</span>
+            used for <span
+            class="math inline">\(C_{i-1}^{\text{Comp}}\)</span> are
+            overlapped. Therefore, CSA in fact compresses the sequence
+            length to <span class="math inline">\(\frac{1}{m}\)</span>
+            times. {{&lt; /region &gt;}}</p>
+            <h4 id="c4-indexer">C4 Indexer</h4>
+            <p><span class="math display">\[
+            \begin{aligned}
+            &amp;K^{\text{IComp}} =
+            \text{Compressor}_{\text{indexer}}(x) \\
+            &amp;q^I_t = \left[ q_{t,1}^I; q_{t,2}^I; \dots;
+            q_{t,n_h^I}^I \right] = \text{RoPE}\big(W^{\text{IUQ}} \cdot
+            c^Q_t\big) \odot \text{Hadamard} \\
+            &amp;w_{t}^I = \left[ w_{t,1}^I; w_{t,2}^I; \dots;
+            w_{t,n_h^I}^I \right] = \text{softmax}\left( \frac{W^w \cdot
+            h_t}{\sqrt{n^I_h}} \right) \\
+            &amp;I_{t,s} = \sum_h w^I_h \cdot \text{ReLU}\big( q^I_{t,h}
+            \cdot K^{\text{IComp}}_{s,h} \big)  \\
+            &amp;\mathcal{C}_t^{\text{SprsComp}} = \left\{
+            \mathcal{C}_s^{\text{Comp}} \mid I_{t,s} \in
+            \text{Top-k}(I_{t,:}) \right\}.
+            \end{aligned}
+            \]</span></p>
+            <p>{{&lt; region note &gt;}} <span
+            class="math inline">\(W_{IUQ}\)</span> 指的是 indexer 的 Q
+            升维矩阵，所以符号中的 <span
+            class="math inline">\(I\)</span> 都代表这个是服务于 indexer
+            的矩阵</p>
+            <p>topk 索引空间不与 SWA 窗口重叠</p>
+            <p><span
+            class="math inline">\(\mathcal{C}_t^{\text{SprsComp}}\)</span>
+            is a subset of compressed KV entries {{&lt; /region
+            &gt;}}</p>
+            <pre><code>token 轴：   ├────── 远史（压缩区，c4 indexer 评分 + topk 选 512 个）──────┤├── 近窗 SWA (window_size=128) ──┤  [attn sink]
+                                ↑                                                          ↑                       ↑
+                          extra_k_cache (c4 KV)                                     k_cache (原始 KV)        独立的 sink
+                          ─ 拼进 MQA 的第 1 段 ─                                   ─ 拼进 MQA 的第 2 段 ─</code></pre>
+            <h4 id="attn-mqa">attn mqa</h4>
+            <p><span class="math display">\[
+            \mathbf{q}_{t,1}; \mathbf{q}_{t,2}; \dots;
+            \mathbf{q}_{t,n_h}  
+            = \mathbf{q}_t = \mathbf{c}_t^Q \cdot W^{UQ}
+            \]</span></p>
+            <p><span class="math display">\[
+            \mathbf{o}_{t,i} =
+            \text{CoreAttn}\left(\text{query}=\mathbf{q}_{t,i},
+            \text{key}=C_t^{\text{SprsComp}},
+            \text{value}=C_t^{\text{SprsComp}}\right)
+            \]</span></p>
+            <figure>
+            <img src="./WikiImage/v4_c4_attn.png"
+            alt="c4 attention" />
+            <figcaption aria-hidden="true">c4 attention</figcaption>
+            </figure>
+            <p>令：</p>
+            <ul>
+            <li><span
+            class="math inline">\(\mathcal{K}_t^{\text{swa}}\)</span>：当前
+            token <code>t</code> 对应 SWA 窗口中最近
+            <code>window_size</code> 个<strong>未压缩</strong>的原始
+            token 的 K（同理 V）</li>
+            <li><span
+            class="math inline">\(\mathcal{C}_t^{\text{SprsComp}} =
+            \{\mathcal{C}_s^{\text{Comp}} \mid I_{t,s} \in
+            \text{Top-k}(I_{t,:})\}\)</span>：indexer
+            从<strong>压缩空间</strong>里选出的 k 个压缩 KV（与 SWA
+            窗口互斥）</li>
+            <li><span
+            class="math inline">\(s_{\text{sink}}\)</span>：可学习的
+            attention sink token 的 K/V</li>
+            </ul>
+            <p>实际执行的是：</p>
+            <p><span class="math display">\[
+            \mathbf{o}_{t,i} =
+            \mathrm{softmax}\!\left(\frac{\mathbf{q}_{t,i} \cdot
+            \big[\,\mathcal{K}_t^{\text{swa}} \,\Vert\,
+            \mathcal{C}_t^{\text{SprsComp}} \,\Vert\,
+            s_{\text{sink}}\,\big]^{\!\top}}{\sqrt{d}}\right) \cdot
+            \big[\,\mathcal{V}_t^{\text{swa}} \,\Vert\,
+            \mathcal{V}_t^{\text{SprsComp}} \,\Vert\,
+            s_{\text{sink}}\,\big]
+            \]</span></p>
+            <p><strong>Shape 变化</strong></p>
+            <p>令： - <code>W</code> = SWA 窗口里 key 的个数（近场 token
+            数，≤ <code>window_size</code>） - <code>K</code> = topk
+            选出的 sparse compressed token 个数（通常 k=512） -
+            <code>1</code> = sink token - <code>d</code> = head_dim =
+            576</p>
+            <p><span class="math display">\[
+            \underbrace{\mathcal{K}_t^{\text{swa}}}_{W \times d}
+            \;\Vert\; \underbrace{\mathcal{C}_t^{\text{SprsComp}}}_{K
+            \times d} \;\Vert\; \underbrace{s_{\text{sink}}}_{1 \times
+            d}
+            \;=\; \underbrace{\mathbf{K}_t}_{(W+K+1)\times d}
+            \]</span></p>
+            <p>所以：</p>
+            <table>
+            <thead>
+            <tr>
+            <th>量</th>
+            <th>形状</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td><span class="math inline">\(q_{t,i}\)</span></td>
+            <td><code>[d]</code> = <code>[576]</code></td>
+            </tr>
+            <tr>
+            <td><span class="math inline">\(K_swa\)</span></td>
+            <td><code>[W, d]</code> = <code>[W, 576]</code></td>
+            </tr>
+            <tr>
+            <td><span class="math inline">\(K_sparse\)</span></td>
+            <td><code>[K, d]</code> = <code>[K, 576]</code></td>
+            </tr>
+            <tr>
+            <td><span class="math inline">\(K_sink\)</span></td>
+            <td><code>[1, d]</code> = <code>[1, 576]</code></td>
+            </tr>
+            <tr>
+            <td><strong><span class="math inline">\(K_t\)</span>
+            拼接后</strong></td>
+            <td><strong><code>[W+K+1, d]</code> =
+            <code>[W+K+1, 576]</code></strong></td>
+            </tr>
+            <tr>
+            <td><span class="math inline">\(q \cdot K^T\)</span></td>
+            <td><code>[W+K+1]</code>（每个 key 一个分数）</td>
+            </tr>
+            <tr>
+            <td>softmax 后的权重</td>
+            <td><code>[W+K+1]</code>（跨三段归一化）</td>
+            </tr>
+            <tr>
+            <td><span class="math inline">\(V_t\)</span> 拼接后</td>
+            <td><code>[W+K+1, d]</code></td>
+            </tr>
+            <tr>
+            <td>输出 <span class="math inline">\(o_{t,i}\)</span></td>
+            <td><code>[d]</code> = <code>[576]</code></td>
+            </tr>
+            </tbody>
+            </table>
+            <h4 id="oproj">oproj</h4>
+            <p><span class="math display">\[
+            \text{hidden} = w_{o\_b}\big( w_{o\_a}(o_t) \big)
+            \]</span></p>
+            <h3 id="hca">HCA</h3>
+            <h4 id="comparison">Comparison</h4>
+            <table>
+            <colgroup>
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>维度</th>
+            <th>CSA (compress_ratio=4)</th>
+            <th>HCA (compress_ratio=128)</th>
+            <th>代码里的控制开关</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>压缩倍率 <span class="math inline">\(m\)</span></td>
+            <td>4</td>
+            <td><strong>128</strong> (≫)</td>
+            <td><code>config.compress_ratios[layer_id]</code></td>
+            </tr>
+            <tr>
+            <td>是否 overlap</td>
+            <td><strong>是</strong> (<span
+            class="math inline">\(c_{\text{off}}=2\)</span>)</td>
+            <td><strong>否</strong> (<span
+            class="math inline">\(c_{\text{off}}=1\)</span>)</td>
+            <td><code>overlap = (ratio == 4)</code>
+            (<code>:191</code>)</td>
+            </tr>
+            <tr>
+            <td>KV 流数</td>
+            <td>双流 <span class="math inline">\(C^a, C^b\)</span></td>
+            <td><strong>单流 <span
+            class="math inline">\(C\)</span></strong></td>
+            <td><code>wkv_gate</code> 输出 <span class="math inline">\(2
+            \cdot c_{\text{off}} \cdot c\)</span></td>
+            </tr>
+            <tr>
+            <td><span class="math inline">\(Z\)</span> 流数</td>
+            <td>双流 <span class="math inline">\(Z^a, Z^b\)</span></td>
+            <td><strong>单流 <span
+            class="math inline">\(Z\)</span></strong></td>
+            <td>同上</td>
+            </tr>
+            <tr>
+            <td>bias 形状</td>
+            <td><span class="math inline">\(B^a, B^b \in \mathbb{R}^{m
+            \times c}\)</span></td>
+            <td><span class="math inline">\(B \in \mathbb{R}^{m&#39;
+            \times c}\)</span></td>
+            <td><code>ape</code> shape <code>[ratio, coff·c]</code>
+            (<code>:195-197</code>)</td>
+            </tr>
+            <tr>
+            <td>softmax 槽数</td>
+            <td><span class="math inline">\(2m = 8\)</span></td>
+            <td><span class="math inline">\(m&#39; = 128\)</span></td>
+            <td>kernel 模板</td>
+            </tr>
+            <tr>
+            <td>压缩 kernel</td>
+            <td><code>flash_c4_decode&lt;HeadDim&gt;</code></td>
+            <td><code>flash_c128_decode&lt;512&gt;</code></td>
+            <td><code>c4.cuh</code> / <code>c128.cuh</code></td>
+            </tr>
+            <tr>
+            <td>压缩后序列长度</td>
+            <td><span class="math inline">\(n/4\)</span></td>
+            <td><span class="math inline">\(n/128\)</span></td>
+            <td><code>compute_state_len</code>（仅形式一致）</td>
+            </tr>
+            <tr>
+            <td><strong>是否走稀疏 TopK</strong></td>
+            <td><strong>是</strong>（Lightning Indexer + TopK=512）</td>
+            <td><strong>否</strong></td>
+            <td><code>self.indexer is None</code>，仅
+            <code>compress_ratio==4</code> 创建 <code>C4Indexer</code>
+            (<code>:535-544</code>)</td>
+            </tr>
+            <tr>
+            <td>主注意力 kernel</td>
+            <td><code>flash_c4_decode</code> +
+            <code>flash_fwd_small_topk(head128)</code> +
+            <code>fp8_paged_mqa_logits</code> +
+            <code>topk_512_transform</code></td>
+            <td><strong>只有
+            <code>flash_c128_decode&lt;512&gt;</code></strong>（dense
+            over <span
+            class="math inline">\(C^{\text{Comp}}\)</span>）</td>
+            <td>backend.forward 按 <code>compress_ratio</code> 分支</td>
+            </tr>
+            <tr>
+            <td>额外权重</td>
+            <td><span class="math inline">\(W^{aKV}, W^{bKV}, W^{aZ},
+            W^{bZ}, B^a, B^b\)</span> + Indexer (<span
+            class="math inline">\(w_{q,b}\)</span>, weights_proj)</td>
+            <td><strong>只有 <span class="math inline">\(W^{KV}, W^Z,
+            B\)</span></strong></td>
+            <td><code>Compressor</code> 仅一个 <code>wkv_gate</code> +
+            <code>ape</code></td>
+            </tr>
+            <tr>
+            <td>MLA Q 投影</td>
+            <td><span class="math inline">\(w_{q,a}\)</span> + <span
+            class="math inline">\(w_{q,b}\)</span></td>
+            <td>同</td>
+            <td>复用 MLA</td>
+            </tr>
+            <tr>
+            <td>Grouped Output Projection</td>
+            <td><span class="math inline">\(w_{o,a}\)</span>(分组低秩) +
+            <span class="math inline">\(w_{o,b}\)</span>(融合)</td>
+            <td><strong>同</strong></td>
+            <td>同</td>
+            </tr>
+            <tr>
+            <td>profile 热点 (Layer)</td>
+            <td>Layer 4: <code>flash_c4_decode×2</code> + Hadamard +
+            mqa_logits + topk_512 (~70µs)</td>
+            <td>Layer 3: <code>flash_c128_decode×1</code> (2µs)</td>
+            <td>—</td>
+            </tr>
+            </tbody>
+            </table>
+            <hr />
+            <p><strong>设计哲学的差异</strong></p>
+            <ol type="1">
+            <li><strong>压缩强度 vs 表达力的 trade-off</strong>
+            <ul>
+            <li><strong>CSA</strong> (<code>m=4</code>)：压得轻 → 条目多
+            (<code>n/4</code>)，信息损失小 →
+            但因为条目还是很多，必须再上一个 <strong>Lightning Indexer +
+            TopK</strong> 才能把有效 KV 数压到 <code>k=512</code>。所以
+            CSA 是「<strong>轻压缩 +
+            稀疏选择</strong>」的两级方案。</li>
+            <li><strong>HCA</strong> (<code>m'=128</code>)：压得狠 →
+            条目少 (<code>n/128</code>)，如果序列长
+            <code>n=65536</code>，压完只剩 <strong>512
+            条</strong>。数量级已经跟 CSA 的 TopK
+            结果等价了，<strong>自然就不需要再稀疏选了</strong>，整条序列直接
+            dense attention 就行。</li>
+            </ul></li>
+            <li><strong>Overlap 的取舍</strong>
+            <ul>
+            <li>CSA 用 overlap 是因为 <code>m=4</code> 的窗口很小，边界
+            token 的缺失对下游 attention 影响大。</li>
+            <li>HCA <code>m'=128</code>，每个压缩条目吃 128 个
+            token，边界 token 相对贡献 <code>~1/128</code>，做 overlap
+            收益不明显，而且会翻倍 <code>wkv_gate</code> 参数和 kernel
+            内存带宽，得不偿失。</li>
+            </ul></li>
+            <li><strong>作用层次不同（可能是 depth-wise 分工）</strong>
+            在 <code>config.compress_ratios[layer_id]</code> 这个
+            per-layer list 里，不同层会被配置成
+            <code>0/4/128</code>，大致对应三种角色：
+            <ul>
+            <li><code>0</code>：密集层（如第 0 层），完整 KV 不压；</li>
+            <li><code>4</code>
+            (CSA)：<strong>语义细节层</strong>，保留丰富局部 +
+            稀疏远距；</li>
+            <li><code>128</code>
+            (HCA)：<strong>长程归纳层</strong>，负责把超长上下文压成稀疏”记忆槽”。</li>
+            </ul>
+            多种压缩率交叉铺在 60+
+            层里，让模型既有细节又有长程——这也是为什么 profile 里 Layer
+            3 / Layer 4 会交替出现两种完全不同的 kernel pattern。</li>
+            </ol>
+            <p><strong>总结</strong></p>
+            <p><strong>HCA = CSA 退化到「单流 + 无 overlap + 极高压缩率
+            + 不接 Indexer」</strong>： -
+            公式上，<code>C^a/C^b</code>、<code>Z^a/Z^b</code>、<code>B^a/B^b</code>
+            各塌缩为单一版本 (<code>C, Z, B</code>)，双条 softmax → 单条
+            <code>m'</code> 维 softmax； - 代码上，走同一个
+            <code>Compressor</code> 类但
+            <code>overlap=False, coff=1</code>，kernel 从
+            <code>flash_c4_decode</code> 换成
+            <code>flash_c128_decode</code>，不再构造
+            <code>C4Indexer</code>； - 作用上，压得够狠
+            (<code>n/128</code>) 所以不需要再稀疏选，直接 dense
+            attention 已经满足硬件开销约束； - 和 CSA 共用的部分（MLA
+            低秩 Q、Grouped Output
+            Projection、RMSNorm、RoPE、attn_sink）完全不变，体现了”<strong>同构压缩器
+            + 不同超参 =
+            两种互补的长上下文机制</strong>”的设计思路。</p>
+            <h3 id="grouped-output-projection">Grouped Output
+            Projection</h3>
+            <p>这段论文描述的就是代码里 <code>MQALayer</code> 中
+            <code>wo_a</code> + <code>wo_b</code>
+            两级投影的数学原理。核心动机是：<strong><code>n_h · d_h</code>
+            太大，直接一次 <code>nn.Linear(n_h·d_h → d)</code>
+            会带来巨大的算力 / 显存开销</strong>，所以拆成「分组 +
+            低秩」两步。</p>
+            <table>
+            <colgroup>
+            <col style="width: 46%" />
+            <col style="width: 26%" />
+            <col style="width: 14%" />
+            <col style="width: 13%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>论文符号</th>
+            <th>代码字段</th>
+            <th>配置默认值</th>
+            <th>含义</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td><span class="math inline">\(n_h\)</span></td>
+            <td><code>config.num_attention_heads</code> →
+            <code>self.n_heads</code></td>
+            <td>64</td>
+            <td>注意力头数</td>
+            </tr>
+            <tr>
+            <td><span class="math inline">\(c \cdot n_h\)</span>（或
+            <span class="math inline">\(n_h \cdot d_h\)</span>）</td>
+            <td><code>self.n_heads * self.head_dim</code></td>
+            <td><span class="math inline">\(64 \cdot 512 =
+            32768\)</span></td>
+            <td>核心 attention 输出总维度</td>
+            </tr>
+            <tr>
+            <td><span class="math inline">\(d\)</span></td>
+            <td><code>config.hidden_size</code> →
+            <code>self.hidden_size</code></td>
+            <td>7168</td>
+            <td>残差流 hidden size</td>
+            </tr>
+            <tr>
+            <td><span class="math inline">\(g\)</span></td>
+            <td><code>config.o_groups</code> →
+            <code>self.n_groups</code></td>
+            <td>8</td>
+            <td>分组数</td>
+            </tr>
+            <tr>
+            <td><span class="math inline">\(d_g\)</span></td>
+            <td><code>config.o_lora_rank</code> →
+            <code>self.o_lora_rank</code></td>
+            <td>1024</td>
+            <td>每组的中间瓶颈维度</td>
+            </tr>
+            <tr>
+            <td><span class="math inline">\(o_{t,i}^{G} \in
+            \mathbb{R}^{\frac{c \cdot n_h}{g}}\)</span></td>
+            <td><code>o.view(T, n_local_groups, -1)</code></td>
+            <td><span class="math inline">\(\frac{32768}{8} =
+            4096\)</span></td>
+            <td>原始 attention 输出切成 <span
+            class="math inline">\(g\)</span> 组</td>
+            </tr>
+            <tr>
+            <td><span class="math inline">\(o_{t,i}^{G&#39;} \in
+            \mathbb{R}^{d_g}\)</span></td>
+            <td><code>wo_a</code> 每组输出</td>
+            <td>1024</td>
+            <td>每组压到低秩</td>
+            </tr>
+            <tr>
+            <td><span class="math inline">\(\left[ o_{t,1}^{G&#39;};
+            \dots; o_{t,g}^{G&#39;} \right] \in \mathbb{R}^{d_g \cdot
+            g}\)</span></td>
+            <td><code>o.flatten(1)</code></td>
+            <td><span class="math inline">\(1024 \cdot 8 =
+            8192\)</span></td>
+            <td>所有组拼接</td>
+            </tr>
+            <tr>
+            <td><span class="math inline">\(\hat{o}_t \in
+            \mathbb{R}^{d}\)</span></td>
+            <td><code>wo_b</code> 输出</td>
+            <td>7168</td>
+            <td>最终 hidden</td>
+            </tr>
+            </tbody>
+            </table>
+            <hr />
+            <p><span class="math display">\[
+            d_g &lt; \frac{c \cdot n_h}{g}
+            \]</span></p>
+            <p>在当前配置下：</p>
+            <p><span class="math display">\[
+            1024 &lt; \frac{32768}{8} = 4096
+            \]</span></p>
+            <p>✔ 满足低秩压缩前提</p>
+            <hr />
+            <p>其实这一整套可以抽象成一个非常干净的 pipeline：</p>
+            <p><span class="math display">\[
+            \begin{aligned}
+            &amp; \mathbb{R}^{n_h \cdot d_h} \\
+            &amp; \xrightarrow{\text{分组 } g} \mathbb{R}^{g \times
+            \frac{n_h d_h}{g}} \\
+            &amp; \xrightarrow{\text{低秩压缩 } d_g} \mathbb{R}^{g
+            \times d_g} \\
+            &amp; \xrightarrow{\text{concat}} \mathbb{R}^{g d_g} \\
+            &amp; \xrightarrow{\text{投影}} \mathbb{R}^{d}
+            \end{aligned}
+            \]</span></p>
+            <p>这其实就是：</p>
+            <blockquote>
+            <p><strong>Group-wise Low-Rank Projection + 重组回 hidden
+            space</strong></p>
+            </blockquote>
+            <hr />
+            <p>论文的三步：</p>
+            <p>Step 1 切分<br />
+            <span class="math display">\[o_t = [o_{t,1}; \dots;
+            o_{t,n_h}] \in \mathbb{R}^{c \cdot n_h} \to \{o_{t,i}^G \in
+            \mathbb{R}^{c \cdot n_h / g}\}_{i=1..g}\]</span></p>
+            <p>Step 2 每组降维 (<span
+            class="math inline">\(w_{o,a}\)</span>)<br />
+            <span class="math display">\[o_{t,i}^{G&#39;} =
+            W_{o,a}^{(i)} \cdot o_{t,i}^G, \quad W_{o,a}^{(i)} \in
+            \mathbb{R}^{d_g \times (c \cdot n_h / g)}\]</span></p>
+            <p>Step 3 拼接+升维 (<span
+            class="math inline">\(w_{o,b}\)</span>)<br />
+            <span class="math display">\[\hat{o}_t = W_{o,b} \cdot
+            [o_{t,1}^{G&#39;}; \dots; o_{t,g}^{G&#39;}], \quad W_{o,b}
+            \in \mathbb{R}^{d \times (d_g \cdot g)}\]</span></p>
+            <p>对应
+            <code>MQALayer.forward</code>（<code>deepseek_v4.py:862-905</code>）：</p>
+            <div class="sourceCode" id="cb3"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># —— core attention ——</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>o <span class="op">=</span> attn_backend.forward(q, k, v, ...)        <span class="co"># :862   o_t ∈ ℝ^{T × n_h × head_dim}</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># —— Step 1: 切分成 g 组 ——</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>o <span class="op">=</span> o.view(o.shape[<span class="dv">0</span>], <span class="va">self</span>.n_local_groups, <span class="op">-</span><span class="dv">1</span>)  <span class="co"># :881  → (T, g, c·n_h/g)</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># —— Step 2: per-group 低秩 (wo_a) ——</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 权重形状 (g, d_g, c·n_h/g)，每组独立投影</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>deep_gemm.fp8_einsum(</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;bhr,hdr-&gt;bhd&quot;</span>,                              <span class="co"># :894  b=T, h=g, r=c·n_h/g, d=d_g</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    (o_fp8, o_s),                                <span class="co"># 输入 (T, g, c·n_h/g)</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    (<span class="va">self</span>.wo_a.weight.view(G, R, D), ...),      <span class="co"># W_{o,a}^{(i)}  ∈ ℝ^{g × d_g × (c·n_h/g)}</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    output, recipe<span class="op">=</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">128</span>),</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="co"># 等价的 BF16 路径 (:902-903):</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="co"># o = torch.einsum(&quot;tgd,grd-&gt;tgr&quot;, o, wo_a)      # → (T, g, d_g)</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="co"># —— Step 3: 拼接 + 升维 (wo_b) ——</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>o, _ <span class="op">=</span> <span class="va">self</span>.wo_b(o.flatten(<span class="dv">1</span>))                   <span class="co"># :905  (T, g·d_g) → (T, d)</span></span></code></pre></div>
+            <p><code>wo_a</code> / <code>wo_b</code> 的声明：</p>
+            <div class="sourceCode" id="cb4"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="va">self</span>.wo_a <span class="op">=</span> ColumnParallelLinear(</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.n_heads <span class="op">*</span> <span class="va">self</span>.head_dim <span class="op">//</span> <span class="va">self</span>.n_groups,   <span class="co"># = c·n_h/g = 4096</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.n_groups <span class="op">*</span> <span class="va">self</span>.o_lora_rank,                <span class="co"># = g·d_g = 8192</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    ...)                                              <span class="co"># :582-590</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 注意这里是把 g 个 (d_g × (c·n_h/g)) 的块 block-diagonal 合一个 ColumnParallel Linear</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 但 forward 用 einsum/bmm 保持每组独立，不会跨组混合</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="va">self</span>.wo_b <span class="op">=</span> RowParallelLinear(</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.n_groups <span class="op">*</span> <span class="va">self</span>.o_lora_rank,                <span class="co"># = g·d_g = 8192</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.hidden_size,                                <span class="co"># = d = 7168</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    ...)                                              <span class="co"># :597-606</span></span></code></pre></div>
+            <hr />
+            <p><strong>朴素做法</strong>（单个 <span
+            class="math inline">\(W_o \in \mathbb{R}^{d \times c \cdot
+            n_h}\)</span>）：</p>
+            <p><span class="math display">\[
+            \begin{aligned}
+            \text{params} = d \cdot (c \cdot n_h) = 7168 \cdot 32768
+            \approx 2.35 \times 10^8 \\
+            \text{FLOPs/token} \approx 2 \cdot 7168 \cdot 32768 \approx
+            4.70 \times 10^8
+            \end{aligned}
+            \]</span></p>
+            <p><strong>Grouped + 低秩</strong>（<span
+            class="math inline">\(wo_a\)</span> + <span
+            class="math inline">\(wo_b\)</span>）：</p>
+            <p><span class="math display">\[
+            \begin{aligned}
+            \text{params}(W_{oa}) &amp;= g \cdot d_g \cdot (c \cdot n_h
+            / g) = d_g \cdot (c \cdot n_h) = 1024 \cdot 32768 \approx
+            3.36 \times 10^7 \\
+            \text{params}(W_{ob}) &amp;= d \cdot (d_g \cdot g) = 7168
+            \cdot 8192 \approx 5.87 \times 10^7 \\
+            \text{合计} &amp;\approx 9.23 \times 10^7 \approx
+            \text{朴素做法的 } 39\%
+            \end{aligned}
+            \]</span></p>
+            <ul>
+            <li>FLOPs/token(wo_a) = <span class="math inline">\(2 \cdot
+            d_g \cdot (c \cdot n_h) \approx 6.71 \times
+            10^7\)</span><br />
+            </li>
+            <li>FLOPs/token(wo_b) = <span class="math inline">\(2 \cdot
+            d \cdot (d_g \cdot g) \approx 1.17 \times
+            10^8\)</span><br />
+            </li>
+            <li>合计 <span class="math inline">\(\approx 1.85 \times
+            10^8 \approx\)</span> 朴素做法的 <span
+            class="math inline">\(39\%\)</span></li>
+            </ul>
+            <p>即在完全等价「把 <span class="math inline">\(c \cdot n_h
+            \to d\)</span>」任务的基础上，<strong>参数量 / 算力都压缩到
+            ~40%</strong>，而且因为 <span
+            class="math inline">\(wo_a\)</span> 的每组之间
+            <strong>block-diagonal 不耦合</strong>，还可以被切成 g 个小
+            GEMM 并行/并入 fp8 einsum。</p>
+            <hr />
+            <p>V4 的 attention 两端都用了「下投影 →
+            上投影」的低秩结构：</p>
+            <ul>
+            <li>输入端（Q 侧，V2/V3 就有）：
+            <code>x ─wq_a→ q_lora(1024) ─wq_b→ n_h·d_h</code></li>
+            <li>输出端（V4 新增 &amp; 论文这段内容）：
+            <code>n_h·d_h ─(切 g 组)→ ─wo_a→ g·d_g(=8192) ─wo_b→ d</code></li>
+            </ul>
+            <p>区别在于：<strong>输入侧是全张量低秩</strong>，输出侧多了一步
+            <strong>分组 (g groups)</strong>——因为 attention 输出天然按
+            head 维度可切，切成 g 组后每组独立做低秩既保留了 head 间的
+            block 结构（不同 head
+            的信息先不强混合），又把「每组的内部耦合」用
+            <code>d_g</code> 这个瓶颈再压一次，最后才靠
+            <code>wo_b</code> 把 g 组信息融合回 <code>d</code>
+            维的残差流。</p>
+            <p>所以 <code>wo_a</code>、<code>wo_b</code> 就是论文里
+            Grouped Output Projection 的 <strong>分组低秩第 1
+            级</strong> 和 <strong>拼接融合第 2
+            级</strong>；缺一不可，少了 <code>wo_a</code> 就是朴素大
+            GEMM，少了 <code>wo_b</code> 则 g 组信息无法交互也回不到
+            <code>d</code> 维。</p>
+          </main>
+        <aside class="wiki-toc">
+      <ul>
+      <li><a href="#kv-compress" id="toc-kv-compress">KV
+      Compress</a></li>
+      <li><a href="#kv-cache" id="toc-kv-cache">KV cache</a></li>
+      <li><a href="#csa" id="toc-csa">CSA</a></li>
+      <li><a href="#hca" id="toc-hca">HCA</a></li>
+      <li><a href="#grouped-output-projection"
+      id="toc-grouped-output-projection">Grouped Output
+      Projection</a></li>
+      </ul>
+    </aside>
+      </div>
+  <script type="text/javascript">
+    (function () {
+      function markActive() {
+        var here = location.href.split('#')[0];
+        var links = document.querySelectorAll('.wiki-sidebar a');
+        for (var i = 0; i < links.length; i++) {
+          if (links[i].href.split('#')[0] === here) {
+            links[i].classList.add('active');
+          }
+        }
+      }
+      // load the shared site directory once (served from the wiki root);
+      // kept in a standalone file so adding a page needn't rebuild every page.
+      var nav = document.getElementById('wiki-sidebar');
+      if (nav) {
+        fetch('/.wiki_sidebar.html')
+          .then(function (r) { return r.ok ? r.text() : ''; })
+          .then(function (html) {
+            if (html) {
+              nav.innerHTML = html;
+              nav.hidden = false;
+              markActive();
+            }
+          })
+          .catch(function () {});
+      }
+      // keep bootstrap table styling (previously done by sticky_menu.js)
+      var tables = document.getElementsByTagName('table');
+      for (var j = 0; j < tables.length; j++) {
+        tables[j].classList.add('table');
+      }
+    })();
+  </script>
+</body>
+
+</html>
