@@ -636,7 +636,7 @@ CPU:    调度请求 / 组 batch             ^ 若在此处把 logits 拉回 CPU
       // kept in a standalone file so adding a page needn't rebuild every page.
       var nav = document.getElementById('wiki-sidebar');
       if (nav) {
-        fetch('/.wiki_sidebar.html')
+        fetch('/wiki_sidebar.html')
           .then(function (r) { return r.ok ? r.text() : ''; })
           .then(function (html) {
             if (html) {
