@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 560" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#868e96"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="900" height="560" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">自定义算子 = schema + 真实 kernel + fake 实现</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">注册之后，它和 aten 算子一样走 Dispatcher；不同的执行者各取所需的那一份</text>
+
+  <!-- three registration parts -->
+  <rect x="30" y="80" width="270" height="170" rx="10" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="30" y="80" width="270" height="30" rx="10" fill="#4c6ef5"/>
+  <rect x="30" y="98" width="270" height="12" fill="#4c6ef5"/>
+  <text x="165" y="100" text-anchor="middle" font-size="13.5" font-weight="700" fill="#ffffff">① schema（def）</text>
+  <text x="44" y="132" font-size="11.5" fill="#495057">名字、参数类型、返回值</text>
+  <text x="44" y="150" font-size="11.5" fill="#495057"><tspan font-family="monospace">Tensor!</tspan> 标记会被原地写的参数</text>
+  <rect x="42" y="162" width="246" height="76" rx="6" fill="#ffffff" stroke="#4c6ef5" stroke-opacity="0.5"/>
+  <g font-size="10.5" font-family="monospace" fill="#3b5bdb">
+    <text x="52" y="180">rmsnorm(</text>
+    <text x="64" y="196">Tensor! output, Tensor input,</text>
+    <text x="64" y="212">Tensor weight, float eps,</text>
+    <text x="64" y="228">bool enable_pdl) -&gt; ()</text>
+  </g>
+
+  <rect x="315" y="80" width="270" height="170" rx="10" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="315" y="80" width="270" height="30" rx="10" fill="#0ca678"/>
+  <rect x="315" y="98" width="270" height="12" fill="#0ca678"/>
+  <text x="450" y="100" text-anchor="middle" font-size="13.5" font-weight="700" fill="#ffffff">② 真实实现（impl @ CUDA）</text>
+  <text x="329" y="132" font-size="11.5" fill="#495057">挂在 CUDA dispatch key 上</text>
+  <text x="329" y="150" font-size="11.5" fill="#495057">读写真实显存、提交 kernel</text>
+  <rect x="327" y="162" width="246" height="76" rx="6" fill="#ffffff" stroke="#0ca678" stroke-opacity="0.5"/>
+  <g font-size="10.5" font-family="monospace" fill="#0b7285">
+    <text x="337" y="184">m.impl("rmsnorm",</text>
+    <text x="349" y="200">torch::kCUDA,</text>
+    <text x="349" y="216">&amp;rmsnorm);</text>
+  </g>
+
+  <rect x="600" y="80" width="270" height="170" rx="10" fill="#fff9db" stroke="#f08c00"/>
+  <rect x="600" y="80" width="270" height="30" rx="10" fill="#f08c00"/>
+  <rect x="600" y="98" width="270" height="12" fill="#f08c00"/>
+  <text x="735" y="100" text-anchor="middle" font-size="13.5" font-weight="700" fill="#ffffff">③ fake / meta 实现</text>
+  <text x="614" y="132" font-size="11.5" fill="#495057">不碰数据，只给出输出的</text>
+  <text x="614" y="150" font-size="11.5" fill="#495057">shape / dtype / device</text>
+  <rect x="612" y="162" width="246" height="76" rx="6" fill="#ffffff" stroke="#f08c00" stroke-opacity="0.5"/>
+  <g font-size="10.5" font-family="monospace" fill="#e8590c">
+    <text x="622" y="184">def fake(mat_a, mat_b, ...):</text>
+    <text x="634" y="200">M = mat_a.shape[-2]</text>
+    <text x="634" y="216">N = mat_b.shape[-1]</text>
+    <text x="634" y="232">return mat_a.new_empty((M,N))</text>
+  </g>
+  <!-- dispatcher bar -->
+  <path d="M165 250 L165 282" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <path d="M450 250 L450 282" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <path d="M735 250 L735 282" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <rect x="30" y="284" width="840" height="40" rx="9" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="450" y="302" text-anchor="middle" font-size="13" font-weight="700" fill="#495057">Dispatcher 中的一个 OperatorHandle：<tspan font-family="monospace">torch.ops.sgl_kernel.rmsnorm</tspan></text>
+  <text x="450" y="317" text-anchor="middle" font-size="11" fill="#868e96">Python 侧调用方式与 torch.ops.aten.add 完全一致，可以出现在 FX 图、profiler 和 CUDA Graph 中</text>
+
+  <!-- consumers -->
+  <path d="M165 324 L165 352" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <path d="M450 324 L450 352" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <path d="M735 324 L735 352" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+
+  <rect x="30" y="354" width="270" height="110" rx="10" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="44" y="376" font-size="13" font-weight="700" fill="#0b7285">Eager 执行</text>
+  <text x="44" y="396" font-size="11.5" fill="#495057">取 ② 运行真实 kernel</text>
+  <text x="44" y="414" font-size="11.5" fill="#495057">没有 fake 也能跑——所以缺失</text>
+  <text x="44" y="432" font-size="11.5" fill="#495057">fake 的问题往往在开 compile</text>
+  <text x="44" y="450" font-size="11.5" fill="#495057">之后才暴露</text>
+
+  <rect x="315" y="354" width="270" height="110" rx="10" fill="#fff9db" stroke="#f08c00"/>
+  <text x="329" y="376" font-size="13" font-weight="700" fill="#e8590c">torch.compile 追踪</text>
+  <text x="329" y="396" font-size="11.5" fill="#495057">用 FakeTensor 跑一遍：取 ③ 推导形状</text>
+  <text x="329" y="414" font-size="11.5" fill="#495057">取 ① 的 mutation 信息做函数化</text>
+  <text x="329" y="432" font-size="11.5" fill="#495057">算子作为不透明节点留在图里</text>
+  <text x="329" y="450" font-size="11.5" fill="#c92a2a">缺 ③ → 追踪失败或断图</text>
+
+  <rect x="600" y="354" width="270" height="110" rx="10" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="614" y="376" font-size="13" font-weight="700" fill="#3b5bdb">CUDA Graph 捕获</text>
+  <text x="614" y="396" font-size="11.5" fill="#495057">捕获期间同样执行 ②，记录其 kernel</text>
+  <text x="614" y="414" font-size="11.5" fill="#495057">要求 ② 内部不做 CPU 同步、</text>
+  <text x="614" y="432" font-size="11.5" fill="#495057">不依赖每次变化的主机值</text>
+  <text x="614" y="450" font-size="11.5" fill="#495057">out 参数写入固定地址最友好</text>
+
+  <!-- note -->
+  <rect x="30" y="484" width="840" height="56" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="46" y="504" font-size="12" fill="#495057">关键：把一个 Python 函数或 C++ kernel 注册成算子，是在告诉 PyTorch“这是一个黑盒，但它的接口是什么”。</text>
+  <text x="46" y="522" font-size="12" fill="#495057">schema 说明谁被修改，fake 说明输出长什么样——编译器据此在不执行、不追进内部的前提下把它放进图里。</text>
+</svg>

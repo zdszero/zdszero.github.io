@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 476" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="476" rx="12" fill="#ffffff"/>
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#868e96"/>
+    </marker>
+    <marker id="arA" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#f08c00"/>
+    </marker>
+  </defs>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">从 KV Cache 到状态矩阵：Linear Attention 的核心抽象</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">Softmax 必须保留每个历史 token；去掉 softmax 后，历史可以被压缩成一个与 T 无关的矩阵</text>
+
+  <!-- Left: softmax attention -->
+  <rect x="30" y="78" width="410" height="232" rx="10" fill="#f3f0ff" stroke="#7048e8"/>
+  <rect x="30" y="78" width="410" height="28" rx="10" fill="#7048e8"/>
+  <text x="44" y="97" font-size="14" font-weight="700" fill="#ffffff">Softmax Attention：缓存全部历史 k / v</text>
+  <text x="48" y="146" font-size="13" font-weight="700" fill="#5f3dc4" font-family="monospace">K</text>
+  <text x="48" y="182" font-size="13" font-weight="700" fill="#5f3dc4" font-family="monospace">V</text>
+  <g font-family="monospace" font-size="11" fill="#5f3dc4" text-anchor="middle">
+    <rect x="70" y="127" width="30" height="26" rx="4" fill="#e5dbff" stroke="#7048e8"/><text x="85" y="144">k1</text>
+    <rect x="104" y="127" width="30" height="26" rx="4" fill="#e5dbff" stroke="#7048e8"/><text x="119" y="144">k2</text>
+    <rect x="138" y="127" width="30" height="26" rx="4" fill="#e5dbff" stroke="#7048e8"/><text x="153" y="144">k3</text>
+    <rect x="172" y="127" width="30" height="26" rx="4" fill="#e5dbff" stroke="#7048e8"/><text x="187" y="144">k4</text>
+    <rect x="206" y="127" width="30" height="26" rx="4" fill="#e5dbff" stroke="#7048e8"/><text x="221" y="144">…</text>
+    <rect x="240" y="127" width="30" height="26" rx="4" fill="#e5dbff" stroke="#7048e8"/><text x="255" y="144">kt</text>
+    <rect x="274" y="127" width="30" height="26" rx="4" fill="#ffffff" stroke="#7048e8" stroke-dasharray="4 3"/><text x="289" y="144">+1</text>
+    <rect x="70" y="163" width="30" height="26" rx="4" fill="#e5dbff" stroke="#7048e8"/><text x="85" y="180">v1</text>
+    <rect x="104" y="163" width="30" height="26" rx="4" fill="#e5dbff" stroke="#7048e8"/><text x="119" y="180">v2</text>
+    <rect x="138" y="163" width="30" height="26" rx="4" fill="#e5dbff" stroke="#7048e8"/><text x="153" y="180">v3</text>
+    <rect x="172" y="163" width="30" height="26" rx="4" fill="#e5dbff" stroke="#7048e8"/><text x="187" y="180">v4</text>
+    <rect x="206" y="163" width="30" height="26" rx="4" fill="#e5dbff" stroke="#7048e8"/><text x="221" y="180">…</text>
+    <rect x="240" y="163" width="30" height="26" rx="4" fill="#e5dbff" stroke="#7048e8"/><text x="255" y="180">vt</text>
+    <rect x="274" y="163" width="30" height="26" rx="4" fill="#ffffff" stroke="#7048e8" stroke-dasharray="4 3"/><text x="289" y="180">+1</text>
+  </g>
+  <path d="M70 120 L70 114 L270 114 L270 120" fill="none" stroke="#7048e8" stroke-width="1.5"/>
+  <text x="170" y="111" text-anchor="middle" font-size="11" fill="#5f3dc4">t 个槽位，每步 decode 追加一个</text>
+  <rect x="330" y="140" width="90" height="36" rx="8" fill="#ffffff" stroke="#7048e8"/>
+  <text x="375" y="156" text-anchor="middle" font-size="12" font-weight="700" fill="#5f3dc4" font-family="monospace">q_t</text>
+  <text x="375" y="170" text-anchor="middle" font-size="10.5" fill="#868e96">与全部 k 打分</text>
+  <path d="M330 158 L310 158" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <text x="48" y="222" font-size="12" fill="#495057">o_t = Σ_j softmax(q_t·k_j) v_j —— 归一化要看到全部 k_j</text>
+  <text x="48" y="250" font-size="12.5" font-weight="700" fill="#5f3dc4" font-family="monospace">显存 O(T·d)    每步 decode O(T·d)</text>
+  <text x="48" y="274" font-size="12" fill="#495057">prefill：QKᵀ 产生 [T×T] 打分矩阵 → O(T²·d)</text>
+  <text x="48" y="296" font-size="11.5" fill="#868e96">长上下文下，读 KV 的带宽与 KV 显存都线性增长</text>
+
+  <!-- Right: linear attention -->
+  <rect x="460" y="78" width="410" height="232" rx="10" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="460" y="78" width="410" height="28" rx="10" fill="#0ca678"/>
+  <text x="474" y="97" font-size="14" font-weight="700" fill="#ffffff">Linear Attention：历史压缩进固定状态 S</text>
+  <g fill="#c3fae8" stroke="#0ca678">
+    <rect x="610" y="122" width="24" height="24"/><rect x="634" y="122" width="24" height="24"/><rect x="658" y="122" width="24" height="24"/><rect x="682" y="122" width="24" height="24"/>
+    <rect x="610" y="146" width="24" height="24"/><rect x="634" y="146" width="24" height="24"/><rect x="658" y="146" width="24" height="24"/><rect x="682" y="146" width="24" height="24"/>
+    <rect x="610" y="170" width="24" height="24"/><rect x="634" y="170" width="24" height="24"/><rect x="658" y="170" width="24" height="24"/><rect x="682" y="170" width="24" height="24"/>
+    <rect x="610" y="194" width="24" height="24"/><rect x="634" y="194" width="24" height="24"/><rect x="658" y="194" width="24" height="24"/><rect x="682" y="194" width="24" height="24"/>
+  </g>
+  <text x="658" y="117" text-anchor="middle" font-size="10.5" fill="#0b7285" font-family="monospace">d_v</text>
+  <text x="600" y="174" text-anchor="end" font-size="10.5" fill="#0b7285" font-family="monospace">d_k</text>
+  <text x="658" y="234" text-anchor="middle" font-size="12" font-weight="700" fill="#0b7285" font-family="monospace">S_t ∈ ℝ^(d_k×d_v)</text>
+  <rect x="478" y="146" width="96" height="44" rx="8" fill="#fff9db" stroke="#f08c00"/>
+  <text x="526" y="165" text-anchor="middle" font-size="12.5" font-weight="700" fill="#e8590c" font-family="monospace">k_tᵀ v_t</text>
+  <text x="526" y="181" text-anchor="middle" font-size="10.5" fill="#868e96">外积写入</text>
+  <path d="M574 168 L604 168" stroke="#f08c00" stroke-width="2" marker-end="url(#arA)"/>
+  <rect x="748" y="122" width="104" height="34" rx="8" fill="#ffffff" stroke="#0ca678"/>
+  <text x="800" y="144" text-anchor="middle" font-size="12" font-weight="700" fill="#0b7285" font-family="monospace">q_t 读取</text>
+  <path d="M748 139 L712 139" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <rect x="748" y="182" width="104" height="34" rx="8" fill="#ffffff" stroke="#0ca678"/>
+  <text x="800" y="204" text-anchor="middle" font-size="12" font-weight="700" fill="#0b7285" font-family="monospace">o_t = q_t S_t</text>
+  <path d="M708 199 L744 199" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <text x="478" y="250" font-size="12.5" font-weight="700" fill="#0b7285" font-family="monospace">显存 O(d²)，与 T 无关  每步 O(d²)</text>
+  <text x="478" y="274" font-size="12" fill="#495057">S_t = S_(t-1) + k_tᵀ v_t：KᵀV 的前缀和</text>
+  <text x="478" y="296" font-size="11.5" fill="#868e96">因果 attention 变成一个以 S 为隐状态的 RNN</text>
+
+  <!-- Bottom: associativity -->
+  <rect x="30" y="328" width="410" height="78" rx="10" fill="#f8f9fa" stroke="#adb5bd"/>
+  <text x="48" y="352" font-size="14" font-weight="700" fill="#495057" font-family="monospace">(Q Kᵀ) V</text>
+  <text x="48" y="374" font-size="12" fill="#495057" font-family="monospace">[T×d]·[d×T] → [T×T] → ·V</text>
+  <text x="48" y="394" font-size="11.5" fill="#868e96">中间结果 T² 大小；softmax 正好作用在这一步，无法跳过</text>
+  <rect x="460" y="328" width="410" height="78" rx="10" fill="#f8f9fa" stroke="#adb5bd"/>
+  <text x="478" y="352" font-size="14" font-weight="700" fill="#495057" font-family="monospace">Q (Kᵀ V)</text>
+  <text x="478" y="374" font-size="12" fill="#495057" font-family="monospace">[d×T]·[T×d] → [d×d] → Q·</text>
+  <text x="478" y="394" font-size="11.5" fill="#868e96">去掉 softmax 才能先算 KᵀV；中间结果大小固定为 d×d</text>
+
+  <rect x="30" y="420" width="840" height="40" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="48" y="445" font-size="12" fill="#495057">关键：结合律把 “T×T 的打分” 换成 “d×d 的记忆”。代价是 S 的容量有限 —— 怎么写、怎么忘，就是之后所有变体要回答的问题。</text>
+</svg>

@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 470" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="470" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">view 还是 copy？看它改的是透镜，还是 storage</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">判据：这个操作能否只靠调整 shape / stride / offset 表达？能 → view；不能 → 必须新开内存搬数据</text>
+
+  <line x1="450" y1="78" x2="450" y2="462" stroke="#dee2e6" stroke-width="1.5"/>
+
+  <!-- LEFT: VIEW -->
+  <text x="70" y="96" font-size="14" font-weight="700" fill="#3b5bdb">VIEW · 新建元数据，共享 storage</text>
+  <rect x="70" y="108" width="150" height="40" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="145" y="133" text-anchor="middle" font-size="12.5" font-weight="700" fill="#3b5bdb">张量 a</text>
+  <rect x="258" y="108" width="162" height="40" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="339" y="133" text-anchor="middle" font-size="11.5" font-weight="700" fill="#3b5bdb">b = a.T / a[1:]</text>
+  <rect x="70" y="196" width="350" height="44" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="245" y="223" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0b7285">同一块 storage（内存共享）</text>
+  <path d="M145 148 L185 194" stroke="#868e96" stroke-width="2" marker-end="url(#arV)"/>
+  <path d="M339 148 L300 194" stroke="#868e96" stroke-width="2" marker-end="url(#arV)"/>
+  <text x="245" y="262" text-anchor="middle" font-size="11.5" fill="#c92a2a">写 a[0]=99 ⇒ b 跟着变（别名 aliasing）</text>
+
+  <rect x="70" y="278" width="350" height="134" rx="9" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="88" y="300" font-size="12" font-weight="700" fill="#495057">属于 view 的操作：</text>
+  <g font-size="11.5" fill="#495057" font-family="monospace">
+    <text x="88" y="322">切片 slicing：a[1:], a[:, 0]</text>
+    <text x="88" y="344">转置 / 置换：a.T, a.permute(...)</text>
+    <text x="88" y="366">reshape / view（仅当内存连续）</text>
+    <text x="88" y="388">unsqueeze / squeeze / expand</text>
+    <text x="88" y="406" fill="#868e96">.view(dtype) 重解释位，也不拷贝</text>
+  </g>
+
+  <!-- RIGHT: COPY -->
+  <text x="490" y="96" font-size="14" font-weight="700" fill="#c92a2a">COPY · 另开一块 storage</text>
+  <rect x="490" y="108" width="120" height="40" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="550" y="133" text-anchor="middle" font-size="12.5" font-weight="700" fill="#3b5bdb">张量 a</text>
+  <rect x="648" y="108" width="192" height="40" rx="8" fill="#fff5f5" stroke="#fa5252"/>
+  <text x="744" y="133" text-anchor="middle" font-size="11" font-weight="700" fill="#c92a2a">c = a[idx] / a.clone()</text>
+  <rect x="490" y="196" width="120" height="44" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="550" y="223" text-anchor="middle" font-size="12" font-weight="700" fill="#0b7285">storage A</text>
+  <rect x="680" y="196" width="160" height="44" rx="8" fill="#fff9db" stroke="#f08c00"/>
+  <text x="760" y="223" text-anchor="middle" font-size="12" font-weight="700" fill="#e8590c">storage C（独立）</text>
+  <path d="M550 148 L550 194" stroke="#868e96" stroke-width="2" marker-end="url(#arV)"/>
+  <path d="M744 148 L760 194" stroke="#868e96" stroke-width="2" marker-end="url(#arV)"/>
+  <text x="665" y="262" text-anchor="middle" font-size="11.5" fill="#0b7285">写 c 不影响 a（内存相互独立）</text>
+
+  <rect x="490" y="278" width="350" height="134" rx="9" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="508" y="300" font-size="12" font-weight="700" fill="#495057">属于 copy 的操作：</text>
+  <g font-size="11.5" fill="#495057" font-family="monospace">
+    <text x="508" y="322">高级索引 a[idx_tensor]（gather）</text>
+    <text x="508" y="344">a.contiguous()（原本非连续时）</text>
+    <text x="508" y="366">a.clone()</text>
+    <text x="508" y="388">跨设备 a.to('cpu') / .cuda() / .cpu()</text>
+    <text x="508" y="406" fill="#868e96">绝大多数算子的输出</text>
+  </g>
+
+  <!-- note -->
+  <rect x="70" y="424" width="770" height="36" rx="9" fill="#f1f3f5" stroke="#dee2e6"/>
+  <text x="88" y="447" font-size="12" fill="#495057">注意：reshape/view 在非连续张量上无法只改元数据，会退化成一次隐式 copy——所以“看起来像 view”未必真是 view。</text>
+
+  <defs>
+    <marker id="arV" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#868e96"/></marker>
+  </defs>
+</svg>

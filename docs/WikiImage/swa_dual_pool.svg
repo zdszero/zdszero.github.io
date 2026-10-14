@@ -1,0 +1,171 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 530" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="530" rx="12" fill="#ffffff"/>
+  <defs>
+    <marker id="art" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#0ca678"/>
+    </marker>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#868e96"/>
+    </marker>
+  </defs>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">SWA 双池：full 索引是主地址，SWA 索引靠映射派生</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">一个请求，seq_len = 10，W = 4：位置 0–5 已滑出窗口，SWA KV 已归还</text>
+  <text x="30" y="104" font-size="12.5" fill="#212529" font-weight="700" font-family="monospace">req_to_token[r]</text>
+  <text x="30" y="121" font-size="11" fill="#868e96">调度器 / radix 树只看它</text>
+  <text x="230" y="86" font-size="10" fill="#868e96" text-anchor="middle" font-family="monospace">pos 0</text>
+  <rect x="202" y="92" width="56" height="32" rx="6" fill="#edf2ff" stroke="#4c6ef5" stroke-width="1"/>
+  <text x="230" y="113" font-size="12.5" fill="#3b5bdb" text-anchor="middle" font-family="monospace">12</text>
+  <text x="290" y="86" font-size="10" fill="#868e96" text-anchor="middle" font-family="monospace">pos 1</text>
+  <rect x="262" y="92" width="56" height="32" rx="6" fill="#edf2ff" stroke="#4c6ef5" stroke-width="1"/>
+  <text x="290" y="113" font-size="12.5" fill="#3b5bdb" text-anchor="middle" font-family="monospace">13</text>
+  <text x="350" y="86" font-size="10" fill="#868e96" text-anchor="middle" font-family="monospace">pos 2</text>
+  <rect x="322" y="92" width="56" height="32" rx="6" fill="#edf2ff" stroke="#4c6ef5" stroke-width="1"/>
+  <text x="350" y="113" font-size="12.5" fill="#3b5bdb" text-anchor="middle" font-family="monospace">14</text>
+  <text x="410" y="86" font-size="10" fill="#868e96" text-anchor="middle" font-family="monospace">pos 3</text>
+  <rect x="382" y="92" width="56" height="32" rx="6" fill="#edf2ff" stroke="#4c6ef5" stroke-width="1"/>
+  <text x="410" y="113" font-size="12.5" fill="#3b5bdb" text-anchor="middle" font-family="monospace">15</text>
+  <text x="470" y="86" font-size="10" fill="#868e96" text-anchor="middle" font-family="monospace">pos 4</text>
+  <rect x="442" y="92" width="56" height="32" rx="6" fill="#edf2ff" stroke="#4c6ef5" stroke-width="1"/>
+  <text x="470" y="113" font-size="12.5" fill="#3b5bdb" text-anchor="middle" font-family="monospace">16</text>
+  <text x="530" y="86" font-size="10" fill="#868e96" text-anchor="middle" font-family="monospace">pos 5</text>
+  <rect x="502" y="92" width="56" height="32" rx="6" fill="#edf2ff" stroke="#4c6ef5" stroke-width="1"/>
+  <text x="530" y="113" font-size="12.5" fill="#3b5bdb" text-anchor="middle" font-family="monospace">17</text>
+  <text x="590" y="86" font-size="10" fill="#868e96" text-anchor="middle" font-family="monospace">pos 6</text>
+  <rect x="562" y="92" width="56" height="32" rx="6" fill="#edf2ff" stroke="#4c6ef5" stroke-width="1"/>
+  <text x="590" y="113" font-size="12.5" fill="#3b5bdb" text-anchor="middle" font-family="monospace">18</text>
+  <text x="650" y="86" font-size="10" fill="#868e96" text-anchor="middle" font-family="monospace">pos 7</text>
+  <rect x="622" y="92" width="56" height="32" rx="6" fill="#edf2ff" stroke="#4c6ef5" stroke-width="1"/>
+  <text x="650" y="113" font-size="12.5" fill="#3b5bdb" text-anchor="middle" font-family="monospace">19</text>
+  <text x="710" y="86" font-size="10" fill="#868e96" text-anchor="middle" font-family="monospace">pos 8</text>
+  <rect x="682" y="92" width="56" height="32" rx="6" fill="#edf2ff" stroke="#4c6ef5" stroke-width="1"/>
+  <text x="710" y="113" font-size="12.5" fill="#3b5bdb" text-anchor="middle" font-family="monospace">20</text>
+  <text x="770" y="86" font-size="10" fill="#868e96" text-anchor="middle" font-family="monospace">pos 9</text>
+  <rect x="742" y="92" width="56" height="32" rx="6" fill="#edf2ff" stroke="#4c6ef5" stroke-width="1"/>
+  <text x="770" y="113" font-size="12.5" fill="#3b5bdb" text-anchor="middle" font-family="monospace">21</text>
+  <text x="30" y="182" font-size="12.5" fill="#212529" font-weight="700" font-family="monospace">full_to_swa[·]</text>
+  <text x="30" y="199" font-size="11" fill="#868e96">allocator 维护的映射表</text>
+  <path d="M230 126 L230 164" stroke="#868e96" stroke-width="1.5" marker-end="url(#ar)"/>
+  <rect x="202" y="170" width="56" height="32" rx="6" fill="#fff5f5" stroke="#fa5252" stroke-width="1"/>
+  <text x="230" y="191" font-size="12.5" fill="#c92a2a" text-anchor="middle" font-family="monospace">0</text>
+  <path d="M290 126 L290 164" stroke="#868e96" stroke-width="1.5" marker-end="url(#ar)"/>
+  <rect x="262" y="170" width="56" height="32" rx="6" fill="#fff5f5" stroke="#fa5252" stroke-width="1"/>
+  <text x="290" y="191" font-size="12.5" fill="#c92a2a" text-anchor="middle" font-family="monospace">0</text>
+  <path d="M350 126 L350 164" stroke="#868e96" stroke-width="1.5" marker-end="url(#ar)"/>
+  <rect x="322" y="170" width="56" height="32" rx="6" fill="#fff5f5" stroke="#fa5252" stroke-width="1"/>
+  <text x="350" y="191" font-size="12.5" fill="#c92a2a" text-anchor="middle" font-family="monospace">0</text>
+  <path d="M410 126 L410 164" stroke="#868e96" stroke-width="1.5" marker-end="url(#ar)"/>
+  <rect x="382" y="170" width="56" height="32" rx="6" fill="#fff5f5" stroke="#fa5252" stroke-width="1"/>
+  <text x="410" y="191" font-size="12.5" fill="#c92a2a" text-anchor="middle" font-family="monospace">0</text>
+  <path d="M470 126 L470 164" stroke="#868e96" stroke-width="1.5" marker-end="url(#ar)"/>
+  <rect x="442" y="170" width="56" height="32" rx="6" fill="#fff5f5" stroke="#fa5252" stroke-width="1"/>
+  <text x="470" y="191" font-size="12.5" fill="#c92a2a" text-anchor="middle" font-family="monospace">0</text>
+  <path d="M530 126 L530 164" stroke="#868e96" stroke-width="1.5" marker-end="url(#ar)"/>
+  <rect x="502" y="170" width="56" height="32" rx="6" fill="#fff5f5" stroke="#fa5252" stroke-width="1"/>
+  <text x="530" y="191" font-size="12.5" fill="#c92a2a" text-anchor="middle" font-family="monospace">0</text>
+  <path d="M590 126 L590 164" stroke="#868e96" stroke-width="1.5" marker-end="url(#ar)"/>
+  <rect x="562" y="170" width="56" height="32" rx="6" fill="#e6fcf5" stroke="#0ca678" stroke-width="1"/>
+  <text x="590" y="191" font-size="12.5" fill="#0b7285" text-anchor="middle" font-family="monospace">3</text>
+  <path d="M650 126 L650 164" stroke="#868e96" stroke-width="1.5" marker-end="url(#ar)"/>
+  <rect x="622" y="170" width="56" height="32" rx="6" fill="#e6fcf5" stroke="#0ca678" stroke-width="1"/>
+  <text x="650" y="191" font-size="12.5" fill="#0b7285" text-anchor="middle" font-family="monospace">7</text>
+  <path d="M710 126 L710 164" stroke="#868e96" stroke-width="1.5" marker-end="url(#ar)"/>
+  <rect x="682" y="170" width="56" height="32" rx="6" fill="#e6fcf5" stroke="#0ca678" stroke-width="1"/>
+  <text x="710" y="191" font-size="12.5" fill="#0b7285" text-anchor="middle" font-family="monospace">1</text>
+  <path d="M770 126 L770 164" stroke="#868e96" stroke-width="1.5" marker-end="url(#ar)"/>
+  <rect x="742" y="170" width="56" height="32" rx="6" fill="#e6fcf5" stroke="#0ca678" stroke-width="1"/>
+  <text x="770" y="191" font-size="12.5" fill="#0b7285" text-anchor="middle" font-family="monospace">5</text>
+  <path d="M202 220 L202 214 L558 214 L558 220" fill="none" stroke="#fa5252" stroke-width="1.5"/>
+  <text x="380" y="232" font-size="11" fill="#c92a2a" text-anchor="middle">0 = 没有 SWA slot（已被 free_swa 归还）</text>
+  <path d="M562 220 L562 214 L798 214 L798 220" fill="none" stroke="#0ca678" stroke-width="1.5"/>
+  <text x="680" y="232" font-size="11" fill="#0b7285" text-anchor="middle">窗口内：指向 SWA pool 的 slot</text>
+  <rect x="30" y="262" width="470" height="150" rx="10" fill="#edf2ff" stroke="#4c6ef5" stroke-width="1"/>
+  <rect x="30" y="262" width="470" height="26" rx="10" fill="#4c6ef5"/>
+  <text x="44" y="280" font-size="13" fill="#ffffff" font-weight="700">full_kv_pool：只给 full 层用（如 MiMo-V2 的 9 层）</text>
+  <text x="44" y="310" font-size="11" fill="#495057">size = N_full，按 token 分配</text>
+  <rect x="44" y="324" width="27" height="27" rx="3" fill="#ffffff" stroke="#ced4da" stroke-width="1"/>
+  <text x="57.5" y="341.0" font-size="9" fill="#adb5bd" text-anchor="middle" font-family="monospace">0</text>
+  <rect x="74" y="324" width="27" height="27" rx="3" fill="#ffffff" stroke="#ced4da" stroke-width="1"/>
+  <text x="87.5" y="341.0" font-size="9" fill="#adb5bd" text-anchor="middle" font-family="monospace">1</text>
+  <rect x="104" y="324" width="27" height="27" rx="3" fill="#ffffff" stroke="#ced4da" stroke-width="1"/>
+  <text x="117.5" y="341.0" font-size="9" fill="#adb5bd" text-anchor="middle" font-family="monospace">2</text>
+  <rect x="134" y="324" width="27" height="27" rx="3" fill="#ffffff" stroke="#ced4da" stroke-width="1"/>
+  <text x="147.5" y="341.0" font-size="9" fill="#adb5bd" text-anchor="middle" font-family="monospace">3</text>
+  <rect x="164" y="324" width="27" height="27" rx="3" fill="#ffffff" stroke="#ced4da" stroke-width="1"/>
+  <text x="177.5" y="341.0" font-size="9" fill="#adb5bd" text-anchor="middle" font-family="monospace">4</text>
+  <rect x="194" y="324" width="27" height="27" rx="3" fill="#ffffff" stroke="#ced4da" stroke-width="1"/>
+  <text x="207.5" y="341.0" font-size="9" fill="#adb5bd" text-anchor="middle" font-family="monospace">5</text>
+  <rect x="224" y="324" width="27" height="27" rx="3" fill="#ffffff" stroke="#ced4da" stroke-width="1"/>
+  <text x="237.5" y="341.0" font-size="9" fill="#adb5bd" text-anchor="middle" font-family="monospace">6</text>
+  <rect x="254" y="324" width="27" height="27" rx="3" fill="#ffffff" stroke="#ced4da" stroke-width="1"/>
+  <text x="267.5" y="341.0" font-size="9" fill="#adb5bd" text-anchor="middle" font-family="monospace">7</text>
+  <rect x="284" y="324" width="27" height="27" rx="3" fill="#ffffff" stroke="#ced4da" stroke-width="1"/>
+  <text x="297.5" y="341.0" font-size="9" fill="#adb5bd" text-anchor="middle" font-family="monospace">8</text>
+  <rect x="314" y="324" width="27" height="27" rx="3" fill="#ffffff" stroke="#ced4da" stroke-width="1"/>
+  <text x="327.5" y="341.0" font-size="9" fill="#adb5bd" text-anchor="middle" font-family="monospace">9</text>
+  <rect x="344" y="324" width="27" height="27" rx="3" fill="#ffffff" stroke="#ced4da" stroke-width="1"/>
+  <text x="357.5" y="341.0" font-size="9" fill="#adb5bd" text-anchor="middle" font-family="monospace">10</text>
+  <rect x="374" y="324" width="27" height="27" rx="3" fill="#ffffff" stroke="#ced4da" stroke-width="1"/>
+  <text x="387.5" y="341.0" font-size="9" fill="#adb5bd" text-anchor="middle" font-family="monospace">11</text>
+  <rect x="404" y="324" width="27" height="27" rx="3" fill="#4c6ef5" stroke="#4c6ef5" stroke-width="1"/>
+  <text x="417.5" y="341.0" font-size="9" fill="#ffffff" text-anchor="middle" font-family="monospace">12</text>
+  <rect x="434" y="324" width="27" height="27" rx="3" fill="#4c6ef5" stroke="#4c6ef5" stroke-width="1"/>
+  <text x="447.5" y="341.0" font-size="9" fill="#ffffff" text-anchor="middle" font-family="monospace">13</text>
+  <rect x="44" y="358" width="27" height="27" rx="3" fill="#4c6ef5" stroke="#4c6ef5" stroke-width="1"/>
+  <text x="57.5" y="375.0" font-size="9" fill="#ffffff" text-anchor="middle" font-family="monospace">14</text>
+  <rect x="74" y="358" width="27" height="27" rx="3" fill="#4c6ef5" stroke="#4c6ef5" stroke-width="1"/>
+  <text x="87.5" y="375.0" font-size="9" fill="#ffffff" text-anchor="middle" font-family="monospace">15</text>
+  <rect x="104" y="358" width="27" height="27" rx="3" fill="#4c6ef5" stroke="#4c6ef5" stroke-width="1"/>
+  <text x="117.5" y="375.0" font-size="9" fill="#ffffff" text-anchor="middle" font-family="monospace">16</text>
+  <rect x="134" y="358" width="27" height="27" rx="3" fill="#4c6ef5" stroke="#4c6ef5" stroke-width="1"/>
+  <text x="147.5" y="375.0" font-size="9" fill="#ffffff" text-anchor="middle" font-family="monospace">17</text>
+  <rect x="164" y="358" width="27" height="27" rx="3" fill="#4c6ef5" stroke="#4c6ef5" stroke-width="1"/>
+  <text x="177.5" y="375.0" font-size="9" fill="#ffffff" text-anchor="middle" font-family="monospace">18</text>
+  <rect x="194" y="358" width="27" height="27" rx="3" fill="#4c6ef5" stroke="#4c6ef5" stroke-width="1"/>
+  <text x="207.5" y="375.0" font-size="9" fill="#ffffff" text-anchor="middle" font-family="monospace">19</text>
+  <rect x="224" y="358" width="27" height="27" rx="3" fill="#4c6ef5" stroke="#4c6ef5" stroke-width="1"/>
+  <text x="237.5" y="375.0" font-size="9" fill="#ffffff" text-anchor="middle" font-family="monospace">20</text>
+  <rect x="254" y="358" width="27" height="27" rx="3" fill="#4c6ef5" stroke="#4c6ef5" stroke-width="1"/>
+  <text x="267.5" y="375.0" font-size="9" fill="#ffffff" text-anchor="middle" font-family="monospace">21</text>
+  <rect x="284" y="358" width="27" height="27" rx="3" fill="#ffffff" stroke="#ced4da" stroke-width="1"/>
+  <text x="297.5" y="375.0" font-size="9" fill="#adb5bd" text-anchor="middle" font-family="monospace">22</text>
+  <rect x="314" y="358" width="27" height="27" rx="3" fill="#ffffff" stroke="#ced4da" stroke-width="1"/>
+  <text x="327.5" y="375.0" font-size="9" fill="#adb5bd" text-anchor="middle" font-family="monospace">23</text>
+  <rect x="344" y="358" width="27" height="27" rx="3" fill="#ffffff" stroke="#ced4da" stroke-width="1"/>
+  <text x="357.5" y="375.0" font-size="9" fill="#adb5bd" text-anchor="middle" font-family="monospace">24</text>
+  <rect x="374" y="358" width="27" height="27" rx="3" fill="#ffffff" stroke="#ced4da" stroke-width="1"/>
+  <text x="387.5" y="375.0" font-size="9" fill="#adb5bd" text-anchor="middle" font-family="monospace">25</text>
+  <text x="44" y="402" font-size="11.5" fill="#4c6ef5" font-weight="700">大小 ∝ 序列长度：请求活多久，这 10 个 slot 就占多久</text>
+  <rect x="530" y="262" width="340" height="150" rx="10" fill="#e6fcf5" stroke="#0ca678" stroke-width="1"/>
+  <rect x="530" y="262" width="340" height="26" rx="10" fill="#0ca678"/>
+  <text x="544" y="280" font-size="13" fill="#ffffff" font-weight="700">swa_kv_pool：只给 SWA 层用（如 39 层）</text>
+  <text x="544" y="310" font-size="11" fill="#495057">size = r · N_full，按 token 分配</text>
+  <rect x="544" y="324" width="27" height="27" rx="3" fill="#ffffff" stroke="#ced4da" stroke-width="1"/>
+  <text x="557.5" y="341.0" font-size="9" fill="#adb5bd" text-anchor="middle" font-family="monospace">0</text>
+  <rect x="574" y="324" width="27" height="27" rx="3" fill="#0ca678" stroke="#0ca678" stroke-width="1"/>
+  <text x="587.5" y="341.0" font-size="9" fill="#ffffff" text-anchor="middle" font-family="monospace">1</text>
+  <rect x="604" y="324" width="27" height="27" rx="3" fill="#ffffff" stroke="#ced4da" stroke-width="1"/>
+  <text x="617.5" y="341.0" font-size="9" fill="#adb5bd" text-anchor="middle" font-family="monospace">2</text>
+  <rect x="634" y="324" width="27" height="27" rx="3" fill="#0ca678" stroke="#0ca678" stroke-width="1"/>
+  <text x="647.5" y="341.0" font-size="9" fill="#ffffff" text-anchor="middle" font-family="monospace">3</text>
+  <rect x="664" y="324" width="27" height="27" rx="3" fill="#ffffff" stroke="#ced4da" stroke-width="1"/>
+  <text x="677.5" y="341.0" font-size="9" fill="#adb5bd" text-anchor="middle" font-family="monospace">4</text>
+  <rect x="694" y="324" width="27" height="27" rx="3" fill="#0ca678" stroke="#0ca678" stroke-width="1"/>
+  <text x="707.5" y="341.0" font-size="9" fill="#ffffff" text-anchor="middle" font-family="monospace">5</text>
+  <rect x="724" y="324" width="27" height="27" rx="3" fill="#ffffff" stroke="#ced4da" stroke-width="1"/>
+  <text x="737.5" y="341.0" font-size="9" fill="#adb5bd" text-anchor="middle" font-family="monospace">6</text>
+  <rect x="754" y="324" width="27" height="27" rx="3" fill="#0ca678" stroke="#0ca678" stroke-width="1"/>
+  <text x="767.5" y="341.0" font-size="9" fill="#ffffff" text-anchor="middle" font-family="monospace">7</text>
+  <rect x="784" y="324" width="27" height="27" rx="3" fill="#ffffff" stroke="#ced4da" stroke-width="1"/>
+  <text x="797.5" y="341.0" font-size="9" fill="#adb5bd" text-anchor="middle" font-family="monospace">8</text>
+  <rect x="814" y="324" width="27" height="27" rx="3" fill="#ffffff" stroke="#ced4da" stroke-width="1"/>
+  <text x="827.5" y="341.0" font-size="9" fill="#adb5bd" text-anchor="middle" font-family="monospace">9</text>
+  <text x="544" y="402" font-size="11.5" fill="#0ca678" font-weight="700">大小 ≈ W：滑出窗口就归还</text>
+  <path d="M186 112 C 172 140, 172 220, 186 256" fill="none" stroke="#4c6ef5" stroke-width="2" marker-end="url(#ar)"/>
+  <text x="166" y="248" font-size="11" fill="#3b5bdb" text-anchor="end">full 层</text>
+  <path d="M800 187 L840 187 L840 256" fill="none" stroke="#0ca678" stroke-width="2" marker-end="url(#art)"/>
+  <text x="846" y="226" font-size="11" fill="#0b7285">SWA 层</text>
+  <rect x="30" y="432" width="840" height="76" rx="8" fill="#f8f9fa" stroke="#e9ecef" stroke-width="1"/>
+  <text x="46" y="454" font-size="12" fill="#495057">释放滑出窗口的 KV：swa_slot = full_to_swa[full_idx]；swa_allocator.free(swa_slot)；full_to_swa[full_idx] = 0。</text>
+  <text x="46" y="472" font-size="12" fill="#495057">full 索引从头到尾不变，所以 req_to_token、调度器、radix 树的形态都不用改；只有 backend 在读写 SWA 层时翻译一次。</text>
+  <text x="46" y="490" font-size="12" fill="#495057">admission 要同时满足两个池：rem_total_tokens（full）和 rem_swa_tokens（SWA）分别记账。</text>
+</svg>

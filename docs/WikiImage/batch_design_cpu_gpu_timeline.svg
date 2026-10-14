@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 556" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="556" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">overlap 调度下，CPU 与 GPU 每一步交换什么</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">GPU 跑第 N 步时，CPU 处理第 N−1 步结果并组第 N+1 步；下一步的输入 token 在显存里接力</text>
+
+  <defs>
+    <marker id="arG" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#868e96"/></marker>
+    <marker id="arA" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#f08c00"/></marker>
+    <marker id="arT" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#0ca678"/></marker>
+  </defs>
+
+  <text x="870" y="82" text-anchor="end" font-size="11" fill="#868e96">时间 →</text>
+
+  <!-- lane labels -->
+  <text x="40" y="114" font-size="12.5" font-weight="700" fill="#3b5bdb">CPU</text>
+  <text x="40" y="130" font-size="10.5" fill="#868e96">调度线程</text>
+  <text x="40" y="186" font-size="12.5" font-weight="700" fill="#e8590c">copy_stream</text>
+  <text x="40" y="200" font-size="10.5" fill="#868e96">GPU · 搬结果</text>
+  <text x="40" y="258" font-size="12.5" font-weight="700" fill="#0b7285">forward_stream</text>
+  <text x="40" y="274" font-size="10.5" fill="#868e96">GPU · 前向</text>
+  <path d="M140 157 L870 157" stroke="#e9ecef" stroke-width="1"/>
+  <path d="M140 221 L870 221" stroke="#e9ecef" stroke-width="1"/>
+
+  <!-- CPU lane -->
+  <rect x="140" y="92" width="108" height="50" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="194" y="113" text-anchor="middle" font-size="12.5" font-weight="700" fill="#3b5bdb">调度 N</text>
+  <text x="194" y="130" text-anchor="middle" font-size="10.5" fill="#495057">组 batch、分配槽位</text>
+  <rect x="252" y="92" width="48" height="50" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="276" y="113" text-anchor="middle" font-size="11" font-weight="700" fill="#3b5bdb">launch</text>
+  <text x="276" y="130" text-anchor="middle" font-size="10.5" fill="#495057">N</text>
+  <rect x="304" y="92" width="136" height="50" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="372" y="113" text-anchor="middle" font-size="12.5" font-weight="700" fill="#3b5bdb">处理 N−1 结果</text>
+  <text x="372" y="130" text-anchor="middle" font-size="10.5" fill="#495057">tolist · 记账 · 释放</text>
+  <rect x="444" y="92" width="108" height="50" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="498" y="113" text-anchor="middle" font-size="12.5" font-weight="700" fill="#3b5bdb">调度 N+1</text>
+  <text x="498" y="130" text-anchor="middle" font-size="10.5" fill="#495057">组 batch、分配槽位</text>
+  <rect x="556" y="92" width="48" height="50" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="580" y="113" text-anchor="middle" font-size="11" font-weight="700" fill="#3b5bdb">launch</text>
+  <text x="580" y="130" text-anchor="middle" font-size="10.5" fill="#495057">N+1</text>
+  <rect x="608" y="92" width="150" height="50" rx="8" fill="#f8f9fa" stroke="#adb5bd" stroke-dasharray="4 3"/>
+  <text x="683" y="113" text-anchor="middle" font-size="12" font-weight="700" fill="#868e96">等待 copy_done</text>
+  <text x="683" y="130" text-anchor="middle" font-size="10.5" fill="#868e96" font-family="monospace">.synchronize()</text>
+  <rect x="762" y="92" width="108" height="50" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="816" y="113" text-anchor="middle" font-size="12.5" font-weight="700" fill="#3b5bdb">处理 N 结果</text>
+  <text x="816" y="130" text-anchor="middle" font-size="10.5" fill="#495057">tolist · 记账 · 释放</text>
+  <!-- copy lane -->
+  <rect x="650" y="172" width="108" height="34" rx="8" fill="#fff4e6" stroke="#f08c00"/>
+  <text x="704" y="186" text-anchor="middle" font-size="11.5" font-weight="700" fill="#e8590c">D2H N</text>
+  <text x="704" y="200" text-anchor="middle" font-size="10" fill="#495057" font-family="monospace">token ids→pinned</text>
+
+  <!-- forward lane -->
+  <rect x="260" y="231" width="384" height="50" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="274" y="252" font-size="12.5" font-weight="700" fill="#0b7285">forward N</text>
+  <text x="274" y="270" font-size="10.5" fill="#495057">input_ids ← FutureMap gather → 前向 → 采样 → stash(next token)</text>
+  <rect x="648" y="231" width="222" height="50" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="662" y="252" font-size="12.5" font-weight="700" fill="#0b7285">forward N+1</text>
+  <text x="662" y="270" font-size="10.5" fill="#495057">input_ids ← N 的采样结果（GPU 内取）</text>
+
+  <!-- arrows -->
+  <path d="M276 142 L276 228" stroke="#f08c00" stroke-width="2" marker-end="url(#arA)"/>
+  <text x="282" y="192" font-size="10.5" font-weight="700" fill="#e8590c">H2D</text>
+  <path d="M584 142 L656 228" stroke="#f08c00" stroke-width="2" marker-end="url(#arA)"/>
+  <text x="586" y="192" font-size="10.5" font-weight="700" fill="#e8590c">H2D</text>
+  <path d="M640 231 L656 211" stroke="#868e96" stroke-width="1.5" marker-end="url(#arG)"/>
+  <path d="M756 172 L766 146" stroke="#f08c00" stroke-width="2" marker-end="url(#arA)"/>
+  <text x="772" y="186" font-size="10.5" font-weight="700" fill="#e8590c" font-family="monospace">copy_done</text>
+  <path d="M618 283 Q646 315 670 285" fill="none" stroke="#0ca678" stroke-width="2" marker-end="url(#arT)"/>
+  <text x="646" y="328" text-anchor="middle" font-size="11" font-weight="700" fill="#0b7285">FutureMap 接力：下一步输入 token 不回 CPU</text>
+
+  <!-- what crosses: H2D -->
+  <rect x="40" y="346" width="260" height="120" rx="10" fill="#fff9db" stroke="#f08c00"/>
+  <text x="54" y="368" font-size="13" font-weight="700" fill="#e8590c">CPU → GPU（H2D，组 batch 时）</text>
+  <text x="54" y="390" font-size="11.5" fill="#495057">· prefill token ids（pinned 暂存）</text>
+  <text x="54" y="408" font-size="11.5" fill="#495057">· seq_lens、req_pool_indices</text>
+  <text x="54" y="426" font-size="11.5" fill="#495057">· filter 后的 keep_indices</text>
+  <text x="54" y="444" font-size="11.5" fill="#495057">· 采样参数、grammar vocab mask</text>
+
+  <!-- GPU internal -->
+  <rect x="320" y="346" width="260" height="120" rx="10" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="334" y="368" font-size="13" font-weight="700" fill="#0b7285">GPU 内部（不过边界）</text>
+  <text x="334" y="390" font-size="11.5" fill="#495057">· 写 req_to_token、写 KV</text>
+  <text x="334" y="408" font-size="11.5" fill="#495057">· positions、seq_lens + 1</text>
+  <text x="334" y="426" font-size="11.5" fill="#495057">· CUDA graph 静态 buffer 填充</text>
+  <text x="334" y="444" font-size="11.5" fill="#495057">· 下一步 input_ids（FutureMap）</text>
+
+  <!-- D2H -->
+  <rect x="600" y="346" width="260" height="120" rx="10" fill="#fff9db" stroke="#f08c00"/>
+  <text x="614" y="368" font-size="13" font-weight="700" fill="#e8590c">GPU → CPU（D2H，出结果时）</text>
+  <text x="614" y="390" font-size="11.5" fill="#495057">· next_token_ids</text>
+  <text x="614" y="408" font-size="11.5" fill="#495057">· logprobs / hidden states（按需）</text>
+  <text x="614" y="426" font-size="11.5" fill="#495057">· 拷进 pinned 内存，记 copy_done</text>
+  <text x="614" y="444" font-size="11.5" fill="#495057">· CPU 晚一步 tolist() 记账</text>
+
+  <!-- note -->
+  <rect x="40" y="482" width="820" height="56" rx="10" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="58" y="505" font-size="12" fill="#495057">正常路径只有一个阻塞点：<tspan font-family="monospace" fill="#212529">copy_done.synchronize()</tspan>。它等的是上一步的拷贝，而 GPU 此时已在跑下一步——</text>
+  <text x="58" y="524" font-size="12" fill="#495057">CPU 之所以能不在关键路径上，是因为 decode 的下一步输入不需要先回到 CPU。</text>
+</svg>

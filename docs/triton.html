@@ -1,0 +1,716 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    Triton 基础
+  </title>
+    <link rel="stylesheet" href="./WikiTheme/theme/bootstrap.css"  />
+        <script defer=""
+        src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+        <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+        </script>
+        <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+      <style type="text/css">
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+      <!-- wiki three-column layout styles/behavior, kept external so the ~5KB
+       block isn't duplicated into every generated page -->
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/wiki-layout.css" />
+  <script defer src="./WikiTheme/wiki-layout.js"></script>
+</head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">Triton 基础</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="wiki-layout">
+    <nav class="wiki-sidebar" id="wiki-sidebar" hidden></nav>
+    <main class="wiki-main">
+            <p>从 GPU 编程模型（Programming Model）的角度学习
+            Triton，最重要的是理解：</p>
+            <ol type="1">
+            <li>计算如何划分：一个 Program 负责哪一块数据？</li>
+            <li>数据如何访问：Pointer、Offset、Stride、Mask
+            如何共同描述访存？</li>
+            <li>计算如何表达：逐元素运算、Reduction、Broadcast、矩阵乘法如何作用于
+            Tile？</li>
+            <li>性能如何调整：Tile
+            Size、<code>num_warps</code>、<code>num_stages</code>
+            如何影响 GPU 资源？</li>
+            <li>结果如何验证：边界、数值精度、异步计时和调优如何处理？</li>
+            </ol>
+            <p>建议先阅读 <a href="./gpu_arch.html">GPU Arch</a>，建立
+            Thread、Warp、Block、SM 和存储层次的概念。下面以经典
+            <code>triton.jit</code> 与 <code>triton.language</code>
+            编程方式为主，结合 NVIDIA GPU 解释硬件映射。这里的 Triton 指
+            GPU 编程语言与编译器，与 NVIDIA Triton Inference Server
+            是不同项目。</p>
+            <h2 id="一triton-在-gpu-编程中的位置">一、Triton 在 GPU
+            编程中的位置</h2>
+            <p>Triton 允许用 Python 语法描述 GPU Kernel，但 Kernel
+            内的代码由编译器生成 GPU 指令，并不是由 Python
+            解释器逐元素执行。</p>
+            <table>
+            <colgroup>
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>层次</th>
+            <th>程序员主要表达什么</th>
+            <th>需要关注什么</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>PyTorch</td>
+            <td>整体 Tensor 运算</td>
+            <td>Shape、Dtype、Device、算子组合</td>
+            </tr>
+            <tr>
+            <td>Triton</td>
+            <td>一个 Program 内的数据块计算</td>
+            <td>分块、地址、边界、归约与资源配置</td>
+            </tr>
+            <tr>
+            <td>CUDA C++</td>
+            <td>Thread 级逻辑与线程协作</td>
+            <td>线程索引、Shared Memory、同步与指令</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>例如计算
+            <code>y = x * scale + bias</code>，可以把读取、乘法、加法和写回放进一个
+            Kernel，避免中间 Tensor 的显存读写和额外 Launch。</p>
+            <p>是否更快，需要结合输入规模、访存模式和已有实现测试；PyTorch
+            编译后的执行路径也可能已经完成算子融合。</p>
+            <h2 id="二programgrid-与-tile">二、Program、Grid 与
+            Tile</h2>
+            <figure>
+            <img src="./WikiImage/triton_program_tile.svg"
+            alt="Triton Program 与数据块" />
+            <figcaption aria-hidden="true">Triton Program
+            与数据块</figcaption>
+            </figure>
+            <p>Triton 的基本思考方式是：一个 Program Instance
+            处理一个逻辑数据块（Tile），Grid 指定启动多少个
+            Program。</p>
+            <table>
+            <colgroup>
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>概念</th>
+            <th>意义</th>
+            <th>常见误解</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>Program Instance</td>
+            <td>一份 Kernel 逻辑的执行实例</td>
+            <td>不是一个 CUDA Thread</td>
+            </tr>
+            <tr>
+            <td>Grid</td>
+            <td>Program 的一维、二维或三维索引空间</td>
+            <td>不是 Tensor 的 Shape</td>
+            </tr>
+            <tr>
+            <td>Tile</td>
+            <td>当前 Program 处理的数据区域</td>
+            <td>不一定是连续显存区域</td>
+            </tr>
+            <tr>
+            <td><code>tl.program_id(axis)</code></td>
+            <td>当前 Program 在某个轴上的编号</td>
+            <td>不是 Thread ID</td>
+            </tr>
+            <tr>
+            <td><code>num_warps</code></td>
+            <td>参与一个 Program 执行的 Warp 数配置</td>
+            <td>不是数据块的元素数量</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>在常见 NVIDIA 执行路径中，一个 Program 通常映射到一个
+            CTA（CUDA Thread Block）；编译器负责将 Tile
+            元素分布到线程及其寄存器。进阶机制可能改变映射方式，因此应把
+            Program 理解为编程抽象。</p>
+            <p>例如，一个 Program 处理 1024 个元素，配置
+            <code>num_warps=4</code>，意味着由 4 个 Warp
+            协作处理这些元素。它不意味着启动 1024
+            个线程，也不意味着每个线程只处理一个元素。</p>
+            <p>Grid 中的 Program 可能分批调度到 SM。不同 Program
+            之间没有默认的执行先后关系，也不能依靠普通 Kernel
+            中的全局同步实现任意协作。</p>
+            <h2 id="三host-代码与-kernel-代码">三、Host 代码与 Kernel
+            代码</h2>
+            <p>一个完整算子通常包含两部分。</p>
+            <table>
+            <colgroup>
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>部分</th>
+            <th>执行位置</th>
+            <th>主要职责</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>Host Wrapper</td>
+            <td>CPU / Python Runtime</td>
+            <td>检查输入、分配输出、计算 Grid、启动 Kernel</td>
+            </tr>
+            <tr>
+            <td><code>@triton.jit</code> Kernel</td>
+            <td>GPU</td>
+            <td>计算地址、加载数据、执行运算、写回结果</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>Host 可以使用 PyTorch 分配 Tensor；Kernel 内使用
+            <code>tl.load</code>、<code>tl.store</code> 等 Triton
+            操作。不能把任意 Python 库或 PyTorch 运算直接放进
+            Kernel。</p>
+            <p><code>BLOCK_SIZE: tl.constexpr</code>
+            表示编译期参数，常用于 Tile
+            Shape。不同编译期参数可能生成不同版本的
+            Kernel，首次调用可能包含编译开销。</p>
+            <p>Tensor 作为 Kernel 参数传入时转换为数据指针。Kernel
+            不会自动获得它的完整 Shape、Stride 和布局信息，因此需要由
+            Wrapper 显式传入相关参数。</p>
+            <h2 id="四第一个-kernel向量加法">四、第一个
+            Kernel：向量加法</h2>
+            <p>下面的示例限定为同一 CUDA Device 上的一维、连续、相同
+            Shape 和 Dtype 的浮点 Tensor。</p>
+            <div class="sourceCode" id="cb1"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> triton</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> triton.language <span class="im">as</span> tl</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="at">@triton.jit</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> vector_add_kernel(X, Y, Z, N, BLOCK_SIZE: tl.constexpr):</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    pid <span class="op">=</span> tl.program_id(<span class="dv">0</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    offsets <span class="op">=</span> pid <span class="op">*</span> BLOCK_SIZE <span class="op">+</span> tl.arange(<span class="dv">0</span>, BLOCK_SIZE)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    valid <span class="op">=</span> offsets <span class="op">&lt;</span> N</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> tl.load(X <span class="op">+</span> offsets, mask<span class="op">=</span>valid, other<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    y <span class="op">=</span> tl.load(Y <span class="op">+</span> offsets, mask<span class="op">=</span>valid, other<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    tl.store(Z <span class="op">+</span> offsets, x <span class="op">+</span> y, mask<span class="op">=</span>valid)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> vector_add(x, y):</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> x.is_cuda <span class="kw">and</span> y.is_cuda <span class="kw">and</span> x.device <span class="op">==</span> y.device</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> x.ndim <span class="op">==</span> y.ndim <span class="op">==</span> <span class="dv">1</span> <span class="kw">and</span> x.shape <span class="op">==</span> y.shape</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> x.is_contiguous() <span class="kw">and</span> y.is_contiguous()</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> x.dtype <span class="op">==</span> y.dtype <span class="kw">and</span> x.is_floating_point()</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    z <span class="op">=</span> torch.empty_like(x)</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>    n <span class="op">=</span> x.numel()</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> n <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> z</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>    grid <span class="op">=</span> <span class="kw">lambda</span> meta: (triton.cdiv(n, meta[<span class="st">&quot;BLOCK_SIZE&quot;</span>]),)</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>    vector_add_kernel[grid](x, y, z, n, BLOCK_SIZE<span class="op">=</span><span class="dv">256</span>, num_warps<span class="op">=</span><span class="dv">4</span>)</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> z</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> torch.randn(<span class="dv">1003</span>, device<span class="op">=</span><span class="st">&quot;cuda&quot;</span>, dtype<span class="op">=</span>torch.float32)</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> torch.randn_like(x)</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>z <span class="op">=</span> vector_add(x, y)</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>torch.testing.assert_close(z, x <span class="op">+</span> y)</span></code></pre></div>
+            <p>这里启动 4 个 Program，每个处理 256 个逻辑位置。最后一个
+            Program 只有 235 个位置有效，剩余位置通过 Mask 屏蔽。</p>
+            <p><code>tl.arange(0, BLOCK_SIZE)</code> 生成当前 Program
+            内的逻辑索引；它不等于 CUDA 的
+            <code>threadIdx.x</code>。该写法使用 2 的幂作为
+            <code>BLOCK_SIZE</code>，输入长度本身不需要是 2 的幂。</p>
+            <p>这个例子的启动方式和指针传递规则可对照 <a
+            href="https://triton-lang.org/main/getting-started/tutorials/01-vector-add.html">官方
+            Vector Addition 教程</a>。</p>
+            <h2 id="五pointerstride-与-mask">五、Pointer、Stride 与
+            Mask</h2>
+            <h3 id="指针运算按元素计数">1. 指针运算按元素计数</h3>
+            <p>对于指向 <code>float32</code> 的
+            <code>X</code>，<code>X + 1</code>
+            指向下一个元素，而不是下一个字节。</p>
+            <p>二维 Tensor 的地址可以写成：</p>
+            <p><span class="math display"> \text{offset}(i,j)=i\times
+            \text{stride}_0+j\times \text{stride}_1 </span></p>
+            <p>例如，构造一个二维数据块：</p>
+            <div class="sourceCode" id="cb2"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>rows <span class="op">=</span> pid_m <span class="op">*</span> BLOCK_M <span class="op">+</span> tl.arange(<span class="dv">0</span>, BLOCK_M)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>cols <span class="op">=</span> pid_n <span class="op">*</span> BLOCK_N <span class="op">+</span> tl.arange(<span class="dv">0</span>, BLOCK_N)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>ptrs <span class="op">=</span> X <span class="op">+</span> rows[:, <span class="va">None</span>] <span class="op">*</span> stride_m <span class="op">+</span> cols[<span class="va">None</span>, :] <span class="op">*</span> stride_n</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>valid <span class="op">=</span> (rows[:, <span class="va">None</span>] <span class="op">&lt;</span> M) <span class="op">&amp;</span> (cols[<span class="va">None</span>, :] <span class="op">&lt;</span> N)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>tile <span class="op">=</span> tl.load(ptrs, mask<span class="op">=</span>valid, other<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div>
+            <p><code>rows[:, None]</code> 的 Shape 为
+            <code>[BLOCK_M, 1]</code>，<code>cols[None, :]</code> 为
+            <code>[1, BLOCK_N]</code>，通过广播形成
+            <code>[BLOCK_M, BLOCK_N]</code> 的地址块。</p>
+            <p>是否支持转置、切片等非连续输入，取决于地址公式是否正确使用
+            Stride，而不是取决于是否使用 Triton。</p>
+            <h3 id="mask-保护访存">2. Mask 保护访存</h3>
+            <p>Mask 应作用在 <code>tl.load</code> 和
+            <code>tl.store</code> 上。先读取越界地址，再用
+            <code>tl.where</code> 丢弃结果，不能保证访存安全。</p>
+            <p>Masked Load 的 <code>other</code>
+            还决定无效位置如何参与后续计算：</p>
+            <table>
+            <thead>
+            <tr>
+            <th>后续操作</th>
+            <th>常用填充值</th>
+            <th>原因</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>求和</td>
+            <td><code>0</code></td>
+            <td>不改变有效元素之和</td>
+            </tr>
+            <tr>
+            <td>求最大值</td>
+            <td><code>-float("inf")</code></td>
+            <td>不抬高最大值</td>
+            </tr>
+            <tr>
+            <td>求最小值</td>
+            <td><code>float("inf")</code></td>
+            <td>不降低最小值</td>
+            </tr>
+            <tr>
+            <td>矩阵乘法 K 轴补齐</td>
+            <td><code>0</code></td>
+            <td>不增加乘积贡献</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>相关操作的定义见 <a
+            href="https://triton-lang.org/main/python-api/triton.language.html">triton.language
+            API</a>。</p>
+            <h2 id="六reduction-与-softmax">六、Reduction 与
+            Softmax</h2>
+            <p>Reduction 把一个轴上的多个元素合并为更少的结果，例如
+            <code>tl.sum(x, axis=0)</code> 和
+            <code>tl.max(x, axis=0)</code>。</p>
+            <p>对于一行数据，稳定 Softmax 的数学形式是：</p>
+            <p><span class="math display"> m=\max_j x_j,\quad
+            p_j=\exp(x_j-m),\quad y_j=\frac{p_j}{\sum_k p_k} </span></p>
+            <p>下面是每个 Program 处理一行的 Kernel 片段，要求
+            <code>N &gt; 0</code>，Host 设置
+            <code>BLOCK_SIZE = triton.next_power_of_2(N)</code>，并以
+            <code>(M,)</code> 启动：</p>
+            <div class="sourceCode" id="cb3"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="at">@triton.jit</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> row_softmax_kernel(X, Y, N, stride_x, stride_y,</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>                       BLOCK_SIZE: tl.constexpr):</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    row <span class="op">=</span> tl.program_id(<span class="dv">0</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    cols <span class="op">=</span> tl.arange(<span class="dv">0</span>, BLOCK_SIZE)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> tl.load(X <span class="op">+</span> row <span class="op">*</span> stride_x <span class="op">+</span> cols,</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>                mask<span class="op">=</span>cols <span class="op">&lt;</span> N, other<span class="op">=-</span><span class="bu">float</span>(<span class="st">&quot;inf&quot;</span>)).to(tl.float32)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    shifted <span class="op">=</span> x <span class="op">-</span> tl.<span class="bu">max</span>(x, axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    numerator <span class="op">=</span> tl.exp(shifted)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    denominator <span class="op">=</span> tl.<span class="bu">sum</span>(numerator, axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    tl.store(Y <span class="op">+</span> row <span class="op">*</span> stride_y <span class="op">+</span> cols,</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>             numerator <span class="op">/</span> denominator, mask<span class="op">=</span>cols <span class="op">&lt;</span> N)</span></code></pre></div>
+            <p>这里假设行内元素连续，输入为有限浮点值。FP32
+            中间计算有助于控制误差，最终写回时会转换为输出类型。</p>
+            <figure>
+            <img src="./WikiImage/triton_fusion.svg"
+            alt="Softmax 融合的数据流" />
+            <figcaption aria-hidden="true">Softmax
+            融合的数据流</figcaption>
+            </figure>
+            <p>融合的关键是让中间结果留在片上，减少显存流量。理想情况下，每行只读取一次输入、写回一次输出；但如果行太长，寄存器压力、Spilling
+            和驻留并行度会使性能下降，需要进一步分块。</p>
+            <p>归约仍然需要底层线程协作。Triton
+            编译器根据数据布局生成相应操作，不能理解为所有元素都由一个线程顺序处理。可进一步参考
+            <a
+            href="https://triton-lang.org/main/getting-started/tutorials/02-fused-softmax.html">官方
+            Fused Softmax 教程</a>。</p>
+            <h2 id="七矩阵乘法从元素到-tile">七、矩阵乘法：从元素到
+            Tile</h2>
+            <p>对于：</p>
+            <p><span class="math display"> C\_{M\times N}=A\_{M\times
+            K}B\_{K\times N} </span></p>
+            <p>一个 Program 可以负责 <code>C</code> 的一个
+            <code>[BLOCK_M, BLOCK_N]</code> 输出块，沿 K
+            轴逐步加载输入块并累加。</p>
+            <figure>
+            <img src="./WikiImage/triton_gemm_tile.svg"
+            alt="Triton GEMM 分块" />
+            <figcaption aria-hidden="true">Triton GEMM 分块</figcaption>
+            </figure>
+            <p>核心计算可以概括为以下伪代码：</p>
+            <div class="sourceCode" id="cb4"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>acc <span class="op">=</span> tl.zeros((BLOCK_M, BLOCK_N), dtype<span class="op">=</span>tl.float32)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> k_tile <span class="kw">in</span> <span class="bu">range</span>(triton.cdiv(K, BLOCK_K)):</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 根据当前 K 块构造地址，对 M、N、K 边界分别 Mask。</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    a <span class="op">=</span> tl.load(a_ptrs, mask<span class="op">=</span>a_valid, other<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    b <span class="op">=</span> tl.load(b_ptrs, mask<span class="op">=</span>b_valid, other<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    acc <span class="op">=</span> tl.dot(a, b, acc)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 更新 a_ptrs / b_ptrs，前进到下一个 K 块。</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 将 acc 转为输出类型，并按 M、N 边界 Mask 写回。</span></span></code></pre></div>
+            <table>
+            <thead>
+            <tr>
+            <th>参数</th>
+            <th>增大时可能获得什么</th>
+            <th>可能付出什么代价</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td><code>BLOCK_M</code> / <code>BLOCK_N</code></td>
+            <td>更高的数据复用</td>
+            <td>更大的累加器与寄存器压力</td>
+            </tr>
+            <tr>
+            <td><code>BLOCK_K</code></td>
+            <td>更少的循环迭代</td>
+            <td>更大的输入块与片上资源需求</td>
+            </tr>
+            <tr>
+            <td><code>num_warps</code></td>
+            <td>更多线程参与计算</td>
+            <td>资源占用与协作成本变化</td>
+            </tr>
+            <tr>
+            <td><code>num_stages</code></td>
+            <td>加载和计算的流水线重叠机会</td>
+            <td>更多缓冲与资源占用</td>
+            </tr>
+            </tbody>
+            </table>
+            <p><code>tl.dot</code> 是否使用 Tensor
+            Core，以及具体采用哪种指令，取决于目标
+            GPU、输入类型、Shape、布局和精度设置。FP32 输入也需要关注
+            <code>input_precision</code>，不能默认所有路径都等价于严格
+            FP32 乘法。</p>
+            <p>除了 Tile Shape，Program
+            的遍历顺序也影响相邻输出块能否复用 L2
+            中的输入数据。完整实现和分组调度见 <a
+            href="https://triton-lang.org/main/getting-started/tutorials/03-matrix-multiplication.html">官方
+            Matrix Multiplication 教程</a>。</p>
+            <h2 id="八性能优化与-autotune">八、性能优化与 Autotune</h2>
+            <p>优化前先确定瓶颈。</p>
+            <table>
+            <thead>
+            <tr>
+            <th>现象或算子</th>
+            <th>优先分析什么</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>大向量逐元素运算</td>
+            <td>有效带宽、合并访存、显存读写量</td>
+            </tr>
+            <tr>
+            <td>小输入</td>
+            <td>Launch 开销、融合机会</td>
+            </tr>
+            <tr>
+            <td>行归约</td>
+            <td>行宽、寄存器压力、Program 数量</td>
+            </tr>
+            <tr>
+            <td>GEMM</td>
+            <td>数据复用、Tensor Core、流水线、边界浪费</td>
+            </tr>
+            <tr>
+            <td>非连续 Gather</td>
+            <td>地址分布、缓存命中、负载均衡</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>Tile 越大、Warp 越多、Stage
+            越多，都不保证更快。它们改变了单个 Program
+            的工作量和资源需求，也影响 SM 同时能驻留多少 Program。</p>
+            <p>Autotune 可以在给定的候选集合中测量配置，例如在向量加法
+            Kernel 上添加：</p>
+            <div class="sourceCode" id="cb5"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="at">@triton.autotune</span>(</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    configs<span class="op">=</span>[</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>        triton.Config({<span class="st">&quot;BLOCK_SIZE&quot;</span>: <span class="dv">256</span>}, num_warps<span class="op">=</span><span class="dv">4</span>),</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>        triton.Config({<span class="st">&quot;BLOCK_SIZE&quot;</span>: <span class="dv">1024</span>}, num_warps<span class="op">=</span><span class="dv">4</span>),</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    key<span class="op">=</span>[<span class="st">&quot;N&quot;</span>],</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="at">@triton.jit</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> vector_add_kernel(X, Y, Z, N, BLOCK_SIZE: tl.constexpr):</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 与前面的向量加法 Kernel 使用相同函数体。</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    ...</span></code></pre></div>
+            <p>使用这个版本时，Host 保留依赖
+            <code>meta["BLOCK_SIZE"]</code> 的 Grid，并移除 Launch
+            中显式指定的 <code>BLOCK_SIZE</code> 和
+            <code>num_warps</code>，由候选配置提供。</p>
+            <p>调优会重复执行
+            Kernel。对于原子累加、原地更新等有副作用的算子，需要使用
+            <code>reset_to_zero</code>、<code>restore_value</code>
+            等机制保护输入输出状态。<code>key</code>
+            应覆盖会影响选择的关键维度，具体行为见 <a
+            href="https://triton-lang.org/main/python-api/generated/triton.autotune.html">triton.autotune
+            文档</a>。</p>
+            <h2
+            id="九正确性验证与性能测量">九、正确性验证与性能测量</h2>
+            <h3 id="先验证地址与边界">1. 先验证地址与边界</h3>
+            <p>至少覆盖：</p>
+            <ul>
+            <li>很小的输入、刚好整除 Tile 的输入、不能整除 Tile
+            的输入。</li>
+            <li>Wrapper 允许的空输入与非连续输入。</li>
+            <li>支持的 Dtype、不同数值范围、归约长度。</li>
+            <li>多个 Program 是否重复写同一个输出位置。</li>
+            </ul>
+            <p>矩阵边界错误往往来自 M、N、K 的 Mask 混用；非连续 Tensor
+            的错误往往来自把 Shape 当作 Stride。</p>
+            <h3 id="数值正确不等于逐位一致">2.
+            数值正确不等于逐位一致</h3>
+            <p>浮点归约顺序、累加精度、近似数学函数和 Tensor Core
+            精度路径都可能带来误差。对比 PyTorch
+            或高精度参考时，应根据算子和 Dtype 设置合理的
+            <code>atol</code>、<code>rtol</code>，并观察误差随输入规模的变化。</p>
+            <h3 id="正确计时异步执行">3. 正确计时异步执行</h3>
+            <p>GPU Kernel Launch 通常是异步的。直接用 CPU
+            时间包围一次调用，可能主要测到提交开销。</p>
+            <p>完成正确性检查并预热后，可以使用：</p>
+            <div class="sourceCode" id="cb6"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> triton.testing</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 先调用，排除首次编译与调优。</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>vector_add(x, y)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>ms <span class="op">=</span> triton.testing.do_bench(<span class="kw">lambda</span>: vector_add(x, y))</span></code></pre></div>
+            <p>这个测量包含 Wrapper
+            和输出分配路径。对比其他实现时应采用相同口径；只测 Kernel
+            时，可以预分配输出并直接启动 Kernel。</p>
+            <p>向量加法的有效带宽可以估算为：</p>
+            <p><span class="math display">
+            BW\_{\text{effective}}=\frac{3N\times \text{element
+            size}}{t} </span></p>
+            <p>其中包含两次输入读取和一次输出写入。它是按逻辑数据量计算的有效带宽，不等同于硬件计数器测得的实际
+            HBM 流量。</p>
+            <p>当前示例用于编程模型学习，没有封装反向传播。训练场景还需要实现梯度并与
+            PyTorch Autograd 接入。</p>
+            <h2 id="十把-triton-基础映射到-llm-算子">十、把 Triton
+            基础映射到 LLM 算子</h2>
+            <table>
+            <colgroup>
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>算子</th>
+            <th>基础能力</th>
+            <th>进一步需要理解什么</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>Activation / Residual</td>
+            <td>逐元素计算、Mask、融合</td>
+            <td>带宽与 Launch 开销</td>
+            </tr>
+            <tr>
+            <td>RMSNorm / LayerNorm</td>
+            <td>Reduction、Broadcast</td>
+            <td>长行分块、数值稳定性</td>
+            </tr>
+            <tr>
+            <td>Linear / GEMM</td>
+            <td>二维 Tile、<code>tl.dot</code></td>
+            <td>Tensor Core、流水线、数据复用</td>
+            </tr>
+            <tr>
+            <td>Attention</td>
+            <td>GEMM、归约、Mask</td>
+            <td>Online Softmax、因果边界、IO 优化</td>
+            </tr>
+            <tr>
+            <td>Paged Attention</td>
+            <td>指针、Stride、Gather</td>
+            <td>页表、KV Cache 布局、负载均衡</td>
+            </tr>
+            <tr>
+            <td>MoE</td>
+            <td>多组 Tile 与调度</td>
+            <td>Token Routing、Grouped GEMM</td>
+            </tr>
+            <tr>
+            <td>Quantization</td>
+            <td>类型转换、归约、缩放</td>
+            <td>Scale 粒度、布局与精度</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>建议按向量加法、融合逐元素算子、行归约、Softmax、矩阵乘法、Attention
+            的顺序学习。每一步都同时回答三个问题：当前 Program
+            负责哪些数据，数据如何在显存和片上移动，以及什么资源限制了执行效率。</p>
+            <p>掌握这些概念后，再学习 Tensor Descriptor、TMA、Warp
+            Specialization
+            和更显式的布局控制，会更容易理解它们解决的实际问题。这些进阶能力与
+            Triton 版本、后端和 GPU
+            架构相关，应以对应环境的文档为准。</p>
+          </main>
+        <aside class="wiki-toc">
+      <ul>
+      <li><a href="#一triton-在-gpu-编程中的位置"
+      id="toc-一triton-在-gpu-编程中的位置">一、Triton 在 GPU
+      编程中的位置</a></li>
+      <li><a href="#二programgrid-与-tile"
+      id="toc-二programgrid-与-tile">二、Program、Grid 与 Tile</a></li>
+      <li><a href="#三host-代码与-kernel-代码"
+      id="toc-三host-代码与-kernel-代码">三、Host 代码与 Kernel
+      代码</a></li>
+      <li><a href="#四第一个-kernel向量加法"
+      id="toc-四第一个-kernel向量加法">四、第一个
+      Kernel：向量加法</a></li>
+      <li><a href="#五pointerstride-与-mask"
+      id="toc-五pointerstride-与-mask">五、Pointer、Stride 与 Mask</a>
+      <ul>
+      <li><a href="#指针运算按元素计数" id="toc-指针运算按元素计数">1.
+      指针运算按元素计数</a></li>
+      <li><a href="#mask-保护访存" id="toc-mask-保护访存">2. Mask
+      保护访存</a></li>
+      </ul></li>
+      <li><a href="#六reduction-与-softmax"
+      id="toc-六reduction-与-softmax">六、Reduction 与 Softmax</a></li>
+      <li><a href="#七矩阵乘法从元素到-tile"
+      id="toc-七矩阵乘法从元素到-tile">七、矩阵乘法：从元素到
+      Tile</a></li>
+      <li><a href="#八性能优化与-autotune"
+      id="toc-八性能优化与-autotune">八、性能优化与 Autotune</a></li>
+      <li><a href="#九正确性验证与性能测量"
+      id="toc-九正确性验证与性能测量">九、正确性验证与性能测量</a>
+      <ul>
+      <li><a href="#先验证地址与边界" id="toc-先验证地址与边界">1.
+      先验证地址与边界</a></li>
+      <li><a href="#数值正确不等于逐位一致"
+      id="toc-数值正确不等于逐位一致">2. 数值正确不等于逐位一致</a></li>
+      <li><a href="#正确计时异步执行" id="toc-正确计时异步执行">3.
+      正确计时异步执行</a></li>
+      </ul></li>
+      <li><a href="#十把-triton-基础映射到-llm-算子"
+      id="toc-十把-triton-基础映射到-llm-算子">十、把 Triton 基础映射到
+      LLM 算子</a></li>
+      </ul>
+    </aside>
+      </div>
+</body>
+
+</html>

@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 480" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="480" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">CPU 只负责排队：一次 .item() 让两条时间线互相等待</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">提交（launch 返回）、排序（stream 内先后）、完成（GPU 真正算完）是三个不同的时刻</text>
+
+  <!-- ===== Panel A ===== -->
+  <text x="40" y="94" font-size="14" font-weight="700" fill="#0b7285">A · 结果留在 GPU 上：CPU 一路向前提交，GPU 持续忙碌</text>
+  <text x="40" y="133" font-size="12" font-weight="700" fill="#495057">CPU</text>
+  <text x="40" y="183" font-size="12" font-weight="700" fill="#495057">GPU stream</text>
+  <rect x="120" y="112" width="740" height="32" rx="6" fill="#f8f9fa" stroke="#e9ecef"/>
+  <rect x="120" y="162" width="740" height="32" rx="6" fill="#f8f9fa" stroke="#e9ecef"/>
+
+  <g font-size="11" font-weight="700" text-anchor="middle" fill="#3b5bdb">
+    <rect x="150" y="116" width="40" height="24" rx="5" fill="#edf2ff" stroke="#4c6ef5"/><text x="170" y="132">L1</text>
+    <rect x="195" y="116" width="40" height="24" rx="5" fill="#edf2ff" stroke="#4c6ef5"/><text x="215" y="132">L2</text>
+    <rect x="240" y="116" width="40" height="24" rx="5" fill="#edf2ff" stroke="#4c6ef5"/><text x="260" y="132">L3</text>
+    <rect x="285" y="116" width="40" height="24" rx="5" fill="#edf2ff" stroke="#4c6ef5"/><text x="305" y="132">L4</text>
+  </g>
+  <rect x="335" y="116" width="250" height="24" rx="5" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="460" y="132" text-anchor="middle" font-size="11" fill="#495057">已返回：调度下一批 / 处理上一批结果</text>
+
+  <g font-size="11" font-weight="700" text-anchor="middle" fill="#0b7285">
+    <rect x="190" y="166" width="98" height="24" rx="5" fill="#e6fcf5" stroke="#0ca678"/><text x="239" y="182">kernel 1</text>
+    <rect x="290" y="166" width="98" height="24" rx="5" fill="#e6fcf5" stroke="#0ca678"/><text x="339" y="182">kernel 2</text>
+    <rect x="390" y="166" width="98" height="24" rx="5" fill="#e6fcf5" stroke="#0ca678"/><text x="439" y="182">kernel 3</text>
+    <rect x="490" y="166" width="98" height="24" rx="5" fill="#e6fcf5" stroke="#0ca678"/><text x="539" y="182">kernel 4</text>
+  </g>
+  <g stroke="#adb5bd" stroke-width="1.2" stroke-dasharray="3 3" fill="none">
+    <path d="M170 140 L200 166"/><path d="M215 140 L300 166"/><path d="M260 140 L400 166"/><path d="M305 140 L500 166"/>
+  </g>
+  <text x="600" y="210" font-size="11.5" fill="#868e96">虚线 = 命令进入 stream 队列；队列里的工作按序执行</text>
+
+  <line x1="40" y1="228" x2="860" y2="228" stroke="#dee2e6" stroke-width="1.5"/>
+
+  <!-- ===== Panel B ===== -->
+  <text x="40" y="256" font-size="14" font-weight="700" fill="#c92a2a">B · 中途读 .item()：CPU 停下等值，GPU 随后出现空泡</text>
+  <text x="40" y="295" font-size="12" font-weight="700" fill="#495057">CPU</text>
+  <text x="40" y="345" font-size="12" font-weight="700" fill="#495057">GPU stream</text>
+  <rect x="120" y="274" width="740" height="32" rx="6" fill="#f8f9fa" stroke="#e9ecef"/>
+  <rect x="120" y="324" width="740" height="32" rx="6" fill="#f8f9fa" stroke="#e9ecef"/>
+
+  <g font-size="11" font-weight="700" text-anchor="middle" fill="#3b5bdb">
+    <rect x="150" y="278" width="40" height="24" rx="5" fill="#edf2ff" stroke="#4c6ef5"/><text x="170" y="294">L1</text>
+    <rect x="195" y="278" width="40" height="24" rx="5" fill="#edf2ff" stroke="#4c6ef5"/><text x="215" y="294">L2</text>
+    <rect x="415" y="278" width="40" height="24" rx="5" fill="#edf2ff" stroke="#4c6ef5"/><text x="435" y="294">L3</text>
+    <rect x="460" y="278" width="40" height="24" rx="5" fill="#edf2ff" stroke="#4c6ef5"/><text x="480" y="294">L4</text>
+  </g>
+  <rect x="240" y="278" width="170" height="24" rx="5" fill="#fff5f5" stroke="#fa5252"/>
+  <text x="325" y="294" text-anchor="middle" font-size="11" font-weight="700" fill="#c92a2a">.item()：阻塞等值</text>
+
+  <g font-size="11" font-weight="700" text-anchor="middle" fill="#0b7285">
+    <rect x="190" y="328" width="98" height="24" rx="5" fill="#e6fcf5" stroke="#0ca678"/><text x="239" y="344">kernel 1</text>
+    <rect x="290" y="328" width="98" height="24" rx="5" fill="#e6fcf5" stroke="#0ca678"/><text x="339" y="344">kernel 2</text>
+    <rect x="455" y="328" width="98" height="24" rx="5" fill="#e6fcf5" stroke="#0ca678"/><text x="504" y="344">kernel 3</text>
+    <rect x="555" y="328" width="98" height="24" rx="5" fill="#e6fcf5" stroke="#0ca678"/><text x="604" y="344">kernel 4</text>
+  </g>
+  <rect x="390" y="328" width="22" height="24" rx="4" fill="#fff9db" stroke="#f08c00"/>
+  <text x="401" y="368" text-anchor="middle" font-size="10.5" fill="#e8590c">D2H</text>
+  <rect x="413" y="328" width="40" height="24" rx="4" fill="#ffffff" stroke="#adb5bd" stroke-dasharray="3 2"/>
+  <text x="433" y="344" text-anchor="middle" font-size="10.5" fill="#868e96">空泡</text>
+
+  <path d="M401 328 L401 312 L405 306" stroke="#c92a2a" stroke-width="1.5" fill="none" marker-end="url(#arR)"/>
+  <text x="560" y="294" font-size="11.5" fill="#495057">值到达主机后，CPU 才继续提交 L3、L4</text>
+  <text x="680" y="344" font-size="11.5" fill="#495057">GPU 等新命令：吞吐损失</text>
+
+  <g font-size="11" fill="#868e96" text-anchor="middle">
+    <line x1="190" y1="384" x2="190" y2="394" stroke="#868e96"/><text x="190" y="410">L1 返回 ≠ kernel 1 开始</text>
+    <line x1="388" y1="384" x2="388" y2="394" stroke="#868e96"/><text x="388" y="410">kernel 2 完成，值才可读</text>
+  </g>
+
+  <rect x="40" y="428" width="820" height="38" rx="9" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="58" y="452" font-size="12" fill="#495057">关键：CPU 能跑在 GPU 前面，靠的是“不需要知道值”。一旦 Python 需要值，CPU 必须等待；GPU 也会因为队列变空而短暂闲置。</text>
+
+  <defs>
+    <marker id="arR" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#c92a2a"/></marker>
+  </defs>
+</svg>

@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 470" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="470" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">计时之前先问：这个区间包住的是哪个时刻？</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">perf_counter 读的是 CPU 时钟；CUDA Event 是排进 stream 的标记，读的是 GPU 走到两个标记之间的时间</text>
+
+  <!-- bracket 1 (above CPU lane) -->
+  <path d="M180 100 L180 92 L340 92 L340 100" fill="none" stroke="#c92a2a" stroke-width="1.6"/>
+  <text x="352" y="96" font-size="11.5" fill="#c92a2a">① 只用 perf_counter 包住调用：读数≈提交耗时，不是 kernel 耗时</text>
+
+  <!-- lanes -->
+  <text x="40" y="131" font-size="12" font-weight="700" fill="#495057">CPU</text>
+  <text x="40" y="191" font-size="12" font-weight="700" fill="#495057">GPU stream</text>
+  <rect x="150" y="110" width="710" height="32" rx="6" fill="#f8f9fa" stroke="#e9ecef"/>
+  <rect x="150" y="170" width="710" height="32" rx="6" fill="#f8f9fa" stroke="#e9ecef"/>
+
+  <g font-size="10.5" font-weight="700" text-anchor="middle" fill="#3b5bdb" font-family="monospace">
+    <rect x="180" y="114" width="48" height="24" rx="5" fill="#edf2ff" stroke="#4c6ef5"/><text x="204" y="130">start</text>
+    <rect x="232" y="114" width="56" height="24" rx="5" fill="#edf2ff" stroke="#4c6ef5"/><text x="260" y="130">x @ x</text>
+    <rect x="292" y="114" width="48" height="24" rx="5" fill="#edf2ff" stroke="#4c6ef5"/><text x="316" y="130">end</text>
+  </g>
+  <rect x="345" y="114" width="265" height="24" rx="5" fill="#fff5f5" stroke="#fa5252"/>
+  <text x="477" y="130" text-anchor="middle" font-size="11" font-weight="700" fill="#c92a2a">end.synchronize()：CPU 等待</text>
+  <rect x="616" y="114" width="150" height="24" rx="5" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="691" y="130" text-anchor="middle" font-size="11" fill="#495057">elapsed_time() 可读</text>
+
+  <!-- GPU lane -->
+  <path d="M240 174 L248 186 L240 198 L232 186 z" fill="#0ca678"/>
+  <rect x="252" y="174" width="346" height="24" rx="5" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="425" y="190" text-anchor="middle" font-size="11" font-weight="700" fill="#0b7285">matmul kernel 实际执行</text>
+  <path d="M606 174 L614 186 L606 198 L598 186 z" fill="#0ca678"/>
+  <g stroke="#adb5bd" stroke-width="1.2" stroke-dasharray="3 3" fill="none">
+    <path d="M204 138 L238 174"/><path d="M260 138 L300 174"/><path d="M316 138 L600 174"/>
+  </g>
+  <path d="M610 174 L612 142" stroke="#c92a2a" stroke-width="1.5" fill="none" marker-end="url(#arR)"/>
+
+  <!-- bracket 2 (below GPU lane) -->
+  <path d="M240 210 L240 218 L606 218 L606 210" fill="none" stroke="#0ca678" stroke-width="1.6"/>
+  <text x="423" y="236" text-anchor="middle" font-size="11.5" fill="#0b7285">② start.elapsed_time(end)：同一 stream 上两个标记之间的设备时间</text>
+
+  <!-- bracket 3 -->
+  <path d="M160 252 L160 260 L770 260 L770 252" fill="none" stroke="#4c6ef5" stroke-width="1.6"/>
+  <text x="465" y="278" text-anchor="middle" font-size="11.5" fill="#3b5bdb">③ 区间前后各 synchronize 一次再读 CPU 时钟：端到端（含提交、调度、等待）</text>
+
+  <!-- three verdict boxes -->
+  <rect x="40" y="300" width="260" height="96" rx="10" fill="#fff5f5" stroke="#fa5252"/>
+  <text x="58" y="324" font-size="13" font-weight="700" fill="#c92a2a">① 常见误测</text>
+  <text x="58" y="348" font-size="11.5" fill="#495057">异步调用一返回就停表，</text>
+  <text x="58" y="368" font-size="11.5" fill="#495057">测到的主要是 CPU 提交开销。</text>
+
+  <rect x="320" y="300" width="260" height="96" rx="10" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="338" y="324" font-size="13" font-weight="700" fill="#0b7285">② GPU 时间</text>
+  <text x="338" y="348" font-size="11.5" fill="#495057">适合一段 stream 内的工作；</text>
+  <text x="338" y="368" font-size="11.5" fill="#495057">跨 stream 要纳入事件依赖。</text>
+
+  <rect x="600" y="300" width="260" height="96" rx="10" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="618" y="324" font-size="13" font-weight="700" fill="#3b5bdb">③ 端到端时间</text>
+  <text x="618" y="348" font-size="11.5" fill="#495057">适合基准测试；测量用的同步</text>
+  <text x="618" y="368" font-size="11.5" fill="#495057">不要长期留在生产热路径。</text>
+
+  <rect x="40" y="414" width="820" height="40" rx="9" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="58" y="439" font-size="12" fill="#495057">关键：三种读数都“正确”，只是回答不同的问题；服务延迟还包括排队、CPU 调度与网络，不能用 ② 代替。</text>
+
+  <defs>
+    <marker id="arR" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#c92a2a"/></marker>
+  </defs>
+</svg>

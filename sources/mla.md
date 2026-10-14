@@ -87,7 +87,7 @@ MLA 在这里增加了一个中间步骤：
 
 对应的流程图如下：
 
-![MLA absorb 流程](../docs/WikiImage/mla_absorb.drawio.svg)
+![MLA normal 流程](../docs/WikiImage/mla_normal.drawio.svg)
 
 在推理的 decode 阶段，实际上使用的是 MQA，这里也给出 MQA 的数学流程：
 
@@ -103,7 +103,7 @@ MLA 在这里增加了一个中间步骤：
 
 对应的流程图如下：
 
-{{< svg "/images/mla_absorb.drawio.svg" "80%" >}}
+![MLA absorb 流程](../docs/WikiImage/mla_absorb.drawio.svg)
 
 ### 计算量分析
 
@@ -145,13 +145,6 @@ MLA 在这里增加了一个中间步骤：
 \[[c_{Q}, c_{KV}, K_{nope}] = X [W_{DQ}, W_{DKV}, W_{KR}]\]
 
 也就是说，首先将这个几个 gemm 的权重 \(W_{DQ}, W_{DKV}, W_{KR}\) 合并为一个，然后做完 gemm 之后我们再拆分所需要的不同目标 tensor。
-
-### 步骤详解
-
-如果想要彻底梳理清楚 MLA 的所有细节，那么必须对两个方面了如指掌：
-
-1. 以上每个数学符号的 shape 是多少？
-2. 每个阶段的计算量是多少？
 
 #### 符号声明
 

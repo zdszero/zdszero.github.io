@@ -21,12 +21,27 @@
 
   <meta name="generator" content="pandoc" />
       <title>
-    dsa
+    DSA
   </title>
     <link rel="stylesheet" href="./WikiTheme/theme/bootstrap.css"  />
         <script defer=""
-        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
-        type="text/javascript"></script>
+        src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+        <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+        </script>
+        <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
       <style type="text/css">
     html { -webkit-text-size-adjust: 100%; }
     pre > code.sourceCode { white-space: pre; position: relative; }
@@ -93,87 +108,17 @@
     code span.vs { color: #4070a0; } /* VerbatimString */
     code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
   </style>
-      <style type="text/css">
-    /* ---- three column wiki layout (left: site directory, center: content, right: page TOC) ---- */
-    .wiki-layout {
-      display: flex;
-      align-items: flex-start;
-      gap: 24px;
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 0 20px;
-      box-sizing: border-box;
-    }
-    .wiki-sidebar {
-      flex: 0 0 240px;
-      width: 240px;
-      position: sticky;
-      top: 0;
-      max-height: 100vh;
-      overflow-y: auto;
-      padding: 10px 4px 20px 0;
-      border-right: 1px solid #eee;
-      font-size: 14px;
-    }
-    .wiki-sidebar[hidden] { display: none; }
-    .wiki-toc {
-      flex: 0 0 220px;
-      width: 220px;
-      position: sticky;
-      top: 0;
-      max-height: 100vh;
-      overflow-y: auto;
-      padding: 10px 0 20px 4px;
-      border-left: 1px solid #eee;
-      font-size: 14px;
-    }
-    .wiki-main {
-      flex: 1 1 auto;
-      min-width: 0;
-      max-width: 820px;
-      padding: 10px 0 40px;
-    }
-    /* site directory tree */
-    .wiki-sidebar .wiki-home {
-      display: block;
-      font-weight: bold;
-      margin-bottom: 10px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid #eee;
-      text-decoration: none;
-      color: #333;
-    }
-    .wiki-sidebar ul { list-style: none; margin: 0 0 0 12px; padding: 0; }
-    .wiki-sidebar > ul { margin-left: 0; }
-    .wiki-sidebar li { line-height: 1.7; }
-    .wiki-sidebar a { text-decoration: none; color: #555; }
-    .wiki-sidebar a:hover { color: #0088cc; text-decoration: underline; }
-    .wiki-sidebar a.active { color: #0088cc; font-weight: bold; }
-    /* page TOC */
-    .wiki-toc ul { list-style: none; margin: 0 0 0 12px; padding: 0; }
-    .wiki-toc > ul { margin-left: 0; }
-    .wiki-toc li { line-height: 1.6; }
-    .wiki-toc a { text-decoration: none; color: #555; }
-    .wiki-toc a:hover { color: #0088cc; }
-    @media (max-width: 980px) {
-      .wiki-layout { flex-direction: column; }
-      .wiki-sidebar, .wiki-toc {
-        position: static;
-        width: 100%;
-        flex-basis: auto;
-        max-height: none;
-        border: 0;
-      }
-      .wiki-main { max-width: none; }
-    }
-  </style>
+      <!-- wiki three-column layout styles/behavior, kept external so the ~5KB
+       block isn't duplicated into every generated page -->
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/wiki-layout.css" />
+  <script defer src="./WikiTheme/wiki-layout.js"></script>
 </head>
 
 <body>
     <div class="navbar navbar-static-top">
     <div class="navbar-inner">
       <div class="container">
-        <span class="doc-title">dsa</span>
+        <span class="doc-title">DSA</span>
         <ul class="nav pull-right doc-info">
           <p class="navbar-text">
                                                       </p>
@@ -184,116 +129,201 @@
     <div class="wiki-layout">
     <nav class="wiki-sidebar" id="wiki-sidebar" hidden></nav>
     <main class="wiki-main">
-            <h3 id="indexer">Indexer</h3>
-            <p>Indexer 在结构上类似一个极简的 attention
-            前半段：它使用少量 head 的低维 <span
-            class="math inline">\(QK^T\)</span> 计算 query–key
-            的相关性分数，但不进行 softmax，也不计算 value 聚合。<br />
-            其输出是一个索引分数，用于评估每个 query token 与历史 token
-            的相关性，从而筛选出需要进入真实 attention 计算的候选
-            token。</p>
-            <p>其中，不同 head 的相关性分数通过由 query token
-            自适应生成的 gating 权重进行加权融合。</p>
-            <p><span class="math display">\[
-            I_{t,s} = \sum_{j=1}^{H^l} w_{t,j}^l \cdot ReLU(q_{t,j}^l
-            \cdot k_s^l)
-            \]</span></p>
-            <p>其中：</p>
+            <p><strong>DSA（DeepSeek Sparse Attention）=
+            先用一个极便宜的打分器给所有历史 token 排序，再只对 top-k 个
+            token 做真正的 attention。</strong> DeepSeek-V3.2 和 GLM-5
+            都用它，<span class="math inline">k =
+            2048</span>。它省下的是长上下文的<strong>计算量</strong>，KV
+            cache 一条都没少，反而多存了一份 indexer 的
+            key。下文先讲要解决的问题和设计，再讲 indexer、两份 KV
+            cache、并行方式，最后对照 SGLang 的实现。</p>
+            <h3 id="问题mla-省了显存没省计算">问题：MLA
+            省了显存，没省计算</h3>
+            <p>MLA 把每个 token 的 KV 压成 576 维的 latent，KV cache
+            已经很小了（见 <a href="./mla.html">MLA</a>）。但 attention
+            的<strong>计算量</strong>仍然随上下文长度 <span
+            class="math inline">S</span> 线性增长：absorb 形态下每个
+            query head 要和 <span class="math inline">S</span> 个 latent
+            做 576 维的点积，再对 512 维的 value 做加权和。</p>
+            <p>V3 有 128 个 query head，所以 decode 时每多一个历史
+            token，每个 query 大约多出</p>
+            <p><span class="math display">
+            2 \times 128 \times (576 + 512) \approx 278\text{K FLOPs}
+            </span></p>
+            <p>上下文到 128K 时，attention 的计算会超过 MLP，成为 decode
+            的主要开销；prefill 则是 <span
+            class="math inline">O(S^2)</span>。</p>
+            <p>能不能只算一部分 token？softmax
+            的权重本来就高度集中，大部分 token 的贡献接近
+            0。难点在于<strong>怎么知道该算哪些</strong>：用真 attention
+            打分再挑，等于已经把账全算了一遍。</p>
+            <h3 id="设计两阶段先挑后算">设计：两阶段，先挑后算</h3>
+            <figure>
+            <img src="./WikiImage/dsa_two_stage.svg"
+            alt="DSA 的两阶段：indexer 挑 token，sparse MLA 只算被选中的" />
+            <figcaption aria-hidden="true">DSA 的两阶段：indexer 挑
+            token，sparse MLA 只算被选中的</figcaption>
+            </figure>
+            <p>DSA 把 attention 拆成两个阶段：</p>
+            <ol type="1">
+            <li><strong>Lightning Indexer（挑）</strong>：对全部 <span
+            class="math inline">S</span> 个历史 token
+            打一个相关性分数。它就是一个极简的 attention 前半段：少量
+            head、单个 key head（MQA）、fp8 低精度、没有 softmax、没有
+            value。</li>
+            <li><strong>Sparse MLA（算）</strong>：只对分数最高的 <span
+            class="math inline">k</span> 个 token 做原本的 MLA
+            attention，计算量从 <span class="math inline">\propto
+            S</span> 变成 <span class="math inline">\propto \min(S,
+            k)</span>。</li>
+            </ol>
+            <p>整个设计成立的关键是两个阶段<strong>单价差了一个数量级以上</strong>。indexer
+            每个 key 的代价是 <span class="math inline">2 \times 64
+            \times 128 \approx 16\text{K}</span> 次 fp8 乘加，比 MLA 的
+            278K 次 bf16 便宜约 17 倍（算上 fp8
+            的吞吐优势还要更多）。所以 indexer
+            虽然仍要扫一遍全部历史，斜率却很小；真正贵的 MLA 被截断在
+            <span class="math inline">k</span> 个 token 上。</p>
+            <p>代价有两个：</p>
             <ul>
-            <li><span
-            class="math inline">\(H^l\)</span>：索引器头数（数量少，保证轻量化）；</li>
-            <li><span
-            class="math inline">\(w_{t,j}^l\)</span>：由当前查询 token
-            <span class="math inline">\(h_t\)</span> 生成的权重；</li>
-            <li><span class="math inline">\(q_{t,j}^l /
-            k_s^l\)</span>：分别由查询 token、前文 token
-            生成的查询向量与键向量；</li>
-            <li><span
-            class="math inline">\(ReLU\)</span>：激活函数。</li>
+            <li><strong>KV cache 不减反增</strong>。哪个 token
+            会被选中事先不知道，所以每个历史 token 的 MLA KV
+            都得留着，还要额外存一份 indexer key。这也是后来 V4 的 <a
+            href="./hca_csa.html">CSA / HCA</a>
+            要解决的问题。另一条路是利用”每步只读 <span
+            class="math inline">k</span> 个”这一点，把完整 KV 放到 host
+            内存，只把选中的换进显存（SGLang 的
+            HiSparse，见文末）。</li>
+            <li><strong>短序列没收益</strong>。当 <span
+            class="math inline">S \le k</span> 时 top-k 会选中全部
+            token，sparse 等于 dense，indexer 纯属额外开销。</li>
             </ul>
-            <h4 id="shape">Shape</h4>
+            <h3
+            id="lightning-indexer一个极简的-attention-前半段">Lightning
+            Indexer：一个极简的 attention 前半段</h3>
+            <h4 id="打分公式">打分公式</h4>
+            <p>对 query token <span class="math inline">t</span> 和历史
+            token <span class="math inline">s</span>，indexer
+            的分数是</p>
+            <p><span class="math display">
+            I_{t,s} = \sum_{j=1}^{H^I} w_{t,j} \cdot
+            \mathrm{ReLU}\!\left(q_{t,j} \cdot k_s\right)
+            </span></p>
             <ul>
-            <li><span class="math inline">\(W Q^{T}\)</span>:
-            <code>[bs, q_len, kv_len, n_heads, 1]</code></li>
-            <li>weight proj: <code>[bs, n_heads]</code></li>
-            <li>index score: <code>[bs, q_len, kv_len]</code></li>
+            <li><span class="math inline">H^I = 64</span>：indexer 的
+            head 数，head dim 为 128（V3.2 的配置，取自模型 config 的
+            <code>index_n_heads</code> /
+            <code>index_head_dim</code>）；</li>
+            <li><span class="math inline">q_{t,j}</span>：由 MLA 的 q
+            latent（<code>q_lora_rank</code> 维）经 <code>wq_b</code>
+            投影得到，每个 head 一个；</li>
+            <li><span class="math inline">k_s</span>：由 hidden state 经
+            <code>wk</code> 投影、再过一个 norm 得到，<strong>所有 head
+            共用一个 key</strong>（MQA），所以 cache 里每个 token
+            只存一条 128 维的 key；</li>
+            <li><span class="math inline">w_{t,j}</span>：由 hidden
+            state 经 <code>weights_proj</code> 得到的 per-head 门控，按
+            query 自适应地决定每个 head 的话语权。</li>
             </ul>
+            <p>和真 attention 相比，它少了三样东西：没有
+            softmax（只需要排序，不需要归一化）、没有 value 聚合、ReLU
+            把负相关直接截成 0。q 和 k 的前 64 维会加
+            RoPE，所以分数也带位置信息。</p>
+            <h4 id="fp8-与-scale-的吸收">fp8 与 scale 的吸收</h4>
+            <p>为了让扫全部历史足够便宜，q 和 k 都量化成 fp8（block size
+            128，即每个 head 一个 scale；scale 格式为
+            ue8m0）。计算流程如下：</p>
+            <p><span class="math display">
+            \begin{aligned}
+            q_{\text{fp8}} &amp;: (Q, H, d) &amp;&amp; k_{\text{fp8}} :
+            (K, d), \quad \text{weights} : (Q, H) \\
+            \text{GEMM} &amp;: (Q \cdot H, d) \; @ \; (K, d)^\top
+            \rightarrow (Q \cdot H, K) &amp;&amp; \text{每个 head
+            的点积} \\
+            \mathrm{ReLU},\ \times\,\text{weight},\ \textstyle\sum_h
+            &amp;: (Q \cdot H, K) \rightarrow (Q, K) &amp;&amp;
+            \text{截断、加权、跨 head 求和} \\
+            \times\, k_{\text{scale}} &amp;: (Q, K) &amp;&amp; \text{乘
+            key 的反量化 scale} \\
+            \text{输出} &amp;: \text{logits}\ (Q, K)\ \text{fp32}
+            \end{aligned}
+            </span></p>
             <figure>
             <img src="./WikiImage/v32_indexer_workflow.drawio.svg"
-            alt="v32 indexer 流程" />
-            <figcaption aria-hidden="true">v32 indexer 流程</figcaption>
+            alt="V3.2 indexer 流程" />
+            <figcaption aria-hidden="true">V3.2 indexer
+            流程</figcaption>
             </figure>
-            <p><span class="math display">\[
-            \begin{aligned}
-            q_{\text{fp8}} &amp;: (Q, H, d) \quad \text{多头 query} \\
-            k_{\text{fp8}} &amp;: (K, d) \quad \text{单头 key (MQA)} \\
-            \text{weights} &amp;: (Q, H) \quad \text{per-head gate} \\
-            \\
-            \text{GEMM} &amp;: (Q \times H, d) \; @ \; (K, d)^T
-            \rightarrow (Q \times H, K) \quad \text{per-head dot
-            products} \\
-            \text{ReLU} &amp;: (Q \times H, K) \quad \text{截断负值} \\
-            \times \text{weight} &amp;: (Q \times H, K) \quad \text{乘
-            per-head gate} \\
-            \Sigma_h &amp;: (Q \times H, K) \rightarrow (Q, K) \quad
-            \text{跨 head 求和（reduce sum）} \\
-            \times k_{\text{scale}} &amp;: (Q, K) \quad \text{乘 KV 的
-            FP8 反量化 scale} \\
-            \\
-            \text{输出} &amp;: \text{logits} \; (Q, K) \; \text{float32}
-            \end{aligned}
-            \]</span></p>
-            <h4 id="scale">Scale</h4>
-            <p>weights_proj 用来从 hidden state 预测每个 head 对 block
-            选择的 <strong>重要性权重</strong>。这是一个
-            <strong>可学习的参数</strong>，在训练中优化。</p>
+            <p>这里有个小技巧：q 的反量化 scale、<span
+            class="math inline">1/\sqrt{d}</span> 和 <span
+            class="math inline">1/\sqrt{H}</span> 都和 <span
+            class="math inline">(q, h)</span> 绑定，可以提前乘进
+            per-head 门控里，GEMM 输出直接就是加权后的
+            logit。实现（<code>_get_logits_head_gate</code>）只有三行：</p>
             <div class="sourceCode" id="cb1"><pre
-            class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> _get_logits_head_gate(<span class="va">self</span>, x, q_scale):</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    weights, _ <span class="op">=</span> <span class="va">self</span>.weights_proj(x)           <span class="co"># (seq_len, n_heads)</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    weights <span class="op">=</span> weights.<span class="bu">float</span>()</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    weights <span class="op">=</span> weights <span class="op">*</span> <span class="va">self</span>.n_heads<span class="op">**-</span><span class="fl">0.5</span>      <span class="co"># scale by 1/√H</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    weights <span class="op">=</span> weights.unsqueeze(<span class="op">-</span><span class="dv">1</span>) <span class="op">*</span> q_scale <span class="op">*</span> <span class="va">self</span>.softmax_scale</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">#         ^(seq_len, n_heads, 1)   ^FP8量化scale  ^1/√d</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> weights</span></code></pre></div>
-            <p><span class="math display">\[
-            \begin{aligned}
-            \text{logit}[q, k] &amp;= \sum_h \left( \text{weight}[q, h]
-            \times \mathbf{q\_fp8}[q, h, :] \cdot \mathbf{k\_fp8}[k, :]
-            \right) \times k\_scale[k] \\
-            &amp;= \sum_h \left( \frac{g[q,h]}{\sqrt{H}} \times
-            q\_scale[q,h] \times \frac{1}{\sqrt{d}} \times
-            \mathbf{q\_fp8}[q,h] \cdot \mathbf{k\_fp8}[k] \times
-            k\_scale[k] \right) \\
-            &amp;= \sum_h \left( \frac{g[q,h]}{\sqrt{H}} \times
-            \frac{\mathbf{q}[q,h] \cdot \mathbf{k}[k]}{\sqrt{d}} \right)
-            \\
-            &amp;= \sum_h \left( \frac{g[q,h]}{\sqrt{H}} \times
-            \text{attn\_logit\_h}[q,k] \right)
-            \end{aligned}
-            \]</span></p>
-            <h4 id="topk">TopK</h4>
-            <h3 id="theory">theory</h3>
-            <h4 id="kv-cache">kv cache</h4>
-            <p>Indexer 有<strong>独立的 KV
-            cache</strong>（<code>index_k_with_scale_buffer</code>），和
-            MLA 主 KV cache 是分开的。</p>
-            <p>每个 token 每层存储的是 indexer 的 <strong>key</strong>：
-            - <strong>head 数 = 1</strong>（MQA 风格，只有一个 key
-            head） - <strong>head_dim = 128</strong></p>
-            <p>代码中有明确 assert：</p>
-            <div class="sourceCode" id="cb2"><pre
-            class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># memory_pool.py:1772-1773</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># num head == 1 and head dim == 128 for index_k in NSA</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> index_head_dim <span class="op">==</span> <span class="dv">128</span></span></code></pre></div>
-            <p><strong>存储数据类型：FP8 + FP32 scale</strong></p>
-            <p>存储类型是 <strong><code>torch.uint8</code></strong>（即
-            FP8 映射到 uint8），加上 per-block FP32 量化 scale：</p>
-            <div class="sourceCode" id="cb3"><pre
-            class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># memory_pool.py:1732</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>index_k_with_scale_buffer_dtype <span class="op">=</span> torch.uint8</span></code></pre></div>
-            <p>然后 block size 是 128，也就是 128 个数据单元共用一个
-            fp32 4 字节的 scale。</p>
-            <p><strong>对比 MLA 主 KV cache</strong></p>
+            class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>weights <span class="op">=</span> <span class="va">self</span>._weights_proj_bf16_in_fp32_out(x)               <span class="co"># (T, H)</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>weights <span class="op">=</span> weights <span class="op">*</span> <span class="va">self</span>.n_heads<span class="op">**-</span><span class="fl">0.5</span>                         <span class="co"># 1/√H</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>weights <span class="op">=</span> weights.unsqueeze(<span class="op">-</span><span class="dv">1</span>) <span class="op">*</span> q_scale <span class="op">*</span> <span class="va">self</span>.softmax_scale <span class="co"># q 反量化 scale、1/√d</span></span></code></pre></div>
+            <p>于是</p>
+            <p><span class="math display">
+            \text{logit}[q, k]
+            = \sum_h \text{weight}[q,h] \cdot
+            \mathrm{ReLU}\!\left(q_{\text{fp8}}[q,h] \cdot
+            k_{\text{fp8}}[k]\right) \cdot k_{\text{scale}}[k]
+            = \sum_h \frac{g[q,h]}{\sqrt{H}} \cdot
+            \mathrm{ReLU}\!\left(\frac{q[q,h] \cdot
+            k[k]}{\sqrt{d}}\right)
+            </span></p>
+            <p>其中 <span class="math inline">g</span> 是
+            <code>weights_proj</code>
+            的原始输出。第二个等号成立，是因为反量化 scale 和 <span
+            class="math inline">1/\sqrt{d}</span> 都是正数，<span
+            class="math inline">\mathrm{ReLU}(a x) =
+            a\,\mathrm{ReLU}(x)</span>（<span
+            class="math inline">a&gt;0</span>），可以自由地移进移出
+            ReLU。<span class="math inline">k_{\text{scale}}</span> 是
+            per-key 的，不能并进门控，只能在求和之后再乘。</p>
+            <p>另外，q 和 k 在量化前会做一次 Hadamard
+            旋转（<code>rotate_activation</code>），把离群值摊到各个维度上，降低
+            fp8 的量化误差。由于 q 和 k
+            做了同一个正交变换，点积不变。</p>
+            <h4 id="top-k选的是-token不是-block">Top-k：选的是
+            token，不是 block</h4>
+            <p>indexer 对每个 query 输出 <span class="math inline">(Q,
+            K)</span> 的 logits，再取 top-2048。选出的是 <strong>token
+            级</strong>的位置，不是 block。这和 NSA 论文里按 block
+            选择不同：token 粒度的选择更精确，但要求 sparse attention
+            kernel 能处理完全不连续的 KV 访问。</p>
+            <p>位置本身还不能直接用：KV cache 是分页的，序列里相邻的
+            token 可能落在相距很远的物理页上。所以 top-k
+            之后还要把每个位置 <span class="math inline">p</span> 经
+            page table 翻译成物理 slot：</p>
+            <figure>
+            <img src="./WikiImage/dsa_topk_to_slot.svg"
+            alt="top-k 的位置经 page table 翻译成 KV slot" />
+            <figcaption aria-hidden="true">top-k 的位置经 page table
+            翻译成 KV slot</figcaption>
+            </figure>
+            <p>翻译之后的结果是一张 <span
+            class="math inline">(\text{rows}, k)</span> 的 int32
+            表，每个元素就是一个物理 slot，相当于 <strong>page size 为 1
+            的稀疏 page table</strong>；上下文不足 <span
+            class="math inline">k</span> 时，空位填 <span
+            class="math inline">-1</span>。sparse MLA kernel
+            拿到的就是这张表，按 slot 去 gather KV，它完全不需要知道这些
+            token 原来在序列的哪里。</p>
+            <p>这一步翻译是逐元素的整数运算，所以实现上直接<strong>并进
+            top-k 的 kernel</strong>，选出来就是 slot，省掉一次单独的
+            index 转换。</p>
+            <h3 id="两份-kv-cache">两份 KV cache</h3>
+            <p>indexer 的 key 和 MLA 的 latent 是两套独立的东西，所以
+            DSA 模型的每一层要存两份 cache：</p>
+            <figure>
+            <img src="./WikiImage/dsa_kv_layout.svg"
+            alt="DSA 每 token 每层的 KV 布局" />
+            <figcaption aria-hidden="true">DSA 每 token 每层的 KV
+            布局</figcaption>
+            </figure>
             <table>
             <colgroup>
             <col style="width: 25%" />
@@ -304,112 +334,312 @@
             <thead>
             <tr>
             <th></th>
-            <th>Indexer KV cache</th>
-            <th>MLA 主 KV cache (bf16)</th>
-            <th>MLA 主 KV cache (fp8)</th>
+            <th>MLA 主 cache（bf16）</th>
+            <th>MLA 主 cache（fp8）</th>
+            <th>Indexer cache</th>
             </tr>
             </thead>
             <tbody>
             <tr>
-            <td><strong>存什么</strong></td>
-            <td>indexer key（hadamard 旋转后）</td>
-            <td><span class="math inline">\(k\_\text{nope} +
-            k\_\text{rope}\)</span>（latent）</td>
-            <td><span class="math inline">\(k\_\text{nope\_fp8} +
-            \text{scale} + k\_\text{rope\_bf16}\)</span></td>
+            <td>存什么</td>
+            <td><span class="math inline">k_{\text{nope}}</span> latent
+            + <span class="math inline">k_{\text{rope}}</span></td>
+            <td>同左，nope 部分量化</td>
+            <td>indexer key（旋转后量化）</td>
             </tr>
             <tr>
-            <td><strong>维度</strong></td>
-            <td>128 (<span class="math inline">\(1\ \text{head} \times
-            128\ \text{dim}\)</span>)</td>
-            <td>576 (<span class="math inline">\(512 + 64\)</span>)</td>
-            <td>656 (<span class="math inline">\(512 + 16 +
-            128\)</span>)</td>
+            <td>布局</td>
+            <td>512 + 64 维，全 bf16</td>
+            <td>512 fp8 + 4 个 fp32 scale + 64 维 bf16 rope</td>
+            <td>128 fp8 + 1 个 fp32 scale</td>
             </tr>
             <tr>
-            <td><strong>数据类型</strong></td>
-            <td>fp8 + fp32 scale</td>
-            <td>bf16</td>
-            <td>fp8 + fp32 scale + bf16 rope</td>
-            </tr>
-            <tr>
-            <td><strong>每 token 每层</strong></td>
-            <td><strong>132 bytes</strong></td>
-            <td><strong>1152 bytes</strong></td>
-            <td><strong>656 bytes</strong></td>
-            </tr>
-            <tr>
-            <td><strong>独立 buffer</strong></td>
-            <td><code>index_k_with_scale_buffer</code></td>
-            <td><code>kv_buffer</code></td>
-            <td><code>kv_buffer</code></td>
+            <td>每 token 每层</td>
+            <td>1152 B</td>
+            <td>656 B</td>
+            <td>132 B</td>
             </tr>
             </tbody>
             </table>
-            <p><strong>总显存开销</strong></p>
-            <p>每个 token 每层的 <strong>总 KV cache</strong> = MLA 主
-            cache + indexer cache： - bf16 模式：<span
-            class="math display">\[1152 + 132 = \mathbf{1284\
-            bytes/token/layer}\]</span> - fp8 模式：<span
-            class="math display">\[656 + 132 = \mathbf{788\
-            bytes/token/layer}\]</span></p>
-            <p>常用经验值：</p>
+            <p>fp8 主 cache 里 rope 部分保留
+            bf16，是因为位置信息对精度更敏感；nope 部分按 128
+            维一组量化，512 维正好 4 个 scale。这是 FlashMLA 这类 kernel
+            要的”带 scale”布局；trtllm、tilelang 等 kernel 用的是不带
+            scale 的原始布局，576 维全部 fp8，每 token 每层 576
+            B。具体用哪种布局取决于选中的 attention
+            kernel，见文末实现部分。</p>
+            <p>按 61 层估算，每个 token 的显存开销约为：</p>
             <ul>
-            <li>在 dense 的 mla 路径中，一个 token 61 层总共需要 <span
-            class="math inline">\(70\text{kb}\)</span> 左右的显存。</li>
-            <li>在 sparse 的 mla 路径中，一个 token 61 层的 mla latent
-            cahce 总共需要 <span
-            class="math inline">\(40\text{kb}\)</span> 左右的显存。</li>
-            <li>在 sparse 的 mla 路径中，一个 token 61 层 mla latent
-            cahce + index k cache 总共需要 <span
-            class="math inline">\(48\text{kb}\)</span> 左右的显存。</li>
+            <li>dense MLA（bf16）：<span class="math inline">1152 \times
+            61 \approx 70\text{KB}</span>；</li>
+            <li>DSA 的 MLA 部分（fp8）：<span class="math inline">656
+            \times 61 \approx 40\text{KB}</span>；</li>
+            <li>DSA 总计（fp8 MLA + indexer）：<span
+            class="math inline">788 \times 61 \approx
+            48\text{KB}</span>。</li>
             </ul>
-            <h4 id="decode-flops">decode flops</h4>
-            <p>如果不使用稀疏注意力，attention 计算量在 decode
-            阶段线性增长为 <span
-            class="math inline">\(2BTSNH\)</span></p>
-            <p>其中： - <span class="math inline">\(B\)</span>: batch
-            size - <span class="math inline">\(T\)</span>: q_len - <span
-            class="math inline">\(S\)</span>: kv_len - <span
-            class="math inline">\(N\)</span>: number of q heads - <span
-            class="math inline">\(H\)</span>: head dim</p>
-            <p>实现 DSA 之后，当 kv_len 长度超过 2048
-            的时候，稀疏注意力部分的计算量就不再增长了，但是 indexer
-            阶段的注意力还是线性增长的，不过这个斜率比较小，因为 <span
-            class="math inline">\(N=64,
-            H=64\)</span>，这个参数还是比较小的。</p>
-            <p>假设 window_size 为 <span class="math inline">\(W =
-            2048\)</span>，那么 decode 阶段 dsa 每个 step 计算量为：</p>
-            <p>$4BT min(S, W) NH)</p>
-            <h3 id="tp-vs-cp">TP vs CP</h3>
-            <p><strong>如果采用 TP，indexer 阶段不按照 TP
-            切分</strong></p>
-            <p>如果采用 TP，不能切 indexer 的 mqa
-            过程，因为后续有一个按照不同 head sum 的过程，如果按照 TP
-            进行切分的话，需要有一个 AllReduce 通信，而这个通信量是大于
-            CP 切分的 index kv all gather 的。</p>
-            <p>同样，对于 sparse mqa + o_proj 的 TP 切分导致的 all
-            reduce 通信量也大于 kv all gather 的通信量。</p>
+            <p>也就是说，indexer cache 只占 DSA 总 KV 的约 17%。DSA 相比
+            dense 能省显存，靠的是主 cache 的 fp8
+            量化，而不是稀疏本身。</p>
+            <h3 id="为什么-dsa-用-mqa">为什么 DSA 用 MQA</h3>
+            <p>关键在于：DSA（DeepSeek Sparse Attention）改变了 Prefill
+            阶段 Attention 的计算形态，使得 MLA 原先采用 MHA
+            计算路径的优势不再那么明显，而 MQA 形式的 KV
+            共享反而更有利于实现细粒度稀疏计算。</p>
+            <p>不过，需要先澄清一个容易混淆的地方：</p>
+            <p>MLA 的 MHA / MQA 是计算实现形式的区别，并不意味着 Prefill
+            和 Decode 使用了两套不同的模型参数或注意力语义。</p>
+            <p>在 MLA 中：</p>
             <ul>
-            <li>indexer
-            <ul>
-            <li>CP
-            通信量：<code>T / cp_size * index_v_hdim</code>，数据量为
-            <span class="math inline">\(O(T)\)</span></li>
-            <li>TP
-            通信量：<code>T * T / tp_size * (tp_size - 1) * 2 * sizeof(float32)</code>，数据量为
-            <span class="math inline">\(O(T^2)\)</span></li>
-            </ul></li>
-            <li>sparse mqa
-            <ul>
-            <li>CP 通信量：<code>T / cp_size * 576</code></li>
-            <li>TP
-            通信量：<code>T / tp_size * (tp_size - 1) * 7168 * 2</code></li>
-            </ul></li>
+            <li>Prefill：倾向于把低秩 KV 展开、吸收到 MHA 形式，利用
+            Tensor Core 执行大规模矩阵乘法。</li>
+            <li>Decode：倾向于将 Query 变换到 latent 空间，让所有 Query
+            Heads 共享压缩 KV，以减少 KV Cache 的 HBM 读取。</li>
             </ul>
-            <p>两种模式下都是 CP 的通信量小于 TP。</p>
-            <p><strong>再对比一下 sparse mqa 模式的 TP 和
-            CP</strong></p>
+            <p>为什么这样设计？因为两阶段的瓶颈不同。</p>
+            <table>
+            <colgroup>
+            <col style="width: 35%" />
+            <col style="width: 35%" />
+            <col style="width: 30%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th></th>
+            <th>MLA Prefill</th>
+            <th>MLA Decode</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>Query Token 数量</td>
+            <td>大量</td>
+            <td>每个序列通常 1 个</td>
+            </tr>
+            <tr>
+            <td>主要计算形态</td>
+            <td>大规模矩阵乘法</td>
+            <td>矩阵向量乘法或小矩阵乘法</td>
+            </tr>
+            <tr>
+            <td>主要优化目标</td>
+            <td>Tensor Core 吞吐</td>
+            <td>KV Cache 访存</td>
+            </tr>
+            <tr>
+            <td>常用实现</td>
+            <td>MHA 形式</td>
+            <td>MQA 形式</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>DSA 的关键变化是引入了 Top-k Token
+            Selection，从而改变了这个权衡。</p>
+            <p><strong>1. DSA 的稀疏性破坏了原来 MHA
+            的主要优势</strong></p>
+            <p>Dense MLA Prefill 可以进行这样的计算：</p>
+            <p><span class="math display">
+            Q_h\in\mathbb{R}^{T\times192},\qquad
+            K_h\in\mathbb{R}^{L\times192} </span></p>
+            <p><span class="math display">
+            Q_hK_h^\top\in\mathbb{R}^{T\times L} </span></p>
+            <p>其中 <span class="math inline">T</span> 是本次 Prefill 的
+            Query 数量，<span class="math inline">L</span> 是可见的 KV
+            数量。</p>
+            <p>对于每个 Head，都是规则、连续的大矩阵乘法，因此 Tensor
+            Core 利用率很高。</p>
+            <p>但 DSA 中，每个 Query Token 都有自己的 Top-k 集合：</p>
+            <p><span class="math display">
+            S_t=\operatorname{TopK}(\operatorname{Indexer}(q_t,K))
+            </span></p>
+            <p>注意，通常：</p>
+            <p><span class="math display"> S_1\neq S_2\neq \cdots\neq
+            S_T </span></p>
+            <p>所以原来的规则矩阵乘法变成：</p>
+            <p><span class="math display">
+            o_{t,h}=\operatorname{Attention}(q_{t,h},K_{S_t},V_{S_t})
+            </span></p>
+            <p>虽然 Prefill 有很多 Query Token，但每个 Query Token
+            访问的 KV 位置不同。</p>
+            <p>这意味着无法直接使用传统 Dense MHA 的大 GEMM
+            组织方式，高效跳过未选中的 Token。</p>
+            <p>当然，可以继续使用 MHA 表示，然后通过 gather 和稀疏
+            kernel 计算，但其规则性和数据复用优势会明显减弱。</p>
+            <p><strong>2. MQA
+            恰好能在另一个维度恢复矩阵乘法</strong></p>
+            <p>DSA 采用 MQA 模式后，对于一个 Query Token，128 个 Query
+            Heads 可以共享同一份 Top-k KV。</p>
+            <p>DeepSeek-V3.2 的典型形状为：</p>
+            <p><span class="math display">
+            Q_t\in\mathbb{R}^{128\times576} </span></p>
+            <p><span class="math display">
+            K_{S_t}\in\mathbb{R}^{2048\times576} </span></p>
+            <p>因此 QK 计算可以组织为：</p>
+            <p><span class="math display">
+            \underbrace{(128\times576)}_{Q}
+            \underbrace{(576\times2048)}_{K^\top} </span></p>
+            <p>相应地，PV 计算是：</p>
+            <p><span class="math display">
+            (128\times2048)(2048\times512) </span></p>
+            <p>你会发现一个很巧妙的地方：</p>
+            <p>原来的 Dense Prefill 是利用 Sequence 维度提供大 GEMM；DSA
+            MQA 则利用 Head 维度提供大 GEMM。</p>
+            <p>这就是 MQA 不仅适合 Decode，而且也适合 Sparse Prefill
+            的原因。</p>
+            <p><strong>3. MQA 还避免了 MHA 模式下的 KV 展开</strong></p>
+            <p>在 MLA 中，MHA 形式需要将 latent KV 投影为各个 Head 的
+            K/V 表示。</p>
+            <p>而 MQA 形式则直接在压缩 latent 空间进行 Attention，通过
+            Query 侧的权重吸收保持等价计算。</p>
+            <p>对于 Dense Prefill，展开 KV 的开销可以被高效 GEMM
+            和后续规则 Attention 计算摊薄。</p>
+            <p>但在 DSA 中，如果每个 Query Token 都有不同的 Top-k
+            集合，那么展开后的 KV 要么提前为所有 Token
+            生成，要么在稀疏访问时按需生成。</p>
+            <p>前者产生额外计算和存储，后者使数据访问与计算组织更加复杂。</p>
+            <p>相比之下，MQA 可以直接：</p>
+            <ol type="1">
+            <li>Lightning Indexer：为每个 Query Token 生成 Top-k
+            索引</li>
+            <li>Gather latent KV：仅加载被选中的 2048 个 KV</li>
+            <li>MQA Sparse Attention：128 个 Query Heads 共享选中的
+            KV</li>
+            </ol>
+            <p>DeepSeek-V3.2 论文明确指出，出于 kernel
+            计算效率考虑，每个 KV 条目需要被多个 Query
+            共享，因此选择基于 MLA 的 MQA 模式实现 DSA。</p>
+            <p><strong>4. 一个值得注意的细节</strong></p>
+            <p>并不是说 DSA 在数学上必须使用 MQA。</p>
+            <p>理论上完全可以实现 MHA Sparse Prefill，也可以对所有 KV
+            进行 MHA 展开后再使用稀疏索引。</p>
+            <p>但它可能失去 DSA 最重要的工程收益：低成本的细粒度随机 KV
+            访问和跨 Head 复用。</p>
+            <p>而且，MQA 不等于所有 Query Heads 使用相同的 Attention
+            权重。它们共享 KV 和 Top-k 位置，但每个 Head 有不同的
+            Query，因此计算出来的 Attention Scores 和输出仍然不同。</p>
+            <p>总结一下：</p>
+            <table>
+            <thead>
+            <tr>
+            <th></th>
+            <th>Dense MLA Prefill</th>
+            <th>DSA Sparse Prefill</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>计算模式</td>
+            <td>MHA</td>
+            <td>MQA</td>
+            </tr>
+            <tr>
+            <td>KV 访问</td>
+            <td>规则、连续</td>
+            <td>Top-k 随机访问</td>
+            </tr>
+            <tr>
+            <td>主要并行维度</td>
+            <td>Sequence × Head</td>
+            <td>Head × Selected KV</td>
+            </tr>
+            <tr>
+            <td>KV 形式</td>
+            <td>展开为每 Head K/V</td>
+            <td>共享 latent KV</td>
+            </tr>
+            <tr>
+            <td>核心优势</td>
+            <td>大 GEMM 高吞吐</td>
+            <td>稀疏访问 + KV 复用</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>DeepSeek 官方 FlashMLA 也明确将 Dense Prefill 标记为 MHA
+            模式，而 Sparse Prefill 标记为 MQA 模式。</p>
+            <p>最值得记住的一句话：Dense Attention 依靠 Sequence
+            维度获得计算效率，Sparse Attention 在失去规则 Sequence
+            结构后，可以利用 MQA 的 Head 维度重新获得计算效率。</p>
+            <p>这不是 MQA 在所有情况下优于 MHA，而是 DSA 改变了最优
+            kernel 设计的约束条件。</p>
+            <h3
+            id="计算量哪一部分还在随长度增长">计算量：哪一部分还在随长度增长</h3>
+            <p>记 query 长度为 <span
+            class="math inline">T</span>（decode 时为 1），上下文长度为
+            <span class="math inline">S</span>，query head 数为 <span
+            class="math inline">N = 128</span>。absorb 形态下：</p>
+            <p><span class="math display">
+            \begin{aligned}
+            \text{dense MLA} &amp;: 2BTS \cdot N (576 + 512) \\
+            \text{sparse MLA} &amp;: 2BT \cdot \min(S, k) \cdot N (576 +
+            512) \\
+            \text{indexer} &amp;: 2BTS \cdot H^I d^I = 2BTS \cdot 64
+            \cdot 128
+            \end{aligned}
+            </span></p>
+            <p>sparse MLA 在 <span class="math inline">S &gt; k =
+            2048</span> 之后就不再增长，增长的只剩
+            indexer。按单价算，indexer 每个 key 约 16K FLOPs，sparse MLA
+            封顶在 <span class="math inline">2048 \times 278\text{K}
+            \approx 570\text{M}</span> FLOPs，两者在 <span
+            class="math inline">S \approx 35\text{K}</span>
+            时持平。更长的上下文里，<strong>indexer 反而成了 attention
+            的主要计算</strong>，只是它跑在 fp8 上，吞吐约是 bf16 的 2
+            倍。</p>
+            <p>这一点直接影响并行方式的选择：indexer 的 64 个 head 在 TP
+            下不切分（原因见下一节），MLA 的 128 个 head 却会被 TP
+            切掉。TP=8 时每个 rank 只剩 16 个 MLA head，indexer
+            的相对占比还要再大 8 倍。</p>
+            <h3 id="再省-indexer跨层复用与-kpool">再省
+            indexer：跨层复用与 kpool</h3>
+            <p>既然长上下文下 indexer
+            成了大头，后续模型从两个方向继续压它，思路都是”挑得粗一点，换取扫得少一点”。</p>
+            <p><strong>跨层复用 top-k</strong>。相邻层选中的 token
+            往往高度重合，于是可以让一部分层<strong>不建
+            indexer</strong>，直接沿用上一层的 top-k 结果。这样这些层的
+            indexer 计算和 indexer cache 都省掉了，sparse MLA
+            照常做。哪些层复用由模型 config
+            决定（逐层标记、每隔几层算一次等几种写法），代码里统一叫
+            skip-topk 层。</p>
+            <p><strong>kpool：把相邻 token 的 key 池化</strong>。把每
+            <span class="math inline">c</span> 个相邻 token 的 index key
+            用一个学习到的 softmax 门控加权合成<strong>一个</strong>池化
+            key（<span class="math inline">c</span> 即 config 里的
+            <code>index_kpool</code>）。indexer 只对池化 key
+            打分，扫描量和 indexer cache 都降为 <span
+            class="math inline">1/c</span>；top-k 选的是 <span
+            class="math inline">k/c</span> 个组，再展开回 <span
+            class="math inline">k</span> 个 token 交给 sparse
+            MLA。最后一个组还没攒满 <span class="math inline">c</span>
+            个 token，无法池化，所以这个”尾巴”总是被直接选中。这其实是向
+            NSA 的 block 选择退回了一步：indexer 的选择粒度变粗，MLA
+            侧仍按 token 读 KV。</p>
+            <h3 id="并行为什么-dsa-偏爱-cp">并行：为什么 DSA 偏爱
+            CP</h3>
+            <h4 id="indexer-不能按-head-切">indexer 不能按 head 切</h4>
+            <p>TP 的常规做法是按 head 切分。但 indexer
+            的分数要<strong>先跨 head 求和，再取 top-k</strong>，而
+            top-k 是非线性的：各 rank 对自己的部分和各取 top-k
+            再合并，得不到正确答案。</p>
+            <figure>
+            <img src="./WikiImage/dsa_indexer_tp_vs_cp.svg"
+            alt="indexer 按 head 切与按序列切的对比" />
+            <figcaption aria-hidden="true">indexer 按 head
+            切与按序列切的对比</figcaption>
+            </figure>
+            <p>如果按 head 切，就必须先把 <span class="math inline">(T,
+            S)</span> 的 fp32 logits 做一次 all-reduce 才能排序。prefill
+            时 <span class="math inline">T = S</span>，这次通信是 <span
+            class="math inline">O(S^2)</span> 的，完全不可接受。所以在
+            TP 下，indexer 在每个 rank
+            上<strong>复制</strong>一份，各自算完整的 64 个 head。</p>
+            <p>CP（context parallel）按序列切分则没有这个问题：每个 rank
+            只负责自己那段 query，只需要拿到<strong>全部</strong>历史
+            token 的 indexer key，也就是做一次 all-gather，通信量是
+            <span class="math inline">O(S)</span>。</p>
+            <h4 id="通信量对比">通信量对比</h4>
+            <p>记并行度为 <span class="math inline">p</span>、隐藏维度为
+            7168，下表是 prefill（<span class="math inline">T =
+            S</span>）时每个 rank 每层大约收到的数据量：</p>
             <table>
             <colgroup>
             <col style="width: 33%" />
@@ -418,301 +648,425 @@
             </colgroup>
             <thead>
             <tr>
-            <th style="text-align: left;">维度</th>
-            <th style="text-align: left;">TP（切 head）</th>
-            <th style="text-align: left;">CP（切序列）</th>
+            <th></th>
+            <th>TP（切 head）</th>
+            <th>CP（切序列）</th>
             </tr>
             </thead>
             <tbody>
             <tr>
-            <td style="text-align: left;"><strong>Indexer
-            计算量</strong></td>
-            <td style="text-align: left;">不减少（每个 rank 处理全部
-            token）</td>
-            <td style="text-align: left;">线性缩减（只处理局部
-            token）</td>
+            <td>indexer</td>
+            <td>logits all-reduce：<span
+            class="math inline">\frac{2(p-1)}{p} \cdot 4S^2</span></td>
+            <td>index key all-gather：<span
+            class="math inline">\frac{p-1}{p} \cdot 256\,S</span></td>
             </tr>
             <tr>
-            <td style="text-align: left;"><strong>QKV Proj
-            计算量</strong></td>
-            <td style="text-align: left;">按 head 数缩减</td>
-            <td style="text-align: left;">按 token 数缩减</td>
-            </tr>
-            <tr>
-            <td style="text-align: left;"><strong>Attention
-            计算量</strong></td>
-            <td style="text-align: left;">Q head 数缩减，KV
-            长度不变</td>
-            <td style="text-align: left;">Q 长度缩减，KV 通过 AllGather
-            完整</td>
-            </tr>
-            <tr>
-            <td style="text-align: left;"><strong>通信</strong></td>
-            <td style="text-align: left;">O proj 的
-            all-reduce（大）</td>
-            <td style="text-align: left;">压缩 KV 的 AllGather（小，因为
-            MLA）</td>
+            <td>sparse MLA</td>
+            <td>o_proj all-reduce：<span
+            class="math inline">\frac{2(p-1)}{p} \cdot 2 \cdot
+            7168\,S</span></td>
+            <td>latent all-gather：<span
+            class="math inline">\frac{p-1}{p} \cdot 1152\,S</span></td>
             </tr>
             </tbody>
             </table>
-            <h3 id="dsa-cp">DSA + CP</h3>
-            <h4 id="allgather-cp">AllGather CP</h4>
-            <p><strong>Ring Attention vs AllGather CP</strong></p>
+            <p>indexer 一行是 <span class="math inline">O(S^2)</span> 对
+            <span class="math inline">O(S)</span>；MLA 一行两边都是
+            <span class="math inline">O(S)</span>，但 CP 小约 25
+            倍。计算上的差别同样明显：</p>
             <table>
-            <colgroup>
-            <col style="width: 33%" />
-            <col style="width: 33%" />
-            <col style="width: 33%" />
-            </colgroup>
+            <thead>
+            <tr>
+            <th></th>
+            <th>TP（切 head）</th>
+            <th>CP（切序列）</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>indexer 计算</td>
+            <td>不减少（复制）</td>
+            <td>按 <span class="math inline">1/p</span> 缩减</td>
+            </tr>
+            <tr>
+            <td>QKV 投影</td>
+            <td>按 head 缩减</td>
+            <td>按 token 缩减</td>
+            </tr>
+            <tr>
+            <td>attention</td>
+            <td>Q 的 head 数缩减，KV 长度不变</td>
+            <td>Q 的长度缩减，KV 全量</td>
+            </tr>
+            </tbody>
+            </table>
+            <h4 id="allgather-cp一次收齐而不是绕环">AllGather
+            CP：一次收齐，而不是绕环</h4>
+            <p>通用的 CP 方案是 <a
+            href="./sequence_parallelism.html">Ring Attention</a>：KV
+            分块绕环传递 <span class="math inline">p-1</span>
+            轮，每轮算一部分 attention，最后合并。DSA 的 CP
+            更简单，<strong>一次 all-gather 收齐全部
+            KV</strong>，然后每个 rank 用本地 Q 对完整 KV 做一次完整的
+            attention：</p>
+            <table>
             <thead>
             <tr>
             <th></th>
             <th>Ring Attention</th>
-            <th>SGLang 这里的 CP</th>
+            <th>AllGather CP</th>
             </tr>
             </thead>
             <tbody>
             <tr>
             <td>通信方式</td>
-            <td>P2P send/recv，KV 绕环传递</td>
-            <td>AllGather 一次收集所有 KV</td>
+            <td>P2P send/recv，KV 绕环</td>
+            <td>一次 all-gather</td>
             </tr>
             <tr>
             <td>通信轮次</td>
-            <td>CP=8 需要 7 轮</td>
-            <td><strong>1 轮 AllGather</strong></td>
+            <td><span class="math inline">p - 1</span> 轮</td>
+            <td>1 轮</td>
             </tr>
             <tr>
-            <td>每轮计算</td>
-            <td>每轮用当前 KV chunk 做部分 attention</td>
-            <td>收齐后做<strong>完整 attention</strong></td>
-            </tr>
-            <tr>
-            <td>overlap</td>
-            <td>第 i 轮计算与第 i+1 轮传输重叠</td>
-            <td>AllGather 与其他计算重叠</td>
+            <td>计算</td>
+            <td>每轮算部分 attention，最后合并</td>
+            <td>收齐后做完整 attention</td>
             </tr>
             </tbody>
             </table>
-            <p><strong>为什么能用 AllGather？关键在于 MLA</strong></p>
-            <p>DeepSeek V3 使用 MLA（Multi-head Latent Attention），KV
-            cache 是<strong>高度压缩</strong>的——每个 token 的 KV 只有
-            <code>kv_lora_rank + qk_rope_head_dim</code>（约 512+64=576
-            维），而不是传统 MHA 的
-            <code>num_heads * head_dim</code>（128*128=16384 维）。</p>
-            <p><strong>KV cache 体积小了约 28 倍</strong>，使得
-            AllGather 整段 KV 的通信量可以接受。</p>
-            <h4 id="q-split">Q Split</h4>
-            <h5 id="zig-zag">zig-zag</h5>
-            <p>先切成 <code>cp_size * 2</code> 块，然后交叉配对：</p>
-            <div class="sourceCode" id="cb4"><pre
-            class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># nsa/utils.py:499-516</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>cp_segment_num <span class="op">=</span> cp_size <span class="op">*</span> <span class="dv">2</span>  <span class="co"># = 8</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># zigzag_index: 每个rank拿一个靠前的block + 一个靠后的block</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>zigzag_index <span class="op">=</span> [cp_rank, ...(前)] <span class="op">+</span> [cp_segment_num <span class="op">-</span> cp_rank <span class="op">-</span> <span class="dv">1</span>, ...(后)]</span></code></pre></div>
-            <p>结果：</p>
-            <pre><code>block:  b0   b1   b2   b3   b4   b5   b6   b7
-        ↓    ↓    ↓    ↓    ↓    ↓    ↓    ↓
-rank0: b0 + b7  (最前 + 最后)
-rank1: b1 + b6
-rank2: b2 + b5
-rank3: b3 + b4  (中间两块)</code></pre>
-            <p>每个 rank 的计算量（N=8000, 每块 1000 token）：</p>
-            <pre><code>rank0: b0(Q attend 0~999,    avg_kv≈500)   + b7(Q attend 7000~7999, avg_kv≈7500)
-       = 1000*500 + 1000*7500 = 8M
-
-rank1: b1(avg_kv≈1500) + b6(avg_kv≈6500)
-       = 1000*1500 + 1000*6500 = 8M
-
-rank2: b2(avg_kv≈2500) + b5(avg_kv≈5500)
-       = 1000*2500 + 1000*5500 = 8M
-
-rank3: b3(avg_kv≈3500) + b4(avg_kv≈4500)
-       = 1000*3500 + 1000*4500 = 8M</code></pre>
-            <p>每个 rank 的计算量完全一致——因为配对的两个 block 的平均
-            KV 长度之和总是 <code>(i + (N-i)) = N</code>。</p>
-            <h5 id="round-robin">round-robin</h5>
-            <p>按 token 逐个分配：</p>
-            <pre><code># token_idx % cp_size 分配
-rank0: token0, token4, token8,  token12, ...
-rank1: token1, token5, token9,  token13, ...
-rank2: token2, token6, token10, token14, ...
-rank3: token3, token7, token11, token15, ...</code></pre>
-            <p>这种方式更彻底——每个 rank 的 token
-            均匀散布在整个序列中，天然负载均衡。代价是后续需要更复杂的
-            index 重组。</p>
-            <h4 id="workflow">Workflow</h4>
-            <p>以 CP=4, in-seq-split 为例</p>
-            <p><strong>Step 1: 切分输入</strong></p>
-            <blockquote>
-            <p>代码位置: <code>deepseek_v2.py:2685-2688</code></p>
-            </blockquote>
-            <p>假设总序列长 8000 tokens，先切成
-            <code>cp_size*2 = 8</code> 块，再 zigzag 分配：</p>
-            <pre><code>原始: block0 | block1 | block2 | block3 | block4 | block5 | block6 | block7
-                                    ↓ zigzag 重排
-rank0: block0, block7  (头+尾, 平衡 causal mask 计算量)
-rank1: block1, block6
-rank2: block2, block5
-rank3: block3, block4</code></pre>
-            <p>每个 rank 只处理约 1/4 的 token，各自独立过 embedding →
-            layernorm → QKV projection。</p>
-            <p><strong>Step 2: AllGather KV Cache</strong></p>
-            <blockquote>
-            <p>代码位置: <code>deepseek_v2.py:1731-1735</code></p>
-            </blockquote>
-            <p>这是关键步骤。在 <code>forward_absorb_prepare</code>
-            中，每个 rank 计算出自己那部分 token 的
-            <code>latent_cache</code>（k_nope + k_pe），然后：</p>
-            <div class="sourceCode" id="cb9"><pre
-            class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> rebuild_cp_kv_cache(<span class="va">self</span>, latent_cache, forward_batch, k_nope, k_pe):</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 把 k_nope 和 k_pe 打包成 latent_cache</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    latent_cache[..., :<span class="va">self</span>.kv_lora_rank] <span class="op">=</span> k_nope.squeeze(<span class="dv">1</span>)</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    latent_cache[..., <span class="va">self</span>.kv_lora_rank:] <span class="op">=</span> k_pe.squeeze(<span class="dv">1</span>)</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 一次 AllGather：每个 rank 的局部 KV → 所有 rank 拿到完整 KV</span></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    latent_cache_output <span class="op">=</span> cp_all_gather_rerange_output(</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>        latent_cache.contiguous(), <span class="va">self</span>.cp_size, forward_batch, stream)</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 拆回 k_nope, k_pe</span></span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    k_nope <span class="op">=</span> latent_cache_output[..., :<span class="va">self</span>.kv_lora_rank].unsqueeze(<span class="dv">1</span>)</span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    k_pe <span class="op">=</span> latent_cache_output[..., <span class="va">self</span>.kv_lora_rank:].unsqueeze(<span class="dv">1</span>)</span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> k_nope, k_pe</span></code></pre></div>
-            <p>AllGather 之后，<strong>每个 rank 都拥有完整的 8000 个
-            token 的 KV cache</strong>。</p>
-            <p><strong>Step 3: 本地做完整的 Causal
-            Attention</strong></p>
-            <p>每个 rank 拿自己的 Q（只有 ~2000 tokens）和完整的
-            KV（8000 tokens）做 attention。因为是 causal mask，所以： -
-            rank0 的 Q 对应 block0 和 block7 的位置，只需要 attend
-            到各自因果范围内的 KV - 各 rank 独立计算，不需要多轮迭代</p>
-            <p><strong>Step 4: AllGather 最终输出</strong></p>
-            <blockquote>
-            <p>代码位置: <code>deepseek_v2.py:2768-2775</code></p>
-            </blockquote>
-            <p>最后一层结束后，各 rank 的 hidden_states（各约 1/4）再
-            AllGather + rerange 拼回完整序列。</p>
-            <h4 id="kv-allgather">KV AllGather</h4>
-            <blockquote>
-            <p>代码位置: <code>nsa/utils.py:291-332</code></p>
-            </blockquote>
-            <div class="sourceCode" id="cb10"><pre
-            class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> cp_attn_tp_all_gather_reorganazied_into_tensor(...):</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Step 1: pad 到统一长度（AllGather 要求各 rank shape 相同）</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    max_len <span class="op">=</span> (total_len <span class="op">+</span> attn_tp_size <span class="op">-</span> <span class="dv">1</span>) <span class="op">//</span> attn_tp_size</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    input_ <span class="op">=</span> F.pad(input_, ...)</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Step 2: 异步 AllGather（用 pynccl 避免 event 同步开销）</span></span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    get_attention_cp_group().cp_all_gather_into_tensor_async(</span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>        input_tensor_all, input_, stream_op)</span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Step 3: 去掉 padding，按 zigzag 逆序重排回原始顺序</span></span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    outputs <span class="op">=</span> torch.cat([...去padding拼接...])</span></code></pre></div>
-            <h4 id="overlap">Overlap</h4>
-            <p>不是在 attention kernel 内部，而是：</p>
+            <p>能这么做，是因为 MLA 的 KV 足够小。如果把 V3 的 128 个
+            head 展开成普通 MHA，每个 token 的 K/V 是 <span
+            class="math inline">128 \times (192 + 128) = 40960</span>
+            维，是 576 维 latent 的约 71 倍，all-gather 全量 KV
+            就不现实了。对 DSA 来说还有一个额外的理由：top-k 选中的
+            token 可能散落在整个序列的任何位置，ring
+            方式很难提前知道某一轮的 KV 块里有没有被选中的 token。</p>
+            <h4 id="怎么切-qzigzag-与-interleave">怎么切 Q：zigzag 与
+            interleave</h4>
+            <p>因果 mask 下，越靠后的 query 要看的 KV
+            越多。如果把序列直接切成 <span class="math inline">p</span>
+            段，最后一个 rank 的计算量约是第一个的 <span
+            class="math inline">2p-1</span>
+            倍。有两种负载均衡的切法：</p>
+            <figure>
+            <img src="./WikiImage/dsa_cp_split.svg"
+            alt="CP 的两种切分与一层的流程" />
+            <figcaption aria-hidden="true">CP
+            的两种切分与一层的流程</figcaption>
+            </figure>
+            <ul>
+            <li><strong>zigzag</strong>（原名 in-seq-split）：先切成
+            <span class="math inline">2p</span> 块，rank <span
+            class="math inline">r</span> 拿第 <span
+            class="math inline">r</span> 块和第 <span
+            class="math inline">2p-1-r</span> 块，一头一尾配对。以 8000
+            个 token、<span class="math inline">p=4</span>、每块 1000 个
+            token 为例：rank0 拿 b0（平均看约 500 个 KV）和 b7（约
+            7500），rank3 拿 b3（约 3500）和 b4（约 4500）。每个 rank
+            的总量都是 <span class="math inline">1000 \times 8000 =
+            8\text{M}</span>，因为配对两块的平均 KV 长度之和恒为 <span
+            class="math inline">N</span>。</li>
+            <li><strong>interleave</strong>（原名
+            round-robin-split）：按 <code>token_idx % p</code>
+            逐个分配，每个 rank 的 token
+            均匀散布在整个序列里，天然均衡。代价是 all-gather
+            回来的数据是交错的，要做一次重排才能恢复原始顺序。</li>
+            </ul>
+            <p>严格来说，DSA 的 sparse 部分每个 query 最多只看 <span
+            class="math inline">k</span> 个 token，负载不均主要来自
+            indexer：它仍然要对 <span class="math inline">S</span> 个
+            key 全量打分，因果 mask 下的计算量分布和 dense attention
+            一样。</p>
+            <p>两种切法在概念上都成立，但目前 SGLang 里 DeepSeek-V3.2 的
+            prefill CP 只支持 interleave：indexer key 的 all-gather 只在
+            interleave 策略里实现，选 zigzag 会在启动时直接报错。</p>
+            <h4 id="一层的流程">一层的流程</h4>
             <ol type="1">
-            <li><strong>AllGather KV 与 Q projection
-            计算重叠</strong>：AllGather
-            是异步发起的（<code>cp_all_gather_into_tensor_async</code>），Q
-            的投影计算可以同时进行</li>
-            <li><strong>层间通信与 MLP
-            计算重叠</strong>：<code>NSACPCommunicator</code> 在
-            attention→MLP 转换时做 allgather/reduce_scatter，与
-            layernorm 等计算重叠</li>
+            <li><strong>切分输入</strong>：每个 rank 只拿到约 <span
+            class="math inline">1/p</span> 的 token，独立做
+            embedding、norm 和 QKV 投影。</li>
+            <li><strong>all-gather KV</strong>：每个 rank 算出自己那部分
+            token 的 MLA latent（<span
+            class="math inline">k_{\text{nope}}</span> + <span
+            class="math inline">k_{\text{pe}}</span>）和 indexer
+            key，各做一次 all-gather 并重排回原始顺序。之后每个 rank
+            都持有整条序列的 KV，并写入自己的 cache。</li>
+            <li><strong>本地计算</strong>：用本地的 Q 对完整 KV 跑
+            indexer、top-k 和 sparse MLA，各 rank
+            之间不需要再通信。</li>
+            <li><strong>拼回输出</strong>：最后一层结束后，各 rank 的
+            hidden state 再 all-gather 并重排，得到完整序列。</li>
             </ol>
-            <hr />
-            <p><strong>总结</strong></p>
-            <pre><code>Ring Attention (传统方案):
-  for round in 0..CP-1:
-    send_recv(kv_chunk)        ← P2P 通信
-    partial_attn(q, kv_chunk)  ← 与通信 overlap
-  reduce(partial_results)
-
-SGLang 这里的 AllGather CP:
-  each rank: compute local KV from local tokens
-  AllGather(all KV)             ← 一次通信，拿到完整 KV
-  each rank: full_attn(local_Q, full_KV)  ← 本地完整计算
-  AllGather(output)             ← 拼回完整输出</code></pre>
-            <h3 id="prefill-dsa-vs-mha">Prefill DSA vs MHA</h3>
-            <p>在 prefill 使用 sparse mla 的判断逻辑：</p>
-            <div class="sourceCode" id="cb12"><pre
-            class="sourceCode python"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="va">self</span>.use_mha <span class="op">=</span> (</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    device_sm <span class="kw">in</span> [<span class="dv">90</span>, <span class="fl">100..109</span>]</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">and</span> max_kv_len <span class="op">&lt;=</span> <span class="va">self</span>.nsa_index_topk      <span class="co"># 条件 1: 最长序列 ≤ 2048</span></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">and</span> dtype <span class="kw">in</span> [bf16, fp8_e4m3]</span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">and</span> sum_seq_lens <span class="op">&lt;=</span> max_chunk_capacity      <span class="co"># 条件 2: 总 token 数能放进 chunk</span></span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">and</span> <span class="kw">not</span> CP</span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-            <p>V3.2 非 trtllm backend 下，当 batch
-            中最长请求的完整上下文长度 ≤ 2048 且总 token 数能装进一个
-            chunk 时，走 MHA；否则走 sparse MLA。</p>
-            <p>这个设计的核心逻辑是：<strong>当 sparse 等于 dense
-            时，跳过 sparse 的开销，直接做 dense
-            attention。</strong></p>
-            <p>为什么阈值是 <code>index_topk = 2048</code></p>
-            <p>NSA indexer 从所有 KV token 中选 top-2048 个 block 做
-            sparse attention。如果总 KV 长度本身就 ≤ 2048，那 top-2048
-            会选中<strong>全部</strong> token，sparse =
-            dense。此时可以节省掉 indexer 的开销，并且本身 MHA
-            的效率也不低于 sparse MQA。</p>
-            <blockquote>
-            <p>由于 MQA 的计算量是 MHA 的三倍，所以 6k 的场景下都是 MHA
-            &gt; 2k sparse MQA + indexer</p>
-            </blockquote>
-            <p>为什么要检查
-            <code>sum_seq_lens ≤ max_chunk_capacity</code></p>
-            <p>MHA_ONE_SHOT 把整个 batch 的 Q 和 KV 一次性放入一个
-            kernel
-            调用。这要求所有数据能装进显存中的一块连续工作区（chunk）。如果
-            batch 中虽然每条请求都短（≤ 2048），但请求数量很多，总 token
-            数可能超出 chunk 容量。这时候无法 one-shot，只能退回 sparse
-            MLA（sparse MLA 走 paged KV cache，没有这个限制）。</p>
-            <pre><code>seq_len ≤ 2048 且 batch 装得下 → MHA（省 indexer 开销，sparse 无意义）
-seq_len &gt; 2048                  → sparse MLA（indexer 选出 2048 个 block，真正稀疏）
-seq_len ≤ 2048 但 batch 太大   → sparse MLA（MHA one-shot 放不下，退回 paged 路径）</code></pre>
+            <p>all-gather 要求各 rank 的 shape
+            相同，所以发送前先把本地数据 pad 到统一长度，收到后再去掉
+            padding 并按切分方式逆序重排。</p>
+            <h3 id="实现">实现</h3>
+            <p>以下路径都相对于 <code>python/sglang/srt/</code>。这个
+            fork 已经把代码里的 NSA 统一改名为
+            DSA：<code>layers/attention/nsa/</code> 只剩带
+            DeprecationWarning 的转发
+            shim，<code>--attention-backend nsa</code> 也只是
+            <code>dsa</code> 的别名。</p>
+            <h4 id="模型与-indexer">模型与 indexer</h4>
+            <ul>
+            <li><strong>哪些模型</strong>：由
+            <code>configs/model_config.py</code> 的
+            <code>is_deepseek_dsa</code>
+            判定，条件是架构在白名单里（DeepSeek-V3/V3.2、GLM-5 的
+            <code>GlmMoeDsaForCausalLM</code>、LongCat-Flash
+            等，以及它们的 NextN 草稿模型），<strong>并且</strong>
+            config 里有
+            <code>index_topk</code>。<code>DeepseekV32ForCausalLM</code>
+            只是 <code>DeepseekV2ForCausalLM</code> 的空子类。</li>
+            <li><strong>indexer</strong>：<code>layers/attention/dsa/dsa_indexer.py</code>
+            中的
+            <code>Indexer</code>。<code>wq_b</code>、<code>wk</code>、<code>weights_proj</code>
+            都是 <code>ReplicatedLinear</code>，对应”indexer 在 TP
+            下复制”。CUDA 的 fused 路径会把 <code>wk</code> 和
+            <code>weights_proj</code> 合并成一个
+            <code>wk_weights_proj</code>，一次 GEMM 同时得到 key 和
+            per-head 门控。head 数、head dim、top-k 由
+            <code>models/deepseek_v2.py</code> 从 config
+            读出后传给构造函数。</li>
+            <li><strong>Hadamard</strong>：fused 路径上
+            <code>_maybe_rotate</code> 对 q 和 k
+            <strong>同时</strong>跳过旋转，只要写 cache 和读 cache
+            两侧一致，点积就不变，差别只在量化误差。</li>
+            <li><strong>跨层复用</strong>：<code>dsa_layer_skips_topk</code>（<code>configs/model_config.py</code>）判定哪些层是
+            skip-topk 层，依次看
+            <code>indexer_types == "shared"</code>、LongCat 的
+            <code>cli_factor</code>、<code>index_topk_pattern</code>、<code>index_topk_freq</code>。这些层不建
+            <code>Indexer</code>，indexer cache 也只分配 0 行。</li>
+            <li><strong>kpool</strong>：config 的
+            <code>index_kpool &gt; 1</code> 时换成
+            <code>dsa_indexer_kpool.py</code> 的
+            <code>IndexerKPool</code>。池化写 cache、取组级
+            top-k、展开成 token、追加尾巴这些步骤的 kernel 在
+            <code>kpool_fp8_index.py</code>。</li>
+            </ul>
+            <h4 id="logits-与-top-k">logits 与 top-k</h4>
+            <ul>
+            <li><strong>logits kernel</strong>：prefill 走 ragged
+            路径（<code>_get_topk_ragged</code>），调用 DeepGEMM 的
+            <code>fp8_mqa_logits</code>，长序列按显存预算分块；decode /
+            verify / draft-extend 走 paged
+            路径（<code>_get_topk_paged</code>），调用
+            <code>fp8_paged_mqa_logits</code>，直接读 paged indexer
+            cache。paged 这一步可以用
+            <code>--dsa-paged-mqa-logits-backend</code> 换成 CuTe
+            DSL（仅 SM100）或 aiter。ReLU 在 kernel 内部完成，Python
+            侧看不到。</li>
+            <li><strong>top-k 与 slot 翻译</strong>：入口是
+            <code>DSAIndexerMetadata.topk_transform</code>（<code>dsa_indexer_metadata.py</code>），实现在
+            <code>dsa_topk_backend.py</code>，<code>--dsa-topk-backend</code>
+            可选
+            <code>sgl-kernel</code>（默认）、<code>torch</code>、<code>flashinfer</code>。上图的翻译有两种做法：
+            <ul>
+            <li>默认的 v2
+            kernel（<code>_topk_transform_v2_paged</code>）用每页 64 个
+            slot 的紧凑 <code>real_page_table</code>，按
+            <code>table[p // 64] * 64 + p % 64</code> 现算；</li>
+            <li>旧路径直接查 <code>page_table_1</code>，即从
+            <code>req_to_token</code> 切出的 page size 为 1
+            的宽表，形状是 <code>[rows, max_ctx]</code>。v2
+            的好处是不用物化这张宽表，CUDA graph 下可以省掉对应的静态
+            buffer。</li>
+            </ul></li>
+            <li><strong>ragged extend 是例外</strong>：prefill 用
+            FlashMLA sparse 等 kernel、且 KV 为 fp8 时，sparse MLA
+            读的是本次先 gather 出来的连续 KV，top-k 输出加上
+            <code>cu_seqlens_k</code> 的偏移，指向这块连续
+            buffer，而不是 pool 里的 slot。</li>
+            </ul>
+            <h4 id="kv-pool">KV pool</h4>
+            <ul>
+            <li><code>mem_cache/memory_pool.py</code> 中的
+            <code>DSATokenToKVPool</code> 继承
+            <code>MLATokenToKVPool</code>，断言
+            <code>index_head_dim == 128</code>。CUDA 上要求的是
+            <strong>indexer 的页大小</strong>
+            <code>page_size // index_kpool</code> 为 64，所以不开 kpool
+            时 <code>page_size</code> 就是 64，开了 kpool 则是 <span
+            class="math inline">64 \times</span>
+            <code>index_kpool</code>。</li>
+            <li>indexer cache 的实际存储在
+            <code>mem_cache/index_key_cache.py</code> 的
+            <code>IndexKeyCache</code> 中，每页 <span
+            class="math inline">64 \times 132 = 8448</span> 字节：前
+            <span class="math inline">64 \times 128</span> 字节是 fp8
+            key，后 <span class="math inline">64 \times 4</span> 字节是
+            fp32 scale。key 和 scale 分开存，一页里的 key
+            部分就是一块连续的 <span class="math inline">64 \times
+            128</span> 矩阵，paged logits kernel 可以按页整块读取。</li>
+            <li>MLA 主 cache 的每 token 维度由
+            <code>mem_cache/kv_cache_configurator.py</code> 的
+            <code>calculate_mla_kv_cache_dim</code> 决定：fp8 加带 scale
+            布局时是 656 字节；trtllm、CUDA 上两侧都用 tilelang、HIP
+            上的 tilelang / triton / aiter 用不带 scale 的原始 576
+            维布局。</li>
+            <li>KV dtype 为 <code>auto</code>
+            时（<code>arg_groups/overrides.py</code> 的
+            <code>_dsa_kv_cache_dtype_default</code>），SM100 及以上默认
+            fp8（带 learnable sink 的模型除外），其他默认 bf16。注意
+            Blackwell 上 fp8 默认的 kernel 又是
+            trtllm，所以那里默认用的其实是 576 B 的原始布局，656 B
+            的布局主要出现在 Hopper
+            fp8（<code>flashmla_kv</code>）上。</li>
+            </ul>
+            <h4 id="backend-与-prefill-的-dense-回退">Backend 与 prefill
+            的 dense 回退</h4>
+            <p><code>layers/attention/dsa_backend.py</code> 中的
+            <code>DeepseekSparseAttnBackend</code> 负责 sparse
+            MLA，kernel 由 <code>--dsa-prefill-backend</code> /
+            <code>--dsa-decode-backend</code> 指定。默认值由
+            <code>arg_groups/overrides.py</code> 的
+            <code>_dsa_split_backend_resolution</code> 按硬件和 KV dtype
+            推出：HIP 用 triton；fp8 时 SM100 及以上用 trtllm，Hopper 用
+            flashmla_kv；bf16 时 prefill 用 flashmla_sparse，decode 在
+            SM100 及以上用 trtllm、否则用 fa3。learnable sink、SM12x
+            上的 GLM、HiSparse 另有特例。</p>
+            <p>前面说过 <span class="math inline">S \le k</span> 时
+            sparse 等于 dense。backend 的
+            <code>set_dsa_prefill_impl</code> 据此在 prefill
+            时决定要不要直接走 dense
+            MHA（<code>MHA_ONE_SHOT</code>）：</p>
+            <div class="sourceCode" id="cb2"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="va">self</span>.use_mha <span class="op">=</span> (</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.supports_mha_one_shot          <span class="co"># 未开 DCP</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">and</span> (device_sm <span class="op">==</span> <span class="dv">90</span> <span class="kw">or</span> (device_sm <span class="op">&gt;=</span> <span class="dv">100</span> <span class="kw">and</span> device_sm <span class="op">&lt;</span> <span class="dv">110</span>) <span class="kw">or</span> _IS_GFX95)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">and</span> max_kv_len <span class="op">&lt;=</span> envs.SGLANG_DSA_PREFILL_DENSE_ATTN_KV_LEN_THRESHOLD.get()</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">and</span> <span class="va">self</span>.token_to_kv_pool.dtype <span class="kw">in</span> [torch.bfloat16, torch.float8_e4m3fn]</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">and</span> sum_seq_lens <span class="op">&lt;=</span> forward_batch.get_max_chunk_capacity()</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">and</span> (<span class="kw">not</span> is_dsa_enable_prefill_cp())</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">and</span> (<span class="va">self</span>.hisparse_coordinator <span class="kw">is</span> <span class="va">None</span>)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+            <ul>
+            <li><strong>长度阈值</strong>：环境变量默认
+            2048，但如果用户没有显式设置，启动时
+            <code>arg_groups/model_hook.py</code> 会把它改成模型的
+            <code>index_topk</code>。所以阈值的本意就是”sparse 是否等于
+            dense”。</li>
+            <li><strong>chunk 容量</strong>：<code>MHA_ONE_SHOT</code>
+            把整个 batch 的 Q 和 KV
+            一次性放进一块连续工作区。每条请求都短但请求很多时，总 token
+            数可能超出容量，此时退回 sparse MLA（它走 paged KV
+            cache，没有这个限制）。</li>
+            <li><strong>其他情况</strong>：开启 prefill CP 或 DCP、启用
+            HiSparse、处在 piecewise / breakable CUDA graph 里（replay
+            时没法按 <code>seq_lens</code> 分支），或者是 decode /
+            verify 阶段，一律走 sparse MLA。</li>
+            </ul>
+            <p>经验上，dense MHA 在短序列上本来就比 sparse MQA
+            更高效：absorb 形态的 MQA 每个 head 要做 576 维点积和 512
+            维加权和，而 MHA 只有 192 + 128 维，计算量约是前者的
+            1/3。所以即使上下文到 6K，dense MHA 也常常快过”2K sparse MQA
+            + indexer”，这个阈值偏保守。</p>
+            <p>decode 一侧没有这种回退。decode 跑在 CUDA graph
+            里，同样不能按长度分支，所以 CUDA 上 decode 总是完整地跑一遍
+            indexer 和 top-k，即使 <span class="math inline">S \le
+            k</span>。graph 用到的 top-k 计划和 paged logits
+            的调度元数据在每次 replay 前原地刷新。 #### Context
+            parallel</p>
+            <ul>
+            <li><strong>参数</strong>：<code>--enable-prefill-cp</code>
+            开启，<code>--cp-strategy {zigzag, interleave}</code>
+            选择切分方式。旧名 in-seq-split / round-robin-split 只剩
+            <code>layers/cp/base.py</code>
+            里的一行注释，旧参数已经删除。DeepSeek-V3.2 只接受
+            interleave，<code>arg_groups/parallel_hook.py</code> 会拒绝
+            zigzag。</li>
+            <li><strong>策略抽象</strong>：<code>layers/cp/base.py</code>
+            的基类定义切分元数据和”把本地 KV
+            补全成整条序列”的接口，<code>layers/cp/interleave.py</code>
+            的 <code>InterleaveCPStrategy</code> 与
+            <code>layers/cp/zigzag.py</code> 的
+            <code>ZigzagCPStrategy</code> 各自实现，kpool 模型另有
+            <code>interleave_kpool.py</code>。</li>
+            <li><strong>KV all-gather</strong>：MLA latent 由
+            <code>dsa_backend.py</code> 的
+            <code>prepare_kv_for_attention</code> 交给
+            <code>strategy.materialize_full_mla_kv</code> 补全；indexer
+            key 在 <code>dsa_indexer.py</code> 的
+            <code>_get_q_k_bf16</code> 中以 bf16（旋转后、量化前）调用
+            <code>materialize_full_indexer_k_cache</code>，放在另一条
+            stream 上和 q 的计算重叠。基类的这个方法直接抛
+            <code>NotImplementedError</code>，只有 interleave
+            实现了它，这就是 V3.2 不能用 zigzag 的原因。</li>
+            <li><strong>层间通信</strong>：attention 与 MLP 之间 hidden
+            state 的切分和重组归入 <code>layers/layer_boundary/</code>
+            的通用框架，CP 是其中的
+            <code>BatchVariant.CONTEXT_PARALLEL</code>。</li>
+            </ul>
+            <h4 id="decode-侧dcp-与-hisparse">decode 侧：DCP 与
+            HiSparse</h4>
+            <p>前面的设计都假设每个 rank 在显存里放着完整 KV。decode
+            侧有两个扩展，各自打破这个假设：</p>
+            <ul>
+            <li><strong>DCP</strong>（<a
+            href="./decode_context_parallelism.html">decode context
+            parallel</a>，<code>layers/attention/dsa/dsa_dcp.py</code>）：KV
+            分散在 DCP 组的各个 rank 上。top-k 照常产出全局 slot
+            表，<code>localize_dcp_page_table</code> 把它翻成本 rank
+            持有的那部分 slot；各 rank 用 trtllm decode kernel
+            算出局部结果和 LSE，再跨 rank 合并。skip-topk 层的 top-k
+            和上一层是同一个 tensor，翻译结果直接缓存复用。</li>
+            <li><strong>HiSparse</strong>（<code>--enable-hisparse</code>，<code>managers/hisparse_coordinator.py</code>
+            的 <code>HiSparseCoordinator</code>）：完整 KV 放在 host
+            内存，GPU 上只留一块小的 device buffer。每层 top-k
+            之后，<code>swap_in_selected_pages</code> 把被选中的 token
+            换进 device buffer，返回 device 上的 slot，作为 sparse MLA
+            的稀疏 page table。它利用的正是”每步只读 <span
+            class="math inline">k</span> 个 token”，也就是把开头说的”KV
+            cache 不减反增”换成了”显存里只放工作集”。开启后 dense 回退和
+            fused top-k 都会关掉。</li>
+            </ul>
+            <h3 id="小结">小结</h3>
+            <p>DSA
+            的核心是一个”先挑后算”的两阶段抽象：用单价低一个数量级的
+            lightning indexer（64 个 head、单 key head、fp8、无
+            softmax）给全部历史打分，再只对 top-2048 个 token 做真正的
+            MLA，于是贵的那部分计算不再随上下文增长。选出的位置直接被翻译成
+            page size 为 1 的稀疏 page table，sparse kernel 按 slot
+            gather，不要求被选 token 连续。它没有减少 KV
+            cache，反而多存了一份每 token 132 字节的 indexer
+            key；长上下文下增长的只剩 indexer，于是后续又有跨层复用
+            top-k 和 kpool 池化来继续压缩它。indexer 必须先跨 head
+            求和再排序，不能按 head 切分，这决定了 DSA 更适合用 CP
+            而不是 TP 扩展 prefill；MLA 的小 latent 又让 CP 可以用一次
+            all-gather 收齐 KV，而不必绕环。SGLang 的实现对应地分成
+            indexer（含 top-k 与 slot 翻译）、两份 cache 的 pool、sparse
+            backend 三块，在 prefill 的 <span class="math inline">S \le
+            k</span> 时直接回退到 dense MHA，并在 decode 侧用 DCP /
+            HiSparse 进一步摊薄或卸载 KV。</p>
           </main>
         <aside class="wiki-toc">
       <ul>
-      <li><a href="#indexer" id="toc-indexer">Indexer</a></li>
-      <li><a href="#theory" id="toc-theory">theory</a></li>
-      <li><a href="#tp-vs-cp" id="toc-tp-vs-cp">TP vs CP</a></li>
-      <li><a href="#dsa-cp" id="toc-dsa-cp">DSA + CP</a></li>
-      <li><a href="#prefill-dsa-vs-mha"
-      id="toc-prefill-dsa-vs-mha">Prefill DSA vs MHA</a></li>
+      <li><a href="#问题mla-省了显存没省计算"
+      id="toc-问题mla-省了显存没省计算">问题：MLA
+      省了显存，没省计算</a></li>
+      <li><a href="#设计两阶段先挑后算"
+      id="toc-设计两阶段先挑后算">设计：两阶段，先挑后算</a></li>
+      <li><a href="#lightning-indexer一个极简的-attention-前半段"
+      id="toc-lightning-indexer一个极简的-attention-前半段">Lightning
+      Indexer：一个极简的 attention 前半段</a></li>
+      <li><a href="#两份-kv-cache" id="toc-两份-kv-cache">两份 KV
+      cache</a></li>
+      <li><a href="#为什么-dsa-用-mqa" id="toc-为什么-dsa-用-mqa">为什么
+      DSA 用 MQA</a></li>
+      <li><a href="#计算量哪一部分还在随长度增长"
+      id="toc-计算量哪一部分还在随长度增长">计算量：哪一部分还在随长度增长</a></li>
+      <li><a href="#再省-indexer跨层复用与-kpool"
+      id="toc-再省-indexer跨层复用与-kpool">再省 indexer：跨层复用与
+      kpool</a></li>
+      <li><a href="#并行为什么-dsa-偏爱-cp"
+      id="toc-并行为什么-dsa-偏爱-cp">并行：为什么 DSA 偏爱 CP</a></li>
+      <li><a href="#实现" id="toc-实现">实现</a></li>
+      <li><a href="#小结" id="toc-小结">小结</a></li>
       </ul>
     </aside>
       </div>
-  <script type="text/javascript">
-    (function () {
-      function markActive() {
-        var here = location.href.split('#')[0];
-        var links = document.querySelectorAll('.wiki-sidebar a');
-        for (var i = 0; i < links.length; i++) {
-          if (links[i].href.split('#')[0] === here) {
-            links[i].classList.add('active');
-          }
-        }
-      }
-      // load the shared site directory once (served from the wiki root);
-      // kept in a standalone file so adding a page needn't rebuild every page.
-      var nav = document.getElementById('wiki-sidebar');
-      if (nav) {
-        fetch('/wiki_sidebar.html')
-          .then(function (r) { return r.ok ? r.text() : ''; })
-          .then(function (html) {
-            if (html) {
-              nav.innerHTML = html;
-              nav.hidden = false;
-              markActive();
-            }
-          })
-          .catch(function () {});
-      }
-      // keep bootstrap table styling (previously done by sticky_menu.js)
-      var tables = document.getElementsByTagName('table');
-      for (var j = 0; j < tables.length; j++) {
-        tables[j].classList.add('table');
-      }
-    })();
-  </script>
 </body>
 
 </html>

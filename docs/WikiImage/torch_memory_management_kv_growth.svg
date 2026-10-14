@@ -1,0 +1,126 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 450" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="450" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">KV 增长：每步拼接 vs 预分配写入</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">同样每步加一个 token，一个反复分配并搬运历史，一个只在固定 buffer 里写新位置</text>
+
+  <line x1="450" y1="78" x2="450" y2="392" stroke="#dee2e6" stroke-width="1.5"/>
+
+  <!-- LEFT: torch.cat -->
+  <text x="40" y="96" font-size="14" font-weight="700" fill="#c92a2a">torch.cat([old_k, new_k])</text>
+  <text x="40" y="116" font-size="11.5" fill="#868e96">旧 storage（蓝） → 新 storage（琥珀），执行期间两份同时存活</text>
+  <g font-size="11" font-family="monospace" fill="#495057">
+    <text x="40" y="150">t=1</text>
+    <text x="40" y="190">t=2</text>
+    <text x="40" y="230">t=3</text>
+    <text x="40" y="270">t=4</text>
+  </g>
+  <!-- t=1: old 1 -> new 2 -->
+  <rect x="76" y="134" width="20" height="24" rx="3" fill="#edf2ff" stroke="#4c6ef5"/>
+  <path d="M102 146 L150 146" stroke="#868e96" stroke-width="2" marker-end="url(#arK)"/>
+  <rect x="156" y="134" width="20" height="24" rx="3" fill="#fff4e6" stroke="#f08c00"/>
+  <rect x="178" y="134" width="20" height="24" rx="3" fill="#ffe8cc" stroke="#e8590c"/>
+  <!-- t=2: old 2 -> new 3 -->
+  <rect x="76" y="174" width="20" height="24" rx="3" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="98" y="174" width="20" height="24" rx="3" fill="#edf2ff" stroke="#4c6ef5"/>
+  <path d="M124 186 L150 186" stroke="#868e96" stroke-width="2" marker-end="url(#arK)"/>
+  <rect x="156" y="174" width="20" height="24" rx="3" fill="#fff4e6" stroke="#f08c00"/>
+  <rect x="178" y="174" width="20" height="24" rx="3" fill="#fff4e6" stroke="#f08c00"/>
+  <rect x="200" y="174" width="20" height="24" rx="3" fill="#ffe8cc" stroke="#e8590c"/>
+  <!-- t=3: old 3 -> new 4 -->
+  <rect x="76" y="214" width="20" height="24" rx="3" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="98" y="214" width="20" height="24" rx="3" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="120" y="214" width="20" height="24" rx="3" fill="#edf2ff" stroke="#4c6ef5"/>
+  <path d="M144 226 L180 226" stroke="#868e96" stroke-width="2" marker-end="url(#arK)"/>
+  <rect x="186" y="214" width="20" height="24" rx="3" fill="#fff4e6" stroke="#f08c00"/>
+  <rect x="208" y="214" width="20" height="24" rx="3" fill="#fff4e6" stroke="#f08c00"/>
+  <rect x="230" y="214" width="20" height="24" rx="3" fill="#fff4e6" stroke="#f08c00"/>
+  <rect x="252" y="214" width="20" height="24" rx="3" fill="#ffe8cc" stroke="#e8590c"/>
+  <!-- t=4: old 4 -> new 5 -->
+  <rect x="76" y="254" width="20" height="24" rx="3" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="98" y="254" width="20" height="24" rx="3" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="120" y="254" width="20" height="24" rx="3" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="142" y="254" width="20" height="24" rx="3" fill="#edf2ff" stroke="#4c6ef5"/>
+  <path d="M166 266 L202 266" stroke="#868e96" stroke-width="2" marker-end="url(#arK)"/>
+  <rect x="208" y="254" width="20" height="24" rx="3" fill="#fff4e6" stroke="#f08c00"/>
+  <rect x="230" y="254" width="20" height="24" rx="3" fill="#fff4e6" stroke="#f08c00"/>
+  <rect x="252" y="254" width="20" height="24" rx="3" fill="#fff4e6" stroke="#f08c00"/>
+  <rect x="274" y="254" width="20" height="24" rx="3" fill="#fff4e6" stroke="#f08c00"/>
+  <rect x="296" y="254" width="20" height="24" rx="3" fill="#ffe8cc" stroke="#e8590c"/>
+  <g font-size="11" fill="#868e96">
+    <text x="320" y="150">复制 1 + 写 1</text>
+    <text x="320" y="190">复制 2 + 写 1</text>
+    <text x="320" y="230">复制 3 + 写 1</text>
+    <text x="324" y="270">复制 4 + 写 1</text>
+  </g>
+
+  <!-- RIGHT: preallocated buffer -->
+  <text x="490" y="96" font-size="14" font-weight="700" fill="#0b7285">k_buffer[..., pos:pos+1, ...].copy_(new_k)</text>
+  <text x="490" y="116" font-size="11.5" fill="#868e96">一次分配 capacity 个位置；已写（青） / 本步新写（琥珀） / 未用（虚线）</text>
+  <text x="490" y="150" font-size="11" font-family="monospace" fill="#495057">t=1</text>
+  <rect x="526" y="134" width="20" height="24" rx="3" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="550" y="134" width="20" height="24" rx="3" fill="#ffe8cc" stroke="#e8590c"/>
+  <rect x="574" y="134" width="20" height="24" rx="3" fill="#ffffff" stroke="#adb5bd" stroke-dasharray="3 2"/>
+  <rect x="598" y="134" width="20" height="24" rx="3" fill="#ffffff" stroke="#adb5bd" stroke-dasharray="3 2"/>
+  <rect x="622" y="134" width="20" height="24" rx="3" fill="#ffffff" stroke="#adb5bd" stroke-dasharray="3 2"/>
+  <rect x="646" y="134" width="20" height="24" rx="3" fill="#ffffff" stroke="#adb5bd" stroke-dasharray="3 2"/>
+  <rect x="670" y="134" width="20" height="24" rx="3" fill="#ffffff" stroke="#adb5bd" stroke-dasharray="3 2"/>
+  <rect x="694" y="134" width="20" height="24" rx="3" fill="#ffffff" stroke="#adb5bd" stroke-dasharray="3 2"/>
+  <rect x="718" y="134" width="20" height="24" rx="3" fill="#ffffff" stroke="#adb5bd" stroke-dasharray="3 2"/>
+  <rect x="742" y="134" width="20" height="24" rx="3" fill="#ffffff" stroke="#adb5bd" stroke-dasharray="3 2"/>
+  <text x="772" y="150" font-size="11" fill="#868e96">只写 1，复制 0</text>
+  <text x="490" y="190" font-size="11" font-family="monospace" fill="#495057">t=2</text>
+  <rect x="526" y="174" width="20" height="24" rx="3" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="550" y="174" width="20" height="24" rx="3" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="574" y="174" width="20" height="24" rx="3" fill="#ffe8cc" stroke="#e8590c"/>
+  <rect x="598" y="174" width="20" height="24" rx="3" fill="#ffffff" stroke="#adb5bd" stroke-dasharray="3 2"/>
+  <rect x="622" y="174" width="20" height="24" rx="3" fill="#ffffff" stroke="#adb5bd" stroke-dasharray="3 2"/>
+  <rect x="646" y="174" width="20" height="24" rx="3" fill="#ffffff" stroke="#adb5bd" stroke-dasharray="3 2"/>
+  <rect x="670" y="174" width="20" height="24" rx="3" fill="#ffffff" stroke="#adb5bd" stroke-dasharray="3 2"/>
+  <rect x="694" y="174" width="20" height="24" rx="3" fill="#ffffff" stroke="#adb5bd" stroke-dasharray="3 2"/>
+  <rect x="718" y="174" width="20" height="24" rx="3" fill="#ffffff" stroke="#adb5bd" stroke-dasharray="3 2"/>
+  <rect x="742" y="174" width="20" height="24" rx="3" fill="#ffffff" stroke="#adb5bd" stroke-dasharray="3 2"/>
+  <text x="772" y="190" font-size="11" fill="#868e96">只写 1，复制 0</text>
+  <text x="490" y="230" font-size="11" font-family="monospace" fill="#495057">t=3</text>
+  <rect x="526" y="214" width="20" height="24" rx="3" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="550" y="214" width="20" height="24" rx="3" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="574" y="214" width="20" height="24" rx="3" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="598" y="214" width="20" height="24" rx="3" fill="#ffe8cc" stroke="#e8590c"/>
+  <rect x="622" y="214" width="20" height="24" rx="3" fill="#ffffff" stroke="#adb5bd" stroke-dasharray="3 2"/>
+  <rect x="646" y="214" width="20" height="24" rx="3" fill="#ffffff" stroke="#adb5bd" stroke-dasharray="3 2"/>
+  <rect x="670" y="214" width="20" height="24" rx="3" fill="#ffffff" stroke="#adb5bd" stroke-dasharray="3 2"/>
+  <rect x="694" y="214" width="20" height="24" rx="3" fill="#ffffff" stroke="#adb5bd" stroke-dasharray="3 2"/>
+  <rect x="718" y="214" width="20" height="24" rx="3" fill="#ffffff" stroke="#adb5bd" stroke-dasharray="3 2"/>
+  <rect x="742" y="214" width="20" height="24" rx="3" fill="#ffffff" stroke="#adb5bd" stroke-dasharray="3 2"/>
+  <text x="772" y="230" font-size="11" fill="#868e96">只写 1，复制 0</text>
+  <text x="490" y="270" font-size="11" font-family="monospace" fill="#495057">t=4</text>
+  <rect x="526" y="254" width="20" height="24" rx="3" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="550" y="254" width="20" height="24" rx="3" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="574" y="254" width="20" height="24" rx="3" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="598" y="254" width="20" height="24" rx="3" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="622" y="254" width="20" height="24" rx="3" fill="#ffe8cc" stroke="#e8590c"/>
+  <rect x="646" y="254" width="20" height="24" rx="3" fill="#ffffff" stroke="#adb5bd" stroke-dasharray="3 2"/>
+  <rect x="670" y="254" width="20" height="24" rx="3" fill="#ffffff" stroke="#adb5bd" stroke-dasharray="3 2"/>
+  <rect x="694" y="254" width="20" height="24" rx="3" fill="#ffffff" stroke="#adb5bd" stroke-dasharray="3 2"/>
+  <rect x="718" y="254" width="20" height="24" rx="3" fill="#ffffff" stroke="#adb5bd" stroke-dasharray="3 2"/>
+  <rect x="742" y="254" width="20" height="24" rx="3" fill="#ffffff" stroke="#adb5bd" stroke-dasharray="3 2"/>
+  <text x="772" y="270" font-size="11" fill="#868e96">只写 1，复制 0</text>
+
+  <!-- bottom comparison boxes -->
+  <rect x="40" y="300" width="380" height="84" rx="9" fill="#fff5f5" stroke="#fa5252"/>
+  <text x="58" y="324" font-size="12.5" font-weight="700" fill="#c92a2a">代价随序列长度放大</text>
+  <text x="58" y="346" font-size="11.5" fill="#495057">累计复制 1+2+…+T ≈ T²/2 个 token 的 KV</text>
+  <text x="58" y="366" font-size="11.5" fill="#495057">瞬时峰值 ≈ 两份 KV；尺寸各异的 block 留在缓存里</text>
+
+  <rect x="490" y="300" width="370" height="84" rx="9" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="508" y="324" font-size="12.5" font-weight="700" fill="#0b7285">代价前置为常驻容量</text>
+  <text x="508" y="346" font-size="11.5" fill="#495057">热路径无分配、无历史搬运，峰值可预测</text>
+  <text x="508" y="366" font-size="11.5" fill="#495057">但 capacity 一直占着：需要容量规划与 slot 管理</text>
+
+  <!-- note -->
+  <rect x="40" y="402" width="820" height="36" rx="9" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="58" y="425" font-size="12" fill="#495057">预分配不是“省显存”，而是用稳定的常驻容量换掉运行时的反复分配与 O(T²) 搬运——SGLang 的 KV pool 即按此设计。</text>
+
+  <defs>
+    <marker id="arK" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#868e96"/></marker>
+  </defs>
+</svg>

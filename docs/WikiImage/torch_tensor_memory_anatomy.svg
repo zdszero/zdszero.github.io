@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 450" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="450" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">一个张量 = 一块扁平 storage + 一副“透镜”元数据</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">shape / stride / offset / dtype / device 决定「怎么解读」同一块一维内存</text>
+
+  <!-- logical view -->
+  <text x="90" y="92" font-size="13" font-weight="700" fill="#3b5bdb">逻辑视图　shape = (2, 3)</text>
+  <rect x="90" y="104" width="58" height="42" rx="6" fill="#edf2ff" stroke="#4c6ef5"/><text x="119" y="131" text-anchor="middle" font-size="15" fill="#3b5bdb">1</text>
+  <rect x="150" y="104" width="58" height="42" rx="6" fill="#edf2ff" stroke="#4c6ef5"/><text x="179" y="131" text-anchor="middle" font-size="15" fill="#3b5bdb">2</text>
+  <rect x="210" y="104" width="58" height="42" rx="6" fill="#edf2ff" stroke="#4c6ef5"/><text x="239" y="131" text-anchor="middle" font-size="15" fill="#3b5bdb">3</text>
+  <rect x="90" y="148" width="58" height="42" rx="6" fill="#edf2ff" stroke="#4c6ef5"/><text x="119" y="175" text-anchor="middle" font-size="15" fill="#3b5bdb">4</text>
+  <rect x="150" y="148" width="58" height="42" rx="6" fill="#edf2ff" stroke="#4c6ef5"/><text x="179" y="175" text-anchor="middle" font-size="15" fill="#3b5bdb">5</text>
+  <rect x="210" y="148" width="58" height="42" rx="6" fill="#fff4e6" stroke="#f08c00" stroke-width="2"/><text x="239" y="175" text-anchor="middle" font-size="15" font-weight="700" fill="#e8590c">6</text>
+  <text x="90" y="210" font-size="11" fill="#868e96">行号 i = 0,1　列号 j = 0,1,2　（取 x[1,2] 高亮）</text>
+
+  <!-- metadata panel -->
+  <rect x="330" y="100" width="330" height="150" rx="10" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="348" y="124" font-size="12.5" font-weight="700" fill="#343a40">张量对象携带的元数据</text>
+  <g font-family="monospace" font-size="12" fill="#495057">
+    <text x="348" y="148">storage : 一维 float32 buffer</text>
+    <text x="348" y="170">shape   = (2, 3)</text>
+    <text x="348" y="192">stride  = (3, 1)</text>
+    <text x="348" y="214">offset  = 0</text>
+    <text x="348" y="236">dtype=float32  device=cuda:0</text>
+  </g>
+  <text x="672" y="192" font-size="10.5" fill="#868e96">每维走一步</text>
+  <text x="672" y="206" font-size="10.5" fill="#868e96">跳几个元素</text>
+
+  <!-- worked example -->
+  <rect x="330" y="262" width="330" height="46" rx="8" fill="#fff9db" stroke="#f08c00"/>
+  <text x="348" y="283" font-size="11.5" font-weight="700" fill="#e8590c">取 x[1,2] 的地址</text>
+  <text x="348" y="300" font-size="11.5" fill="#b26a00" font-family="monospace">offset 0 + 1×3 + 2×1 = 5 → storage[5]</text>
+
+  <!-- flat storage -->
+  <text x="90" y="300" font-size="13" font-weight="700" fill="#0b7285">底层 storage（1-D 连续内存，行主序：最后一维最快）</text>
+  <g>
+    <rect x="90" y="312" width="62" height="44" rx="6" fill="#e6fcf5" stroke="#0ca678"/><text x="121" y="340" text-anchor="middle" font-size="15" fill="#0b7285">1</text>
+    <rect x="156" y="312" width="62" height="44" rx="6" fill="#e6fcf5" stroke="#0ca678"/><text x="187" y="340" text-anchor="middle" font-size="15" fill="#0b7285">2</text>
+    <rect x="222" y="312" width="62" height="44" rx="6" fill="#e6fcf5" stroke="#0ca678"/><text x="253" y="340" text-anchor="middle" font-size="15" fill="#0b7285">3</text>
+    <rect x="288" y="312" width="62" height="44" rx="6" fill="#e6fcf5" stroke="#0ca678"/><text x="319" y="340" text-anchor="middle" font-size="15" fill="#0b7285">4</text>
+    <rect x="354" y="312" width="62" height="44" rx="6" fill="#e6fcf5" stroke="#0ca678"/><text x="385" y="340" text-anchor="middle" font-size="15" fill="#0b7285">5</text>
+    <rect x="420" y="312" width="62" height="44" rx="6" fill="#fff4e6" stroke="#f08c00" stroke-width="2"/><text x="451" y="340" text-anchor="middle" font-size="15" font-weight="700" fill="#e8590c">6</text>
+  </g>
+  <g font-family="monospace" font-size="10.5" fill="#868e96">
+    <text x="121" y="372" text-anchor="middle">0</text><text x="187" y="372" text-anchor="middle">1</text><text x="253" y="372" text-anchor="middle">2</text>
+    <text x="319" y="372" text-anchor="middle">3</text><text x="385" y="372" text-anchor="middle">4</text><text x="451" y="372" text-anchor="middle">5</text>
+  </g>
+
+  <!-- mapping arrow -->
+  <path d="M239 192 C239 250 451 250 451 310" fill="none" stroke="#f08c00" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#arA)"/>
+
+  <!-- note -->
+  <rect x="90" y="398" width="720" height="40" rx="10" fill="#f1f3f5" stroke="#dee2e6"/>
+  <text x="108" y="423" font-size="12" fill="#495057">换一组 shape / stride，就是换一副透镜看同一块内存——这正是 view 不拷贝、而某些操作必须拷贝的根源。</text>
+
+  <defs>
+    <marker id="arA" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#f08c00"/></marker>
+  </defs>
+</svg>

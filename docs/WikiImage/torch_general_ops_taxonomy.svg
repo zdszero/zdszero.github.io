@@ -1,0 +1,138 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 432" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="920" height="432" rx="12" fill="#ffffff"/>
+  <text x="460" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">按“一个输出元素依赖哪些输入元素”给算子分类</text>
+  <text x="460" y="56" text-anchor="middle" font-size="13" fill="#868e96">依赖模式决定了输出 shape 怎么推、读写多少字节，以及它能否和前后算子融合</text>
+
+  <!-- column panels -->
+  <rect x="28" y="78" width="160" height="272" rx="10" fill="#f8f9fa" stroke="#adb5bd"/>
+  <rect x="204" y="78" width="160" height="272" rx="10" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="380" y="78" width="160" height="272" rx="10" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="556" y="78" width="160" height="272" rx="10" fill="#f3f0ff" stroke="#7048e8"/>
+  <rect x="732" y="78" width="160" height="272" rx="10" fill="#fff9db" stroke="#f08c00"/>
+  <rect x="28" y="78" width="160" height="34" rx="10" fill="#868e96"/>
+  <rect x="204" y="78" width="160" height="34" rx="10" fill="#4c6ef5"/>
+  <rect x="380" y="78" width="160" height="34" rx="10" fill="#0ca678"/>
+  <rect x="556" y="78" width="160" height="34" rx="10" fill="#7048e8"/>
+  <rect x="732" y="78" width="160" height="34" rx="10" fill="#f08c00"/>
+  <g font-size="13.5" font-weight="700" fill="#ffffff" text-anchor="middle">
+    <text x="108" y="100">① 元数据（0 个）</text>
+    <text x="284" y="100">② 逐元素（1 个）</text>
+    <text x="460" y="100">③ 归约 / 扫描（一行）</text>
+    <text x="636" y="100">④ 按下标搬运</text>
+    <text x="812" y="100">⑤ 收缩（行 × 列）</text>
+  </g>
+
+  <!-- ① metadata: same bytes, new lens -->
+  <g fill="#f1f3f5" stroke="#adb5bd">
+    <rect x="43" y="130" width="28" height="22" rx="4"/><rect x="77" y="130" width="28" height="22" rx="4"/>
+    <rect x="111" y="130" width="28" height="22" rx="4"/><rect x="145" y="130" width="28" height="22" rx="4"/>
+    <rect x="77" y="180" width="28" height="22" rx="4"/><rect x="111" y="180" width="28" height="22" rx="4"/>
+    <rect x="77" y="206" width="28" height="22" rx="4"/><rect x="111" y="206" width="28" height="22" rx="4"/>
+  </g>
+  <path d="M108 156 L108 174" fill="none" stroke="#868e96" stroke-width="2" stroke-dasharray="4 3" marker-end="url(#ar)"/>
+  <g font-family="monospace" font-size="12" font-weight="700" fill="#495057" text-anchor="middle">
+    <text x="57" y="145">a</text><text x="91" y="145">b</text><text x="125" y="145">c</text><text x="159" y="145">d</text>
+    <text x="91" y="195">a</text><text x="125" y="195">b</text><text x="91" y="221">c</text><text x="125" y="221">d</text>
+  </g>
+  <!-- ② elementwise -->
+  <g fill="#ffffff" stroke="#4c6ef5">
+    <rect x="219" y="130" width="28" height="22" rx="4"/><rect x="253" y="130" width="28" height="22" rx="4"/>
+    <rect x="287" y="130" width="28" height="22" rx="4"/><rect x="321" y="130" width="28" height="22" rx="4"/>
+  </g>
+  <g fill="#4c6ef5" stroke="#3b5bdb">
+    <rect x="219" y="196" width="28" height="22" rx="4"/><rect x="253" y="196" width="28" height="22" rx="4"/>
+    <rect x="287" y="196" width="28" height="22" rx="4"/><rect x="321" y="196" width="28" height="22" rx="4"/>
+  </g>
+  <g stroke="#4c6ef5" stroke-width="2">
+    <line x1="233" y1="152" x2="233" y2="196"/><line x1="267" y1="152" x2="267" y2="196"/>
+    <line x1="301" y1="152" x2="301" y2="196"/><line x1="335" y1="152" x2="335" y2="196"/>
+  </g>
+  <g font-family="monospace" font-size="12" font-weight="700" text-anchor="middle">
+    <text x="233" y="145" fill="#3b5bdb">a</text><text x="267" y="145" fill="#3b5bdb">b</text>
+    <text x="301" y="145" fill="#3b5bdb">c</text><text x="335" y="145" fill="#3b5bdb">d</text>
+    <text x="233" y="211" fill="#ffffff">a'</text><text x="267" y="211" fill="#ffffff">b'</text>
+    <text x="301" y="211" fill="#ffffff">c'</text><text x="335" y="211" fill="#ffffff">d'</text>
+  </g>
+  <!-- ③ reduction -->
+  <g fill="#ffffff" stroke="#0ca678">
+    <rect x="395" y="130" width="28" height="22" rx="4"/><rect x="429" y="130" width="28" height="22" rx="4"/>
+    <rect x="463" y="130" width="28" height="22" rx="4"/><rect x="497" y="130" width="28" height="22" rx="4"/>
+  </g>
+  <rect x="440" y="196" width="40" height="22" rx="4" fill="#0ca678" stroke="#0b7285"/>
+  <g stroke="#0ca678" stroke-width="2" fill="none">
+    <path d="M409 152 L452 196"/><path d="M443 152 L456 196"/><path d="M477 152 L464 196"/><path d="M511 152 L468 196"/>
+  </g>
+  <g font-family="monospace" font-size="12" font-weight="700" text-anchor="middle">
+    <text x="409" y="145" fill="#0b7285">a</text><text x="443" y="145" fill="#0b7285">b</text>
+    <text x="477" y="145" fill="#0b7285">c</text><text x="511" y="145" fill="#0b7285">d</text>
+    <text x="460" y="211" fill="#ffffff">Σ</text>
+  </g>
+  <!-- ④ index-driven -->
+  <g fill="#ffffff" stroke="#7048e8">
+    <rect x="571" y="130" width="28" height="22" rx="4"/><rect x="605" y="130" width="28" height="22" rx="4"/>
+    <rect x="639" y="130" width="28" height="22" rx="4"/><rect x="673" y="130" width="28" height="22" rx="4"/>
+  </g>
+  <g fill="#7048e8" stroke="#5f3dc4">
+    <rect x="588" y="196" width="28" height="22" rx="4"/><rect x="622" y="196" width="28" height="22" rx="4"/>
+    <rect x="656" y="196" width="28" height="22" rx="4"/>
+  </g>
+  <g stroke="#7048e8" stroke-width="2" fill="none">
+    <path d="M653 152 L602 196"/><path d="M585 152 L636 196"/><path d="M687 152 L670 196"/>
+  </g>
+  <g font-family="monospace" font-size="12" font-weight="700" text-anchor="middle">
+    <text x="585" y="145" fill="#5f3dc4">a</text><text x="619" y="145" fill="#5f3dc4">b</text>
+    <text x="653" y="145" fill="#5f3dc4">c</text><text x="687" y="145" fill="#5f3dc4">d</text>
+    <text x="602" y="211" fill="#ffffff">c</text><text x="636" y="211" fill="#ffffff">a</text><text x="670" y="211" fill="#ffffff">d</text>
+  </g>
+  <!-- ⑤ contraction -->
+  <text x="752" y="153" font-size="13" font-weight="700" fill="#e8590c" text-anchor="middle">×</text>
+  <g fill="#ffffff" stroke="#f08c00">
+    <rect x="764" y="124" width="28" height="20" rx="4"/><rect x="798" y="124" width="28" height="20" rx="4"/><rect x="832" y="124" width="28" height="20" rx="4"/>
+    <rect x="764" y="150" width="28" height="20" rx="4"/><rect x="798" y="150" width="28" height="20" rx="4"/><rect x="832" y="150" width="28" height="20" rx="4"/>
+  </g>
+  <rect x="792" y="196" width="40" height="22" rx="4" fill="#f08c00" stroke="#e8590c"/>
+  <g stroke="#f08c00" stroke-width="2" fill="none">
+    <path d="M778 170 L806 196"/><path d="M812 170 L812 196"/><path d="M846 170 L818 196"/>
+  </g>
+  <g font-family="monospace" font-size="11" font-weight="700" text-anchor="middle" fill="#e8590c">
+    <text x="778" y="138">a₀</text><text x="812" y="138">a₁</text><text x="846" y="138">a₂</text>
+    <text x="778" y="164">b₀</text><text x="812" y="164">b₁</text><text x="846" y="164">b₂</text>
+    <text x="812" y="211" fill="#ffffff">Σ</text>
+  </g>
+
+  <!-- formula captions -->
+  <g font-family="monospace" font-size="11" text-anchor="middle" fill="#495057">
+    <text x="108" y="246">只换 shape/stride</text>
+    <text x="284" y="246">out[i] = f(x[i], y[i])</text>
+    <text x="460" y="246">out = reduce(x[0..n])</text>
+    <text x="636" y="246">out[j] = x[idx[j]]</text>
+    <text x="812" y="246">out = Σ a[k]·b[k]</text>
+  </g>
+  <line x1="40" y1="258" x2="176" y2="258" stroke="#dee2e6"/><line x1="216" y1="258" x2="352" y2="258" stroke="#c5d0fb"/>
+  <line x1="392" y1="258" x2="528" y2="258" stroke="#b2f2d9"/><line x1="568" y1="258" x2="704" y2="258" stroke="#d0bfff"/>
+  <line x1="744" y1="258" x2="880" y2="258" stroke="#ffe066"/>
+
+  <!-- examples -->
+  <g font-family="monospace" font-size="10.5" fill="#495057">
+    <text x="40" y="278">view permute expand</text><text x="40" y="294">split chunk x[1:]</text>
+    <text x="216" y="278">add mul silu exp</text><text x="216" y="294">where masked_fill to</text>
+    <text x="392" y="278">sum mean max argmax</text><text x="392" y="294">softmax cumsum topk</text>
+    <text x="568" y="278">index_select gather</text><text x="568" y="294">scatter_ index_put_</text>
+    <text x="744" y="278">mm bmm matmul</text><text x="744" y="294">linear einsum</text>
+  </g>
+  <g font-size="11.5" fill="#495057">
+    <text x="40" y="318">shape：重新解释</text><text x="40" y="338" fill="#868e96">成本：≈0，不搬数据</text>
+    <text x="216" y="318">shape：广播后的形状</text><text x="216" y="338" fill="#868e96">成本：访存受限</text>
+    <text x="392" y="318">shape：dim 被消去或保留</text><text x="392" y="338" fill="#868e96">成本：访存受限 + 行内依赖</text>
+    <text x="568" y="318">shape：由下标的 shape 定</text><text x="568" y="338" fill="#868e96">成本：不规则访存</text>
+    <text x="744" y="318">shape：收缩维消失</text><text x="744" y="338" fill="#868e96">成本：2MNK，常算力受限</text>
+  </g>
+
+  <rect x="28" y="366" width="864" height="50" rx="9" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="46" y="387" font-size="12" fill="#495057">读一行代码先问：一个输出元素要读几个、读哪几个输入元素？不读 → 元数据；读对应位置的 1 个 → 逐元素；读同一行的全部 → 归约/扫描；</text>
+  <text x="46" y="405" font-size="12" fill="#495057">读由数据（下标）指定的位置 → 按下标搬运；读一行和一列、逐对相乘再求和 → 收缩。真实算子常是组合，如 softmax = 归约 + 逐元素。</text>
+
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#868e96"/></marker>
+  </defs>
+</svg>

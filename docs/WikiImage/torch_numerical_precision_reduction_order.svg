@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 520" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="520" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">同样三个数，换个加法顺序，结果就不同</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">BF16 中 256 附近相邻可表示数的间隔为 2；每一步加法之后都要舍入回可表示值</text>
+
+  <!-- LEFT: order A -->
+  <rect x="40" y="78" width="400" height="190" rx="10" fill="#fff5f5" stroke="#fa5252"/>
+  <text x="58" y="102" font-size="13.5" font-weight="700" fill="#c92a2a">顺序 A：(256 + 1) + 1</text>
+  <g font-size="12" font-family="monospace">
+    <text x="58" y="134" fill="#495057">step 1: 256 + 1 = 257</text>
+    <text x="250" y="134" fill="#c92a2a">→ 舍入到偶数 256</text>
+    <text x="58" y="164" fill="#495057">step 2: 256 + 1 = 257</text>
+    <text x="250" y="164" fill="#c92a2a">→ 再次舍成 256</text>
+  </g>
+  <rect x="58" y="186" width="364" height="40" rx="8" fill="#ffffff" stroke="#fa5252"/>
+  <text x="240" y="211" text-anchor="middle" font-size="14" font-weight="700" font-family="monospace" fill="#c92a2a">结果 = 256</text>
+  <text x="58" y="252" font-size="11.5" fill="#868e96">每个小量单独加到大部分和上，都被吞掉</text>
+
+  <!-- RIGHT: order B -->
+  <rect x="460" y="78" width="400" height="190" rx="10" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="478" y="102" font-size="13.5" font-weight="700" fill="#0b7285">顺序 B：256 + (1 + 1)</text>
+  <g font-size="12" font-family="monospace">
+    <text x="478" y="134" fill="#495057">step 1: 1 + 1 = 2</text>
+    <text x="670" y="134" fill="#0b7285">→ 精确</text>
+    <text x="478" y="164" fill="#495057">step 2: 256 + 2 = 258</text>
+    <text x="670" y="164" fill="#0b7285">→ 恰好可表示</text>
+  </g>
+  <rect x="478" y="186" width="364" height="40" rx="8" fill="#ffffff" stroke="#0ca678"/>
+  <text x="660" y="211" text-anchor="middle" font-size="14" font-weight="700" font-family="monospace" fill="#0b7285">结果 = 258</text>
+  <text x="478" y="252" font-size="11.5" fill="#868e96">小量先合并、再与大数相加，信息得以保留</text>
+
+  <!-- LOWER: who picks the order -->
+  <text x="40" y="298" font-size="13.5" font-weight="700" fill="#212529">谁决定加法顺序？不是 Python 代码，而是 kernel 的分块策略（示意）</text>
+
+  <text x="40" y="335" font-size="12" font-weight="700" fill="#3b5bdb">形状 1：沿 K 顺序累加</text>
+  <rect x="240" y="316" width="400" height="30" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="440" y="336" text-anchor="middle" font-size="11.5" font-family="monospace" fill="#3b5bdb">k = 0 … K-1 依次 acc += a·b</text>
+  <path d="M640 331 L688 331" stroke="#868e96" stroke-width="2" marker-end="url(#arR)"/>
+  <rect x="690" y="316" width="170" height="30" rx="6" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="775" y="336" text-anchor="middle" font-size="11.5" font-family="monospace" fill="#495057">C₁</text>
+
+  <text x="40" y="381" font-size="12" font-weight="700" fill="#e8590c">形状 2：split-K 切成 4 段</text>
+  <rect x="240" y="362" width="94" height="30" rx="4" fill="#fff4e6" stroke="#f08c00"/>
+  <rect x="342" y="362" width="94" height="30" rx="4" fill="#fff4e6" stroke="#f08c00"/>
+  <rect x="444" y="362" width="94" height="30" rx="4" fill="#fff4e6" stroke="#f08c00"/>
+  <rect x="546" y="362" width="94" height="30" rx="4" fill="#fff4e6" stroke="#f08c00"/>
+  <g font-size="11.5" font-family="monospace" fill="#e8590c" text-anchor="middle">
+    <text x="287" y="382">p0</text><text x="389" y="382">p1</text><text x="491" y="382">p2</text><text x="593" y="382">p3</text>
+  </g>
+  <path d="M640 377 L688 377" stroke="#868e96" stroke-width="2" marker-end="url(#arR)"/>
+  <rect x="690" y="362" width="170" height="30" rx="6" fill="#fff9db" stroke="#f08c00"/>
+  <text x="775" y="382" text-anchor="middle" font-size="11.5" font-family="monospace" fill="#e8590c">C₂ = Σ pᵢ ≠ C₁</text>
+
+  <text x="40" y="414" font-size="11.5" fill="#868e96">batch 大小、序列长度、后端或融合方式变化，都可能让 kernel 换一种切法 → 舍入位置随之改变</text>
+
+  <rect x="40" y="426" width="820" height="36" rx="9" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="58" y="449" font-size="12" fill="#0b7285">batch-invariant kernel：固定 tile 与 K 方向累加顺序，不随 batch 形状换切法 → 单条请求的结果与同批其他请求无关</text>
+
+  <!-- note -->
+  <rect x="40" y="474" width="820" height="34" rx="9" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="58" y="496" font-size="12" fill="#495057">关键：数学等价 ≠ 逐位一致。比较优化前后应使用合理容差与业务指标，而不是要求所有张量逐位相等。</text>
+
+  <defs>
+    <marker id="arR" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#868e96"/></marker>
+  </defs>
+</svg>

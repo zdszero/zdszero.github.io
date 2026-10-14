@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 495" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="495" rx="12" fill="#ffffff"/>
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#868e96"/>
+    </marker>
+    <marker id="arR" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#fa5252"/>
+    </marker>
+    <marker id="arT" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#0ca678"/>
+    </marker>
+  </defs>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">indexer 为什么不能按 head 切</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">分数要先跨 head 求和、再取 top-k；top-k 没法拆到部分和上各自做（p = 2 示意）</text>
+
+  <!-- ===== TP panel ===== -->
+  <rect x="30" y="80" width="410" height="330" rx="10" fill="#fff5f5" stroke="#fa5252" stroke-width="1"/>
+  <rect x="30" y="80" width="410" height="32" rx="10" fill="#fa5252"/>
+  <rect x="30" y="100" width="410" height="12" fill="#fa5252"/>
+  <text x="46" y="101" font-size="13.5" font-weight="700" fill="#ffffff">TP：按 head 切，每个 rank 只有部分和</text>
+
+  <rect x="50" y="130" width="95" height="66" rx="6" fill="#edf2ff" stroke="#4c6ef5" stroke-width="1"/>
+  <text x="97.5" y="152" text-anchor="middle" font-size="12" font-weight="700" fill="#3b5bdb">rank0</text>
+  <text x="97.5" y="169" text-anchor="middle" font-size="11" fill="#495057">head 0–31</text>
+  <text x="97.5" y="186" text-anchor="middle" font-size="10.5" fill="#495057" font-family="monospace">(T, S) 部分和</text>
+  <text x="157.5" y="169" text-anchor="middle" font-size="16" font-weight="700" fill="#495057">+</text>
+  <rect x="170" y="130" width="95" height="66" rx="6" fill="#f3f0ff" stroke="#7048e8" stroke-width="1"/>
+  <text x="217.5" y="152" text-anchor="middle" font-size="12" font-weight="700" fill="#5f3dc4">rank1</text>
+  <text x="217.5" y="169" text-anchor="middle" font-size="11" fill="#495057">head 32–63</text>
+  <text x="217.5" y="186" text-anchor="middle" font-size="10.5" fill="#495057" font-family="monospace">(T, S) 部分和</text>
+  <text x="295" y="154" text-anchor="middle" font-size="10.5" font-weight="700" fill="#c92a2a">all-reduce</text>
+  <path d="M270 163 L318 163" stroke="#fa5252" stroke-width="2" fill="none" marker-end="url(#arR)"/>
+  <rect x="325" y="130" width="100" height="66" rx="6" fill="#f1f3f5" stroke="#adb5bd" stroke-width="1"/>
+  <text x="375" y="152" text-anchor="middle" font-size="12" font-weight="700" fill="#495057">完整 logits</text>
+  <text x="375" y="169" text-anchor="middle" font-size="10.5" fill="#495057" font-family="monospace">(T, S) fp32</text>
+  <text x="375" y="186" text-anchor="middle" font-size="11" fill="#495057">→ top-k</text>
+  <text x="50" y="220" font-size="12" font-weight="700" fill="#212529">小例子：一个 query、4 个 key，取 top-2</text>
+  <g font-size="10.5" fill="#868e96" text-anchor="middle" font-family="monospace">
+    <text x="167" y="243">k0</text><text x="207" y="243">k1</text><text x="247" y="243">k2</text><text x="287" y="243">k3</text>
+  </g>
+  <text x="50" y="265" font-size="11.5" fill="#3b5bdb" font-weight="700">rank0 部分和</text>
+  <rect x="150" y="250" width="34" height="22" rx="4" fill="#dbe4ff" stroke="#4c6ef5" stroke-width="1.5"/>
+  <rect x="190" y="250" width="34" height="22" rx="4" fill="#ffffff" stroke="#adb5bd" stroke-width="1"/>
+  <rect x="230" y="250" width="34" height="22" rx="4" fill="#ffffff" stroke="#adb5bd" stroke-width="1"/>
+  <rect x="270" y="250" width="34" height="22" rx="4" fill="#dbe4ff" stroke="#4c6ef5" stroke-width="1.5"/>
+  <g font-size="12" text-anchor="middle" font-family="monospace" fill="#212529">
+    <text x="167" y="265">7</text><text x="207" y="265">3</text><text x="247" y="265">0</text><text x="287" y="265">4</text>
+  </g>
+  <text x="316" y="265" font-size="11" fill="#c92a2a">局部 top-2：k0, k3 ✗</text>
+  <text x="50" y="295" font-size="11.5" fill="#5f3dc4" font-weight="700">rank1 部分和</text>
+  <rect x="150" y="280" width="34" height="22" rx="4" fill="#ffffff" stroke="#adb5bd" stroke-width="1"/>
+  <rect x="190" y="280" width="34" height="22" rx="4" fill="#e5dbff" stroke="#7048e8" stroke-width="1.5"/>
+  <rect x="230" y="280" width="34" height="22" rx="4" fill="#e5dbff" stroke="#7048e8" stroke-width="1.5"/>
+  <rect x="270" y="280" width="34" height="22" rx="4" fill="#ffffff" stroke="#adb5bd" stroke-width="1"/>
+  <g font-size="12" text-anchor="middle" font-family="monospace" fill="#212529">
+    <text x="167" y="295">0</text><text x="207" y="295">6</text><text x="247" y="295">5</text><text x="287" y="295">2</text>
+  </g>
+  <text x="316" y="295" font-size="11" fill="#c92a2a">局部 top-2：k1, k2 ✗</text>
+  <text x="50" y="325" font-size="11.5" fill="#212529" font-weight="700">先求和再排序</text>
+  <rect x="150" y="310" width="34" height="22" rx="4" fill="#fff4e6" stroke="#f08c00" stroke-width="1.5"/>
+  <rect x="190" y="310" width="34" height="22" rx="4" fill="#fff4e6" stroke="#f08c00" stroke-width="1.5"/>
+  <rect x="230" y="310" width="34" height="22" rx="4" fill="#ffffff" stroke="#adb5bd" stroke-width="1"/>
+  <rect x="270" y="310" width="34" height="22" rx="4" fill="#ffffff" stroke="#adb5bd" stroke-width="1"/>
+  <g font-size="12" text-anchor="middle" font-family="monospace" fill="#212529">
+    <text x="167" y="325">7</text><text x="207" y="325">9</text><text x="247" y="325">5</text><text x="287" y="325">6</text>
+  </g>
+  <text x="316" y="325" font-size="11" fill="#0b7285" font-weight="700">top-2：k1, k0 ✓</text>
+  <text x="50" y="364" font-size="11.5" font-weight="700" fill="#c92a2a">prefill 时 T = S，要 all-reduce 的是 O(S²) 的 fp32 logits</text>
+  <text x="50" y="384" font-size="11" fill="#495057">S = 128K 时每层 logits 就有 4S² ≈ 64 GiB，不可接受</text>
+  <text x="50" y="400" font-size="11" fill="#495057">→ 实际做法：indexer 在每个 rank 上复制一份，算全部 64 head</text>
+  <!-- ===== CP panel ===== -->
+  <rect x="460" y="80" width="410" height="330" rx="10" fill="#e6fcf5" stroke="#0ca678" stroke-width="1"/>
+  <rect x="460" y="80" width="410" height="32" rx="10" fill="#0ca678"/>
+  <rect x="460" y="100" width="410" height="12" fill="#0ca678"/>
+  <text x="476" y="101" font-size="13.5" font-weight="700" fill="#ffffff">CP：按序列切，每个 rank 拿到完整的行</text>
+
+  <text x="660" y="132" text-anchor="middle" font-size="11" font-weight="700" fill="#0b7285">all-gather 全部 S 个 index key（S, 128）</text>
+  <rect x="560" y="140" width="200" height="16" rx="3" fill="#c3fae8" stroke="#0ca678" stroke-width="1"/>
+  <g stroke="#0ca678" stroke-width="0.6" opacity="0.6">
+    <path d="M585 140 V156 M610 140 V156 M635 140 V156 M660 140 V156 M685 140 V156 M710 140 V156 M735 140 V156"/>
+  </g>
+  <rect x="560" y="164" width="200" height="55" rx="5" fill="#edf2ff" stroke="#4c6ef5" stroke-width="1"/>
+  <text x="660" y="186" text-anchor="middle" font-size="12" font-weight="700" fill="#3b5bdb">rank0：query 前 T/2 行</text>
+  <text x="660" y="204" text-anchor="middle" font-size="11" fill="#495057">全部 64 head，完整 Σ_h</text>
+  <rect x="560" y="223" width="200" height="55" rx="5" fill="#f3f0ff" stroke="#7048e8" stroke-width="1"/>
+  <text x="660" y="245" text-anchor="middle" font-size="12" font-weight="700" fill="#5f3dc4">rank1：query 后 T/2 行</text>
+  <text x="660" y="263" text-anchor="middle" font-size="11" fill="#495057">全部 64 head，完整 Σ_h</text>
+  <text x="482" y="214" font-size="11" fill="#495057">按行（query）</text>
+  <text x="482" y="230" font-size="11" fill="#495057">切 logits</text>
+  <path d="M764 191 L786 191" stroke="#0ca678" stroke-width="2" fill="none" marker-end="url(#arT)"/>
+  <text x="792" y="188" font-size="11" fill="#0b7285" font-weight="700">行内直接</text>
+  <text x="792" y="203" font-size="11" fill="#0b7285" font-weight="700">top-k ✓</text>
+  <path d="M764 250 L786 250" stroke="#0ca678" stroke-width="2" fill="none" marker-end="url(#arT)"/>
+  <text x="792" y="247" font-size="11" fill="#0b7285" font-weight="700">行内直接</text>
+  <text x="792" y="262" font-size="11" fill="#0b7285" font-weight="700">top-k ✓</text>
+  <text x="482" y="306" font-size="11.5" fill="#495057">同一个例子在 CP 下：[7, 9, 5, 6] 这一整行</text>
+  <text x="482" y="323" font-size="11.5" fill="#495057">就在某一个 rank 上，直接得出 k1, k0</text>
+  <text x="482" y="364" font-size="11.5" font-weight="700" fill="#0b7285">要通信的只有 key：O(S) 的 all-gather</text>
+  <text x="482" y="384" font-size="11" fill="#495057">S = 128K 时每层 128K × 256 B（bf16）= 32 MiB</text>
+  <text x="482" y="400" font-size="11" fill="#495057">indexer 的计算量也随之按 1/p 缩减</text>
+
+  <rect x="30" y="425" width="840" height="52" rx="8" fill="#f8f9fa" stroke="#e9ecef" stroke-width="1"/>
+  <text x="50" y="447" font-size="12" fill="#495057">top-k 是非线性的：部分和各自取 top-k 再合并，得不到正确答案，只能先把 64 个 head 的分数加完。</text>
+  <text x="50" y="466" font-size="12" fill="#495057">所以 TP 只能复制 indexer（wq_b / wk / weights_proj 都是 ReplicatedLinear），CP 才能真正把它分摊开。</text>
+</svg>

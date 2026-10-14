@@ -1,0 +1,137 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 560" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="560" rx="12" fill="#ffffff"/>
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#868e96"/>
+    </marker>
+  </defs>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">CP 怎么切 Q，以及一层的流程</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">p = 4。因果 mask 下越靠后的 query 越贵，所以要把前后配对或交错分配</text>
+  <text x="30" y="96" font-size="12.5" fill="#212529" font-weight="700">zigzag</text>
+  <text x="30" y="112" font-size="10.5" fill="#868e96">（in-seq-split）</text>
+  <rect x="151" y="84" width="88" height="34" rx="4" fill="#edf2ff" stroke="#4c6ef5" stroke-width="1"/>
+  <text x="195.0" y="99" font-size="11.5" fill="#3b5bdb" font-weight="700" text-anchor="middle">b0</text>
+  <text x="195.0" y="113" font-size="10" fill="#3b5bdb" text-anchor="middle" font-family="monospace">rank0</text>
+  <rect x="241" y="84" width="88" height="34" rx="4" fill="#e6fcf5" stroke="#0ca678" stroke-width="1"/>
+  <text x="285.0" y="99" font-size="11.5" fill="#0b7285" font-weight="700" text-anchor="middle">b1</text>
+  <text x="285.0" y="113" font-size="10" fill="#0b7285" text-anchor="middle" font-family="monospace">rank1</text>
+  <rect x="331" y="84" width="88" height="34" rx="4" fill="#fff4e6" stroke="#f08c00" stroke-width="1"/>
+  <text x="375.0" y="99" font-size="11.5" fill="#e8590c" font-weight="700" text-anchor="middle">b2</text>
+  <text x="375.0" y="113" font-size="10" fill="#e8590c" text-anchor="middle" font-family="monospace">rank2</text>
+  <rect x="421" y="84" width="88" height="34" rx="4" fill="#f3f0ff" stroke="#7048e8" stroke-width="1"/>
+  <text x="465.0" y="99" font-size="11.5" fill="#5f3dc4" font-weight="700" text-anchor="middle">b3</text>
+  <text x="465.0" y="113" font-size="10" fill="#5f3dc4" text-anchor="middle" font-family="monospace">rank3</text>
+  <rect x="511" y="84" width="88" height="34" rx="4" fill="#f3f0ff" stroke="#7048e8" stroke-width="1"/>
+  <text x="555.0" y="99" font-size="11.5" fill="#5f3dc4" font-weight="700" text-anchor="middle">b4</text>
+  <text x="555.0" y="113" font-size="10" fill="#5f3dc4" text-anchor="middle" font-family="monospace">rank3</text>
+  <rect x="601" y="84" width="88" height="34" rx="4" fill="#fff4e6" stroke="#f08c00" stroke-width="1"/>
+  <text x="645.0" y="99" font-size="11.5" fill="#e8590c" font-weight="700" text-anchor="middle">b5</text>
+  <text x="645.0" y="113" font-size="10" fill="#e8590c" text-anchor="middle" font-family="monospace">rank2</text>
+  <rect x="691" y="84" width="88" height="34" rx="4" fill="#e6fcf5" stroke="#0ca678" stroke-width="1"/>
+  <text x="735.0" y="99" font-size="11.5" fill="#0b7285" font-weight="700" text-anchor="middle">b6</text>
+  <text x="735.0" y="113" font-size="10" fill="#0b7285" text-anchor="middle" font-family="monospace">rank1</text>
+  <rect x="781" y="84" width="88" height="34" rx="4" fill="#edf2ff" stroke="#4c6ef5" stroke-width="1"/>
+  <text x="825.0" y="99" font-size="11.5" fill="#3b5bdb" font-weight="700" text-anchor="middle">b7</text>
+  <text x="825.0" y="113" font-size="10" fill="#3b5bdb" text-anchor="middle" font-family="monospace">rank0</text>
+  <text x="150" y="136" font-size="11" fill="#495057">切成 2p 块，rank r 拿第 r 块和第 2p−1−r 块：平均 KV 长度之和恒为 N，每个 rank 的计算量相同</text>
+  <text x="30" y="170" font-size="12.5" fill="#212529" font-weight="700">interleave</text>
+  <text x="30" y="186" font-size="10.5" fill="#868e96">（round-robin）</text>
+  <rect x="151.0" y="158" width="20.5" height="34" rx="3" fill="#edf2ff" stroke="#4c6ef5" stroke-width="1"/>
+  <text x="161.25" y="180" font-size="10" fill="#3b5bdb" text-anchor="middle" font-family="monospace">0</text>
+  <rect x="173.5" y="158" width="20.5" height="34" rx="3" fill="#e6fcf5" stroke="#0ca678" stroke-width="1"/>
+  <text x="183.75" y="180" font-size="10" fill="#0b7285" text-anchor="middle" font-family="monospace">1</text>
+  <rect x="196.0" y="158" width="20.5" height="34" rx="3" fill="#fff4e6" stroke="#f08c00" stroke-width="1"/>
+  <text x="206.25" y="180" font-size="10" fill="#e8590c" text-anchor="middle" font-family="monospace">2</text>
+  <rect x="218.5" y="158" width="20.5" height="34" rx="3" fill="#f3f0ff" stroke="#7048e8" stroke-width="1"/>
+  <text x="228.75" y="180" font-size="10" fill="#5f3dc4" text-anchor="middle" font-family="monospace">3</text>
+  <rect x="241.0" y="158" width="20.5" height="34" rx="3" fill="#edf2ff" stroke="#4c6ef5" stroke-width="1"/>
+  <text x="251.25" y="180" font-size="10" fill="#3b5bdb" text-anchor="middle" font-family="monospace">0</text>
+  <rect x="263.5" y="158" width="20.5" height="34" rx="3" fill="#e6fcf5" stroke="#0ca678" stroke-width="1"/>
+  <text x="273.75" y="180" font-size="10" fill="#0b7285" text-anchor="middle" font-family="monospace">1</text>
+  <rect x="286.0" y="158" width="20.5" height="34" rx="3" fill="#fff4e6" stroke="#f08c00" stroke-width="1"/>
+  <text x="296.25" y="180" font-size="10" fill="#e8590c" text-anchor="middle" font-family="monospace">2</text>
+  <rect x="308.5" y="158" width="20.5" height="34" rx="3" fill="#f3f0ff" stroke="#7048e8" stroke-width="1"/>
+  <text x="318.75" y="180" font-size="10" fill="#5f3dc4" text-anchor="middle" font-family="monospace">3</text>
+  <rect x="331.0" y="158" width="20.5" height="34" rx="3" fill="#edf2ff" stroke="#4c6ef5" stroke-width="1"/>
+  <text x="341.25" y="180" font-size="10" fill="#3b5bdb" text-anchor="middle" font-family="monospace">0</text>
+  <rect x="353.5" y="158" width="20.5" height="34" rx="3" fill="#e6fcf5" stroke="#0ca678" stroke-width="1"/>
+  <text x="363.75" y="180" font-size="10" fill="#0b7285" text-anchor="middle" font-family="monospace">1</text>
+  <rect x="376.0" y="158" width="20.5" height="34" rx="3" fill="#fff4e6" stroke="#f08c00" stroke-width="1"/>
+  <text x="386.25" y="180" font-size="10" fill="#e8590c" text-anchor="middle" font-family="monospace">2</text>
+  <rect x="398.5" y="158" width="20.5" height="34" rx="3" fill="#f3f0ff" stroke="#7048e8" stroke-width="1"/>
+  <text x="408.75" y="180" font-size="10" fill="#5f3dc4" text-anchor="middle" font-family="monospace">3</text>
+  <rect x="421.0" y="158" width="20.5" height="34" rx="3" fill="#edf2ff" stroke="#4c6ef5" stroke-width="1"/>
+  <text x="431.25" y="180" font-size="10" fill="#3b5bdb" text-anchor="middle" font-family="monospace">0</text>
+  <rect x="443.5" y="158" width="20.5" height="34" rx="3" fill="#e6fcf5" stroke="#0ca678" stroke-width="1"/>
+  <text x="453.75" y="180" font-size="10" fill="#0b7285" text-anchor="middle" font-family="monospace">1</text>
+  <rect x="466.0" y="158" width="20.5" height="34" rx="3" fill="#fff4e6" stroke="#f08c00" stroke-width="1"/>
+  <text x="476.25" y="180" font-size="10" fill="#e8590c" text-anchor="middle" font-family="monospace">2</text>
+  <rect x="488.5" y="158" width="20.5" height="34" rx="3" fill="#f3f0ff" stroke="#7048e8" stroke-width="1"/>
+  <text x="498.75" y="180" font-size="10" fill="#5f3dc4" text-anchor="middle" font-family="monospace">3</text>
+  <rect x="511.0" y="158" width="20.5" height="34" rx="3" fill="#edf2ff" stroke="#4c6ef5" stroke-width="1"/>
+  <text x="521.25" y="180" font-size="10" fill="#3b5bdb" text-anchor="middle" font-family="monospace">0</text>
+  <rect x="533.5" y="158" width="20.5" height="34" rx="3" fill="#e6fcf5" stroke="#0ca678" stroke-width="1"/>
+  <text x="543.75" y="180" font-size="10" fill="#0b7285" text-anchor="middle" font-family="monospace">1</text>
+  <rect x="556.0" y="158" width="20.5" height="34" rx="3" fill="#fff4e6" stroke="#f08c00" stroke-width="1"/>
+  <text x="566.25" y="180" font-size="10" fill="#e8590c" text-anchor="middle" font-family="monospace">2</text>
+  <rect x="578.5" y="158" width="20.5" height="34" rx="3" fill="#f3f0ff" stroke="#7048e8" stroke-width="1"/>
+  <text x="588.75" y="180" font-size="10" fill="#5f3dc4" text-anchor="middle" font-family="monospace">3</text>
+  <rect x="601.0" y="158" width="20.5" height="34" rx="3" fill="#edf2ff" stroke="#4c6ef5" stroke-width="1"/>
+  <text x="611.25" y="180" font-size="10" fill="#3b5bdb" text-anchor="middle" font-family="monospace">0</text>
+  <rect x="623.5" y="158" width="20.5" height="34" rx="3" fill="#e6fcf5" stroke="#0ca678" stroke-width="1"/>
+  <text x="633.75" y="180" font-size="10" fill="#0b7285" text-anchor="middle" font-family="monospace">1</text>
+  <rect x="646.0" y="158" width="20.5" height="34" rx="3" fill="#fff4e6" stroke="#f08c00" stroke-width="1"/>
+  <text x="656.25" y="180" font-size="10" fill="#e8590c" text-anchor="middle" font-family="monospace">2</text>
+  <rect x="668.5" y="158" width="20.5" height="34" rx="3" fill="#f3f0ff" stroke="#7048e8" stroke-width="1"/>
+  <text x="678.75" y="180" font-size="10" fill="#5f3dc4" text-anchor="middle" font-family="monospace">3</text>
+  <rect x="691.0" y="158" width="20.5" height="34" rx="3" fill="#edf2ff" stroke="#4c6ef5" stroke-width="1"/>
+  <text x="701.25" y="180" font-size="10" fill="#3b5bdb" text-anchor="middle" font-family="monospace">0</text>
+  <rect x="713.5" y="158" width="20.5" height="34" rx="3" fill="#e6fcf5" stroke="#0ca678" stroke-width="1"/>
+  <text x="723.75" y="180" font-size="10" fill="#0b7285" text-anchor="middle" font-family="monospace">1</text>
+  <rect x="736.0" y="158" width="20.5" height="34" rx="3" fill="#fff4e6" stroke="#f08c00" stroke-width="1"/>
+  <text x="746.25" y="180" font-size="10" fill="#e8590c" text-anchor="middle" font-family="monospace">2</text>
+  <rect x="758.5" y="158" width="20.5" height="34" rx="3" fill="#f3f0ff" stroke="#7048e8" stroke-width="1"/>
+  <text x="768.75" y="180" font-size="10" fill="#5f3dc4" text-anchor="middle" font-family="monospace">3</text>
+  <rect x="781.0" y="158" width="20.5" height="34" rx="3" fill="#edf2ff" stroke="#4c6ef5" stroke-width="1"/>
+  <text x="791.25" y="180" font-size="10" fill="#3b5bdb" text-anchor="middle" font-family="monospace">0</text>
+  <rect x="803.5" y="158" width="20.5" height="34" rx="3" fill="#e6fcf5" stroke="#0ca678" stroke-width="1"/>
+  <text x="813.75" y="180" font-size="10" fill="#0b7285" text-anchor="middle" font-family="monospace">1</text>
+  <rect x="826.0" y="158" width="20.5" height="34" rx="3" fill="#fff4e6" stroke="#f08c00" stroke-width="1"/>
+  <text x="836.25" y="180" font-size="10" fill="#e8590c" text-anchor="middle" font-family="monospace">2</text>
+  <rect x="848.5" y="158" width="20.5" height="34" rx="3" fill="#f3f0ff" stroke="#7048e8" stroke-width="1"/>
+  <text x="858.75" y="180" font-size="10" fill="#5f3dc4" text-anchor="middle" font-family="monospace">3</text>
+  <text x="150" y="210" font-size="11" fill="#495057">token_idx % p 逐个分配：天然均衡，但 all-gather 回来的数据是交错的，需要重排</text>
+  <text x="30" y="250" font-size="12.5" fill="#212529" font-weight="700">一层的流程</text>
+  <rect x="30" y="262" width="196" height="118" rx="10" fill="#edf2ff" stroke="#4c6ef5" stroke-width="1"/>
+  <text x="44" y="286" font-size="13" fill="#3b5bdb" font-weight="700">① 切分输入</text>
+  <text x="44" y="310" font-size="11.5" fill="#495057">每个 rank 约 1/p 的 token</text>
+  <text x="44" y="330" font-size="11.5" fill="#495057">embedding / norm / QKV 投影</text>
+  <path d="M228 321 L242 321" stroke="#868e96" stroke-width="2" fill="none" marker-end="url(#ar)"/>
+  <rect x="244" y="262" width="196" height="118" rx="10" fill="#fff4e6" stroke="#f08c00" stroke-width="1"/>
+  <text x="258" y="286" font-size="13" fill="#e8590c" font-weight="700">② all-gather KV</text>
+  <text x="258" y="310" font-size="11.5" fill="#495057">MLA latent（576 维）</text>
+  <text x="258" y="330" font-size="11.5" fill="#495057">+ indexer key（bf16，量化前）</text>
+  <text x="258" y="350" font-size="11.5" fill="#495057">pad → gather → 去 pad 重排</text>
+  <path d="M442 321 L456 321" stroke="#868e96" stroke-width="2" fill="none" marker-end="url(#ar)"/>
+  <rect x="458" y="262" width="196" height="118" rx="10" fill="#e6fcf5" stroke="#0ca678" stroke-width="1"/>
+  <text x="472" y="286" font-size="13" fill="#0b7285" font-weight="700">③ 本地计算</text>
+  <text x="472" y="310" font-size="11.5" fill="#495057">本地 Q × 完整 KV</text>
+  <text x="472" y="330" font-size="11.5" fill="#495057">indexer → top-k → sparse MLA</text>
+  <text x="472" y="350" font-size="11.5" fill="#495057">rank 之间不再通信</text>
+  <path d="M656 321 L670 321" stroke="#868e96" stroke-width="2" fill="none" marker-end="url(#ar)"/>
+  <rect x="672" y="262" width="196" height="118" rx="10" fill="#f3f0ff" stroke="#7048e8" stroke-width="1"/>
+  <text x="686" y="286" font-size="13" fill="#5f3dc4" font-weight="700">④ 拼回输出</text>
+  <text x="686" y="310" font-size="11.5" fill="#495057">最后一层后 hidden state</text>
+  <text x="686" y="330" font-size="11.5" fill="#495057">all-gather + 重排</text>
+  <rect x="30" y="400" width="412" height="76" rx="10" fill="#f8f9fa" stroke="#495057" stroke-width="1"/>
+  <text x="44" y="422" font-size="12.5" fill="#495057" font-weight="700">Ring Attention（通用 CP）</text>
+  <text x="44" y="444" font-size="11.5" fill="#495057">KV 分块绕环传 p − 1 轮，每轮算部分 attention 再合并</text>
+  <text x="44" y="462" font-size="11.5" fill="#495057">top-k 选中的 token 散落各处，很难按轮次组织</text>
+  <rect x="458" y="400" width="412" height="76" rx="10" fill="#fff4e6" stroke="#e8590c" stroke-width="1"/>
+  <text x="472" y="422" font-size="12.5" fill="#e8590c" font-weight="700">AllGather CP（DSA 用的）</text>
+  <text x="472" y="444" font-size="11.5" fill="#495057">一次 all-gather 收齐全部 KV，然后本地做完整 attention</text>
+  <text x="472" y="462" font-size="11.5" fill="#495057">可行的前提：MLA latent 只有 576 维，约为 MHA 的 1/71</text>
+  <rect x="30" y="492" width="840" height="56" rx="8" fill="#f8f9fa" stroke="#e9ecef" stroke-width="1"/>
+  <text x="46" y="514" font-size="12" fill="#495057">indexer 必须先跨 head 求和、再取 top-k：按 head 切（TP）要 all-reduce (T, S) 的 logits，是 O(S²)；</text>
+  <text x="46" y="532" font-size="12" fill="#495057">按序列切（CP）只需 all-gather 每个 token 128 维的 index key，是 O(S)。所以 DSA 用 CP 扩展 prefill。</text>
+</svg>

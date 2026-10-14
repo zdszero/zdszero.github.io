@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 470" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="470" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">为什么需要 DCP：MLA 的 latent KV 无法按 head 切</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">例：attention TP = 4，一个请求有 12 个历史 token；每格代表一个 token 的 latent KV</text>
+
+  <!-- left panel: TP only -->
+  <rect x="30" y="80" width="410" height="290" rx="10" fill="#fff5f5" stroke="#fa5252"/>
+  <text x="48" y="106" font-size="14.5" font-weight="700" fill="#c92a2a">只用 TP（dcp_size = 1）</text>
+  <text x="48" y="126" font-size="11.5" fill="#868e96">head 被切成 4 份，但所有 head 共享同一份 latent KV</text>
+  <!-- right panel: TP + DCP -->
+  <rect x="460" y="80" width="410" height="290" rx="10" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="478" y="106" font-size="14.5" font-weight="700" fill="#0b7285">TP + DCP（dcp_size = 4）</text>
+  <text x="478" y="126" font-size="11.5" fill="#868e96">同样 4 张卡，KV 改为按 token 交错切；虚线格 = 不在本卡</text>
+  <!-- cell grids (left: TP only, right: TP + DCP) -->
+  <text x="48" y="166" font-size="12.5" font-weight="700" fill="#3b5bdb">rank 0</text>
+  <rect x="110" y="146" width="21" height="30" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="135" y="146" width="21" height="30" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="160" y="146" width="21" height="30" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="185" y="146" width="21" height="30" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="210" y="146" width="21" height="30" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="235" y="146" width="21" height="30" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="260" y="146" width="21" height="30" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="285" y="146" width="21" height="30" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="310" y="146" width="21" height="30" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="335" y="146" width="21" height="30" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="360" y="146" width="21" height="30" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="385" y="146" width="21" height="30" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="48" y="214" font-size="12.5" font-weight="700" fill="#0b7285">rank 1</text>
+  <rect x="110" y="194" width="21" height="30" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="135" y="194" width="21" height="30" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="160" y="194" width="21" height="30" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="185" y="194" width="21" height="30" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="210" y="194" width="21" height="30" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="235" y="194" width="21" height="30" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="260" y="194" width="21" height="30" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="285" y="194" width="21" height="30" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="310" y="194" width="21" height="30" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="335" y="194" width="21" height="30" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="360" y="194" width="21" height="30" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="385" y="194" width="21" height="30" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="48" y="262" font-size="12.5" font-weight="700" fill="#e8590c">rank 2</text>
+  <rect x="110" y="242" width="21" height="30" rx="4" fill="#fff9db" stroke="#f08c00"/>
+  <rect x="135" y="242" width="21" height="30" rx="4" fill="#fff9db" stroke="#f08c00"/>
+  <rect x="160" y="242" width="21" height="30" rx="4" fill="#fff9db" stroke="#f08c00"/>
+  <rect x="185" y="242" width="21" height="30" rx="4" fill="#fff9db" stroke="#f08c00"/>
+  <rect x="210" y="242" width="21" height="30" rx="4" fill="#fff9db" stroke="#f08c00"/>
+  <rect x="235" y="242" width="21" height="30" rx="4" fill="#fff9db" stroke="#f08c00"/>
+  <rect x="260" y="242" width="21" height="30" rx="4" fill="#fff9db" stroke="#f08c00"/>
+  <rect x="285" y="242" width="21" height="30" rx="4" fill="#fff9db" stroke="#f08c00"/>
+  <rect x="310" y="242" width="21" height="30" rx="4" fill="#fff9db" stroke="#f08c00"/>
+  <rect x="335" y="242" width="21" height="30" rx="4" fill="#fff9db" stroke="#f08c00"/>
+  <rect x="360" y="242" width="21" height="30" rx="4" fill="#fff9db" stroke="#f08c00"/>
+  <rect x="385" y="242" width="21" height="30" rx="4" fill="#fff9db" stroke="#f08c00"/>
+  <text x="48" y="310" font-size="12.5" font-weight="700" fill="#5f3dc4">rank 3</text>
+  <rect x="110" y="290" width="21" height="30" rx="4" fill="#f3f0ff" stroke="#7048e8"/>
+  <rect x="135" y="290" width="21" height="30" rx="4" fill="#f3f0ff" stroke="#7048e8"/>
+  <rect x="160" y="290" width="21" height="30" rx="4" fill="#f3f0ff" stroke="#7048e8"/>
+  <rect x="185" y="290" width="21" height="30" rx="4" fill="#f3f0ff" stroke="#7048e8"/>
+  <rect x="210" y="290" width="21" height="30" rx="4" fill="#f3f0ff" stroke="#7048e8"/>
+  <rect x="235" y="290" width="21" height="30" rx="4" fill="#f3f0ff" stroke="#7048e8"/>
+  <rect x="260" y="290" width="21" height="30" rx="4" fill="#f3f0ff" stroke="#7048e8"/>
+  <rect x="285" y="290" width="21" height="30" rx="4" fill="#f3f0ff" stroke="#7048e8"/>
+  <rect x="310" y="290" width="21" height="30" rx="4" fill="#f3f0ff" stroke="#7048e8"/>
+  <rect x="335" y="290" width="21" height="30" rx="4" fill="#f3f0ff" stroke="#7048e8"/>
+  <rect x="360" y="290" width="21" height="30" rx="4" fill="#f3f0ff" stroke="#7048e8"/>
+  <rect x="385" y="290" width="21" height="30" rx="4" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="478" y="166" font-size="12.5" font-weight="700" fill="#3b5bdb">rank 0</text>
+  <rect x="540" y="146" width="21" height="30" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="565" y="146" width="21" height="30" rx="4" fill="#ffffff" stroke="#dee2e6" stroke-dasharray="3 2"/>
+  <rect x="590" y="146" width="21" height="30" rx="4" fill="#ffffff" stroke="#dee2e6" stroke-dasharray="3 2"/>
+  <rect x="615" y="146" width="21" height="30" rx="4" fill="#ffffff" stroke="#dee2e6" stroke-dasharray="3 2"/>
+  <rect x="640" y="146" width="21" height="30" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="665" y="146" width="21" height="30" rx="4" fill="#ffffff" stroke="#dee2e6" stroke-dasharray="3 2"/>
+  <rect x="690" y="146" width="21" height="30" rx="4" fill="#ffffff" stroke="#dee2e6" stroke-dasharray="3 2"/>
+  <rect x="715" y="146" width="21" height="30" rx="4" fill="#ffffff" stroke="#dee2e6" stroke-dasharray="3 2"/>
+  <rect x="740" y="146" width="21" height="30" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="765" y="146" width="21" height="30" rx="4" fill="#ffffff" stroke="#dee2e6" stroke-dasharray="3 2"/>
+  <rect x="790" y="146" width="21" height="30" rx="4" fill="#ffffff" stroke="#dee2e6" stroke-dasharray="3 2"/>
+  <rect x="815" y="146" width="21" height="30" rx="4" fill="#ffffff" stroke="#dee2e6" stroke-dasharray="3 2"/>
+  <text x="478" y="214" font-size="12.5" font-weight="700" fill="#0b7285">rank 1</text>
+  <rect x="540" y="194" width="21" height="30" rx="4" fill="#ffffff" stroke="#dee2e6" stroke-dasharray="3 2"/>
+  <rect x="565" y="194" width="21" height="30" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="590" y="194" width="21" height="30" rx="4" fill="#ffffff" stroke="#dee2e6" stroke-dasharray="3 2"/>
+  <rect x="615" y="194" width="21" height="30" rx="4" fill="#ffffff" stroke="#dee2e6" stroke-dasharray="3 2"/>
+  <rect x="640" y="194" width="21" height="30" rx="4" fill="#ffffff" stroke="#dee2e6" stroke-dasharray="3 2"/>
+  <rect x="665" y="194" width="21" height="30" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="690" y="194" width="21" height="30" rx="4" fill="#ffffff" stroke="#dee2e6" stroke-dasharray="3 2"/>
+  <rect x="715" y="194" width="21" height="30" rx="4" fill="#ffffff" stroke="#dee2e6" stroke-dasharray="3 2"/>
+  <rect x="740" y="194" width="21" height="30" rx="4" fill="#ffffff" stroke="#dee2e6" stroke-dasharray="3 2"/>
+  <rect x="765" y="194" width="21" height="30" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="790" y="194" width="21" height="30" rx="4" fill="#ffffff" stroke="#dee2e6" stroke-dasharray="3 2"/>
+  <rect x="815" y="194" width="21" height="30" rx="4" fill="#ffffff" stroke="#dee2e6" stroke-dasharray="3 2"/>
+  <text x="478" y="262" font-size="12.5" font-weight="700" fill="#e8590c">rank 2</text>
+  <rect x="540" y="242" width="21" height="30" rx="4" fill="#ffffff" stroke="#dee2e6" stroke-dasharray="3 2"/>
+  <rect x="565" y="242" width="21" height="30" rx="4" fill="#ffffff" stroke="#dee2e6" stroke-dasharray="3 2"/>
+  <rect x="590" y="242" width="21" height="30" rx="4" fill="#fff9db" stroke="#f08c00"/>
+  <rect x="615" y="242" width="21" height="30" rx="4" fill="#ffffff" stroke="#dee2e6" stroke-dasharray="3 2"/>
+  <rect x="640" y="242" width="21" height="30" rx="4" fill="#ffffff" stroke="#dee2e6" stroke-dasharray="3 2"/>
+  <rect x="665" y="242" width="21" height="30" rx="4" fill="#ffffff" stroke="#dee2e6" stroke-dasharray="3 2"/>
+  <rect x="690" y="242" width="21" height="30" rx="4" fill="#fff9db" stroke="#f08c00"/>
+  <rect x="715" y="242" width="21" height="30" rx="4" fill="#ffffff" stroke="#dee2e6" stroke-dasharray="3 2"/>
+  <rect x="740" y="242" width="21" height="30" rx="4" fill="#ffffff" stroke="#dee2e6" stroke-dasharray="3 2"/>
+  <rect x="765" y="242" width="21" height="30" rx="4" fill="#ffffff" stroke="#dee2e6" stroke-dasharray="3 2"/>
+  <rect x="790" y="242" width="21" height="30" rx="4" fill="#fff9db" stroke="#f08c00"/>
+  <rect x="815" y="242" width="21" height="30" rx="4" fill="#ffffff" stroke="#dee2e6" stroke-dasharray="3 2"/>
+  <text x="478" y="310" font-size="12.5" font-weight="700" fill="#5f3dc4">rank 3</text>
+  <rect x="540" y="290" width="21" height="30" rx="4" fill="#ffffff" stroke="#dee2e6" stroke-dasharray="3 2"/>
+  <rect x="565" y="290" width="21" height="30" rx="4" fill="#ffffff" stroke="#dee2e6" stroke-dasharray="3 2"/>
+  <rect x="590" y="290" width="21" height="30" rx="4" fill="#ffffff" stroke="#dee2e6" stroke-dasharray="3 2"/>
+  <rect x="615" y="290" width="21" height="30" rx="4" fill="#f3f0ff" stroke="#7048e8"/>
+  <rect x="640" y="290" width="21" height="30" rx="4" fill="#ffffff" stroke="#dee2e6" stroke-dasharray="3 2"/>
+  <rect x="665" y="290" width="21" height="30" rx="4" fill="#ffffff" stroke="#dee2e6" stroke-dasharray="3 2"/>
+  <rect x="690" y="290" width="21" height="30" rx="4" fill="#ffffff" stroke="#dee2e6" stroke-dasharray="3 2"/>
+  <rect x="715" y="290" width="21" height="30" rx="4" fill="#f3f0ff" stroke="#7048e8"/>
+  <rect x="740" y="290" width="21" height="30" rx="4" fill="#ffffff" stroke="#dee2e6" stroke-dasharray="3 2"/>
+  <rect x="765" y="290" width="21" height="30" rx="4" fill="#ffffff" stroke="#dee2e6" stroke-dasharray="3 2"/>
+  <rect x="790" y="290" width="21" height="30" rx="4" fill="#ffffff" stroke="#dee2e6" stroke-dasharray="3 2"/>
+  <rect x="815" y="290" width="21" height="30" rx="4" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="48" y="348" font-size="12" fill="#c92a2a" font-weight="600">每个 rank 存 12 行、每步读 12 行 → 4 份完全相同的副本</text>
+
+  <text x="478" y="348" font-size="12" fill="#0b7285" font-weight="600">每个 rank 只存 3 行、只读 3 行 → 无冗余，容量 ×4</text>
+
+  <!-- bottom note -->
+  <rect x="30" y="388" width="840" height="64" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="46" y="411" font-size="12.5" fill="#495057" font-weight="600">关键思想：</text>
+  <text x="130" y="411" font-size="12.5" fill="#495057">TP 能切 head 和权重，却切不动被所有 head 共享的 latent KV；DCP 换一个轴，沿 token 去掉这份冗余。</text>
+  <text x="46" y="434" font-size="12" fill="#868e96">代价是每层 attention 多一次与上下文长度无关的集合通信（交换 query、合并 partial output + LSE）。</text>
+</svg>

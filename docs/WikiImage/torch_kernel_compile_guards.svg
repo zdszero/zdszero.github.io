@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 528" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="528" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">torch.compile：按 guard 缓存的多份编译产物</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">首次调用负责捕获与编译；之后每次调用先检查 guard，决定复用、重编译还是回退</text>
+
+  <!-- ROW 1: capture -->
+  <text x="40" y="88" font-size="14" font-weight="700" fill="#3b5bdb">① 首次调用：捕获 → 编译 → 缓存</text>
+  <rect x="40" y="100" width="120" height="64" rx="9" fill="#f8f9fa" stroke="#adb5bd"/>
+  <text x="100" y="128" text-anchor="middle" font-size="12.5" font-weight="700" fill="#495057">model.forward</text>
+  <text x="100" y="148" text-anchor="middle" font-size="11" fill="#868e96">Python 代码</text>
+  <rect x="190" y="100" width="130" height="64" rx="9" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="255" y="128" text-anchor="middle" font-size="12.5" font-weight="700" fill="#3b5bdb">Dynamo</text>
+  <text x="255" y="148" text-anchor="middle" font-size="11" fill="#495057">追踪字节码</text>
+  <rect x="350" y="100" width="250" height="64" rx="9" fill="#ffffff" stroke="#dee2e6" stroke-dasharray="4 3"/>
+  <rect x="360" y="112" width="72" height="40" rx="7" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="396" y="136" text-anchor="middle" font-size="11.5" font-weight="700" fill="#0b7285">FX 图 ①</text>
+  <rect x="440" y="112" width="80" height="40" rx="7" fill="#fff5f5" stroke="#fa5252"/>
+  <text x="480" y="129" text-anchor="middle" font-size="11" font-weight="700" fill="#c92a2a">graph break</text>
+  <text x="480" y="144" text-anchor="middle" font-size="10" fill="#c92a2a">回到 Python</text>
+  <rect x="528" y="112" width="64" height="40" rx="7" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="560" y="136" text-anchor="middle" font-size="11.5" font-weight="700" fill="#0b7285">FX 图 ②</text>
+  <text x="475" y="182" text-anchor="middle" font-size="11" fill="#c92a2a">数据依赖分支、.item()、不可追踪的调用 → 断图</text>
+  <rect x="630" y="100" width="110" height="64" rx="9" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="685" y="128" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0b7285">后端 Inductor</text>
+  <text x="685" y="148" text-anchor="middle" font-size="11" fill="#495057">生成融合 kernel</text>
+  <rect x="770" y="100" width="100" height="64" rx="9" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="820" y="128" text-anchor="middle" font-size="12.5" font-weight="700" fill="#5f3dc4">缓存项</text>
+  <text x="820" y="148" text-anchor="middle" font-size="11" fill="#495057">产物 + guards</text>
+  <g stroke="#868e96" stroke-width="2" fill="none">
+    <path d="M160 132 L186 132" marker-end="url(#arG)"/>
+    <path d="M320 132 L346 132" marker-end="url(#arG)"/>
+    <path d="M600 132 L626 132" marker-end="url(#arG)"/>
+    <path d="M740 132 L766 132" marker-end="url(#arG)"/>
+  </g>
+  <!-- ROW 2: guard check -->
+  <text x="40" y="224" font-size="14" font-weight="700" fill="#5f3dc4">② 之后每次调用：先检查 guard</text>
+  <rect x="40" y="240" width="120" height="76" rx="9" fill="#f8f9fa" stroke="#adb5bd"/>
+  <text x="100" y="270" text-anchor="middle" font-size="12.5" font-weight="700" fill="#495057">新输入</text>
+  <text x="100" y="290" text-anchor="middle" font-size="11" fill="#868e96">bs、shape、stride…</text>
+  <rect x="190" y="240" width="240" height="76" rx="9" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="310" y="266" text-anchor="middle" font-size="12.5" font-weight="700" fill="#5f3dc4">guard 检查</text>
+  <text x="310" y="286" text-anchor="middle" font-size="11" fill="#495057">shape · stride · dtype · device</text>
+  <text x="310" y="303" text-anchor="middle" font-size="11" fill="#495057">以及部分 Python 状态</text>
+  <rect x="480" y="236" width="180" height="36" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="570" y="259" text-anchor="middle" font-size="12" font-weight="700" fill="#0b7285">命中 → 直接跑编译产物</text>
+  <rect x="480" y="284" width="180" height="36" rx="8" fill="#fff9db" stroke="#f08c00"/>
+  <text x="570" y="307" text-anchor="middle" font-size="12" font-weight="700" fill="#e8590c">不命中 → 重编译一份</text>
+  <rect x="700" y="284" width="170" height="36" rx="8" fill="#fff5f5" stroke="#fa5252"/>
+  <text x="785" y="307" text-anchor="middle" font-size="11.5" font-weight="700" fill="#c92a2a">超过缓存上限 → 回退 eager</text>
+  <g stroke="#868e96" stroke-width="2" fill="none">
+    <path d="M160 278 L186 278" marker-end="url(#arG)"/>
+    <path d="M430 270 L476 255" marker-end="url(#arG)"/>
+    <path d="M430 286 L476 301" marker-end="url(#arG)"/>
+    <path d="M660 302 L696 302" marker-end="url(#arG)"/>
+  </g>
+  <text x="570" y="340" text-anchor="middle" font-size="10.5" fill="#868e96">新产物加入缓存，下次同条件即命中</text>
+
+  <!-- ROW 3: example -->
+  <text x="40" y="372" font-size="13" font-weight="700" fill="#495057">例：decode 的 batch size 不断变化</text>
+  <rect x="40" y="384" width="400" height="88" rx="9" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="56" y="404" font-size="11.5" font-weight="700" fill="#495057">静态 shape（dynamic=False）</text>
+  <g font-size="11" font-family="monospace">
+    <text x="56" y="424" fill="#3b5bdb">bs=8  → 编译 #1</text>
+    <text x="56" y="442" fill="#0b7285">bs=8  → 命中 #1</text>
+    <text x="56" y="460" fill="#e8590c">bs=16 → 不命中，编译 #2 …每个 bs 一份</text>
+  </g>
+  <rect x="460" y="384" width="410" height="88" rx="9" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="476" y="404" font-size="11.5" font-weight="700" fill="#495057">动态 shape：bs 记为符号 s0</text>
+  <g font-size="11" fill="#495057">
+    <text x="476" y="424">一份产物可覆盖一段 bs，但仍带 guard（如 0/1 特化）</text>
+    <text x="476" y="442">SGLang decode 走静态路线：每个 capture bs 编译一份，</text>
+    <text x="476" y="460">并把 dynamo cache_size_limit 调到 1024</text>
+  </g>
+
+  <!-- note -->
+  <rect x="40" y="484" width="830" height="32" rx="9" fill="#f1f3f5" stroke="#dee2e6"/>
+  <text x="58" y="505" font-size="12" fill="#495057">关键：compile 不是把 forward 永久变成一个 kernel；断图切段，guard 决定能否复用，服务要统计全输入分布下的重编译。</text>
+
+  <defs>
+    <marker id="arG" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#868e96"/></marker>
+  </defs>
+</svg>

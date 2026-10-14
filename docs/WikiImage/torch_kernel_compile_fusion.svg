@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 474" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="474" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">融合省下的是显存往返，不是算术</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">以 sigmoid(x * scale + bias) 为例：N 为 x 的元素数，scale、bias 视为标量</text>
+
+  <line x1="450" y1="78" x2="450" y2="404" stroke="#dee2e6" stroke-width="1.5"/>
+
+  <!-- LEFT: eager -->
+  <text x="40" y="98" font-size="14" font-weight="700" fill="#c92a2a">EAGER · 每步一个 kernel，中间结果落显存</text>
+  <rect x="40" y="114" width="380" height="88" rx="8" fill="#edf2ff"/>
+  <text x="52" y="194" font-size="11" fill="#3b5bdb">SM（寄存器 / shared memory）</text>
+  <g font-size="11" font-family="monospace">
+    <rect x="97" y="124" width="70" height="40" rx="8" fill="#ffffff" stroke="#4c6ef5"/>
+    <text x="132" y="148" text-anchor="middle" fill="#3b5bdb">k1 ×scale</text>
+    <rect x="192" y="124" width="70" height="40" rx="8" fill="#ffffff" stroke="#4c6ef5"/>
+    <text x="227" y="148" text-anchor="middle" fill="#3b5bdb">k2 +bias</text>
+    <rect x="287" y="124" width="70" height="40" rx="8" fill="#ffffff" stroke="#4c6ef5"/>
+    <text x="322" y="148" text-anchor="middle" fill="#3b5bdb">k3 σ</text>
+  </g>
+  <rect x="40" y="258" width="380" height="88" rx="8" fill="#e6fcf5"/>
+  <text x="52" y="338" font-size="11" fill="#0b7285">显存 HBM</text>
+  <g font-size="12" font-family="monospace" font-weight="700">
+    <rect x="50" y="268" width="70" height="40" rx="8" fill="#ffffff" stroke="#0ca678"/>
+    <text x="85" y="292" text-anchor="middle" fill="#0b7285">x</text>
+    <rect x="145" y="268" width="70" height="40" rx="8" fill="#fff5f5" stroke="#fa5252"/>
+    <text x="180" y="292" text-anchor="middle" fill="#c92a2a">t1</text>
+    <rect x="240" y="268" width="70" height="40" rx="8" fill="#fff5f5" stroke="#fa5252"/>
+    <text x="275" y="292" text-anchor="middle" fill="#c92a2a">t2</text>
+    <rect x="335" y="268" width="70" height="40" rx="8" fill="#ffffff" stroke="#0ca678"/>
+    <text x="370" y="292" text-anchor="middle" fill="#0b7285">y</text>
+  </g>
+  <g stroke="#868e96" stroke-width="2" fill="none">
+    <path d="M85 268 L116 168" marker-end="url(#arF)"/>
+    <path d="M148 166 L176 266" marker-end="url(#arF)"/>
+    <path d="M180 268 L211 168" marker-end="url(#arF)"/>
+    <path d="M243 166 L271 266" marker-end="url(#arF)"/>
+    <path d="M275 268 L306 168" marker-end="url(#arF)"/>
+    <path d="M338 166 L366 266" marker-end="url(#arF)"/>
+  </g>
+  <text x="230" y="370" text-anchor="middle" font-size="12" fill="#495057">HBM 流量 ≈ 读 3N + 写 3N</text>
+  <text x="230" y="390" text-anchor="middle" font-size="11.5" fill="#c92a2a">3 次 launch，2 个临时张量 t1、t2</text>
+  <!-- RIGHT: fused -->
+  <text x="480" y="98" font-size="14" font-weight="700" fill="#0b7285">FUSED · 一个 kernel，中间值不出 SM</text>
+  <rect x="480" y="114" width="380" height="88" rx="8" fill="#edf2ff"/>
+  <text x="492" y="194" font-size="11" fill="#3b5bdb">SM（寄存器 / shared memory）</text>
+  <rect x="555" y="124" width="240" height="40" rx="8" fill="#ffffff" stroke="#4c6ef5"/>
+  <text x="675" y="148" text-anchor="middle" font-size="11.5" font-family="monospace" fill="#3b5bdb">fused: σ(x·scale + bias)</text>
+  <rect x="480" y="258" width="380" height="88" rx="8" fill="#e6fcf5"/>
+  <text x="492" y="338" font-size="11" fill="#0b7285">显存 HBM</text>
+  <g font-size="12" font-family="monospace" font-weight="700">
+    <rect x="530" y="268" width="70" height="40" rx="8" fill="#ffffff" stroke="#0ca678"/>
+    <text x="565" y="292" text-anchor="middle" fill="#0b7285">x</text>
+    <rect x="750" y="268" width="70" height="40" rx="8" fill="#ffffff" stroke="#0ca678"/>
+    <text x="785" y="292" text-anchor="middle" fill="#0b7285">y</text>
+  </g>
+  <g stroke="#868e96" stroke-width="2" fill="none">
+    <path d="M565 268 L596 168" marker-end="url(#arF)"/>
+    <path d="M754 166 L782 266" marker-end="url(#arF)"/>
+  </g>
+  <text x="675" y="225" text-anchor="middle" font-size="11" fill="#868e96">x·scale、+bias 的结果只在寄存器里流转</text>
+  <text x="670" y="370" text-anchor="middle" font-size="12" fill="#495057">HBM 流量 ≈ 读 N + 写 N</text>
+  <text x="670" y="390" text-anchor="middle" font-size="11.5" fill="#0b7285">1 次 launch，没有临时张量</text>
+
+  <!-- note -->
+  <rect x="40" y="410" width="820" height="50" rx="9" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="58" y="430" font-size="12" fill="#495057">逐元素链通常受带宽限制，乘加次数两边一样，省下的是 t1、t2 的写入与读回。matmul、attention 这类计算密集算子，</text>
+  <text x="58" y="448" font-size="12" fill="#495057">性能主要取决于后端 kernel 本身；能否融合还要看代码是否被完整捕获、shape / stride 是否满足编译器的条件。</text>
+
+  <defs>
+    <marker id="arF" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#868e96"/></marker>
+  </defs>
+</svg>

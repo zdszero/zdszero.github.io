@@ -1,0 +1,129 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 700" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="700" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">一次迭代内的同步点：PP rank k 处理 mb 槽位 j</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">以 event_loop_pp_disagg_prefill 为例；j' = next_mb_id = (j+1) % L，j* = next_first_rank_mb_id = (j+pp_size) % L</text>
+
+  <!-- column headers -->
+  <g font-size="12" font-weight="700" fill="#868e96">
+    <text x="92" y="86">步骤（抽象名 · 代码）</text>
+    <text x="600" y="86">对端 / 作用的 mb</text>
+  </g>
+  <!-- spine -->
+  <path d="M66 100 L66 598" stroke="#dee2e6" stroke-width="3"/>
+  <!-- 1-5 -->
+  <g>
+    <circle cx="66" cy="115" r="6" fill="#f08c00"/>
+    <rect x="84" y="100" width="500" height="30" rx="7" fill="#fff4e6" stroke="#f08c00"/>
+    <text x="96" y="120" font-size="12.5" font-weight="700" fill="#e8590c">recv_meta</text>
+    <text x="230" y="120" font-size="11" font-family="monospace" fill="#495057">ingest_requests()</text>
+    <text x="600" y="112" font-size="11" fill="#495057">k−1 → k：recv_reqs（含 AbortReq）</text>
+    <text x="600" y="126" font-size="11" fill="#868e96">PP0 则从 tokenizer 非阻塞拉取</text>
+
+    <circle cx="66" cy="151" r="6" fill="#adb5bd"/>
+    <rect x="84" y="136" width="500" height="30" rx="7" fill="#f8f9fa" stroke="#adb5bd"/>
+    <text x="96" y="156" font-size="12.5" font-weight="700" fill="#495057">commit_meta</text>
+    <text x="230" y="156" font-size="11" font-family="monospace" fill="#495057">_pp_commit_comm_work(send_req_work)</text>
+    <text x="600" y="156" font-size="11" fill="#495057">等上一轮发往 k+1 的 reqs 完成</text>
+
+    <circle cx="66" cy="187" r="6" fill="#f08c00"/>
+    <rect x="84" y="172" width="500" height="30" rx="7" fill="#fff4e6" stroke="#f08c00"/>
+    <text x="96" y="192" font-size="12.5" font-weight="700" fill="#e8590c">bootstrap</text>
+    <text x="230" y="192" font-size="11" font-family="monospace" fill="#495057">process_bootstrapped_queue()</text>
+    <rect x="548" y="179" width="28" height="16" rx="4" fill="#e5dbff"/><text x="562" y="191" font-size="10" font-weight="700" fill="#5f3dc4" text-anchor="middle">PD</text>
+    <text x="600" y="184" font-size="11" fill="#495057">PP0 的 poll 结果经 pp_sync_polls</text>
+    <text x="600" y="198" font-size="11" fill="#868e96">逐级下传，各 rank 一致出队</text>
+
+    <circle cx="66" cy="223" r="6" fill="#f08c00"/>
+    <rect x="84" y="208" width="500" height="30" rx="7" fill="#fff4e6" stroke="#f08c00"/>
+    <text x="96" y="228" font-size="12.5" font-weight="700" fill="#e8590c">transferred ∩</text>
+    <text x="230" y="228" font-size="11" font-family="monospace" fill="#495057">_pp_pd_get_prefill_transferred_ids()</text>
+    <rect x="548" y="215" width="28" height="16" rx="4" fill="#e5dbff"/><text x="562" y="227" font-size="10" font-weight="700" fill="#5f3dc4" text-anchor="middle">PD</text>
+    <text x="600" y="228" font-size="11" fill="#495057">consensus 第一遍：k−1 的集合 ∩ 本地</text>
+
+    <circle cx="66" cy="259" r="6" fill="#4c6ef5"/>
+    <rect x="84" y="244" width="500" height="30" rx="7" fill="#edf2ff" stroke="#4c6ef5"/>
+    <text x="96" y="264" font-size="12.5" font-weight="700" fill="#3b5bdb">schedule</text>
+    <text x="230" y="264" font-size="11" font-family="monospace" fill="#495057">process_prefill_chunk / get_new_batch_prefill</text>
+    <text x="600" y="264" font-size="11" fill="#495057">纯本地、确定性 → mbs[j]</text>
+  </g>
+  <!-- 6-10 -->
+  <g>
+    <circle cx="66" cy="295" r="6" fill="#f08c00"/>
+    <rect x="84" y="280" width="500" height="30" rx="7" fill="#fff4e6" stroke="#f08c00"/>
+    <text x="96" y="300" font-size="12.5" font-weight="700" fill="#e8590c">recv_hs</text>
+    <text x="230" y="300" font-size="11" font-family="monospace" fill="#495057">_pp_recv_proxy_tensors()</text>
+    <text x="600" y="292" font-size="11" fill="#495057">k−1 → k：mb j 的 hidden states</text>
+    <text x="600" y="306" font-size="11" fill="#868e96">仅当 mbs[j] 非空；PP0 跳过</text>
+
+    <circle cx="66" cy="331" r="6" fill="#adb5bd"/>
+    <rect x="84" y="316" width="500" height="30" rx="7" fill="#f8f9fa" stroke="#adb5bd"/>
+    <text x="96" y="336" font-size="12.5" font-weight="700" fill="#495057">commit_hs</text>
+    <text x="230" y="336" font-size="11" font-family="monospace" fill="#495057">_pp_commit_proxy_send_work()</text>
+    <text x="600" y="328" font-size="11" fill="#495057">等上一轮 proxy 发送完成</text>
+    <text x="600" y="342" font-size="11" fill="#868e96">CUDA graph 输出还要 fence 下次 forward</text>
+
+    <circle cx="66" cy="367" r="6" fill="#4c6ef5"/>
+    <rect x="84" y="352" width="500" height="30" rx="7" fill="#edf2ff" stroke="#4c6ef5"/>
+    <text x="96" y="372" font-size="12.5" font-weight="700" fill="#3b5bdb">launch</text>
+    <text x="230" y="372" font-size="11" font-family="monospace" fill="#495057">_pp_launch_batch(j)</text>
+    <text x="600" y="364" font-size="11" fill="#495057">forward stream 上异步 launch</text>
+    <text x="600" y="378" font-size="11" fill="#868e96">last rank 把输出压入 last_rank_comm_queue</text>
+
+    <circle cx="66" cy="403" r="6" fill="#f08c00"/>
+    <rect x="84" y="388" width="500" height="30" rx="7" fill="#fff4e6" stroke="#f08c00"/>
+    <text x="96" y="408" font-size="12.5" font-weight="700" fill="#e8590c">output 交换</text>
+    <text x="230" y="408" font-size="11" font-family="monospace" fill="#495057">_pp_send_recv_and_preprocess_output_tensors</text>
+    <text x="600" y="400" font-size="11" fill="#495057">发 mb j*（last）/ 上轮收到的；收 mb j'</text>
+    <text x="600" y="414" font-size="11" fill="#868e96">async_depth &gt; 0 时提前到 launch 之前</text>
+
+    <circle cx="66" cy="439" r="6" fill="#0ca678"/>
+    <rect x="84" y="424" width="500" height="30" rx="7" fill="#e6fcf5" stroke="#0ca678"/>
+    <text x="96" y="444" font-size="12.5" font-weight="700" fill="#0b7285">send_consensus</text>
+    <text x="230" y="444" font-size="11" font-family="monospace" fill="#495057">_pp_pd_send_consensus_release_ids</text>
+    <rect x="548" y="431" width="28" height="16" rx="4" fill="#e5dbff"/><text x="562" y="443" font-size="10" font-weight="700" fill="#5f3dc4" text-anchor="middle">PD</text>
+    <text x="600" y="436" font-size="11" fill="#495057">第二遍：last rank 发 mb j* 的共识</text>
+    <text x="600" y="450" font-size="11" fill="#868e96">其余 rank 转发上一轮收到的</text>
+  </g>
+  <!-- 11-14 -->
+  <g>
+    <circle cx="66" cy="475" r="6" fill="#f08c00"/>
+    <rect x="84" y="460" width="500" height="30" rx="7" fill="#fff4e6" stroke="#f08c00"/>
+    <text x="96" y="480" font-size="12.5" font-weight="700" fill="#e8590c">recv_consensus</text>
+    <text x="230" y="480" font-size="11" font-family="monospace" fill="#495057">_pp_recv_pyobj_from_prev_stage()</text>
+    <rect x="548" y="467" width="28" height="16" rx="4" fill="#e5dbff"/><text x="562" y="479" font-size="10" font-weight="700" fill="#5f3dc4" text-anchor="middle">PD</text>
+    <text x="600" y="480" font-size="11" fill="#495057">收 mb j' 的 release rids</text>
+
+    <circle cx="66" cy="511" r="6" fill="#4c6ef5"/>
+    <rect x="84" y="496" width="500" height="30" rx="7" fill="#edf2ff" stroke="#4c6ef5"/>
+    <text x="96" y="516" font-size="12.5" font-weight="700" fill="#3b5bdb">harvest</text>
+    <text x="230" y="516" font-size="11" font-family="monospace" fill="#495057">d2h_event.synchronize(); process_batch_result</text>
+    <text x="600" y="508" font-size="11" fill="#495057">提交 mb j' 的结果：output_ids、finish</text>
+    <text x="600" y="522" font-size="11" fill="#868e96">j' 正是下一轮要重新调度的槽位</text>
+
+    <circle cx="66" cy="547" r="6" fill="#4c6ef5"/>
+    <rect x="84" y="532" width="500" height="30" rx="7" fill="#edf2ff" stroke="#4c6ef5"/>
+    <text x="96" y="552" font-size="12.5" font-weight="700" fill="#3b5bdb">process_inflight</text>
+    <text x="230" y="552" font-size="11" font-family="monospace" fill="#495057">process_disagg_prefill_inflight_queue(rids)</text>
+    <rect x="548" y="539" width="28" height="16" rx="4" fill="#e5dbff"/><text x="562" y="551" font-size="10" font-weight="700" fill="#5f3dc4" text-anchor="middle">PD</text>
+    <text x="600" y="552" font-size="11" fill="#495057">只释放共识集合里的请求</text>
+
+    <circle cx="66" cy="583" r="6" fill="#0ca678"/>
+    <rect x="84" y="568" width="500" height="30" rx="7" fill="#e6fcf5" stroke="#0ca678"/>
+    <text x="96" y="588" font-size="12.5" font-weight="700" fill="#0b7285">send_req / hs</text>
+    <text x="230" y="588" font-size="11" font-family="monospace" fill="#495057">_pp_send_pyobj / _pp_send_proxy_to_next_stage</text>
+    <text x="600" y="580" font-size="11" fill="#495057">k → k+1：reqs、transferred、hidden</text>
+    <text x="600" y="594" font-size="11" fill="#868e96">全部 async，下一轮开头再 commit</text>
+  </g>
+
+  <!-- legend -->
+  <g font-size="11.5">
+    <circle cx="90" cy="623" r="6" fill="#f08c00"/><text x="102" y="627" fill="#495057">阻塞 recv（真正的同步点）</text>
+    <circle cx="290" cy="623" r="6" fill="#0ca678"/><text x="302" y="627" fill="#495057">async send</text>
+    <circle cx="400" cy="623" r="6" fill="#adb5bd"/><text x="412" y="627" fill="#495057">commit：等上一笔 send 完成</text>
+    <circle cx="610" cy="623" r="6" fill="#4c6ef5"/><text x="622" y="627" fill="#495057">本地计算</text>
+    <rect x="700" y="615" width="28" height="16" rx="4" fill="#e5dbff"/><text x="714" y="627" font-size="10" font-weight="700" fill="#5f3dc4" text-anchor="middle">PD</text><text x="736" y="627" fill="#495057">仅 PD 分离</text>
+  </g>
+  <rect x="40" y="644" width="820" height="44" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="450" y="662" text-anchor="middle" font-size="12" fill="#495057">"async send、sync recv"：rank k 每轮都被 k−1 的 recv 卡住进度，于是所有 rank 以同样的 mb 顺序锁步前进</text>
+  <text x="450" y="680" text-anchor="middle" font-size="12" fill="#495057">send 的 buffer 要等到下一轮 commit 才释放——这就是表格里 commit_* 总是作用在"上一个 mb"的原因</text>
+</svg>

@@ -25,82 +25,27 @@
   </title>
     <link rel="stylesheet" href="./WikiTheme/theme/bootstrap.css"  />
         <script defer=""
-        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
-        type="text/javascript"></script>
-        <style type="text/css">
-    /* ---- three column wiki layout (left: site directory, center: content, right: page TOC) ---- */
-    .wiki-layout {
-      display: flex;
-      align-items: flex-start;
-      gap: 24px;
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 0 20px;
-      box-sizing: border-box;
-    }
-    .wiki-sidebar {
-      flex: 0 0 240px;
-      width: 240px;
-      position: sticky;
-      top: 0;
-      max-height: 100vh;
-      overflow-y: auto;
-      padding: 10px 4px 20px 0;
-      border-right: 1px solid #eee;
-      font-size: 14px;
-    }
-    .wiki-sidebar[hidden] { display: none; }
-    .wiki-toc {
-      flex: 0 0 220px;
-      width: 220px;
-      position: sticky;
-      top: 0;
-      max-height: 100vh;
-      overflow-y: auto;
-      padding: 10px 0 20px 4px;
-      border-left: 1px solid #eee;
-      font-size: 14px;
-    }
-    .wiki-main {
-      flex: 1 1 auto;
-      min-width: 0;
-      max-width: 820px;
-      padding: 10px 0 40px;
-    }
-    /* site directory tree */
-    .wiki-sidebar .wiki-home {
-      display: block;
-      font-weight: bold;
-      margin-bottom: 10px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid #eee;
-      text-decoration: none;
-      color: #333;
-    }
-    .wiki-sidebar ul { list-style: none; margin: 0 0 0 12px; padding: 0; }
-    .wiki-sidebar > ul { margin-left: 0; }
-    .wiki-sidebar li { line-height: 1.7; }
-    .wiki-sidebar a { text-decoration: none; color: #555; }
-    .wiki-sidebar a:hover { color: #0088cc; text-decoration: underline; }
-    .wiki-sidebar a.active { color: #0088cc; font-weight: bold; }
-    /* page TOC */
-    .wiki-toc ul { list-style: none; margin: 0 0 0 12px; padding: 0; }
-    .wiki-toc > ul { margin-left: 0; }
-    .wiki-toc li { line-height: 1.6; }
-    .wiki-toc a { text-decoration: none; color: #555; }
-    .wiki-toc a:hover { color: #0088cc; }
-    @media (max-width: 980px) {
-      .wiki-layout { flex-direction: column; }
-      .wiki-sidebar, .wiki-toc {
-        position: static;
-        width: 100%;
-        flex-basis: auto;
-        max-height: none;
-        border: 0;
-      }
-      .wiki-main { max-width: none; }
-    }
-  </style>
+        src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+        <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+        </script>
+        <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+        <!-- wiki three-column layout styles/behavior, kept external so the ~5KB
+       block isn't duplicated into every generated page -->
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/wiki-layout.css" />
+  <script defer src="./WikiTheme/wiki-layout.js"></script>
 </head>
 
 <body>
@@ -120,21 +65,20 @@
     <main class="wiki-main">
             <p>Attention 阶段核心包含以下几个数学公式：</p>
             <ul>
-            <li><span class="math inline">\(Q = X W_{Q}\)</span></li>
-            <li><span class="math inline">\(K = X W_{K}\)</span></li>
-            <li><span class="math inline">\(V = X W_{V}\)</span></li>
-            <li><span class="math inline">\(Y = \text{Attention}(Q, K,
-            V) = \text{Softmax}(\frac{Q
-            K^{T}}{\sqrt{d_k}})V\)</span></li>
-            <li><span class="math inline">\(Z = YW_{O}\)</span></li>
-            <li><span class="math inline">\(\text{Output} =
-            \text{LayerNorm}(X+Z)\)</span></li>
+            <li><span class="math inline">Q = X W_{Q}</span></li>
+            <li><span class="math inline">K = X W_{K}</span></li>
+            <li><span class="math inline">V = X W_{V}</span></li>
+            <li><span class="math inline">Y = \text{Attention}(Q, K, V)
+            = \text{Softmax}(\frac{Q K^{T}}{\sqrt{d_k}})V</span></li>
+            <li><span class="math inline">Z = YW_{O}</span></li>
+            <li><span class="math inline">\text{Output} =
+            \text{LayerNorm}(X+Z)</span></li>
             </ul>
             <p>Attention 计算可以分为三大部分：</p>
             <ul>
             <li>线性投影/矩阵乘法（linear projection/gemm）：<span
-            class="math inline">\(X\)</span> 和 <span
-            class="math inline">\(W_{Q}, W_{K}, W_{V}, W_{O}\)</span>
+            class="math inline">X</span> 和 <span
+            class="math inline">W_{Q}, W_{K}, W_{V}, W_{O}</span>
             相乘</li>
             <li>注意力得分计算（attention score）</li>
             <li>其他运算：layernorm</li>
@@ -160,47 +104,47 @@
             <tbody>
             <tr>
             <td style="text-align: center;"><span
-            class="math inline">\(A[B,T,\textcolor{red}{D}] \cdot
-            W_Q[\textcolor{red}{D},N,H]\)</span></td>
+            class="math inline">A[B,T,\textcolor{red}{D}] \cdot
+            W_Q[\textcolor{red}{D},N,H]</span></td>
             <td style="text-align: center;"><span
-            class="math inline">\(2BTDNH\)</span></td>
+            class="math inline">2BTDNH</span></td>
             <td style="text-align: center;"><span
-            class="math inline">\(DNH\)</span></td>
+            class="math inline">DNH</span></td>
             <td style="text-align: center;"><span
-            class="math inline">\(Q[B,T,D,H]\)</span></td>
+            class="math inline">Q[B,T,D,H]</span></td>
             </tr>
             <tr>
             <td style="text-align: center;"><span
-            class="math inline">\(A[B,T,\textcolor{red}{D}] \cdot
-            W_K[\textcolor{red}{D},K,H]\)</span></td>
+            class="math inline">A[B,T,\textcolor{red}{D}] \cdot
+            W_K[\textcolor{red}{D},K,H]</span></td>
             <td style="text-align: center;"><span
-            class="math inline">\(2BTDKH\)</span></td>
+            class="math inline">2BTDKH</span></td>
             <td style="text-align: center;"><span
-            class="math inline">\(DKH\)</span></td>
+            class="math inline">DKH</span></td>
             <td style="text-align: center;"><span
-            class="math inline">\(K[B,T,K,H]\)</span></td>
+            class="math inline">K[B,T,K,H]</span></td>
             </tr>
             <tr>
             <td style="text-align: center;"><span
-            class="math inline">\(A[B,T,\textcolor{red}{D}] \cdot
-            W_V[\textcolor{red}{D},K,H]\)</span></td>
+            class="math inline">A[B,T,\textcolor{red}{D}] \cdot
+            W_V[\textcolor{red}{D},K,H]</span></td>
             <td style="text-align: center;"><span
-            class="math inline">\(2BTDKH\)</span></td>
+            class="math inline">2BTDKH</span></td>
             <td style="text-align: center;"><span
-            class="math inline">\(DKH\)</span></td>
+            class="math inline">DKH</span></td>
             <td style="text-align: center;"><span
-            class="math inline">\(V[B,T,K,H]\)</span></td>
+            class="math inline">V[B,T,K,H]</span></td>
             </tr>
             <tr>
             <td style="text-align: center;"><span
-            class="math inline">\(A[B,T,\textcolor{red}{N,H}] \cdot
-            W_O[\textcolor{red}{N,H},D]\)</span></td>
+            class="math inline">A[B,T,\textcolor{red}{N,H}] \cdot
+            W_O[\textcolor{red}{N,H},D]</span></td>
             <td style="text-align: center;"><span
-            class="math inline">\(2BTDNH\)</span></td>
+            class="math inline">2BTDNH</span></td>
             <td style="text-align: center;"><span
-            class="math inline">\(DNH\)</span></td>
+            class="math inline">DNH</span></td>
             <td style="text-align: center;"><span
-            class="math inline">\(\text{Z}[B,T,D]\)</span></td>
+            class="math inline">\text{Z}[B,T,D]</span></td>
             </tr>
             </tbody>
             </table>
@@ -223,47 +167,46 @@
             <tbody>
             <tr>
             <td><span
-            class="math inline">\(Q[\textcolor{blue}{B},T,\textcolor{blue}{K},G,\textcolor{red}{H}]
+            class="math inline">Q[\textcolor{blue}{B},T,\textcolor{blue}{K},G,\textcolor{red}{H}]
             \cdot
-            K[\textcolor{blue}{B},S,\textcolor{blue}{K},\textcolor{red}{H}]\)</span></td>
-            <td><span class="math inline">\(2BTSKGH=2BTSNH\)</span></td>
+            K[\textcolor{blue}{B},S,\textcolor{blue}{K},\textcolor{red}{H}]</span></td>
+            <td><span class="math inline">2BTSKGH=2BTSNH</span></td>
             <td><span
-            class="math inline">\(\text{score}[B,T,S,K,G]=[B,T,S,N]\)</span></td>
+            class="math inline">\text{score}[B,T,S,K,G]=[B,T,S,N]</span></td>
             </tr>
             <tr>
-            <td><span class="math inline">\(\text{softmax}_{S}\
-            L[B,T,S,K,G]\)</span></td>
-            <td><span
-            class="math inline">\(O(BTSKG)=O(BTSN)\)</span></td>
+            <td><span class="math inline">\text{softmax}_{S}\
+            L[B,T,S,K,G]</span></td>
+            <td><span class="math inline">O(BTSKG)=O(BTSN)</span></td>
             <td></td>
             </tr>
             <tr>
             <td><span
-            class="math inline">\(S[\textcolor{blue}{B},T,\textcolor{red}{S},\textcolor{blue}{K},G]
+            class="math inline">S[\textcolor{blue}{B},T,\textcolor{red}{S},\textcolor{blue}{K},G]
             \cdot
-            V[\textcolor{blue}{B},\textcolor{red}{S},\textcolor{blue}{K},H]\)</span></td>
-            <td><span class="math inline">\(2BTSKGH=2BTSNH\)</span></td>
+            V[\textcolor{blue}{B},\textcolor{red}{S},\textcolor{blue}{K},H]</span></td>
+            <td><span class="math inline">2BTSKGH=2BTSNH</span></td>
             <td><span
-            class="math inline">\(Y[B,T,K,G,H]=[B,T,N,H]\)</span></td>
+            class="math inline">Y[B,T,K,G,H]=[B,T,N,H]</span></td>
             </tr>
             </tbody>
             </table>
             <p>根据以上推导，可以得到以下结论：</p>
             <ul>
             <li>Z 的 shape 和输入相同，都是 <span
-            class="math inline">\([B,T,D]\)</span>，所以可以将两者直接相加，再进行
+            class="math inline">[B,T,D]</span>，所以可以将两者直接相加，再进行
             LayerNorm 得到 Output。</li>
             <li>Self Attention 的计算量取决于 q 和 k/v length。
             <ul>
             <li>如果忽略 softmax 的话，总共的计算量为 <span
-            class="math inline">\(O(BTSNH)\)</span>。</li>
+            class="math inline">O(BTSNH)</span>。</li>
             </ul></li>
             </ul>
             <p>为了方便理解，我们考虑以下 <span
-            class="math inline">\(B=1\)</span>、<span
-            class="math inline">\(N=1\)</span>
+            class="math inline">B=1</span>、<span
+            class="math inline">N=1</span>
             的情况，计算过程为如下公式：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \begin{aligned}
             Y&amp;=\underbrace{\begin{bmatrix}
             \alpha_{11} &amp; \alpha_{12} &amp; \cdots &amp;
@@ -285,16 +228,16 @@
             \alpha_{t1}v_1+\alpha_{t2}v_2+\cdots+\alpha_{ts}v_s
             \end{bmatrix}.
             \end{aligned}
-            \]</span></p>
-            <p>其中 <span class="math inline">\(\alpha_{ij}\)</span>
-            是当前 token 和先前每一个 token
+            </span></p>
+            <p>其中 <span class="math inline">\alpha_{ij}</span> 是当前
+            token 和先前每一个 token
             的注意力得分，通过以下方式计算出来，注意 Softmax
             是按照行作用的：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             s_{ij}=\frac{q_i\cdot k_j}{\sqrt{d_k}},\qquad
             \alpha_{ij}=\frac{e^{s_{ij}}}{\sum_{t=1}^{n} e^{s_{it}}}
-            \]</span></p>
-            <p><span class="math display">\[
+            </span></p>
+            <p><span class="math display">
             \begin{align*}
             QK^{T} &amp;= \begin{bmatrix}
             q_1 \\ q_2 \\ \vdots \\ q_t
@@ -322,15 +265,15 @@
             \alpha_{t1} &amp; \alpha_{t2} &amp; \cdots &amp; \alpha_{ts}
             \end{bmatrix}
             \end{align*}
-            \]</span></p>
-            <p>注意力得分矩阵的 shape 为 <span class="math inline">\([T,
-            S]\)</span>，行长度就是 query length，列长度就是 kv
+            </span></p>
+            <p>注意力得分矩阵的 shape 为 <span class="math inline">[T,
+            S]</span>，行长度就是 query length，列长度就是 kv
             length，每行就是一个 token 和之前 token
             的注意力打分，还需要乘上对应的 <span
-            class="math inline">\(v\)</span> 向量。再乘以 <span
-            class="math inline">\(V\)</span>
-            的时候收缩的维度是在行上，所以 contracting dimension 是
-            <span class="math inline">\(S\)</span>。</p>
+            class="math inline">v</span> 向量。再乘以 <span
+            class="math inline">V</span> 的时候收缩的维度是在行上，所以
+            contracting dimension 是 <span
+            class="math inline">S</span>。</p>
           </main>
         <aside class="wiki-toc">
       <ul>
@@ -340,39 +283,6 @@
       </ul>
     </aside>
       </div>
-  <script type="text/javascript">
-    (function () {
-      function markActive() {
-        var here = location.href.split('#')[0];
-        var links = document.querySelectorAll('.wiki-sidebar a');
-        for (var i = 0; i < links.length; i++) {
-          if (links[i].href.split('#')[0] === here) {
-            links[i].classList.add('active');
-          }
-        }
-      }
-      // load the shared site directory once (served from the wiki root);
-      // kept in a standalone file so adding a page needn't rebuild every page.
-      var nav = document.getElementById('wiki-sidebar');
-      if (nav) {
-        fetch('/wiki_sidebar.html')
-          .then(function (r) { return r.ok ? r.text() : ''; })
-          .then(function (html) {
-            if (html) {
-              nav.innerHTML = html;
-              nav.hidden = false;
-              markActive();
-            }
-          })
-          .catch(function () {});
-      }
-      // keep bootstrap table styling (previously done by sticky_menu.js)
-      var tables = document.getElementsByTagName('table');
-      for (var j = 0; j < tables.length; j++) {
-        tables[j].classList.add('table');
-      }
-    })();
-  </script>
 </body>
 
 </html>

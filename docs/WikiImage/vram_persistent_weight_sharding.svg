@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 560" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="560" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">权重如何分到 4 张 GPU（TP=4 / EP=4 示意）</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">逐组件问：它被谁切？切到最小单位后，多出来的卡是不是在存副本？</text>
+
+  <!-- column headers -->
+  <text x="295" y="88" text-anchor="middle" font-size="13" font-weight="700" fill="#495057">GPU 0</text>
+  <text x="455" y="88" text-anchor="middle" font-size="13" font-weight="700" fill="#495057">GPU 1</text>
+  <text x="615" y="88" text-anchor="middle" font-size="13" font-weight="700" fill="#495057">GPU 2</text>
+  <text x="775" y="88" text-anchor="middle" font-size="13" font-weight="700" fill="#495057">GPU 3</text>
+
+  <!-- row 1: embedding / lm head -->
+  <text x="24" y="122" font-size="13" font-weight="700" fill="#212529">Embedding / LM head</text>
+  <text x="24" y="140" font-size="11" fill="#868e96">按词表切（TP）</text>
+  <rect x="220" y="100" width="150" height="50" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="295" y="130" text-anchor="middle" font-size="12" font-family="monospace" fill="#3b5bdb">vocab 0 – ¼</text>
+  <rect x="380" y="100" width="150" height="50" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="455" y="130" text-anchor="middle" font-size="12" font-family="monospace" fill="#3b5bdb">vocab ¼ – ½</text>
+  <rect x="540" y="100" width="150" height="50" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="615" y="130" text-anchor="middle" font-size="12" font-family="monospace" fill="#3b5bdb">vocab ½ – ¾</text>
+  <rect x="700" y="100" width="150" height="50" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="775" y="130" text-anchor="middle" font-size="12" font-family="monospace" fill="#3b5bdb">vocab ¾ – 1</text>
+
+  <!-- row 2: Q / O -->
+  <text x="24" y="184" font-size="13" font-weight="700" fill="#212529">Q / O 投影（64 head）</text>
+  <text x="24" y="202" font-size="11" fill="#868e96">按 head 切（TP）</text>
+  <rect x="220" y="162" width="150" height="50" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="295" y="192" text-anchor="middle" font-size="12" font-family="monospace" fill="#3b5bdb">Q head 0–15</text>
+  <rect x="380" y="162" width="150" height="50" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="455" y="192" text-anchor="middle" font-size="12" font-family="monospace" fill="#3b5bdb">Q head 16–31</text>
+  <rect x="540" y="162" width="150" height="50" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="615" y="192" text-anchor="middle" font-size="12" font-family="monospace" fill="#3b5bdb">Q head 32–47</text>
+  <rect x="700" y="162" width="150" height="50" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="775" y="192" text-anchor="middle" font-size="12" font-family="monospace" fill="#3b5bdb">Q head 48–63</text>
+
+  <!-- row 3: K / V with 8 kv heads -->
+  <text x="24" y="246" font-size="13" font-weight="700" fill="#212529">K / V 投影（8 KV head）</text>
+  <text x="24" y="264" font-size="11" fill="#868e96">head 够切，仍按 TP 摊薄</text>
+  <rect x="220" y="224" width="150" height="50" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="295" y="254" text-anchor="middle" font-size="12" font-family="monospace" fill="#3b5bdb">KV head 0–1</text>
+  <rect x="380" y="224" width="150" height="50" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="455" y="254" text-anchor="middle" font-size="12" font-family="monospace" fill="#3b5bdb">KV head 2–3</text>
+  <rect x="540" y="224" width="150" height="50" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="615" y="254" text-anchor="middle" font-size="12" font-family="monospace" fill="#3b5bdb">KV head 4–5</text>
+  <rect x="700" y="224" width="150" height="50" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="775" y="254" text-anchor="middle" font-size="12" font-family="monospace" fill="#3b5bdb">KV head 6–7</text>
+  <!-- row 4: K / V with 2 kv heads, replicated -->
+  <text x="24" y="308" font-size="13" font-weight="700" fill="#212529">K / V 投影（2 KV head）</text>
+  <text x="24" y="326" font-size="11" fill="#e8590c">head 不够切 → 两卡一份副本</text>
+  <rect x="220" y="286" width="150" height="50" rx="8" fill="#fff4e6" stroke="#f08c00"/>
+  <text x="295" y="316" text-anchor="middle" font-size="12" font-family="monospace" fill="#e8590c">KV head 0</text>
+  <rect x="380" y="286" width="150" height="50" rx="8" fill="#fff4e6" stroke="#f08c00" stroke-dasharray="5 3"/>
+  <text x="455" y="316" text-anchor="middle" font-size="12" font-family="monospace" fill="#e8590c">KV head 0（副本）</text>
+  <rect x="540" y="286" width="150" height="50" rx="8" fill="#fff4e6" stroke="#f08c00"/>
+  <text x="615" y="316" text-anchor="middle" font-size="12" font-family="monospace" fill="#e8590c">KV head 1</text>
+  <rect x="700" y="286" width="150" height="50" rx="8" fill="#fff4e6" stroke="#f08c00" stroke-dasharray="5 3"/>
+  <text x="775" y="316" text-anchor="middle" font-size="12" font-family="monospace" fill="#e8590c">KV head 1（副本）</text>
+
+  <!-- row 5: MoE experts -->
+  <text x="24" y="370" font-size="13" font-weight="700" fill="#212529">MoE 专家（256 个）</text>
+  <text x="24" y="388" font-size="11" fill="#868e96">按专家切（EP）</text>
+  <rect x="220" y="348" width="150" height="50" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="295" y="378" text-anchor="middle" font-size="12" font-family="monospace" fill="#0b7285">专家 0–63</text>
+  <rect x="380" y="348" width="150" height="50" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="455" y="378" text-anchor="middle" font-size="12" font-family="monospace" fill="#0b7285">专家 64–127</text>
+  <rect x="540" y="348" width="150" height="50" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="615" y="378" text-anchor="middle" font-size="12" font-family="monospace" fill="#0b7285">专家 128–191</text>
+  <rect x="700" y="348" width="150" height="50" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="775" y="378" text-anchor="middle" font-size="12" font-family="monospace" fill="#0b7285">专家 192–255</text>
+
+  <!-- row 6: norm -->
+  <text x="24" y="432" font-size="13" font-weight="700" fill="#212529">RMSNorm 等小参数</text>
+  <text x="24" y="450" font-size="11" fill="#868e96">每卡整份（量级可忽略）</text>
+  <rect x="220" y="410" width="150" height="50" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="295" y="440" text-anchor="middle" font-size="12" fill="#495057">整份</text>
+  <rect x="380" y="410" width="150" height="50" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="455" y="440" text-anchor="middle" font-size="12" fill="#495057">整份</text>
+  <rect x="540" y="410" width="150" height="50" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="615" y="440" text-anchor="middle" font-size="12" fill="#495057">整份</text>
+  <rect x="700" y="410" width="150" height="50" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="775" y="440" text-anchor="middle" font-size="12" fill="#495057">整份</text>
+
+  <!-- legend -->
+  <rect x="220" y="476" width="14" height="14" rx="3" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="240" y="488" font-size="12" fill="#495057">TP 切分</text>
+  <rect x="330" y="476" width="14" height="14" rx="3" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="350" y="488" font-size="12" fill="#495057">EP 切分</text>
+  <rect x="440" y="476" width="14" height="14" rx="3" fill="#fff4e6" stroke="#f08c00"/>
+  <text x="460" y="488" font-size="12" fill="#495057">切不动而复制</text>
+  <rect x="580" y="476" width="14" height="14" rx="3" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="600" y="488" font-size="12" fill="#495057">整份复制</text>
+  <text x="700" y="488" font-size="12" fill="#868e96">PP 则按层分到不同 stage</text>
+
+  <!-- note -->
+  <rect x="24" y="504" width="852" height="40" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="450" y="529" text-anchor="middle" font-size="12" fill="#495057">每卡权重 = Σ 组件参数 × 每参数字节 ÷ 实际分片数；KV head 被复制时，对应的 KV cache 也一起复制</text>
+</svg>

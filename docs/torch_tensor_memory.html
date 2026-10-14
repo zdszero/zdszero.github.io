@@ -1,0 +1,659 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    Torch 张量内存
+  </title>
+    <link rel="stylesheet" href="./WikiTheme/theme/bootstrap.css"  />
+        <style type="text/css">
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+      <!-- wiki three-column layout styles/behavior, kept external so the ~5KB
+       block isn't duplicated into every generated page -->
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/wiki-layout.css" />
+  <script defer src="./WikiTheme/wiki-layout.js"></script>
+</head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">Torch 张量内存</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="wiki-layout">
+    <nav class="wiki-sidebar" id="wiki-sidebar" hidden></nav>
+    <main class="wiki-main">
+            <ul>
+            <li><code>b = a.T</code>
+            到底有没有搬数据？<code>a[1:]</code> 和 <code>a[idx]</code>
+            看着都是索引，为什么一个共享内存、一个却复制了一份？</li>
+            <li>fused QKV 投影之后 <code>split</code> 出来的
+            <code>k</code> 明明 shape 对，为什么
+            <code>is_contiguous()</code> 是
+            False？下游哪一步才真正付出拷贝？</li>
+            <li>一个张量明明 shape 对得上，喂给 kernel 却报 “not
+            contiguous”，<code>.contiguous()</code>
+            加在哪、为什么能省掉？</li>
+            <li><code>.cpu()</code>、<code>.item()</code>
+            这种“只是取个值”的调用，怎么就成了性能瓶颈？</li>
+            </ul>
+            <p>这些问题可以从同一套底层模型出发理解：张量如何解释存储、操作是否共享数据，以及执行发生在哪个设备上。本篇以普通
+            dense strided tensor 为例建立这个模型，再把它落到 LLM
+            推理里最常见的两处：QKV 的维度变换，以及 KV cache
+            的读写。稀疏、量化等特殊张量需要另外检查其存储格式。</p>
+            <h3 id="抽象张量-一块扁平-storage-一副透镜">抽象：张量 =
+            一块扁平 storage + 一副“透镜”</h3>
+            <p>核心的一句话：<strong>张量本身不存数据，它只是一副解读内存的“透镜”。</strong>
+            数据躺在一块一维、连续的
+            <code>storage</code>（显存或主机内存上的裸
+            buffer）里；张量对象另外携带一组元数据，决定“怎么把这块一维内存看成多维数组”：</p>
+            <ul>
+            <li><code>shape</code>：每一维有多长；</li>
+            <li><code>stride</code>：每一维走一步，在 storage
+            里要跳过几个元素；</li>
+            <li><code>storage_offset</code>：从 storage
+            的第几个元素开始看；</li>
+            <li><code>dtype</code> /
+            <code>device</code>：按什么类型、在哪块设备上解读。</li>
+            </ul>
+            <p>取元素 <code>x[i, j]</code>
+            不是“查表”，而是<strong>一次地址算术</strong>：</p>
+            <pre><code>addr(x[i0, i1, ..., ik]) = storage_offset + Σ i_d × stride[d]</code></pre>
+            <p>这件事是理解后面一切的支点——因为“换一副透镜”（改
+            shape/stride/offset）几乎免费，而“重排 storage
+            里的字节”必须真刀真枪地搬数据。</p>
+            <figure>
+            <img src="./WikiImage/torch_tensor_memory_anatomy.svg"
+            alt="张量的解剖" />
+            <figcaption aria-hidden="true">张量的解剖</figcaption>
+            </figure>
+            <p>用一个具体算例感受三者如何配合。设
+            <code>a = torch.arange(12).view(3, 4)</code>，stride 为
+            <code>(4, 1)</code>、offset 为 0：</p>
+            <table>
+            <thead>
+            <tr>
+            <th>表达式</th>
+            <th>shape</th>
+            <th>stride</th>
+            <th>offset</th>
+            <th>取 <code>[1, 1]</code> 落在 storage 的位置</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td><code>a</code></td>
+            <td>(3, 4)</td>
+            <td>(4, 1)</td>
+            <td>0</td>
+            <td>0 + 1×4 + 1×1 = 5</td>
+            </tr>
+            <tr>
+            <td><code>a[1:, 2:]</code></td>
+            <td>(2, 2)</td>
+            <td>(4, 1)</td>
+            <td>6</td>
+            <td>6 + 1×4 + 1×1 = 11</td>
+            </tr>
+            <tr>
+            <td><code>a.T</code></td>
+            <td>(4, 3)</td>
+            <td>(1, 4)</td>
+            <td>0</td>
+            <td>0 + 1×1 + 1×4 = 5</td>
+            </tr>
+            <tr>
+            <td><code>a[:, ::2]</code></td>
+            <td>(3, 2)</td>
+            <td>(4, 2)</td>
+            <td>0</td>
+            <td>0 + 1×4 + 1×2 = 6</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>四个张量共享同一块 12 个元素的
+            storage，没有一个字节被搬动。切片改的是 offset 和
+            shape，转置交换 stride，步长切片放大 stride。</p>
+            <p>有了这个模型，“这个操作要不要拷贝”就有了统一判据：<strong>它能不能只靠调整元数据来表达？</strong>
+            能，就是 view；不能，就必须新开一块 storage
+            把数据搬过去。</p>
+            <h3 id="混淆点一view-还是-copy以及-aliasing">混淆点一：view
+            还是 copy，以及 aliasing</h3>
+            <p><code>view</code> 新建一组元数据、但和原张量共享同一块
+            storage——所以<strong>改一个，另一个跟着变</strong>（别名
+            aliasing），这是 bug
+            的常见来源，也是零拷贝的来源。<code>copy</code> 则另开
+            storage，两者内存独立。</p>
+            <figure>
+            <img
+            src="./WikiImage/torch_tensor_memory_view_copy.svg"
+            alt="view vs copy" />
+            <figcaption aria-hidden="true">view vs copy</figcaption>
+            </figure>
+            <p>切片、转置、<code>permute</code>、<code>unsqueeze/squeeze/expand</code>、<code>split/chunk/unbind</code>
+            通常产生共享 storage 的 view；高级索引读取
+            <code>a[idx_tensor]</code>、<code>.clone()</code>、需要重排的
+            <code>.contiguous()</code>、实际跨设备的 <code>.to()</code>
+            则会分配新存储。普通计算算子也通常生成独立输出，但不宜把“新输出”全部称为输入数据的
+            copy。</p>
+            <p>这里必须区分 <code>view()</code> 与
+            <code>reshape()</code>：<code>view()</code> 只在 shape 与
+            stride
+            兼容时成功，否则报错，<strong>不会隐式复制</strong>；<code>reshape()</code>
+            则可能返回 view，也可能复制。非连续张量也可能满足某些
+            <code>view()</code> 的 stride 条件，因此不能仅用
+            <code>is_contiguous()</code> 判断是否可
+            view。<code>.view(dtype)</code> 是受元素大小和 stride
+            约束的位重解释，并不是 <code>.to(dtype)</code>
+            那样的数值转换。见 <a
+            href="https://docs.pytorch.org/docs/stable/generated/torch.Tensor.view.html">Tensor.view</a>
+            和 <a
+            href="https://docs.pytorch.org/docs/main/tensor_view.html">Tensor
+            Views</a>。</p>
+            <p><strong>aliasing 让 in-place 写入有了连带效果。</strong>
+            对 view 执行
+            <code>add_</code>、<code>copy_</code>、<code>x[...] = v</code>，写的是共享
+            storage，所有指向这段字节的张量都会“看到”变化：</p>
+            <div class="sourceCode" id="cb2"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>buf <span class="op">=</span> torch.zeros(<span class="dv">8</span>, <span class="dv">4</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>row <span class="op">=</span> buf[<span class="dv">3</span>]          <span class="co"># view：offset=12, stride=(1,)</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>row.fill_(<span class="fl">1.0</span>)        <span class="co"># buf[3] 也变成全 1——这正是“往预分配 buffer 里写”的方式</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>tmp <span class="op">=</span> buf[[<span class="dv">3</span>]]        <span class="co"># 高级索引读取：新 storage</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>tmp.fill_(<span class="fl">2.0</span>)        <span class="co"># buf 不受影响</span></span></code></pre></div>
+            <p>推理代码大量依赖前一种行为（向常驻 buffer
+            原地写入），也常被后一种行为坑到（以为写进了
+            cache，其实写进了临时副本）。反过来，如果一个张量后面还要被读，就不要对它的
+            view 做 in-place 修改——别名关系在 Python
+            代码里是不可见的。</p>
+            <h3
+            id="混淆点二零步长与重叠内存">混淆点二：零步长与重叠内存</h3>
+            <p>stride 不一定是正数的乘积，它可以是
+            <strong>0</strong>。<code>expand()</code>
+            正是这么实现广播的：被扩展的维度 stride 设为
+            0，于是该维每走一步，地址都不动。</p>
+            <div class="sourceCode" id="cb3"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> torch.randn(<span class="dv">1024</span>, <span class="dv">1</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> x.expand(<span class="dv">1024</span>, <span class="dv">4096</span>)   <span class="co"># stride (1, 0)，逻辑上 4M 个元素，storage 仍是 1024 个</span></span></code></pre></div>
+            <p>零步长意味着“多个逻辑位置指向同一个物理元素”。读没有问题，写就有歧义：<code>y.add_(1)</code>
+            会直接报错 <em>more than one element of the written-to
+            tensor refers to a single memory
+            location</em>。需要可写的独立副本时用 <code>repeat()</code>
+            或
+            <code>expand(...).clone()</code>，代价是真实分配。广播规则本身见
+            <a
+            href="./torch_broadcast_indexing.html">广播与索引</a>。</p>
+            <p><code>as_strided(size, stride, storage_offset)</code>
+            是最底层的透镜：直接手写元数据，PyTorch
+            不检查它是否合理。它能造出相互重叠的窗口，例如
+            <code>torch.arange(6.).as_strided((3, 3), (1, 1))</code>
+            得到
+            <code>[[0,1,2],[1,2,3],[2,3,4]]</code>——三行共享四个元素。这在实现滑动窗口、自定义布局时有用，但写入重叠视图的结果不可依赖，越界的
+            offset/stride 也只会在访问时出问题。业务代码里遇到
+            <code>as_strided</code>，要把它当作“这里有一个手工维护的内存布局约定”来读。</p>
+            <h3 id="混淆点三连续-vs-非连续">混淆点三：连续 vs
+            非连续</h3>
+            <p>默认 <code>torch.contiguous_format</code>
+            下，“连续”表示张量能按逻辑顺序紧密遍历，通常最后一维变化最快；大小为
+            <code>1</code> 等退化维度有特殊判断规则。常规
+            <code>torch.empty(shape)</code> 创建的张量通常是这种布局，但
+            <code>empty_strided()</code>、指定 memory format
+            或保留源布局的创建方式不能一概而论。转置或
+            <code>permute</code> 只改变
+            stride，往往得到非连续张量；退化维度或未改变有效顺序时，也可能仍然连续。连续性还与
+            memory format 有关，例如 <code>channels_last</code>
+            有自己的判断标准。</p>
+            <figure>
+            <img
+            src="./WikiImage/torch_tensor_memory_contiguous.svg"
+            alt="连续 vs 非连续" />
+            <figcaption aria-hidden="true">连续 vs 非连续</figcaption>
+            </figure>
+            <p><code>.contiguous()</code>
+            在目标布局不满足时，新开内存并按当前逻辑顺序重新打包；满足时返回自身。下游
+            kernel 有的支持任意
+            stride，有的要求最后一维连续，有的要求整体连续，也有的内部选择复制或不同算法。因此非连续不一定慢，连续也不保证最快。显式添加
+            <code>.contiguous()</code> 前，应确认 kernel
+            的真实约束，以及这次搬运是否值得。见 <a
+            href="https://docs.pytorch.org/docs/stable/generated/torch.Tensor.contiguous.html">Tensor.contiguous</a>。</p>
+            <p>几个“复制类”方法经常被混用，按“是否新 storage、是否保留
+            autograd 关系”区分最清楚：</p>
+            <table>
+            <thead>
+            <tr>
+            <th>方法</th>
+            <th>新 storage？</th>
+            <th>autograd</th>
+            <th>典型用途</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td><code>x.detach()</code></td>
+            <td>否，共享</td>
+            <td>断开</td>
+            <td>拿一个不追踪梯度的别名</td>
+            </tr>
+            <tr>
+            <td><code>x.contiguous()</code></td>
+            <td>仅在布局不满足时</td>
+            <td>保留</td>
+            <td>满足 kernel 的布局要求</td>
+            </tr>
+            <tr>
+            <td><code>x.clone()</code></td>
+            <td>总是</td>
+            <td>保留</td>
+            <td>需要独立副本、避免别名写入</td>
+            </tr>
+            <tr>
+            <td><code>x.detach().clone()</code></td>
+            <td>总是</td>
+            <td>断开</td>
+            <td>快照一份数据</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>同理，<code>.to()</code> 在 device、dtype
+            等条件已经满足且不要求 copy
+            时可以返回原张量本身。需要独立副本应明确使用
+            <code>clone()</code>，而不是依赖 <code>contiguous()</code>
+            或 <code>to()</code> 的“副作用”。</p>
+            <h3 id="混淆点四切片索引-vs-花式索引">混淆点四：切片索引 vs
+            花式索引</h3>
+            <p>两种“索引”长得像，底层却是两回事。<strong>基础切片</strong>
+            <code>a[2:5]</code>、<code>a[:, 0]</code>
+            取的是连续、等间隔的区间，用 offset + shape + stride
+            就能表达，所以是
+            <strong>view</strong>，零拷贝、与原张量共享内存。<strong>花式索引</strong>（高级索引）<code>a[idx_tensor]</code>
+            用一个下标张量去取，下标可以乱序、可以重复，没法用一组规则
+            stride 表达，于是 torch 只能
+            <strong>gather</strong>：按下标把元素一个个挑出来，塞进一块新的、连续的
+            storage。</p>
+            <figure>
+            <img
+            src="./WikiImage/torch_tensor_memory_indexing.svg"
+            alt="切片 vs 花式索引" />
+            <figcaption aria-hidden="true">切片 vs 花式索引</figcaption>
+            </figure>
+            <p>写方向则相反：<code>buffer[indices] = values</code> 是
+            <code>index_put_</code>，直接写回原 buffer；而
+            <code>buffer[indices].copy_(values)</code> 先 gather
+            出临时副本、再修改这份副本，原 buffer
+            不变。这一读一写的区别在 KV cache 上体现得最明显，见下文与
+            <a
+            href="./torch_broadcast_indexing.html">广播与索引</a>。</p>
+            <h3 id="在-llm-推理中qkv-reshape-里哪一步付出拷贝">在 LLM
+            推理中：QKV reshape 里哪一步付出拷贝</h3>
+            <p>Attention
+            的输入准备是“透镜”模型最密集的使用场景。现代实现把 Q、K、V
+            三个投影合成一个 GEMM（fused QKV），输出一个
+            <code>[T, (H + 2·KV)·D]</code>
+            的连续张量，之后全靠元数据变换拆出各自的视图。下图用
+            T=4、H=8、KV=2（GQA）、D=4 的小例子跟踪每一步的
+            shape/stride/offset：</p>
+            <figure>
+            <img
+            src="./WikiImage/torch_tensor_memory_qkv_reshape.svg"
+            alt="fused QKV 的 split 与 view" />
+            <figcaption aria-hidden="true">fused QKV 的 split 与
+            view</figcaption>
+            </figure>
+            <ul>
+            <li><strong>split 是 view，但不连续。</strong>
+            <code>qkv.split([q_size, kv_size, kv_size], dim=-1)</code>
+            得到的 <code>k</code> 形状 <code>[T, 8]</code>，stride 仍是
+            <code>(48, 1)</code>、offset 为 32：每行只看 8
+            个元素，换行要越过 40 个别人的元素。</li>
+            <li><strong>拆最后一维总能 view。</strong>
+            <code>k.view(-1, KV, D)</code> 把 8 拆成 2×4，stride 变为
+            <code>(48, 4, 1)</code>，依旧零拷贝；<code>is_contiguous()</code>
+            为 False 并不妨碍这一步。</li>
+            <li><strong>交换维度会把拷贝推迟到下游。</strong> 若需要
+            <code>[B, H, T, D]</code>
+            布局，<code>view(1, T, H, D).transpose(1, 2)</code> 仍是
+            view，但 stride 变成
+            <code>(192, 4, 48, 1)</code>；此后任何把 <code>T×D</code>
+            合并成一维的
+            <code>reshape</code>/<code>contiguous</code>，或只接受连续输入的
+            kernel，才会真正复制。</li>
+            </ul>
+            <p><strong>GQA 下 K/V 的 head
+            维度更小</strong>，这既是显存收益的来源，也是需要留意的布局差异。Q
+            有 H 个 head，K/V 只有 KV 个；朴素实现用
+            <code>repeat_interleave</code> 把 K/V 扩到 H 个
+            head，就是一次真实复制。更好的做法是让 kernel 直接理解“每
+            H/KV 个 query head 共用一个 kv head”的映射，K/V
+            保持原样。</p>
+            <p>SGLang 中这条链路的对应位置（基于
+            <code>python/sglang/srt/</code> 当前代码）：</p>
+            <ul>
+            <li><code>models/llama.py</code> 的
+            <code>LlamaAttention.forward_prepare_native()</code>：<code>qkv, _ = self.qkv_proj(hidden_states)</code>
+            后
+            <code>qkv.split([self.q_size, self.kv_size, self.kv_size], dim=-1)</code>，其中
+            <code>q_size = num_heads * head_dim</code>、<code>kv_size = num_kv_heads * head_dim</code>，<code>num_kv_heads = max(1, total_num_kv_heads // tp_size)</code>——TP
+            份数超过 KV head 数时每个 rank 至少保留一个（复制的）kv
+            head。</li>
+            <li><code>layers/radix_attention.py</code> 的
+            <code>RadixAttention.forward()</code> 把 K/V 统一
+            <code>view(-1, tp_k_head_num, head_dim)</code>，正是上面“拆最后一维”的那一步。</li>
+            <li><code>layers/attention/torch_native_backend.py</code> 用
+            <code>movedim</code> 把 token 维挪到 SDPA
+            需要的位置（view），并在
+            <code>tp_q_head_num != tp_k_head_num</code> 时传
+            <code>enable_gqa=True</code> 给 SDPA，而不是自己复制 K/V
+            head。</li>
+            <li>写 cache 的路径利用了这种“外层 stride
+            不规整、内层紧密”的布局：<code>mem_cache/memory_pool.py</code>
+            中 <code>_set_kv_buffer_impl()</code> 对
+            <code>k.view(-1, row_dim)</code> 直接调用
+            <code>store_cache</code>；vectorized_5d
+            布局的注释更明确地写道，写入 kernel 直接使用
+            <code>key.stride(0)</code> 作为 token 步长，只假设每个 token
+            内部 head/dim 紧密，因而可以省掉“会触发大规模逐层逐元素
+            kernel 的保护性 <code>.contiguous()</code> 拷贝”。</li>
+            </ul>
+            <p>这也说明了一个常见优化方向：<strong>与其在 Python 侧补
+            <code>.contiguous()</code>，不如让 kernel 接受 stride
+            参数。</strong> 能接受 stride 的
+            kernel，读写的字节数不变，却省掉一次完整的中间复制。</p>
+            <h3 id="在-llm-推理中kv-cache-上的-viewgather-与写回">在 LLM
+            推理中：KV cache 上的 view、gather 与写回</h3>
+            <p>KV cache
+            是另一个把三种访问方式放在一起的地方：它是一块启动时预分配、整个服务期间常驻的大
+            buffer，每一步只读写其中一小部分行。</p>
+            <figure>
+            <img
+            src="./WikiImage/torch_tensor_memory_kv_cache_views.svg"
+            alt="KV cache 上的三种访问" />
+            <figcaption aria-hidden="true">KV cache
+            上的三种访问</figcaption>
+            </figure>
+            <p>以 <code>mem_cache/memory_pool.py</code> 的
+            <code>MHATokenToKVPool</code> 为例（默认 NHD 布局）：</p>
+            <ul>
+            <li><strong>按层切出 buffer，是对象引用而非拷贝。</strong>
+            <code>_create_buffers_normal()</code> 为每层分配一个
+            <code>[size + page_size, head_num, head_dim]</code>
+            的张量，存在 <code>k_buffer</code> / <code>v_buffer</code>
+            列表中；第 0 个 page 是 padding slot，吸收 CUDA Graph
+            等场景下 dummy token
+            的写入。<code>get_key_buffer(layer_id)</code>
+            返回的就是这一层张量本身。</li>
+            <li><strong>按请求取下标，是 view。</strong>
+            <code>req_to_token[req_pool_idx, start:end]</code>
+            是基础切片，与映射表共享 storage。</li>
+            <li><strong>按下标读 KV，是 gather。</strong>
+            <code>TorchNativeAttnBackend</code> 中
+            <code>k_cache[per_req_tokens]</code>
+            是高级索引读取，产生一份独立、连续的 <code>[n, H, D]</code>
+            副本——高性能后端（FlashInfer、Triton 等）则把下标表直接交给
+            kernel，在 kernel 内部按页/槽位寻址，避免这次物化。</li>
+            <li><strong>按下标写 KV，是原地
+            <code>index_put_</code>。</strong>
+            <code>set_kv_buffer()</code> 的朴素回退路径就是
+            <code>k_cache[indices] = k</code>，写回常驻 buffer；CUDA/HIP
+            上满足条件时改走 <code>store_cache</code>
+            kernel，语义相同。</li>
+            </ul>
+            <p>同一块字节上还有两副更“底层”的透镜：</p>
+            <ul>
+            <li><strong><code>view(dtype)</code>
+            做零拷贝的类型重解释。</strong> FP8 KV cache 的
+            <code>store_dtype</code> 被设为
+            <code>torch.uint8</code>（源码注释：<code>index_put</code>
+            不支持 <code>float8_e5m2</code>），写入前
+            <code>cache_k.view(self.store_dtype)</code>，读取时
+            <code>_get_key_buffer()</code> 返回
+            <code>k_buffer[...].view(self.dtype)</code>。两者元素大小都是
+            1 字节，所以只换解读方式，不搬数据。</li>
+            <li><strong><code>as_strided</code>
+            构造跨层交错布局。</strong>
+            <code>PageMajorMHATokenToKVPool</code> 让所有层共用一块
+            uint8 的 <code>_raw</code>
+            buffer，<code>mem_cache/layout/page_major.py</code> 的
+            <code>build_page_major_mha_views()</code> 用
+            <code>torch.as_strided</code> 为每层造一个
+            <code>(num_pages, page_size, head_num, head_dim)</code>
+            视图，stride 为
+            <code>(page_bytes/itemsize, k_row_bytes/itemsize, head_dim, 1)</code>，层与层之间只靠
+            <code>storage_offset</code>
+            错开。这些视图既不重叠，也不再满足“stride
+            等于行宽”——所以类注释明确写道，假设逐层连续 3-D 布局的 tiled
+            copy kernel、CPU offload
+            等路径在这里会直接报错，而不是悄悄按错的步长读写。</li>
+            </ul>
+            <p>这就是“透镜”模型在工程上的分量：<strong>同一块 KV
+            storage，换不同的元数据就能支持不同的布局与
+            dtype；而每一个只接受特定 stride 的
+            kernel，都是对这副透镜的隐含约束。</strong></p>
+            <h3 id="混淆点五cpu-与-gpu以及隐形的同步">混淆点五：CPU 与
+            GPU，以及隐形的同步</h3>
+            <p>在常见独立 NVIDIA GPU 的 PyTorch 使用方式下，CPU
+            张量位于主机内存，CUDA 张量位于设备内存；普通 CUDA
+            算子通常要求输入位于兼容的设备上。实际跨设备的
+            <code>.cuda()</code>/<code>.cpu()</code>
+            需要传输数据，具体互连取决于硬件。映射主机内存、统一内存和共享内存硬件是另外的机制，不能把“GPU
+            永远不能访问主机内存”当成硬件定律。这里有两个容易踩的点：</p>
+            <figure>
+            <img src="./WikiImage/torch_tensor_memory_device.svg"
+            alt="CPU vs GPU" />
+            <figcaption aria-hidden="true">CPU vs GPU</figcaption>
+            </figure>
+            <ol type="1">
+            <li><strong>pinned vs pageable</strong>：pageable
+            内存的传输通常涉及 staging 到锁页缓冲区。pinned memory 配合
+            <code>non_blocking=True</code> 有助于异步
+            H2D，但计算重叠还需要 copy engine、不同 stream
+            和独立工作；同 stream 上的计算仍排在拷贝之后。临时
+            <code>pin_memory()</code> 也有成本，异步 H2D 完成前不能覆盖
+            pinned 源数据。见 <a
+            href="https://docs.pytorch.org/tutorials/intermediate/pinmem_nonblock.html">官方搬运教程</a>。</li>
+            <li><strong>异步与同步点</strong>：kernel 通常异步提交，但
+            CUDA 张量的 <code>.item()</code>、<code>.tolist()</code>
+            或打印具体值，需要等待设备结果。默认 GPU 到 CPU
+            拷贝也会等待；使用异步 D2H 时，CPU
+            必须在读取前确认完成。默认 <code>.numpy()</code>
+            不能直接用于 CUDA 张量，通常是在 <code>.cpu()</code>
+            后转换；CPU 张量的 <code>.numpy()</code> 本身不能一概称为
+            GPU 同步点。细节与计时方法见 <a
+            href="./torch_cuda_execution.html">CUDA 异步执行</a>。</li>
+            </ol>
+            <h3 id="torch-推理知识的其他层次">Torch
+            推理知识的其他层次</h3>
+            <p>内存布局之外，还需要分别理解以下问题：</p>
+            <table>
+            <colgroup>
+            <col style="width: 50%" />
+            <col style="width: 50%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>主题</th>
+            <th>需要回答的问题</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td><a
+            href="./torch_dtype.html">数据类型与低精度表示</a></td>
+            <td>每个元素占几个字节？<code>.to(dtype)</code> 与
+            <code>.view(dtype)</code> 有何不同？低精度数据的 scale
+            存在哪？</td>
+            </tr>
+            <tr>
+            <td><a
+            href="./torch_broadcast_indexing.html">广播与索引</a></td>
+            <td>shape 会怎样扩展？读取副本与写回原存储有什么区别？</td>
+            </tr>
+            <tr>
+            <td><a href="./torch_cuda_execution.html">CUDA
+            异步执行</a></td>
+            <td>CPU 什么时候等待 GPU？如何建立依赖和正确计时？</td>
+            </tr>
+            <tr>
+            <td><a
+            href="./torch_memory_management.html">显存管理与生命周期</a></td>
+            <td>谁仍持有 storage？活跃分配、缓存与峰值分别是多少？</td>
+            </tr>
+            <tr>
+            <td><a href="./torch_numerical_precision.html">dtype
+            与数值精度</a></td>
+            <td>存储、计算和累加是否使用相同精度？误差如何验证？</td>
+            </tr>
+            <tr>
+            <td><a
+            href="./torch_inference_mode.html">推理模式与状态</a></td>
+            <td>eval、梯度 context 和可变 cache 各由谁管理？</td>
+            </tr>
+            <tr>
+            <td><a href="./torch_dispatcher.html">算子调度</a></td>
+            <td>一次 Python 调用经过哪些 dispatch
+            层？自定义算子如何注册？</td>
+            </tr>
+            <tr>
+            <td><a href="./torch_kernel_compile.html">kernel
+            与编译执行</a></td>
+            <td>实际调用哪些 kernel？融合、编译和 graph replay
+            分别优化什么？</td>
+            </tr>
+            <tr>
+            <td><a href="./cuda_graph.html">Cuda Graph</a></td>
+            <td>图捕获了什么？为什么需要静态地址和私有内存池？</td>
+            </tr>
+            </tbody>
+            </table>
+            <h3 id="小结">小结</h3>
+            <p>把 dense strided tensor 理解成“一块 storage +
+            一组解释存储的元数据（shape、stride、storage_offset、dtype）”，就能用一个判据区分布局变换、共享存储和实际复制：能否只改元数据来表达。split、拆最后一维、转置、零步长
+            expand、<code>view(dtype)</code>、<code>as_strided</code>
+            都只是换透镜；高级索引读取、合并乱序维度、<code>clone</code>
+            才搬数据；而 aliasing 让 in-place 写入波及所有共享 storage
+            的张量——KV cache 的原地写入依赖它，误写临时副本也源于它。QKV
+            reshape 与 KV cache
+            读写正是这套模型最密集的落点。读代码时依次问：数据在哪里、谁共享它、有没有复制或分配、哪个
+            kernel 对 stride 有约束、CPU 是否在等 GPU；再结合具体输入和
+            profiler 验证。</p>
+          </main>
+        <aside class="wiki-toc">
+      <ul>
+      <li><a href="#抽象张量-一块扁平-storage-一副透镜"
+      id="toc-抽象张量-一块扁平-storage-一副透镜">抽象：张量 = 一块扁平
+      storage + 一副“透镜”</a></li>
+      <li><a href="#混淆点一view-还是-copy以及-aliasing"
+      id="toc-混淆点一view-还是-copy以及-aliasing">混淆点一：view 还是
+      copy，以及 aliasing</a></li>
+      <li><a href="#混淆点二零步长与重叠内存"
+      id="toc-混淆点二零步长与重叠内存">混淆点二：零步长与重叠内存</a></li>
+      <li><a href="#混淆点三连续-vs-非连续"
+      id="toc-混淆点三连续-vs-非连续">混淆点三：连续 vs 非连续</a></li>
+      <li><a href="#混淆点四切片索引-vs-花式索引"
+      id="toc-混淆点四切片索引-vs-花式索引">混淆点四：切片索引 vs
+      花式索引</a></li>
+      <li><a href="#在-llm-推理中qkv-reshape-里哪一步付出拷贝"
+      id="toc-在-llm-推理中qkv-reshape-里哪一步付出拷贝">在 LLM
+      推理中：QKV reshape 里哪一步付出拷贝</a></li>
+      <li><a href="#在-llm-推理中kv-cache-上的-viewgather-与写回"
+      id="toc-在-llm-推理中kv-cache-上的-viewgather-与写回">在 LLM
+      推理中：KV cache 上的 view、gather 与写回</a></li>
+      <li><a href="#混淆点五cpu-与-gpu以及隐形的同步"
+      id="toc-混淆点五cpu-与-gpu以及隐形的同步">混淆点五：CPU 与
+      GPU，以及隐形的同步</a></li>
+      <li><a href="#torch-推理知识的其他层次"
+      id="toc-torch-推理知识的其他层次">Torch
+      推理知识的其他层次</a></li>
+      <li><a href="#小结" id="toc-小结">小结</a></li>
+      </ul>
+    </aside>
+      </div>
+</body>
+
+</html>

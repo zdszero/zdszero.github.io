@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 592" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="592" rx="12" fill="#ffffff"/>
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#868e96"/>
+    </marker>
+  </defs>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">Gated Delta Rule：一步状态更新的五个动作</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">顺序与 SGLang decode kernel（fused_sigmoid_gating_recurrent）完全一致；中间两步是 “delta” 的来源</text>
+
+  <!-- spine -->
+  <path d="M60 104 L60 392" stroke="#ced4da" stroke-width="2"/>
+  <g>
+    <circle cx="60" cy="104" r="7" fill="#4c6ef5"/>
+    <circle cx="60" cy="174" r="7" fill="#f08c00"/>
+    <circle cx="60" cy="244" r="7" fill="#f08c00"/>
+    <circle cx="60" cy="314" r="7" fill="#0ca678"/>
+    <circle cx="60" cy="384" r="7" fill="#4c6ef5"/>
+  </g>
+
+  <!-- step 1 -->
+  <rect x="80" y="78" width="400" height="56" rx="9" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="96" y="100" font-size="13.5" font-weight="700" fill="#3b5bdb">① 衰减（遗忘门）</text>
+  <text x="96" y="122" font-size="12.5" fill="#343a40" font-family="monospace">S' = α_t · S_(t-1)      α_t = exp(g_t) ∈ (0,1]</text>
+  <!-- step 2 -->
+  <rect x="80" y="148" width="400" height="56" rx="9" fill="#fff9db" stroke="#f08c00"/>
+  <text x="96" y="170" font-size="13.5" font-weight="700" fill="#e8590c">② 用 key 读出旧值（预测）</text>
+  <text x="96" y="192" font-size="12.5" fill="#343a40" font-family="monospace">v̂_t = k_t S'</text>
+  <!-- step 3 -->
+  <rect x="80" y="218" width="400" height="56" rx="9" fill="#fff9db" stroke="#f08c00"/>
+  <text x="96" y="240" font-size="13.5" font-weight="700" fill="#e8590c">③ 误差 × 写入强度</text>
+  <text x="96" y="262" font-size="12.5" fill="#343a40" font-family="monospace">Δ_t = β_t (v_t − v̂_t)    β_t = sigmoid(b_t)</text>
+  <!-- step 4 -->
+  <rect x="80" y="288" width="400" height="56" rx="9" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="96" y="310" font-size="13.5" font-weight="700" fill="#0b7285">④ rank-1 写回</text>
+  <text x="96" y="332" font-size="12.5" fill="#343a40" font-family="monospace">S_t = S' + k_tᵀ Δ_t</text>
+  <!-- step 5 -->
+  <rect x="80" y="358" width="400" height="56" rx="9" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="96" y="380" font-size="13.5" font-weight="700" fill="#3b5bdb">⑤ 用 query 读出输出</text>
+  <text x="96" y="402" font-size="12.5" fill="#343a40" font-family="monospace">o_t = q_t S_t</text>
+
+  <!-- right: meaning + kernel line -->
+  <g font-size="12" fill="#495057">
+    <path d="M480 106 L500 106" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+    <text x="508" y="100">整体打折：越旧的写入越淡</text>
+    <text x="508" y="120" font-family="monospace" font-size="11.5" fill="#868e96">b_h *= exp(b_g)</text>
+    <path d="M480 176 L500 176" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+    <text x="508" y="170">记忆里 “k_t 这个地址” 现在存的是什么</text>
+    <text x="508" y="190" font-family="monospace" font-size="11.5" fill="#868e96">b_v -= sum(b_h * b_k[:, None], 0)</text>
+    <path d="M480 246 L500 246" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+    <text x="508" y="240">只写 “没记对” 的部分；β 相当于学习率</text>
+    <text x="508" y="260" font-family="monospace" font-size="11.5" fill="#868e96">b_v *= b_beta</text>
+    <path d="M480 316 L500 316" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+    <text x="508" y="310">外积修正 k_t 对应的那一 “行方向”</text>
+    <text x="508" y="330" font-family="monospace" font-size="11.5" fill="#868e96">b_h += b_k[:, None] * b_v[None, :]</text>
+    <path d="M480 386 L500 386" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+    <text x="508" y="380">读的是更新后的状态（含当前 token）</text>
+    <text x="508" y="400" font-family="monospace" font-size="11.5" fill="#868e96">b_o = sum(b_h * b_q[:, None], 0)</text>
+  </g>
+  <!-- bottom left: worked example -->
+  <rect x="40" y="432" width="430" height="96" rx="10" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="56" y="454" font-size="13" font-weight="700" fill="#5f3dc4">例：同一个 key 写两次（‖k‖=1，先写 v1 再写 v2）</text>
+  <text x="56" y="478" font-size="12" fill="#495057" font-family="monospace">线性累加：S = kᵀv1 + kᵀv2 → kS = v1 + v2</text>
+  <text x="56" y="498" font-size="12" fill="#495057" font-family="monospace">delta(β=1)：Δ = v2 − v1 → S = kᵀv2 → kS = v2</text>
+  <text x="56" y="518" font-size="11.5" fill="#868e96">前者串扰叠加，后者把旧值 “改写” 成新值</text>
+  <!-- bottom right: online regression view -->
+  <rect x="490" y="432" width="380" height="96" rx="10" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="506" y="454" font-size="13" font-weight="700" fill="#0b7285">另一种看法：每个 token 做一步在线回归</text>
+  <text x="506" y="478" font-size="12" fill="#495057" font-family="monospace">L(S) = ½ ‖k_t S − v_t‖²</text>
+  <text x="506" y="498" font-size="12" fill="#495057" font-family="monospace">S ← S − β_t ∇L = S + β_t k_tᵀ (v_t − k_t S)</text>
+  <text x="506" y="518" font-size="11.5" fill="#868e96">β_t 是学习率，α_t 是 weight decay</text>
+
+  <rect x="40" y="542" width="830" height="36" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="56" y="565" font-size="12" fill="#495057">GDN 与 KDA 只在 ① 不同：GDN 的 α_t 是每个 head 一个标量；KDA 的 α_t 是长度 d_k 的向量（逐通道衰减）。②～⑤ 完全共用。</text>
+</svg>

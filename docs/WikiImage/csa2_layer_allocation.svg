@@ -1,0 +1,183 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="600" rx="12" fill="#ffffff"/>
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#7048e8"/>
+    </marker>
+  </defs>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">V4.1-Flash 的 40 层：只有 4 层产出 cache，30 层只做复用</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">每格一层；紫色框是一份常驻的 global KV cache，以及哪些层在读它</text>
+  <rect x="520" y="78" width="14" height="12" rx="2" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="540" y="89" font-size="11" fill="#3b5bdb">Full</text>
+  <rect x="610" y="78" width="14" height="12" rx="2" fill="#fff4e6" stroke="#f08c00"/>
+  <text x="630" y="89" font-size="11" fill="#e8590c">Reindex</text>
+  <rect x="700" y="78" width="14" height="12" rx="2" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="720" y="89" font-size="11" fill="#0b7285">Reuse</text>
+  <rect x="790" y="78" width="14" height="12" rx="2" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="810" y="89" font-size="11" fill="#495057">纯 SWA</text>
+  <text x="70" y="89" font-size="13" font-weight="700" fill="#212529">Causal Encoder · L1–L20 · m = 2</text>
+  <path d="M70 120 L70 114 L144 114 L144 120" fill="none" stroke="#adb5bd" stroke-width="1.5"/>
+  <text x="107" y="108" text-anchor="middle" font-size="11.5" font-weight="700" fill="#495057">只有 SWA</text>
+  <path d="M150 120 L150 114 L384 114 L384 120" fill="none" stroke="#adb5bd" stroke-width="1.5"/>
+  <text x="267" y="108" text-anchor="middle" font-size="11.5" font-weight="700" fill="#495057">组 1：1 Full + 5 Reuse</text>
+  <path d="M390 120 L390 114 L624 114 L624 120" fill="none" stroke="#adb5bd" stroke-width="1.5"/>
+  <text x="507" y="108" text-anchor="middle" font-size="11.5" font-weight="700" fill="#495057">组 2：1 Full + 5 Reuse</text>
+  <path d="M630 120 L630 114 L864 114 L864 120" fill="none" stroke="#adb5bd" stroke-width="1.5"/>
+  <text x="747" y="108" text-anchor="middle" font-size="11.5" font-weight="700" fill="#495057">组 3：1 Full + 5 Reuse</text>
+  <rect x="70" y="124" width="34" height="36" rx="4" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="87" y="147" text-anchor="middle" font-size="12" font-weight="700" fill="#495057">S</text>
+  <text x="87" y="174" text-anchor="middle" font-size="9.5" font-family="monospace" fill="#868e96">L1</text>
+  <rect x="110" y="124" width="34" height="36" rx="4" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="127" y="147" text-anchor="middle" font-size="12" font-weight="700" fill="#495057">S</text>
+  <text x="127" y="174" text-anchor="middle" font-size="9.5" font-family="monospace" fill="#868e96">L2</text>
+  <rect x="150" y="124" width="34" height="36" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="167" y="147" text-anchor="middle" font-size="12" font-weight="700" fill="#3b5bdb">F</text>
+  <text x="167" y="174" text-anchor="middle" font-size="9.5" font-family="monospace" fill="#868e96">L3</text>
+  <rect x="190" y="124" width="34" height="36" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="207" y="147" text-anchor="middle" font-size="12" font-weight="700" fill="#0b7285">Ru</text>
+  <text x="207" y="174" text-anchor="middle" font-size="9.5" font-family="monospace" fill="#868e96">L4</text>
+  <rect x="230" y="124" width="34" height="36" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="247" y="147" text-anchor="middle" font-size="12" font-weight="700" fill="#0b7285">Ru</text>
+  <text x="247" y="174" text-anchor="middle" font-size="9.5" font-family="monospace" fill="#868e96">L5</text>
+  <rect x="270" y="124" width="34" height="36" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="287" y="147" text-anchor="middle" font-size="12" font-weight="700" fill="#0b7285">Ru</text>
+  <text x="287" y="174" text-anchor="middle" font-size="9.5" font-family="monospace" fill="#868e96">L6</text>
+  <rect x="310" y="124" width="34" height="36" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="327" y="147" text-anchor="middle" font-size="12" font-weight="700" fill="#0b7285">Ru</text>
+  <text x="327" y="174" text-anchor="middle" font-size="9.5" font-family="monospace" fill="#868e96">L7</text>
+  <rect x="350" y="124" width="34" height="36" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="367" y="147" text-anchor="middle" font-size="12" font-weight="700" fill="#0b7285">Ru</text>
+  <text x="367" y="174" text-anchor="middle" font-size="9.5" font-family="monospace" fill="#868e96">L8</text>
+  <rect x="390" y="124" width="34" height="36" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="407" y="147" text-anchor="middle" font-size="12" font-weight="700" fill="#3b5bdb">F</text>
+  <text x="407" y="174" text-anchor="middle" font-size="9.5" font-family="monospace" fill="#868e96">L9</text>
+  <rect x="430" y="124" width="34" height="36" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="447" y="147" text-anchor="middle" font-size="12" font-weight="700" fill="#0b7285">Ru</text>
+  <text x="447" y="174" text-anchor="middle" font-size="9.5" font-family="monospace" fill="#868e96">L10</text>
+  <rect x="470" y="124" width="34" height="36" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="487" y="147" text-anchor="middle" font-size="12" font-weight="700" fill="#0b7285">Ru</text>
+  <text x="487" y="174" text-anchor="middle" font-size="9.5" font-family="monospace" fill="#868e96">L11</text>
+  <rect x="510" y="124" width="34" height="36" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="527" y="147" text-anchor="middle" font-size="12" font-weight="700" fill="#0b7285">Ru</text>
+  <text x="527" y="174" text-anchor="middle" font-size="9.5" font-family="monospace" fill="#868e96">L12</text>
+  <rect x="550" y="124" width="34" height="36" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="567" y="147" text-anchor="middle" font-size="12" font-weight="700" fill="#0b7285">Ru</text>
+  <text x="567" y="174" text-anchor="middle" font-size="9.5" font-family="monospace" fill="#868e96">L13</text>
+  <rect x="590" y="124" width="34" height="36" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="607" y="147" text-anchor="middle" font-size="12" font-weight="700" fill="#0b7285">Ru</text>
+  <text x="607" y="174" text-anchor="middle" font-size="9.5" font-family="monospace" fill="#868e96">L14</text>
+  <rect x="630" y="124" width="34" height="36" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="647" y="147" text-anchor="middle" font-size="12" font-weight="700" fill="#3b5bdb">F</text>
+  <text x="647" y="174" text-anchor="middle" font-size="9.5" font-family="monospace" fill="#868e96">L15</text>
+  <rect x="670" y="124" width="34" height="36" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="687" y="147" text-anchor="middle" font-size="12" font-weight="700" fill="#0b7285">Ru</text>
+  <text x="687" y="174" text-anchor="middle" font-size="9.5" font-family="monospace" fill="#868e96">L16</text>
+  <rect x="710" y="124" width="34" height="36" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="727" y="147" text-anchor="middle" font-size="12" font-weight="700" fill="#0b7285">Ru</text>
+  <text x="727" y="174" text-anchor="middle" font-size="9.5" font-family="monospace" fill="#868e96">L17</text>
+  <rect x="750" y="124" width="34" height="36" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="767" y="147" text-anchor="middle" font-size="12" font-weight="700" fill="#0b7285">Ru</text>
+  <text x="767" y="174" text-anchor="middle" font-size="9.5" font-family="monospace" fill="#868e96">L18</text>
+  <rect x="790" y="124" width="34" height="36" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="807" y="147" text-anchor="middle" font-size="12" font-weight="700" fill="#0b7285">Ru</text>
+  <text x="807" y="174" text-anchor="middle" font-size="9.5" font-family="monospace" fill="#868e96">L19</text>
+  <rect x="830" y="124" width="34" height="36" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="847" y="147" text-anchor="middle" font-size="12" font-weight="700" fill="#0b7285">Ru</text>
+  <text x="847" y="174" text-anchor="middle" font-size="9.5" font-family="monospace" fill="#868e96">L20</text>
+  <rect x="150" y="188" width="234" height="40" rx="6" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="267" y="204" text-anchor="middle" font-size="11.5" font-weight="700" fill="#5f3dc4">cache ① · 每 2 token 一条</text>
+  <text x="267" y="220" text-anchor="middle" font-size="10.5" fill="#495057">L3 产出 KV 与 Top-K，L4–L8 全部复用</text>
+  <rect x="390" y="188" width="234" height="40" rx="6" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="507" y="204" text-anchor="middle" font-size="11.5" font-weight="700" fill="#5f3dc4">cache ② · 每 2 token 一条</text>
+  <text x="507" y="220" text-anchor="middle" font-size="10.5" fill="#495057">L9 产出 KV 与 Top-K，L10–L14 全部复用</text>
+  <rect x="630" y="188" width="234" height="40" rx="6" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="747" y="204" text-anchor="middle" font-size="11.5" font-weight="700" fill="#5f3dc4">cache ③ · 每 2 token 一条</text>
+  <text x="747" y="220" text-anchor="middle" font-size="10.5" fill="#495057">L15 产出 KV 与 Top-K，L16–L20 全部复用</text>
+  <path d="M864 142 L884 142 L884 262 L46 262 L46 346 L64 346" fill="none" stroke="#7048e8" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#ar)"/>
+  <rect x="236" y="246" width="440" height="22" rx="4" fill="#ffffff"/>
+  <text x="456" y="262" text-anchor="middle" font-size="11.5" fill="#5f3dc4">H<tspan dy="3" font-size="9">L/2</tspan><tspan dy="-3">（L20 的输出）直接投影出 decoder 的 main KV —— 文中记作 CED</tspan></text>
+  <text x="70" y="296" font-size="13" font-weight="700" fill="#212529">Decoder · L21–L40 · m = 1（不压缩）</text>
+  <path d="M70 324 L70 318 L224 318 L224 324" fill="none" stroke="#adb5bd" stroke-width="1.5"/>
+  <text x="147" y="312" text-anchor="middle" font-size="11" font-weight="700" fill="#495057">组 1：1 Full + 3 Reuse</text>
+  <path d="M230 324 L230 318 L384 318 L384 324" fill="none" stroke="#adb5bd" stroke-width="1.5"/>
+  <text x="307" y="312" text-anchor="middle" font-size="11" font-weight="700" fill="#495057">组 2：1 Reindex + 3 Reuse</text>
+  <path d="M390 324 L390 318 L544 318 L544 324" fill="none" stroke="#adb5bd" stroke-width="1.5"/>
+  <text x="467" y="312" text-anchor="middle" font-size="11" font-weight="700" fill="#495057">组 3：1 Reindex + 3 Reuse</text>
+  <path d="M550 324 L550 318 L704 318 L704 324" fill="none" stroke="#adb5bd" stroke-width="1.5"/>
+  <text x="627" y="312" text-anchor="middle" font-size="11" font-weight="700" fill="#495057">组 4：1 Reindex + 3 Reuse</text>
+  <path d="M710 324 L710 318 L864 318 L864 324" fill="none" stroke="#adb5bd" stroke-width="1.5"/>
+  <text x="787" y="312" text-anchor="middle" font-size="11" font-weight="700" fill="#495057">组 5：1 Reindex + 3 Reuse</text>
+  <rect x="70" y="328" width="34" height="36" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="87" y="351" text-anchor="middle" font-size="12" font-weight="700" fill="#3b5bdb">F</text>
+  <text x="87" y="378" text-anchor="middle" font-size="9.5" font-family="monospace" fill="#868e96">L21</text>
+  <rect x="110" y="328" width="34" height="36" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="127" y="351" text-anchor="middle" font-size="12" font-weight="700" fill="#0b7285">Ru</text>
+  <text x="127" y="378" text-anchor="middle" font-size="9.5" font-family="monospace" fill="#868e96">L22</text>
+  <rect x="150" y="328" width="34" height="36" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="167" y="351" text-anchor="middle" font-size="12" font-weight="700" fill="#0b7285">Ru</text>
+  <text x="167" y="378" text-anchor="middle" font-size="9.5" font-family="monospace" fill="#868e96">L23</text>
+  <rect x="190" y="328" width="34" height="36" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="207" y="351" text-anchor="middle" font-size="12" font-weight="700" fill="#0b7285">Ru</text>
+  <text x="207" y="378" text-anchor="middle" font-size="9.5" font-family="monospace" fill="#868e96">L24</text>
+  <rect x="230" y="328" width="34" height="36" rx="4" fill="#fff4e6" stroke="#f08c00"/>
+  <text x="247" y="351" text-anchor="middle" font-size="12" font-weight="700" fill="#e8590c">Ri</text>
+  <text x="247" y="378" text-anchor="middle" font-size="9.5" font-family="monospace" fill="#868e96">L25</text>
+  <rect x="270" y="328" width="34" height="36" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="287" y="351" text-anchor="middle" font-size="12" font-weight="700" fill="#0b7285">Ru</text>
+  <text x="287" y="378" text-anchor="middle" font-size="9.5" font-family="monospace" fill="#868e96">L26</text>
+  <rect x="310" y="328" width="34" height="36" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="327" y="351" text-anchor="middle" font-size="12" font-weight="700" fill="#0b7285">Ru</text>
+  <text x="327" y="378" text-anchor="middle" font-size="9.5" font-family="monospace" fill="#868e96">L27</text>
+  <rect x="350" y="328" width="34" height="36" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="367" y="351" text-anchor="middle" font-size="12" font-weight="700" fill="#0b7285">Ru</text>
+  <text x="367" y="378" text-anchor="middle" font-size="9.5" font-family="monospace" fill="#868e96">L28</text>
+  <rect x="390" y="328" width="34" height="36" rx="4" fill="#fff4e6" stroke="#f08c00"/>
+  <text x="407" y="351" text-anchor="middle" font-size="12" font-weight="700" fill="#e8590c">Ri</text>
+  <text x="407" y="378" text-anchor="middle" font-size="9.5" font-family="monospace" fill="#868e96">L29</text>
+  <rect x="430" y="328" width="34" height="36" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="447" y="351" text-anchor="middle" font-size="12" font-weight="700" fill="#0b7285">Ru</text>
+  <text x="447" y="378" text-anchor="middle" font-size="9.5" font-family="monospace" fill="#868e96">L30</text>
+  <rect x="470" y="328" width="34" height="36" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="487" y="351" text-anchor="middle" font-size="12" font-weight="700" fill="#0b7285">Ru</text>
+  <text x="487" y="378" text-anchor="middle" font-size="9.5" font-family="monospace" fill="#868e96">L31</text>
+  <rect x="510" y="328" width="34" height="36" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="527" y="351" text-anchor="middle" font-size="12" font-weight="700" fill="#0b7285">Ru</text>
+  <text x="527" y="378" text-anchor="middle" font-size="9.5" font-family="monospace" fill="#868e96">L32</text>
+  <rect x="550" y="328" width="34" height="36" rx="4" fill="#fff4e6" stroke="#f08c00"/>
+  <text x="567" y="351" text-anchor="middle" font-size="12" font-weight="700" fill="#e8590c">Ri</text>
+  <text x="567" y="378" text-anchor="middle" font-size="9.5" font-family="monospace" fill="#868e96">L33</text>
+  <rect x="590" y="328" width="34" height="36" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="607" y="351" text-anchor="middle" font-size="12" font-weight="700" fill="#0b7285">Ru</text>
+  <text x="607" y="378" text-anchor="middle" font-size="9.5" font-family="monospace" fill="#868e96">L34</text>
+  <rect x="630" y="328" width="34" height="36" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="647" y="351" text-anchor="middle" font-size="12" font-weight="700" fill="#0b7285">Ru</text>
+  <text x="647" y="378" text-anchor="middle" font-size="9.5" font-family="monospace" fill="#868e96">L35</text>
+  <rect x="670" y="328" width="34" height="36" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="687" y="351" text-anchor="middle" font-size="12" font-weight="700" fill="#0b7285">Ru</text>
+  <text x="687" y="378" text-anchor="middle" font-size="9.5" font-family="monospace" fill="#868e96">L36</text>
+  <rect x="710" y="328" width="34" height="36" rx="4" fill="#fff4e6" stroke="#f08c00"/>
+  <text x="727" y="351" text-anchor="middle" font-size="12" font-weight="700" fill="#e8590c">Ri</text>
+  <text x="727" y="378" text-anchor="middle" font-size="9.5" font-family="monospace" fill="#868e96">L37</text>
+  <rect x="750" y="328" width="34" height="36" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="767" y="351" text-anchor="middle" font-size="12" font-weight="700" fill="#0b7285">Ru</text>
+  <text x="767" y="378" text-anchor="middle" font-size="9.5" font-family="monospace" fill="#868e96">L38</text>
+  <rect x="790" y="328" width="34" height="36" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="807" y="351" text-anchor="middle" font-size="12" font-weight="700" fill="#0b7285">Ru</text>
+  <text x="807" y="378" text-anchor="middle" font-size="9.5" font-family="monospace" fill="#868e96">L39</text>
+  <rect x="830" y="328" width="34" height="36" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="847" y="351" text-anchor="middle" font-size="12" font-weight="700" fill="#0b7285">Ru</text>
+  <text x="847" y="378" text-anchor="middle" font-size="9.5" font-family="monospace" fill="#868e96">L40</text>
+  <text x="147" y="396" text-anchor="middle" font-size="10.5" fill="#3b5bdb">Top-K 全量选出（L21）</text>
+  <text x="307" y="396" text-anchor="middle" font-size="10.5" fill="#e8590c">Top-K 池内重选（L25）</text>
+  <text x="467" y="396" text-anchor="middle" font-size="10.5" fill="#e8590c">Top-K 池内重选（L29）</text>
+  <text x="627" y="396" text-anchor="middle" font-size="10.5" fill="#e8590c">Top-K 池内重选（L33）</text>
+  <text x="787" y="396" text-anchor="middle" font-size="10.5" fill="#e8590c">Top-K 池内重选（L37）</text>
+  <rect x="70" y="406" width="794" height="44" rx="6" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="450" y="424" text-anchor="middle" font-size="11.5" font-weight="700" fill="#5f3dc4">cache ④ · 每 token 一条 · 20 层共用这一份</text>
+  <text x="450" y="441" text-anchor="middle" font-size="10.5" fill="#495057">L21 同时产出候选池（≤ 2048 块 × 8 = 16384 个位置），L25 / L29 / L33 / L37 只在池内重打分</text>
+  <rect x="24" y="468" width="852" height="114" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="44" y="494" font-size="12" fill="#495057">计数：Full 4 层（L3 / L9 / L15 / L21），Reindex 4 层，Reuse 30 层，纯 SWA 2 层。每层都还有自己的 SWA KV（不在这张图里）。</text>
+  <text x="44" y="516" font-size="12" fill="#495057">常驻的 global cache 只有 4 份：encoder 3 份 × 每 2 token 一条 + decoder 1 份 × 每 token 一条 = 每 token 2.5 条。</text>
+  <text x="44" y="538" font-size="12" fill="#495057">Reindex 不产出 cache，只产出「本组的 Top-K」；Reuse 读最近一份 cache，并沿用针对这份 cache 的最近一次 Top-K。</text>
+  <text x="44" y="560" font-size="12" fill="#868e96">decoder 的 KV 只依赖 encoder 输出，这点在结构上接近 YOCO（笔者的类比，报告未这样表述）。</text>
+</svg>

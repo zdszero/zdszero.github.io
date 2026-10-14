@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 440" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="440" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">expand 与 repeat：逻辑形状相同，物理存储不同</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">x = arange(3).reshape(1, 3)；expand 用 stride 0 让 4 行读同一地址，repeat 真正复制出 4 份</text>
+
+  <line x1="450" y1="78" x2="450" y2="380" stroke="#dee2e6" stroke-width="1.5"/>
+
+  <!-- LEFT: expand -->
+  <text x="60" y="96" font-size="14" font-weight="700" fill="#3b5bdb">a = x.expand(4, 3) · VIEW</text>
+  <text x="60" y="116" font-size="12" fill="#868e96" font-family="monospace">shape (4, 3)  stride (0, 1)</text>
+  <g font-size="11" fill="#868e96" font-family="monospace" text-anchor="end">
+    <text x="126" y="149">r0</text><text x="126" y="181">r1</text><text x="126" y="213">r2</text><text x="126" y="245">r3</text>
+  </g>
+  <g fill="#edf2ff" stroke="#4c6ef5">
+    <rect x="136" y="130" width="56" height="28" rx="6"/><rect x="198" y="130" width="56" height="28" rx="6"/><rect x="260" y="130" width="56" height="28" rx="6"/>
+    <rect x="136" y="162" width="56" height="28" rx="6"/><rect x="198" y="162" width="56" height="28" rx="6"/><rect x="260" y="162" width="56" height="28" rx="6"/>
+    <rect x="136" y="194" width="56" height="28" rx="6"/><rect x="198" y="194" width="56" height="28" rx="6"/><rect x="260" y="194" width="56" height="28" rx="6"/>
+    <rect x="136" y="226" width="56" height="28" rx="6"/><rect x="198" y="226" width="56" height="28" rx="6"/><rect x="260" y="226" width="56" height="28" rx="6"/>
+  </g>
+  <g font-family="monospace" font-size="12.5" font-weight="700" fill="#3b5bdb" text-anchor="middle">
+    <text x="164" y="149">0</text><text x="226" y="149">1</text><text x="288" y="149">2</text>
+    <text x="164" y="181">0</text><text x="226" y="181">1</text><text x="288" y="181">2</text>
+    <text x="164" y="213">0</text><text x="226" y="213">1</text><text x="288" y="213">2</text>
+    <text x="164" y="245">0</text><text x="226" y="245">1</text><text x="288" y="245">2</text>
+  </g>
+  <path d="M326 144 C360 144 360 312 322 312" fill="none" stroke="#868e96" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <path d="M326 176 C352 176 352 312 322 312" fill="none" stroke="#868e96" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <path d="M326 208 C344 208 344 312 322 312" fill="none" stroke="#868e96" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <path d="M326 240 C338 240 338 312 322 312" fill="none" stroke="#868e96" stroke-width="1.5" marker-end="url(#arE)"/>
+  <text x="368" y="230" font-size="11.5" fill="#0b7285">4 行</text>
+  <text x="368" y="246" font-size="11.5" fill="#0b7285">→ 1 份</text>
+  <path d="M136 290 L136 284 L316 284 L316 290" fill="none" stroke="#0ca678" stroke-width="1.5"/>
+  <text x="226" y="278" text-anchor="middle" font-size="11" fill="#0b7285" font-family="monospace">r0 = r1 = r2 = r3</text>
+  <g fill="#e6fcf5" stroke="#0ca678"><rect x="136" y="298" width="56" height="28" rx="6"/><rect x="198" y="298" width="56" height="28" rx="6"/><rect x="260" y="298" width="56" height="28" rx="6"/></g>
+  <g font-family="monospace" font-size="12.5" font-weight="700" fill="#0b7285" text-anchor="middle"><text x="164" y="317">0</text><text x="226" y="317">1</text><text x="288" y="317">2</text></g>
+  <text x="60" y="350" font-size="12" font-weight="700" fill="#0b7285">storage：3 个元素，与 x 共享</text>
+  <text x="60" y="370" font-size="11.5" fill="#c92a2a">a[0,0] 与 a[1,0] 同址 → 原地写可能被拒，先 clone()</text>
+
+  <!-- RIGHT: repeat -->
+  <text x="490" y="96" font-size="14" font-weight="700" fill="#e8590c">b = x.repeat(4, 1) · COPY</text>
+  <text x="490" y="116" font-size="12" fill="#868e96" font-family="monospace">shape (4, 3)  stride (3, 1)</text>
+  <g font-size="11" fill="#868e96" font-family="monospace" text-anchor="end">
+    <text x="546" y="149">r0</text><text x="546" y="181">r1</text><text x="546" y="213">r2</text><text x="546" y="245">r3</text>
+  </g>
+  <g stroke="#f08c00">
+    <rect x="556" y="130" width="56" height="28" rx="6" fill="#fff9db"/><rect x="618" y="130" width="56" height="28" rx="6" fill="#fff9db"/><rect x="680" y="130" width="56" height="28" rx="6" fill="#fff9db"/>
+    <rect x="556" y="162" width="56" height="28" rx="6" fill="#fff4e6"/><rect x="618" y="162" width="56" height="28" rx="6" fill="#fff4e6"/><rect x="680" y="162" width="56" height="28" rx="6" fill="#fff4e6"/>
+    <rect x="556" y="194" width="56" height="28" rx="6" fill="#fff9db"/><rect x="618" y="194" width="56" height="28" rx="6" fill="#fff9db"/><rect x="680" y="194" width="56" height="28" rx="6" fill="#fff9db"/>
+    <rect x="556" y="226" width="56" height="28" rx="6" fill="#fff4e6"/><rect x="618" y="226" width="56" height="28" rx="6" fill="#fff4e6"/><rect x="680" y="226" width="56" height="28" rx="6" fill="#fff4e6"/>
+  </g>
+  <g font-family="monospace" font-size="12.5" font-weight="700" fill="#e8590c" text-anchor="middle">
+    <text x="584" y="149">0</text><text x="646" y="149">1</text><text x="708" y="149">2</text>
+    <text x="584" y="181">0</text><text x="646" y="181">1</text><text x="708" y="181">2</text>
+    <text x="584" y="213">0</text><text x="646" y="213">1</text><text x="708" y="213">2</text>
+    <text x="584" y="245">0</text><text x="646" y="245">1</text><text x="708" y="245">2</text>
+  </g>
+  <g fill="none" stroke="#f08c00" stroke-width="1.5">
+    <path d="M490 290 L490 284 L578 284 L578 290"/><path d="M580 290 L580 284 L668 284 L668 290"/>
+    <path d="M670 290 L670 284 L758 284 L758 290"/><path d="M760 290 L760 284 L848 284 L848 290"/>
+  </g>
+  <g font-size="11" fill="#e8590c" font-family="monospace" text-anchor="middle">
+    <text x="534" y="278">r0</text><text x="624" y="278">r1</text><text x="714" y="278">r2</text><text x="804" y="278">r3</text>
+  </g>
+  <g stroke="#f08c00">
+    <rect x="490" y="298" width="28" height="28" rx="5" fill="#fff9db"/><rect x="520" y="298" width="28" height="28" rx="5" fill="#fff9db"/><rect x="550" y="298" width="28" height="28" rx="5" fill="#fff9db"/>
+    <rect x="580" y="298" width="28" height="28" rx="5" fill="#fff4e6"/><rect x="610" y="298" width="28" height="28" rx="5" fill="#fff4e6"/><rect x="640" y="298" width="28" height="28" rx="5" fill="#fff4e6"/>
+    <rect x="670" y="298" width="28" height="28" rx="5" fill="#fff9db"/><rect x="700" y="298" width="28" height="28" rx="5" fill="#fff9db"/><rect x="730" y="298" width="28" height="28" rx="5" fill="#fff9db"/>
+    <rect x="760" y="298" width="28" height="28" rx="5" fill="#fff4e6"/><rect x="790" y="298" width="28" height="28" rx="5" fill="#fff4e6"/><rect x="820" y="298" width="28" height="28" rx="5" fill="#fff4e6"/>
+  </g>
+  <g font-family="monospace" font-size="12" font-weight="700" fill="#e8590c" text-anchor="middle">
+    <text x="504" y="317">0</text><text x="534" y="317">1</text><text x="564" y="317">2</text><text x="594" y="317">0</text><text x="624" y="317">1</text><text x="654" y="317">2</text>
+    <text x="684" y="317">0</text><text x="714" y="317">1</text><text x="744" y="317">2</text><text x="774" y="317">0</text><text x="804" y="317">1</text><text x="834" y="317">2</text>
+  </g>
+  <text x="490" y="350" font-size="12" font-weight="700" fill="#e8590c">storage：12 个元素，新分配</text>
+  <text x="490" y="370" font-size="11.5" fill="#0b7285">每个元素地址独立 → 可安全原地写，但付出复制与显存</text>
+
+  <rect x="40" y="390" width="820" height="38" rx="9" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="58" y="414" font-size="12" fill="#495057">GQA：expand 只省掉“扩展 KV head”这一步复制；后续 reshape 或要求连续的 kernel 仍可能物化，更好的是 kernel 原生分组读取。</text>
+
+  <defs>
+    <marker id="arE" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#868e96"/></marker>
+  </defs>
+</svg>

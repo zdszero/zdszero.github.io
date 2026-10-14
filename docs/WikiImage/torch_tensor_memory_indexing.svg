@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 470" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="470" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">两种索引：切片是透镜，花式索引是搬运</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">a[1:3] 只调 offset/shape → view；a[idx_tensor] 按下标 gather → 新开一块连续内存</text>
+
+  <line x1="450" y1="78" x2="450" y2="396" stroke="#dee2e6" stroke-width="1.5"/>
+
+  <!-- LEFT: basic slicing = view -->
+  <text x="70" y="98" font-size="14" font-weight="700" fill="#3b5bdb">基础切片 a[2:5] · VIEW</text>
+  <text x="70" y="116" font-size="11" fill="#868e96">连续区间，用 offset + shape 就能表达</text>
+
+  <text x="70" y="146" font-size="11" fill="#495057">原 storage（1-D）</text>
+  <g>
+    <rect x="70" y="154" width="52" height="38" rx="5" fill="#e6fcf5" stroke="#0ca678"/><text x="96" y="179" text-anchor="middle" font-size="13" fill="#0b7285">A</text>
+    <rect x="124" y="154" width="52" height="38" rx="5" fill="#e6fcf5" stroke="#0ca678"/><text x="150" y="179" text-anchor="middle" font-size="13" fill="#0b7285">B</text>
+    <rect x="178" y="154" width="52" height="38" rx="5" fill="#edf2ff" stroke="#4c6ef5" stroke-width="2"/><text x="204" y="179" text-anchor="middle" font-size="13" font-weight="700" fill="#3b5bdb">C</text>
+    <rect x="232" y="154" width="52" height="38" rx="5" fill="#edf2ff" stroke="#4c6ef5" stroke-width="2"/><text x="258" y="179" text-anchor="middle" font-size="13" font-weight="700" fill="#3b5bdb">D</text>
+    <rect x="286" y="154" width="52" height="38" rx="5" fill="#edf2ff" stroke="#4c6ef5" stroke-width="2"/><text x="312" y="179" text-anchor="middle" font-size="13" font-weight="700" fill="#3b5bdb">E</text>
+    <rect x="340" y="154" width="52" height="38" rx="5" fill="#e6fcf5" stroke="#0ca678"/><text x="366" y="179" text-anchor="middle" font-size="13" fill="#0b7285">F</text>
+  </g>
+  <g font-family="monospace" font-size="10" fill="#868e96">
+    <text x="96" y="206" text-anchor="middle">0</text><text x="150" y="206" text-anchor="middle">1</text><text x="204" y="206" text-anchor="middle">2</text>
+    <text x="258" y="206" text-anchor="middle">3</text><text x="312" y="206" text-anchor="middle">4</text><text x="366" y="206" text-anchor="middle">5</text>
+  </g>
+
+  <text x="70" y="248" font-size="11" fill="#3b5bdb">a[2:5] = 同一块内存上的一扇窗</text>
+  <rect x="178" y="258" width="214" height="40" rx="6" fill="none" stroke="#4c6ef5" stroke-width="2" stroke-dasharray="5 3"/>
+  <text x="285" y="283" text-anchor="middle" font-size="12" font-weight="700" fill="#3b5bdb">offset=2, shape=(3,), stride 不变</text>
+
+  <rect x="70" y="316" width="322" height="64" rx="9" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="86" y="338" font-size="11.5" fill="#495057">· 不拷贝，和原张量共享内存（写一个另一个也变）</text>
+  <text x="86" y="358" font-size="11.5" fill="#495057">· 只能取连续、等间隔的区间</text>
+  <text x="86" y="376" font-size="11.5" fill="#868e96">a[1:], a[:, 0], a[::2] 都属于这一类</text>
+
+  <!-- RIGHT: advanced indexing = gather = copy -->
+  <text x="490" y="98" font-size="14" font-weight="700" fill="#e8590c">花式索引 a[[4,1,4,0]] · GATHER → COPY</text>
+  <text x="490" y="116" font-size="11" fill="#868e96">任意下标，可乱序、可重复 → 无法只改元数据</text>
+
+  <text x="490" y="146" font-size="11" fill="#495057">原 storage</text>
+  <g>
+    <rect x="490" y="154" width="46" height="38" rx="5" fill="#e6fcf5" stroke="#0ca678"/><text x="513" y="179" text-anchor="middle" font-size="13" fill="#0b7285">A</text>
+    <rect x="538" y="154" width="46" height="38" rx="5" fill="#e6fcf5" stroke="#0ca678"/><text x="561" y="179" text-anchor="middle" font-size="13" fill="#0b7285">B</text>
+    <rect x="586" y="154" width="46" height="38" rx="5" fill="#e6fcf5" stroke="#0ca678"/><text x="609" y="179" text-anchor="middle" font-size="13" fill="#0b7285">C</text>
+    <rect x="634" y="154" width="46" height="38" rx="5" fill="#e6fcf5" stroke="#0ca678"/><text x="657" y="179" text-anchor="middle" font-size="13" fill="#0b7285">D</text>
+    <rect x="682" y="154" width="46" height="38" rx="5" fill="#e6fcf5" stroke="#0ca678"/><text x="705" y="179" text-anchor="middle" font-size="13" fill="#0b7285">E</text>
+    <rect x="730" y="154" width="46" height="38" rx="5" fill="#e6fcf5" stroke="#0ca678"/><text x="753" y="179" text-anchor="middle" font-size="13" fill="#0b7285">F</text>
+  </g>
+  <g font-family="monospace" font-size="10" fill="#868e96">
+    <text x="513" y="206" text-anchor="middle">0</text><text x="561" y="206" text-anchor="middle">1</text><text x="609" y="206" text-anchor="middle">2</text>
+    <text x="657" y="206" text-anchor="middle">3</text><text x="705" y="206" text-anchor="middle">4</text><text x="753" y="206" text-anchor="middle">5</text>
+  </g>
+
+  <text x="490" y="238" font-size="11" font-family="monospace" fill="#e8590c">idx = [4, 1, 4, 0]</text>
+
+  <!-- gather arrows -->
+  <path d="M705 194 C705 250 561 250 561 300" fill="none" stroke="#f08c00" stroke-width="1.6" stroke-dasharray="4 3" marker-end="url(#arIg)"/>
+  <path d="M561 194 C561 240 609 250 609 300" fill="none" stroke="#f08c00" stroke-width="1.6" stroke-dasharray="4 3" marker-end="url(#arIg)"/>
+  <path d="M705 194 C705 254 657 252 657 300" fill="none" stroke="#f08c00" stroke-width="1.6" stroke-dasharray="4 3" marker-end="url(#arIg)"/>
+  <path d="M513 194 C513 250 705 252 705 300" fill="none" stroke="#f08c00" stroke-width="1.6" stroke-dasharray="4 3" marker-end="url(#arIg)"/>
+
+  <text x="490" y="296" font-size="11" fill="#e8590c">新 storage（连续、紧凑打包）</text>
+  <g>
+    <rect x="538" y="304" width="46" height="38" rx="5" fill="#fff9db" stroke="#f08c00"/><text x="561" y="329" text-anchor="middle" font-size="13" fill="#e8590c">E</text>
+    <rect x="586" y="304" width="46" height="38" rx="5" fill="#fff9db" stroke="#f08c00"/><text x="609" y="329" text-anchor="middle" font-size="13" fill="#e8590c">B</text>
+    <rect x="634" y="304" width="46" height="38" rx="5" fill="#fff9db" stroke="#f08c00"/><text x="657" y="329" text-anchor="middle" font-size="13" fill="#e8590c">E</text>
+    <rect x="682" y="304" width="46" height="38" rx="5" fill="#fff9db" stroke="#f08c00"/><text x="705" y="329" text-anchor="middle" font-size="13" fill="#e8590c">A</text>
+  </g>
+  <text x="490" y="376" font-size="11.5" fill="#495057">独立内存，写它不动原张量；输出一定连续</text>
+
+  <!-- note -->
+  <rect x="40" y="402" width="820" height="54" rx="10" fill="#f1f3f5" stroke="#dee2e6"/>
+  <text x="58" y="424" font-size="12" fill="#495057">SGLang 里 <tspan font-family="monospace" fill="#3b5bdb">K = k_buffer[layer_id][kv_indices]</tspan> 正是花式索引：kv_indices 是一维 tensor，把散落在 KV 池各处的 token 槽</text>
+  <text x="58" y="444" font-size="12" fill="#495057">gather 成一块连续的 [num_tokens, head, dim]——所以拿到的 K/V 是一份**新的连续拷贝**，可以直接喂给注意力 kernel。</text>
+
+  <defs>
+    <marker id="arIg" markerWidth="8" markerHeight="8" refX="6" refY="3.5" orient="auto"><path d="M0 0 L7 3.5 L0 7 z" fill="#f08c00"/></marker>
+  </defs>
+</svg>

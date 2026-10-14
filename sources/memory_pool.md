@@ -22,47 +22,6 @@ SGLang 的 Memory Pool 本质上建立了一个**三层映射架构**，让逻�
 
 三者分离、各司其职，仅靠 `kv_index` 这一个整数相互关联。这个「薄索引」正是后面所有灵活性（内存整理、prefix 共享、CPU offload）的来源。
 
----
-
-### Page 机制的深层含义
-
-Page 的概念来自操作系统虚拟内存管理。在 KV Cache 场景中，Page 的引入解决了两个关键问题：
-
-**问题一：内存碎片**
-
-假设不使用 Page，每次为一个 token 分配一个槽位。当请求 A 需要扩展，但紧邻的槽位已被请求 B 占用时，只能分配到其他位置。这导致：
-
-- 请求 A 的 KV 数据分散在各处
-- 需要额外的索引结构记录每个 token 的位置
-- 访问模式变得不规则，影响性能
-
-**Page 的解决方案**：以 Page（如 64 个 token）为单位分配。同一请求的数据倾向于聚集在相同的 Page 中，减少了索引开销。
-
-**问题二：共享效率**
-
-多个请求共享 prefix 时，如果不使用 Page，需要逐个 token 复制或引用。Page 级别的共享只需引用 Page 编号，效率更高。
-
-**Page Size 的权衡**
-
-```
-Page Size 小（如 1）：
-  优点：精确分配，无浪费
-  缺点：索引开销大，碎片化严重
-
-Page Size 大（如 64）：
-  优点：索引开销小，便于共享
-  缺点：内部碎片，分配延迟
-```
-
-SGLang 用两个独立的分配器类来落地这两种模式，由 `page_size` 决定实例化哪一个（`allocator/token.py`、`allocator/paged.py`）：
-
-- **Page Size = 1**：`TokenToKVPoolAllocator`，连续分配模式，适合短序列或内存紧张场景
-- **Page Size > 1**：`PagedTokenToKVPoolAllocator`，页式分配模式，适合长序列和 prefix 共享场景
-
-两者继承同一个抽象基类 `BaseTokenToKVPoolAllocator`，对外接口一致，上层调度器无需关心用的是哪种。
-
----
-
 ### req_to_token 与 token_to_kv 的深层关联
 
 #### ReqToTokenPool：请求维度的二维表

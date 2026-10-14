@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 480" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#868e96"/>
+    </marker>
+    <marker id="ar-amber" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#f08c00"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="900" height="480" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">LSE 合并：局部结果必须带着自己的“权重”</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">例：N = 2，D = 1；每个 rank 只看得到自己分片里的那个 token</text>
+
+  <!-- rank 0 -->
+  <rect x="40" y="86" width="240" height="128" rx="10" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="58" y="110" font-size="14" font-weight="700" fill="#3b5bdb">rank 0 的 KV 分片</text>
+  <g font-family="monospace" font-size="12.5" fill="#495057">
+    <text x="58" y="136">token: v = 1, s = 0</text>
+    <text x="58" y="160">Z₀ = Σ eˢ   = 1</text>
+    <text x="58" y="182">O₀ = N₀/Z₀  = 1</text>
+    <text x="58" y="204" fill="#e8590c" font-weight="700">L₀ = log Z₀ = 0</text>
+  </g>
+
+  <!-- rank 1 -->
+  <rect x="40" y="240" width="240" height="128" rx="10" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="58" y="264" font-size="14" font-weight="700" fill="#0b7285">rank 1 的 KV 分片</text>
+  <g font-family="monospace" font-size="12.5" fill="#495057">
+    <text x="58" y="290">token: v = 0, s = log 3</text>
+    <text x="58" y="314">Z₁ = Σ eˢ   = 3</text>
+    <text x="58" y="336">O₁ = N₁/Z₁  = 0</text>
+    <text x="58" y="358" fill="#e8590c" font-weight="700">L₁ = log Z₁ = log 3</text>
+  </g>
+  <!-- wrong path: plain average -->
+  <path d="M280 140 L352 140" fill="none" stroke="#adb5bd" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#ar)"/>
+  <path d="M280 290 C318 290 318 168 352 168" fill="none" stroke="#adb5bd" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#ar)"/>
+  <rect x="360" y="96" width="250" height="100" rx="10" fill="#fff5f5" stroke="#fa5252"/>
+  <text x="378" y="120" font-size="14" font-weight="700" fill="#c92a2a">✗ 只传 O_r，直接平均</text>
+  <text x="378" y="148" font-family="monospace" font-size="13" fill="#495057">(O₀ + O₁) / 2 = 0.5</text>
+  <text x="378" y="172" font-size="11.5" fill="#868e96">与 s 无关：rank 1 的 score 变成</text>
+  <text x="378" y="188" font-size="11.5" fill="#868e96">任何值，结果都还是 0.5</text>
+
+  <!-- right path: LSE weighted -->
+  <path d="M280 186 C318 186 318 282 352 282" fill="none" stroke="#f08c00" stroke-width="2" marker-end="url(#ar-amber)"/>
+  <path d="M280 312 L352 312" fill="none" stroke="#f08c00" stroke-width="2" marker-end="url(#ar-amber)"/>
+  <rect x="360" y="232" width="250" height="136" rx="10" fill="#fff9db" stroke="#f08c00"/>
+  <text x="378" y="256" font-size="14" font-weight="700" fill="#e8590c">✓ 传 (O_r, L_r)，LSE 加权</text>
+  <g font-family="monospace" font-size="12.5" fill="#495057">
+    <text x="378" y="304">O =</text>
+    <text x="490" y="290" text-anchor="middle">e^L₀·O₀ + e^L₁·O₁</text>
+    <line x1="414" y1="300" x2="566" y2="300" stroke="#495057" stroke-width="1"/>
+    <text x="490" y="318" text-anchor="middle">e^L₀ + e^L₁</text>
+    <text x="396" y="344">= (1·1 + 3·0)/(1+3)</text>
+    <text x="396" y="362" font-weight="700" fill="#e8590c">= 0.25</text>
+  </g>
+
+  <!-- reference -->
+  <text x="640" y="306" font-size="22" font-weight="700" fill="#868e96" text-anchor="middle">=</text>
+  <rect x="664" y="86" width="200" height="282" rx="10" fill="#f8f9fa" stroke="#adb5bd"/>
+  <text x="682" y="110" font-size="14" font-weight="700" fill="#495057">对照：单卡完整 attention</text>
+  <text x="682" y="136" font-size="12" fill="#868e96">两个 token 一起做 softmax</text>
+  <g font-family="monospace" font-size="12.5" fill="#495057">
+    <text x="682" y="170">权重 e⁰ : e^log3</text>
+    <text x="712" y="192">= 1 : 3</text>
+    <text x="712" y="214">= 0.25 : 0.75</text>
+    <text x="682" y="252">O = 0.25·1</text>
+    <text x="698" y="274">+ 0.75·0</text>
+    <text x="698" y="296" font-weight="700" fill="#0b7285">= 0.25</text>
+  </g>
+  <text x="682" y="340" font-size="12" fill="#0b7285">与 LSE 加权结果一致，</text>
+  <text x="682" y="358" font-size="12" fill="#0b7285">差别只来自浮点舍入顺序</text>
+
+  <!-- bottom note -->
+  <rect x="40" y="394" width="824" height="64" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="56" y="418" font-size="12.5" fill="#495057" font-weight="600">关键思想：</text>
+  <text x="140" y="418" font-size="12.5" fill="#495057">局部 O_r 已在本分片内归一化，丢掉了“这个分片在全局 softmax 里占多大比重”。</text>
+  <text x="56" y="442" font-size="12" fill="#868e96">L_r = log Z_r 就是把这份比重带回来的那一个标量：每个 (batch, head) 只需多传 1 个数，就能把 N 个分片精确拼回全局结果。</text>
+</svg>

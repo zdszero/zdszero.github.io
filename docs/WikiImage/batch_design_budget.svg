@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 460" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="460" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">显存预算：一个 batch 能装多少请求？</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">PrefillAdder 逐个加入请求直到任一预算耗尽；new_token_ratio 在激进与保守之间自适应收放</text>
+
+  <!-- divider -->
+  <line x1="486" y1="80" x2="486" y2="440" stroke="#dee2e6" stroke-width="1.5"/>
+
+  <!-- LEFT: budget funnel -->
+  <text x="46" y="98" font-size="13.5" font-weight="700" fill="#343a40">预算怎么算出来</text>
+
+  <rect x="40" y="110" width="420" height="50" rx="9" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="250" y="132" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0b7285">可用 = KV 空闲 slots + 可驱逐 prefix cache</text>
+  <text x="250" y="150" text-anchor="middle" font-size="10.5" fill="#495057">prefix cache 是弹性资源，可被驱逐换空间</text>
+
+  <path d="M250 160 L250 182" stroke="#868e96" stroke-width="2" marker-end="url(#arGd)"/>
+  <text x="262" y="176" font-size="10.5" fill="#e8590c">减去 running 预留</text>
+
+  <rect x="40" y="184" width="420" height="56" rx="9" fill="#fff4e6" stroke="#f08c00"/>
+  <text x="250" y="208" text-anchor="middle" font-size="12.5" font-weight="700" fill="#e8590c">running_batch 未来 token 预留</text>
+  <text x="250" y="227" text-anchor="middle" font-size="11" fill="#b26a00" font-family="monospace">Σ 剩余生成量 × new_token_ratio</text>
+
+  <path d="M250 240 L250 262" stroke="#868e96" stroke-width="2" marker-end="url(#arGd)"/>
+  <text x="262" y="256" font-size="10.5" fill="#3b5bdb">得到</text>
+
+  <rect x="40" y="264" width="420" height="48" rx="9" fill="#edf2ff" stroke="#4c6ef5" stroke-width="2"/>
+  <text x="250" y="293" text-anchor="middle" font-size="13" font-weight="700" fill="#3b5bdb">rem_total_tokens —— 真正可分配的预算</text>
+
+  <text x="46" y="338" font-size="11.5" font-weight="700" fill="#495057">再同时受限于（任一耗尽即停止加入）：</text>
+  <rect x="40" y="348" width="134" height="56" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="107" y="370" text-anchor="middle" font-size="11" font-weight="700" fill="#495057">rem_input_tokens</text>
+  <text x="107" y="388" text-anchor="middle" font-size="9.5" fill="#868e96">单次 prefill 上限</text>
+  <rect x="183" y="348" width="134" height="56" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="250" y="370" text-anchor="middle" font-size="11" font-weight="700" fill="#495057">rem_chunk_tokens</text>
+  <text x="250" y="388" text-anchor="middle" font-size="9.5" fill="#868e96">chunk 分片大小</text>
+  <rect x="326" y="348" width="134" height="56" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="393" y="368" text-anchor="middle" font-size="10.5" font-weight="700" fill="#495057">max_running</text>
+  <text x="393" y="382" text-anchor="middle" font-size="10.5" font-weight="700" fill="#495057">_requests</text>
+  <text x="393" y="398" text-anchor="middle" font-size="9.5" fill="#868e96">并发上限</text>
+
+  <!-- RIGHT: new_token_ratio feedback -->
+  <text x="688" y="98" text-anchor="middle" font-size="13.5" font-weight="700" fill="#343a40">new_token_ratio 自适应反馈</text>
+
+  <rect x="548" y="128" width="280" height="68" rx="10" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="688" y="152" text-anchor="middle" font-size="12.5" font-weight="700" fill="#3b5bdb">正常运行</text>
+  <text x="688" y="172" text-anchor="middle" font-size="11" fill="#495057" font-family="monospace">decay_step()：ratio↓</text>
+  <text x="688" y="189" text-anchor="middle" font-size="10.5" fill="#868e96">越来越激进地填满 batch</text>
+
+  <rect x="548" y="306" width="280" height="68" rx="10" fill="#fff5f5" stroke="#fa5252"/>
+  <text x="688" y="330" text-anchor="middle" font-size="12.5" font-weight="700" fill="#c92a2a">发生 retract（OOM 回退）</text>
+  <text x="688" y="350" text-anchor="middle" font-size="10.5" fill="#495057" font-family="monospace">ratio 跳回高位</text>
+  <text x="688" y="367" text-anchor="middle" font-size="10.5" fill="#868e96">立刻转为保守，多预留空间</text>
+
+  <path d="M600 196 L600 304" stroke="#fa5252" stroke-width="2" marker-end="url(#arRd)"/>
+  <text x="590" y="252" text-anchor="end" font-size="10.5" fill="#c92a2a">填太满</text>
+  <text x="590" y="267" text-anchor="end" font-size="10.5" fill="#c92a2a">触发回退</text>
+
+  <path d="M782 304 L782 196" stroke="#4c6ef5" stroke-width="2" marker-end="url(#arBd)"/>
+  <text x="792" y="252" font-size="10.5" fill="#3b5bdb">随后每步</text>
+  <text x="792" y="267" font-size="10.5" fill="#3b5bdb">decay 回落</text>
+
+  <!-- note -->
+  <rect x="500" y="408" width="390" height="40" rx="9" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="518" y="432" font-size="11" fill="#495057">本 fork 把这套逻辑收进 NewTokenRatioTracker：decay / retract 跳升 / 空闲 reset。</text>
+
+  <defs>
+    <marker id="arGd" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#868e96"/></marker>
+    <marker id="arRd" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#fa5252"/></marker>
+    <marker id="arBd" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#4c6ef5"/></marker>
+  </defs>
+</svg>

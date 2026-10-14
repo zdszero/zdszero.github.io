@@ -25,82 +25,27 @@
   </title>
     <link rel="stylesheet" href="./WikiTheme/theme/bootstrap.css"  />
         <script defer=""
-        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
-        type="text/javascript"></script>
-        <style type="text/css">
-    /* ---- three column wiki layout (left: site directory, center: content, right: page TOC) ---- */
-    .wiki-layout {
-      display: flex;
-      align-items: flex-start;
-      gap: 24px;
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 0 20px;
-      box-sizing: border-box;
-    }
-    .wiki-sidebar {
-      flex: 0 0 240px;
-      width: 240px;
-      position: sticky;
-      top: 0;
-      max-height: 100vh;
-      overflow-y: auto;
-      padding: 10px 4px 20px 0;
-      border-right: 1px solid #eee;
-      font-size: 14px;
-    }
-    .wiki-sidebar[hidden] { display: none; }
-    .wiki-toc {
-      flex: 0 0 220px;
-      width: 220px;
-      position: sticky;
-      top: 0;
-      max-height: 100vh;
-      overflow-y: auto;
-      padding: 10px 0 20px 4px;
-      border-left: 1px solid #eee;
-      font-size: 14px;
-    }
-    .wiki-main {
-      flex: 1 1 auto;
-      min-width: 0;
-      max-width: 820px;
-      padding: 10px 0 40px;
-    }
-    /* site directory tree */
-    .wiki-sidebar .wiki-home {
-      display: block;
-      font-weight: bold;
-      margin-bottom: 10px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid #eee;
-      text-decoration: none;
-      color: #333;
-    }
-    .wiki-sidebar ul { list-style: none; margin: 0 0 0 12px; padding: 0; }
-    .wiki-sidebar > ul { margin-left: 0; }
-    .wiki-sidebar li { line-height: 1.7; }
-    .wiki-sidebar a { text-decoration: none; color: #555; }
-    .wiki-sidebar a:hover { color: #0088cc; text-decoration: underline; }
-    .wiki-sidebar a.active { color: #0088cc; font-weight: bold; }
-    /* page TOC */
-    .wiki-toc ul { list-style: none; margin: 0 0 0 12px; padding: 0; }
-    .wiki-toc > ul { margin-left: 0; }
-    .wiki-toc li { line-height: 1.6; }
-    .wiki-toc a { text-decoration: none; color: #555; }
-    .wiki-toc a:hover { color: #0088cc; }
-    @media (max-width: 980px) {
-      .wiki-layout { flex-direction: column; }
-      .wiki-sidebar, .wiki-toc {
-        position: static;
-        width: 100%;
-        flex-basis: auto;
-        max-height: none;
-        border: 0;
-      }
-      .wiki-main { max-width: none; }
-    }
-  </style>
+        src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+        <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+        </script>
+        <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+        <!-- wiki three-column layout styles/behavior, kept external so the ~5KB
+       block isn't duplicated into every generated page -->
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/wiki-layout.css" />
+  <script defer src="./WikiTheme/wiki-layout.js"></script>
 </head>
 
 <body>
@@ -132,45 +77,44 @@
             这种方式。</p>
             <h3 id="压缩">压缩</h3>
             <p>MLA 的核心在于压缩，在传统的 MHA/MQA/GQA 中，我们直接通过
-            <span class="math inline">\(W_{Q}\)</span>、<span
-            class="math inline">\(W_{K}\)</span> 和 <span
-            class="math inline">\(W_{V}\)</span> 矩阵来得到 <span
-            class="math inline">\(Q\)</span>、<span
-            class="math inline">\(K\)</span>、<span
-            class="math inline">\(V\)</span>，假设输入的表示为 <span
-            class="math inline">\(X\)</span>：</p>
-            <p><span class="math display">\[Q = X W_{Q}\]</span></p>
-            <p><span class="math display">\[K = X W_{K}\]</span></p>
-            <p><span class="math display">\[V = X W_{V}\]</span></p>
+            <span class="math inline">W_{Q}</span>、<span
+            class="math inline">W_{K}</span> 和 <span
+            class="math inline">W_{V}</span> 矩阵来得到 <span
+            class="math inline">Q</span>、<span
+            class="math inline">K</span>、<span
+            class="math inline">V</span>，假设输入的表示为 <span
+            class="math inline">X</span>：</p>
+            <p><span class="math display">Q = X W_{Q}</span></p>
+            <p><span class="math display">K = X W_{K}</span></p>
+            <p><span class="math display">V = X W_{V}</span></p>
             <p>MLA 在这里增加了一个中间步骤：</p>
-            <p><span class="math display">\[Q = X W_{qa}
-            W_{qb}\]</span></p>
-            <p><span class="math display">\[[K, V] = X W_{kva}
-            W_{kvb}\]</span></p>
+            <p><span class="math display">Q = X W_{qa} W_{qb}</span></p>
+            <p><span class="math display">[K, V] = X W_{kva}
+            W_{kvb}</span></p>
             <p>当然，压缩过后得到的 tensor 一般我们称作
             latent，所以上述公式可以表述为：</p>
-            <p><span class="math display">\[c_{q} = X W_{qa} \quad Q =
-            c_{q} W_{qb}\]</span></p>
-            <p><span class="math display">\[c_{KV} = X W_{kva} \quad [K,
-            V] = c_{KV} W_{kvb}\]</span></p>
+            <p><span class="math display">c_{q} = X W_{qa} \quad Q =
+            c_{q} W_{qb}</span></p>
+            <p><span class="math display">c_{KV} = X W_{kva} \quad [K,
+            V] = c_{KV} W_{kvb}</span></p>
             <p>当然这里是简化过的公式，实际考虑到 rope
             的处理，完整版的公式要复杂不少，这里主要说明思想，细节后面再说。</p>
             <h3 id="normal-vs-absorb">Normal vs Absorb</h3>
-            <p>可以看到，<span class="math inline">\(W_{Q}\)</span>
-            被拆分成了 <span class="math inline">\(W_{qa}\)</span> 和
-            <span class="math inline">\(W_{qb}\)</span> 这两个步骤，其中
-            <span class="math inline">\(W_{qa}\)</span>
-            是压缩过程，<span class="math inline">\(W_{qb}\)</span>
+            <p>可以看到，<span class="math inline">W_{Q}</span>
+            被拆分成了 <span class="math inline">W_{qa}</span> 和 <span
+            class="math inline">W_{qb}</span> 这两个步骤，其中 <span
+            class="math inline">W_{qa}</span> 是压缩过程，<span
+            class="math inline">W_{qb}</span>
             是反压缩过程。经过这两个步骤，其效果和 MHA 是一致的，KV 的
             head 数量没有减少。</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \begin{aligned}
             \text{MHA 路径} &amp;= \text{softmax}\left(
             \frac{QK^{T}}{\sqrt{k}} \right) V \\
             &amp;= \text{softmax}\left( \frac{c_{q} W_{qb} (c_{KV}
             W_{kb})^T}{\sqrt{k}} \right) (c_{KV} W_{vb})
             \end{aligned}
-            \]</span></p>
+            </span></p>
             <p>那你可能要问了，经过这一个步骤的目的又是什么呢？其实在
             prefill 阶段 MLA 就是 “多此一举的 MHA”，MLA 在 prefill
             的模式也叫做 Normal 模式，Normal 模式即使用 MHA。</p>
@@ -179,12 +123,12 @@
             <li>在正常的 MHA/MQA/GQA 中的 decode
             阶段，我们保存的是若干个头的 kv cache，但是在 MLA 中的
             decode，我们只需要保存 latent <span
-            class="math inline">\(c_{KV}\)</span> 即可</li>
+            class="math inline">c_{KV}</span> 即可</li>
             <li>在 MLA 的 decode
             阶段，我们可以通过一个巧妙的数学变换来做
             MQA，但是其效果上相当于 MHA</li>
             </ul>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \begin{aligned}
             \text{MQA 路径} &amp;= \text{softmax}\left(
             \frac{QK^{T}}{\sqrt{k}} \right) V \\
@@ -193,13 +137,12 @@
             &amp;= (\text{softmax}\left( \frac{(c_{q} W_{qb} W_{kb}^T)
             c_{KV}^T}{\sqrt{k}} \right) c_{KV}) W_{vb}
             \end{aligned}
-            \]</span></p>
-            <p>可以看到，其中 <span
-            class="math inline">\(W_{kb}\)</span> 被 absorb 到 <span
-            class="math inline">\(W_{qb}\)</span> 中，实际上在做 decode
-            阶段的 attention 时 <span class="math inline">\(K\)</span>
-            就等同于 <span
-            class="math inline">\(c_{KV}\)</span>，只有一个头，所以就相当于
+            </span></p>
+            <p>可以看到，其中 <span class="math inline">W_{kb}</span> 被
+            absorb 到 <span class="math inline">W_{qb}</span>
+            中，实际上在做 decode 阶段的 attention 时 <span
+            class="math inline">K</span> 就等同于 <span
+            class="math inline">c_{KV}</span>，只有一个头，所以就相当于
             MQA。</p>
             <p>当然，上面的公式具备高度概括性，实际情况却要复杂不少，这种复杂性主要源
             deepseek 在使用 MLA 时关于 rope 的处理。</p>
@@ -210,57 +153,56 @@
             alt="mla 流程" />
             <figcaption aria-hidden="true">mla 流程</figcaption>
             </figure>
-            <p>可以看到：<span class="math inline">\(Q\)</span> 的 rope
-            部分通过 <span class="math inline">\(c_{Q}\)</span> 乘上
-            <span class="math inline">\(W_{UQ}\)</span> 得到，每个 head
-            使用不同的 rope，但是 <span class="math inline">\(K\)</span>
-            的所有 head 公用一个 rope，<span
-            class="math inline">\(K\)</span> 的 rope 直接由 input hidden
-            乘上 <span class="math inline">\(W_{KR}\)</span> 得到。</p>
+            <p>可以看到：<span class="math inline">Q</span> 的 rope
+            部分通过 <span class="math inline">c_{Q}</span> 乘上 <span
+            class="math inline">W_{UQ}</span> 得到，每个 head 使用不同的
+            rope，但是 <span class="math inline">K</span> 的所有 head
+            公用一个 rope，<span class="math inline">K</span> 的 rope
+            直接由 input hidden 乘上 <span
+            class="math inline">W_{KR}</span> 得到。</p>
             <p>以上过程的完整数学公式表述如下：</p>
-            <p><span class="math display">\[c_{Q} = X W_{DQ}\]</span>
-            <span class="math display">\[Q_{nope} = c_{Q}
-            W_{UQ}\]</span> <span class="math display">\[Q_{rope} =
-            \text{RoPE}(c_{Q} W_{QR})\]</span> <span
-            class="math display">\[c_{KV} = X W_{DKV}\]</span> <span
-            class="math display">\[K_{nope} = \text{RoPE}(c_{KV}
-            W_{UK})\]</span> <span class="math display">\[V = c_{KV}
-            W_{UV}\]</span> <span class="math display">\[K_{rope} =
-            \text{RoPE}(X W_{KR})\]</span> <span
-            class="math display">\[Q = \text{Concat}(Q_{nope},
-            Q_{rope})\]</span> <span class="math display">\[K =
-            \text{Concat}(K_{nope}, K_{rope})\]</span> <span
-            class="math display">\[\text{MHA} =
-            \text{softmax}(\frac{QK^T}{\sqrt{k}})V\]</span></p>
+            <p><span class="math display">c_{Q} = X W_{DQ}</span> <span
+            class="math display">Q_{nope} = c_{Q} W_{UQ}</span> <span
+            class="math display">Q_{rope} = \text{RoPE}(c_{Q}
+            W_{QR})</span> <span class="math display">c_{KV} = X
+            W_{DKV}</span> <span class="math display">K_{nope} =
+            \text{RoPE}(c_{KV} W_{UK})</span> <span
+            class="math display">V = c_{KV} W_{UV}</span> <span
+            class="math display">K_{rope} = \text{RoPE}(X W_{KR})</span>
+            <span class="math display">Q = \text{Concat}(Q_{nope},
+            Q_{rope})</span> <span class="math display">K =
+            \text{Concat}(K_{nope}, K_{rope})</span> <span
+            class="math display">\text{MHA} =
+            \text{softmax}(\frac{QK^T}{\sqrt{k}})V</span></p>
+            <p>对应的流程图如下：</p>
+            <figure>
+            <img src="./WikiImage/mla_normal.drawio.svg"
+            alt="MLA normal 流程" />
+            <figcaption aria-hidden="true">MLA normal 流程</figcaption>
+            </figure>
+            <p>在推理的 decode 阶段，实际上使用的是 MQA，这里也给出 MQA
+            的数学流程：</p>
+            <p><span class="math display">c_{Q} = X W_{DQ}</span> <span
+            class="math display">Q_{nope} = c_{Q} W_{UQ}</span> <span
+            class="math display">Q_{rope} = \text{RoPE}(c_{Q}
+            W_{QR})</span> <span class="math display">Q =
+            \text{Concat}(Q_{nope} W_{UK}^{T}, Q_{rope})</span> <span
+            class="math display">c_{KV} = X W_{DKV}</span> <span
+            class="math display">K_{rope} = \text{RoPE}(X W_{KR})</span>
+            <span class="math display">K = \text{Concat}(c_{KV},
+            K_{rope})</span> <span class="math display">V = c_{KV}
+            W_{UV}</span> <span class="math display">\text{MQA} =
+            \text{softmax}(\frac{QK^T}{\sqrt{k}})V</span></p>
             <p>对应的流程图如下：</p>
             <figure>
             <img src="./WikiImage/mla_absorb.drawio.svg"
             alt="MLA absorb 流程" />
             <figcaption aria-hidden="true">MLA absorb 流程</figcaption>
             </figure>
-            <p>在推理的 decode 阶段，实际上使用的是 MQA，这里也给出 MQA
-            的数学流程：</p>
-            <p><span class="math display">\[c_{Q} = X W_{DQ}\]</span>
-            <span class="math display">\[Q_{nope} = c_{Q}
-            W_{UQ}\]</span> <span class="math display">\[Q_{rope} =
-            \text{RoPE}(c_{Q} W_{QR})\]</span> <span
-            class="math display">\[Q = \text{Concat}(Q_{nope}
-            W_{UK}^{T}, Q_{rope})\]</span> <span
-            class="math display">\[c_{KV} = X W_{DKV}\]</span> <span
-            class="math display">\[K_{rope} = \text{RoPE}(X
-            W_{KR})\]</span> <span class="math display">\[K =
-            \text{Concat}(c_{KV}, K_{rope})\]</span> <span
-            class="math display">\[V = c_{KV} W_{UV}\]</span> <span
-            class="math display">\[\text{MQA} =
-            \text{softmax}(\frac{QK^T}{\sqrt{k}})V\]</span></p>
-            <p>对应的流程图如下：</p>
-            <p>{{&lt; svg “/images/mla_absorb.drawio.svg” “80%”
-            &gt;}}</p>
             <h3 id="计算量分析">计算量分析</h3>
-            <p>假设用 <span class="math inline">\(T\)</span> 表示
-            q_len，用 <span class="math inline">\(S\)</span> 表示
-            kv_len：</p>
-            <p><span class="math display">\[
+            <p>假设用 <span class="math inline">T</span> 表示 q_len，用
+            <span class="math inline">S</span> 表示 kv_len：</p>
+            <p><span class="math display">
             \begin{aligned}
             &amp;\text{MQA 和 MHA 共通的部分} \\
             &amp;\quad \text{flops\_q\_a\_and\_kv\_a}: \quad \text{T}
@@ -288,7 +230,7 @@
             \times \text{S} \times 576 + \text{T} \times \text{S} \times
             512)
             \end{aligned}
-            \]</span></p>
+            </span></p>
             <p>再给出定性的差别：</p>
             <ul>
             <li>在 prefill 阶段，如果用 MQA，除了 attention 的计算量变大
@@ -305,50 +247,43 @@
             </ol>
             <p>首先说第一点，比如对于以上的流程，在实际代码执行过程中，我们完全可以将以下几个
             gemm 合并为一个：</p>
-            <p><span class="math display">\[[c_{Q}, c_{KV}, K_{nope}] =
-            X [W_{DQ}, W_{DKV}, W_{KR}]\]</span></p>
+            <p><span class="math display">[c_{Q}, c_{KV}, K_{nope}] = X
+            [W_{DQ}, W_{DKV}, W_{KR}]</span></p>
             <p>也就是说，首先将这个几个 gemm 的权重 <span
-            class="math inline">\(W_{DQ}, W_{DKV}, W_{KR}\)</span>
+            class="math inline">W_{DQ}, W_{DKV}, W_{KR}</span>
             合并为一个，然后做完 gemm 之后我们再拆分所需要的不同目标
             tensor。</p>
-            <h3 id="步骤详解">步骤详解</h3>
-            <p>如果想要彻底梳理清楚 MLA
-            的所有细节，那么必须对两个方面了如指掌：</p>
-            <ol type="1">
-            <li>以上每个数学符号的 shape 是多少？</li>
-            <li>每个阶段的计算量是多少？</li>
-            </ol>
             <h4 id="符号声明">符号声明</h4>
             <h4 id="shape-说明">shape 说明</h4>
             <ul>
-            <li><span class="math inline">\(X\)</span>:
+            <li><span class="math inline">X</span>:
             <code>[bs, q_len, hidden_size]</code>，即
             <code>[bs, q_len, 7168]</code></li>
-            <li><span class="math inline">\(c_{Q}\)</span>:
+            <li><span class="math inline">c_{Q}</span>:
             <code>[bs, kv_len, q_lora_rank]</code>，即
             <code>[bs, kv_len, 1536]</code></li>
-            <li><span class="math inline">\(c_{KV}\)</span>:
+            <li><span class="math inline">c_{KV}</span>:
             <code>[bs, kv_len, kv_lora_rank]</code>，即
             <code>[bs, kv_len, 512]</code></li>
-            <li><span class="math inline">\(W_{DQ}\)</span>:
+            <li><span class="math inline">W_{DQ}</span>:
             <code>[hidden_size, q_lora_rank]</code>，即
             <code>[7168, 1536]</code></li>
-            <li><span class="math inline">\(W_{UQ}\)</span>:
+            <li><span class="math inline">W_{UQ}</span>:
             <code>[q_lora_rank, q_heads, qk_nope_head_dim]</code>，即
             <code>[1536, 128, 128]</code></li>
-            <li><span class="math inline">\(W_{QR}\)</span>:
+            <li><span class="math inline">W_{QR}</span>:
             <code>[q_lora_rank, q_heads, qk_rope_head_dim]</code>，即
             <code>[1536, 128, 64]</code></li>
-            <li><span class="math inline">\(W_{DKV}\)</span>:
+            <li><span class="math inline">W_{DKV}</span>:
             <code>[hidden_size, kv_lora_rank]</code>，即
             <code>[7168, 512]</code></li>
-            <li><span class="math inline">\(W_{KR}\)</span>:
+            <li><span class="math inline">W_{KR}</span>:
             <code>[hidden_size, qk_rope_head_dim]</code>，即
             <code>[7168, 64]</code></li>
-            <li><span class="math inline">\(W_{UK}\)</span>:
+            <li><span class="math inline">W_{UK}</span>:
             <code>[kv_lora_rank, kv_heads, qk_nope_head_dim]</code>，即
             <code>[512, 128, 128]</code></li>
-            <li><span class="math inline">\(W_{UV}\)</span>:
+            <li><span class="math inline">W_{UV}</span>:
             <code>[kv_lora_rank, kv_heads, v_head_dim]</code>，即
             <code>[512, 128, 128]</code></li>
             </ul>
@@ -361,43 +296,9 @@
       vs Absorb</a></li>
       <li><a href="#qk-rope" id="toc-qk-rope">QK Rope</a></li>
       <li><a href="#计算量分析" id="toc-计算量分析">计算量分析</a></li>
-      <li><a href="#步骤详解" id="toc-步骤详解">步骤详解</a></li>
       </ul>
     </aside>
       </div>
-  <script type="text/javascript">
-    (function () {
-      function markActive() {
-        var here = location.href.split('#')[0];
-        var links = document.querySelectorAll('.wiki-sidebar a');
-        for (var i = 0; i < links.length; i++) {
-          if (links[i].href.split('#')[0] === here) {
-            links[i].classList.add('active');
-          }
-        }
-      }
-      // load the shared site directory once (served from the wiki root);
-      // kept in a standalone file so adding a page needn't rebuild every page.
-      var nav = document.getElementById('wiki-sidebar');
-      if (nav) {
-        fetch('/wiki_sidebar.html')
-          .then(function (r) { return r.ok ? r.text() : ''; })
-          .then(function (html) {
-            if (html) {
-              nav.innerHTML = html;
-              nav.hidden = false;
-              markActive();
-            }
-          })
-          .catch(function () {});
-      }
-      // keep bootstrap table styling (previously done by sticky_menu.js)
-      var tables = document.getElementsByTagName('table');
-      for (var j = 0; j < tables.length; j++) {
-        tables[j].classList.add('table');
-      }
-    })();
-  </script>
 </body>
 
 </html>

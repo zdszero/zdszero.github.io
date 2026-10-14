@@ -25,8 +25,23 @@
   </title>
     <link rel="stylesheet" href="./WikiTheme/theme/bootstrap.css"  />
         <script defer=""
-        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
-        type="text/javascript"></script>
+        src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+        <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+        </script>
+        <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
       <style type="text/css">
     html { -webkit-text-size-adjust: 100%; }
     pre > code.sourceCode { white-space: pre; position: relative; }
@@ -93,80 +108,10 @@
     code span.vs { color: #4070a0; } /* VerbatimString */
     code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
   </style>
-      <style type="text/css">
-    /* ---- three column wiki layout (left: site directory, center: content, right: page TOC) ---- */
-    .wiki-layout {
-      display: flex;
-      align-items: flex-start;
-      gap: 24px;
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 0 20px;
-      box-sizing: border-box;
-    }
-    .wiki-sidebar {
-      flex: 0 0 240px;
-      width: 240px;
-      position: sticky;
-      top: 0;
-      max-height: 100vh;
-      overflow-y: auto;
-      padding: 10px 4px 20px 0;
-      border-right: 1px solid #eee;
-      font-size: 14px;
-    }
-    .wiki-sidebar[hidden] { display: none; }
-    .wiki-toc {
-      flex: 0 0 220px;
-      width: 220px;
-      position: sticky;
-      top: 0;
-      max-height: 100vh;
-      overflow-y: auto;
-      padding: 10px 0 20px 4px;
-      border-left: 1px solid #eee;
-      font-size: 14px;
-    }
-    .wiki-main {
-      flex: 1 1 auto;
-      min-width: 0;
-      max-width: 820px;
-      padding: 10px 0 40px;
-    }
-    /* site directory tree */
-    .wiki-sidebar .wiki-home {
-      display: block;
-      font-weight: bold;
-      margin-bottom: 10px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid #eee;
-      text-decoration: none;
-      color: #333;
-    }
-    .wiki-sidebar ul { list-style: none; margin: 0 0 0 12px; padding: 0; }
-    .wiki-sidebar > ul { margin-left: 0; }
-    .wiki-sidebar li { line-height: 1.7; }
-    .wiki-sidebar a { text-decoration: none; color: #555; }
-    .wiki-sidebar a:hover { color: #0088cc; text-decoration: underline; }
-    .wiki-sidebar a.active { color: #0088cc; font-weight: bold; }
-    /* page TOC */
-    .wiki-toc ul { list-style: none; margin: 0 0 0 12px; padding: 0; }
-    .wiki-toc > ul { margin-left: 0; }
-    .wiki-toc li { line-height: 1.6; }
-    .wiki-toc a { text-decoration: none; color: #555; }
-    .wiki-toc a:hover { color: #0088cc; }
-    @media (max-width: 980px) {
-      .wiki-layout { flex-direction: column; }
-      .wiki-sidebar, .wiki-toc {
-        position: static;
-        width: 100%;
-        flex-basis: auto;
-        max-height: none;
-        border: 0;
-      }
-      .wiki-main { max-width: none; }
-    }
-  </style>
+      <!-- wiki three-column layout styles/behavior, kept external so the ~5KB
+       block isn't duplicated into every generated page -->
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/wiki-layout.css" />
+  <script defer src="./WikiTheme/wiki-layout.js"></script>
 </head>
 
 <body>
@@ -184,164 +129,119 @@
     <div class="wiki-layout">
     <nav class="wiki-sidebar" id="wiki-sidebar" hidden></nav>
     <main class="wiki-main">
-            <h3 id="softmax-attention">Softmax Attention</h3>
-            <p><span class="math display">\[
-            \begin{aligned}
-            \boldsymbol{q}_i, \boldsymbol{k}_i, \boldsymbol{v}_i,
-            \boldsymbol{o}_i &amp;\in \mathbb{R}^{d \times 1} \\
-            \boldsymbol{Q} &amp;= [\boldsymbol{q}_1, \boldsymbol{q}_2,
-            \cdots, \boldsymbol{q}_n]^\top \in \mathbb{R}^{n \times d}
-            \\
-            \boldsymbol{K} &amp;= [\boldsymbol{k}_1, \boldsymbol{k}_2,
-            \cdots, \boldsymbol{k}_n]^\top \in \mathbb{R}^{n \times d}
-            \\
-            \boldsymbol{V} &amp;= [\boldsymbol{v}_1, \boldsymbol{v}_2,
-            \cdots, \boldsymbol{v}_n]^\top \in \mathbb{R}^{n \times d}
-            \\
-            \boldsymbol{O} &amp;= [\boldsymbol{o}_1, \boldsymbol{o}_2,
-            \cdots, \boldsymbol{o}_n]^\top \in \mathbb{R}^{n \times d}
-            \\[6pt]
-            \text{注意力分数矩阵：} &amp; \quad \boldsymbol{S} =
-            \frac{\boldsymbol{Q} \boldsymbol{K}^\top}{\sqrt{d}} \in
-            \mathbb{R}^{n \times n} \\[2pt]
-            \text{注意力权重矩阵：} &amp; \quad \boldsymbol{A} =
-            \mathrm{softmax}(\boldsymbol{S}) \in \mathbb{R}^{n \times n}
-            \\[2pt]
-            \text{输出矩阵：} &amp; \quad \boldsymbol{O} =
-            \boldsymbol{A} \boldsymbol{V} \in \mathbb{R}^{n \times d}
-            \end{aligned}
-            \]</span></p>
-            <p>计算量为 <span
-            class="math inline">\(BT^{2}HD\)</span>，主要在于计算注意力得分矩阵的过程中
-            <span class="math inline">\(QK\)</span> 时 q_len == kv_len =
-            T，计算结果的 shape 为 <span class="math inline">\([B, H, T,
-            T]\)</span></p>
-            <h3 id="linear-attention">Linear Attention</h3>
-            <h4 id="insight">insight</h4>
-            <p>根据矩阵乘法结合率，如果去掉 Softmax 操作的话，可以使用
-            <span class="math inline">\(QK^{T}V =
-            Q(K^{T}V)\)</span>，这样就降低了计算复杂度。</p>
-            <p>考虑完整的 MHA，<span class="math inline">\(Q, K,
-            V\)</span> 的 shape 都是 <span class="math inline">\([B, T,
-            H, D]\)</span>，当我们计算 <span class="math inline">\(K^{T}
-            V\)</span> 时：</p>
+            <h3 id="问题softmax-attention-的两笔账">问题：Softmax
+            Attention 的两笔账</h3>
+            <p><span class="math display">
+            \boldsymbol{S} = \frac{\boldsymbol{Q}
+            \boldsymbol{K}^\top}{\sqrt{d}} \in \mathbb{R}^{n \times n},
+            \qquad
+            \boldsymbol{A} = \mathrm{softmax}(\boldsymbol{S}), \qquad
+            \boldsymbol{O} = \boldsymbol{A} \boldsymbol{V} \in
+            \mathbb{R}^{n \times d}
+            </span></p>
+            <p>推理时，softmax attention 有两笔账都随序列长度 <span
+            class="math inline">T</span> 增长：</p>
             <ul>
-            <li><span class="math inline">\(B, H\)</span> 是 batching
-            dimension</li>
-            <li><span class="math inline">\(D\)</span> 是 free
-            dimension</li>
-            <li><span class="math inline">\(T\)</span> 是 contracting
-            dimension</li>
+            <li><strong>计算</strong>：prefill 时 <span
+            class="math inline">QK^\top</span> 产生 <span
+            class="math inline">[B, H, T, T]</span> 的打分矩阵，计算量
+            <span class="math inline">BT^2HD</span>。</li>
+            <li><strong>显存与带宽</strong>：decode 每生成一个
+            token，都要把完整的 KV cache 读一遍；KV 大小 <span
+            class="math inline">\propto T</span>。上下文到 128K 时，读
+            KV 的带宽和 KV 显存往往比 MLP 更贵。</li>
             </ul>
-            <p><span class="math inline">\(K^{T} V\)</span> 计算结果的
-            shape 为 <span class="math inline">\([B, H, D,
-            D]\)</span>，计算量为 <span
-            class="math inline">\(BTHD^2\)</span></p>
-            <p>所以如果使用这种方案的话，计算复杂度从 <span
-            class="math inline">\(T^2\)</span> 变成了 <span
-            class="math inline">\(D^2\)</span></p>
-            <h4 id="recursion">recursion</h4>
-            <p><span class="math display">\[o_{t}=\sum_{j=1}^{t}
-            v_{j}\left(k_{j}^{\top}
-            q_{t}\right)=\sum_{j=1}^{t}\left(v_{j} k_{j}^{\top}\right)
-            q_{t}=\left(\sum_{j=1}^{t} v_{j} k_{j}^{\top}\right)
-            q_{t}\]</span></p>
-            <p>如果我们记括号部分为 <span
-            class="math inline">\(S_t\)</span>，那么有</p>
-            <p><span class="math display">\[o_{t}=S_{t} q_{t}, \quad
-            S_{t}=S_{t-1}+v_{t} k_{t}^{\top}\]</span></p>
-            <p>使用这种方式后，Causal 格式的 Attention 体现为一个以
-            <span class="math inline">\(S_{t}\)</span> 为 State 的
-            RNN。</p>
-            <p>但是这种最简单的递归方式本质上就是一个
-            cumsum，所有历史信息都等权地叠加，不难想象当叠加的 token
-            足够多时，每个 token
-            的信息占比都会变得极小，无法重建信息。</p>
-            <p>所以问题在于如何在递归的过程可以动态地赋予 <span
-            class="math inline">\(v_{j} k_{j}^{\top}\)</span></p>
-            <h4 id="evolution">evolution</h4>
-            <table>
-            <colgroup>
-            <col style="width: 24%" />
-            <col style="width: 75%" />
-            </colgroup>
-            <thead>
-            <tr>
-            <th>模型/方法</th>
-            <th>公式</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-            <td>Softmax Attention</td>
-            <td><span class="math inline">\((\exp(QK^\top) \odot
-            M)V\)</span></td>
-            </tr>
-            <tr>
-            <td>最早的线性Attention</td>
-            <td><span class="math inline">\((QK^\top \odot
-            M)V\)</span></td>
-            </tr>
-            <tr>
-            <td>加入遗忘门后</td>
-            <td><span class="math inline">\((QK^\top \odot
-            \Gamma)V\)</span></td>
-            </tr>
-            <tr>
-            <td>DeltaNet</td>
-            <td><span class="math inline">\((QK^\top \odot M)(I +
-            KK^\top \odot M^-)^{-1}V\)</span></td>
-            </tr>
-            <tr>
-            <td>Gated DeltaNet</td>
-            <td><span class="math inline">\(((QK^\top \odot M)(I +
-            KK^\top \odot M^-)^{-1} \odot \Gamma)V= (QK^\top \odot
-            \Gamma)(I + KK^\top \odot \Gamma^-)^{-1}V\)</span></td>
-            </tr>
-            </tbody>
-            </table>
-            <p><span class="math display">\[
-            \Gamma_{i,j} =
-            \begin{cases}
-            \displaystyle \prod_{\tau=j+1}^{i} \gamma_\tau, &amp; i &gt;
-            j \\
-            1, &amp; i = j \\
-            0, &amp; i &lt; j
-            \end{cases}
-            \]</span></p>
-            <hr />
-            <p>🧩 统一递归主公式（涵盖所有变体）</p>
-            <p><span class="math display">\[
+            <p>根源在 softmax 的归一化：<span
+            class="math inline">o_t</span> 依赖 <span
+            class="math inline">q_t</span> 与<strong>所有</strong> <span
+            class="math inline">k_j</span> 的打分之和，任何一个历史
+            token 都不能提前丢掉。Linear attention
+            的出发点是：如果能把历史压缩成一个与 <span
+            class="math inline">T</span>
+            无关的东西，这两笔账就都不存在了。</p>
+            <h3
+            id="核心抽象把历史压缩成一个状态矩阵">核心抽象：把历史压缩成一个状态矩阵</h3>
+            <h4 id="结合律">结合律</h4>
+            <p>去掉 softmax 后，矩阵乘法可以按结合律重排：<span
+            class="math inline">(QK^\top)V = Q(K^\top V)</span>。</p>
+            <p>考虑完整的 MHA，<span class="math inline">Q, K, V</span>
+            的 shape 都是 <span class="math inline">[B, T, H,
+            D]</span>。计算 <span class="math inline">K^\top V</span>
+            时，<span class="math inline">B, H</span> 是 batch 维，<span
+            class="math inline">D</span> 是自由维，<span
+            class="math inline">T</span> 是被收缩掉的维度。结果的 shape
+            为 <span class="math inline">[B, H, D, D]</span>，计算量
+            <span class="math inline">BTHD^2</span>：复杂度里的 <span
+            class="math inline">T^2</span> 变成了 <span
+            class="math inline">D^2</span>。</p>
+            <h4 id="递归形式attention-变成-rnn">递归形式：Attention 变成
+            RNN</h4>
+            <p>下文统一用<strong>行向量</strong>约定：<span
+            class="math inline">q_t, k_t \in \mathbb{R}^{1\times
+            d_k}</span>，<span class="math inline">v_t \in
+            \mathbb{R}^{1\times d_v}</span>，状态 <span
+            class="math inline">S \in \mathbb{R}^{d_k \times
+            d_v}</span>。因果版本的输出为</p>
+            <p><span class="math display">
+            o_t=\sum_{j=1}^{t} (q_t k_j^\top)\, v_j = q_t \sum_{j=1}^{t}
+            k_j^\top v_j = q_t S_t,
+            \qquad S_t = S_{t-1} + k_t^\top v_t
+            </span></p>
+            <p><span class="math inline">S_t</span> 就是 <span
+            class="math inline">K^\top V</span> 的前缀和。因果 attention
+            于是变成一个以 <span class="math inline">S_t</span>
+            为隐状态的
+            RNN：每步写入一个外积、读出一次矩阵乘，状态大小恒为 <span
+            class="math inline">d_k \times d_v</span>。</p>
+            <figure>
+            <img src="./WikiImage/linear_attention_recurrence.svg"
+            alt="KV Cache 与状态矩阵" />
+            <figcaption aria-hidden="true">KV Cache
+            与状态矩阵</figcaption>
+            </figure>
+            <h4 id="把-s-看成联想记忆">把 S 看成联想记忆</h4>
+            <p><span class="math inline">S</span> 是一个 key→value
+            的<strong>线性联想存储</strong>：写入是外积 <span
+            class="math inline">k^\top v</span>，读取是用 key 去乘 <span
+            class="math inline">S</span>。如果写入过的 key
+            两两正交且单位长，<span class="math inline">k_i S =
+            v_i</span> 可以精确读回。</p>
+            <p>问题也在这里：<span class="math inline">d_k</span>
+            维空间最多容纳 <span class="math inline">d_k</span> 个正交
+            key，token 数远超 <span class="math inline">d_k</span>
+            后写入必然互相串扰。而且纯累加让所有历史等权叠加，没有任何机制去<strong>忘掉</strong>过时的信息，或<strong>改写</strong>同一个
+            key 下的旧值。</p>
+            <p>所以 linear attention
+            真正要回答的问题是：<strong>容量固定的记忆，应该怎么写、怎么忘。</strong>
+            下面所有变体都是对这个问题的不同回答。</p>
+            <h3 id="演化从累加到-gated-delta-rule">演化：从累加到 Gated
+            Delta Rule</h3>
+            <h4 id="统一递归形式">统一递归形式</h4>
+            <p><span class="math display">
             \boxed{
             \begin{aligned}
-            \hat{v}_t &amp;= k_t \, S_{t-1} &amp;&amp;\text{（根据当前键
-            }k_t\text{ 从记忆中读取预测值）}\\
+            \hat{v}_t &amp;= k_t \,(\gamma_t S_{t-1})
+            &amp;&amp;\text{（先衰减，再用当前 key 读出旧值）}\\
             \Delta_t &amp;= v_t - \hat{v}_t
-            &amp;&amp;\text{（计算当前真实值与预测值的误差）}\\
+            &amp;&amp;\text{（真实值与记忆预测值的误差）}\\
             S_t &amp;= \gamma_t S_{t-1} + \alpha_t \, k_t^\top v_t +
             \beta_t \, k_t^\top \Delta_t
             &amp;&amp;\text{（统一状态更新）}\\
-            o_t &amp;= q_t \, S_t &amp;&amp;\text{（用查询 }q_t\text{
-            读取最终输出）}
+            o_t &amp;= q_t \, S_t &amp;&amp;\text{（用 query 读出输出）}
             \end{aligned}
             }
-            \]</span></p>
-            <p>其中：</p>
+            </span></p>
             <ul>
             <li><span
-            class="math inline">\(\gamma_t\)</span>：<strong>遗忘门标量</strong>（对旧状态做衰减）；</li>
+            class="math inline">\gamma_t</span>：<strong>遗忘门</strong>，写入前对旧状态打折；</li>
             <li><span
-            class="math inline">\(\alpha_t\)</span>：<strong>直接写入系数</strong>（控制是否直接把
-            <span class="math inline">\(k^\top v\)</span>
-            塞进记忆）；</li>
+            class="math inline">\alpha_t</span>：<strong>直接写入系数</strong>，把
+            <span class="math inline">k^\top v</span>
+            原样加进记忆；</li>
             <li><span
-            class="math inline">\(\beta_t\)</span>：<strong>误差写入系数</strong>（控制把“预测误差”写回记忆的强度，通常是归一化因子如
-            <span class="math inline">\(\frac{1}{1 + k_t
-            k_t^\top}\)</span>）。</li>
+            class="math inline">\beta_t</span>：<strong>误差写入系数</strong>，只把“没记对的部分”写回去，相当于写入强度
+            / 学习率。</li>
             </ul>
-            <p>📊 各变体如何通过调节 <span
-            class="math inline">\((\gamma, \alpha, \beta)\)</span>
-            退化得到</p>
             <table>
             <colgroup>
             <col style="width: 20%" />
@@ -354,233 +254,589 @@
             <tr>
             <th style="text-align: left;">模型/方法</th>
             <th style="text-align: left;"><span
-            class="math inline">\(\gamma_t\)</span></th>
+            class="math inline">\gamma_t</span></th>
             <th style="text-align: left;"><span
-            class="math inline">\(\alpha_t\)</span></th>
+            class="math inline">\alpha_t</span></th>
             <th style="text-align: left;"><span
-            class="math inline">\(\beta_t\)</span></th>
-            <th
-            style="text-align: left;">代入主公式后的实际更新（退化结果）</th>
+            class="math inline">\beta_t</span></th>
+            <th style="text-align: left;">退化后的更新</th>
             </tr>
             </thead>
             <tbody>
             <tr>
-            <td
-            style="text-align: left;"><strong>最早的线性Attention</strong></td>
+            <td style="text-align: left;">最早的线性 Attention</td>
             <td style="text-align: left;"><span
-            class="math inline">\(1\)</span></td>
+            class="math inline">1</span></td>
             <td style="text-align: left;"><span
-            class="math inline">\(1\)</span></td>
+            class="math inline">1</span></td>
             <td style="text-align: left;"><span
-            class="math inline">\(0\)</span></td>
-            <td style="text-align: left;"><span
-            class="math inline">\(S_t = S_{t-1} + k_t^\top
-            v_t\)</span>（纯累加，无纠错）</td>
+            class="math inline">0</span></td>
+            <td style="text-align: left;"><span class="math inline">S_t
+            = S_{t-1} + k_t^\top v_t</span>（纯累加）</td>
             </tr>
             <tr>
-            <td
-            style="text-align: left;"><strong>加入遗忘门后</strong></td>
+            <td style="text-align: left;">加入遗忘门（RetNet / GLA /
+            Mamba2 一类）</td>
             <td style="text-align: left;"><span
-            class="math inline">\(\gamma_t\)</span></td>
+            class="math inline">\gamma_t</span></td>
             <td style="text-align: left;"><span
-            class="math inline">\(1\)</span></td>
+            class="math inline">1</span></td>
             <td style="text-align: left;"><span
-            class="math inline">\(0\)</span></td>
-            <td style="text-align: left;"><span
-            class="math inline">\(S_t = \gamma_t S_{t-1} + k_t^\top
-            v_t\)</span>（带衰减的累加）</td>
+            class="math inline">0</span></td>
+            <td style="text-align: left;"><span class="math inline">S_t
+            = \gamma_t S_{t-1} + k_t^\top
+            v_t</span>（带衰减的累加）</td>
             </tr>
             <tr>
-            <td style="text-align: left;"><strong>DeltaNet</strong></td>
+            <td style="text-align: left;">DeltaNet</td>
             <td style="text-align: left;"><span
-            class="math inline">\(1\)</span></td>
+            class="math inline">1</span></td>
             <td style="text-align: left;"><span
-            class="math inline">\(0\)</span></td>
+            class="math inline">0</span></td>
             <td style="text-align: left;"><span
-            class="math inline">\(\beta_t\)</span></td>
-            <td style="text-align: left;"><span
-            class="math inline">\(S_t = S_{t-1} + \beta_t k_t^\top (v_t
-            - k_t S_{t-1})\)</span>（纯误差驱动，不直接写原值）</td>
+            class="math inline">\beta_t</span></td>
+            <td style="text-align: left;"><span class="math inline">S_t
+            = S_{t-1} + \beta_t k_t^\top (v_t - k_t
+            S_{t-1})</span>（误差驱动）</td>
             </tr>
             <tr>
-            <td style="text-align: left;"><strong>Gated
-            DeltaNet</strong></td>
+            <td style="text-align: left;">Gated DeltaNet</td>
             <td style="text-align: left;"><span
-            class="math inline">\(\gamma_t\)</span></td>
+            class="math inline">\gamma_t</span></td>
             <td style="text-align: left;"><span
-            class="math inline">\(0\)</span></td>
+            class="math inline">0</span></td>
             <td style="text-align: left;"><span
-            class="math inline">\(\beta_t\)</span></td>
-            <td style="text-align: left;"><span
-            class="math inline">\(S_t = \gamma_t S_{t-1} + \beta_t
-            k_t^\top (v_t - k_t S_{t-1})\)</span>（遗忘门 +
-            误差驱动，完美融合）</td>
+            class="math inline">\beta_t</span></td>
+            <td style="text-align: left;"><span class="math inline">S_t
+            = \gamma_t S_{t-1} + \beta_t k_t^\top (v_t - k_t\, \gamma_t
+            S_{t-1})</span>（遗忘 + 误差驱动）</td>
             </tr>
             </tbody>
             </table>
-            <p>💡 这个“整体公式”的灵魂解读</p>
-            <p>把主公式拆开看，其实就干了三件事：</p>
-            <ol type="1">
-            <li><strong>读（Read）</strong>：<span
-            class="math inline">\(\hat{v}_t = k_t S_{t-1}\)</span> ——
-            先看看记忆里对当前 token 怎么看；</li>
-            <li><strong>算误差（Error）</strong>：<span
-            class="math inline">\(\Delta_t = v_t - \hat{v}_t\)</span> ——
-            看看记忆猜得准不准；</li>
-            <li><strong>写（Write）</strong>：
+            <p>注意 Gated DeltaNet 的预测值 <span
+            class="math inline">\hat v_t</span>
+            用的是<strong>衰减之后</strong>的状态——SGLang kernel
+            里也是先 <code>h *= exp(g)</code>，再
+            <code>v -= h·k</code>。</p>
+            <h4 id="为什么-delta-rule-更好">为什么 delta rule 更好</h4>
+            <p>两个角度理解：</p>
             <ul>
-            <li><strong>直接写</strong> <span
-            class="math inline">\(\alpha_t k_t^\top
-            v_t\)</span>：不管三七二十一，把原始信息硬写进去（早期的笨办法）；<br />
-            </li>
-            <li><strong>纠错写</strong> <span
-            class="math inline">\(\beta_t k_t^\top
-            \Delta_t\)</span>：只把没猜对的那部分“补”进去（DeltaNet
-            的精髓）；<br />
-            </li>
-            <li><strong>遗忘</strong> <span
-            class="math inline">\(\gamma_t
-            S_{t-1}\)</span>：写之前先把旧记忆打个折。</li>
-            </ul></li>
-            </ol>
-            <blockquote>
-            <p><strong>演化史的数学本质</strong>：从 <span
-            class="math inline">\(\alpha=1\)</span>（只信当前输入）进化到
-            <span class="math inline">\(\alpha=0,
-            \beta&gt;0\)</span>（只信预测误差），再引入 <span
-            class="math inline">\(\gamma\)</span>（学会遗忘），这就是这条技术路线的全部秘密。而你之前看到的复杂逆矩阵
-            <span class="math inline">\((I + KK^\top \odot
-            M)^{-1}\)</span>，其实就是这个递归公式在<strong>多步展开</strong>后的闭合矩阵解（为了保证数值稳定性而做的归一化）。</p>
-            </blockquote>
-            <h3 id="deltanet">DeltaNet</h3>
-            <p>这段代码想实现的是 <strong>DeltaNet / delta-rule linear
-            attention</strong>：</p>
-            <p><span class="math display">\[
-            S_t =
-            S_{t-1} +
-            \beta_t k_t^\top
-            \left(
-            v_t-k_tS_{t-1}
-            \right)
-            \]</span></p>
-            <p>然后用 query 从状态矩阵中读取：</p>
-            <p><span class="math display">\[
-            o_t=q_tS_t
-            \]</span></p>
-            <p>它的核心思想不是简单地把 <span
-            class="math inline">\(k_t^\top v_t\)</span>
-            累加进记忆，而是先读取旧值，再只写入“误差”：</p>
-            <p><span class="math display">\[
-            \Delta v_t=v_t-\hat v_t,
-            \qquad
-            \hat v_t=k_tS_{t-1}
-            \]</span></p>
-            <p><span class="math display">\[
-            S_t=S_{t-1}+\beta_t k_t^\top\Delta v_t
-            \]</span></p>
+            <li><strong>改写而不是叠加</strong>：同一个 key 先写 <span
+            class="math inline">v_1</span> 再写 <span
+            class="math inline">v_2</span>，纯累加读出 <span
+            class="math inline">v_1+v_2</span>；delta rule（<span
+            class="math inline">\beta=1</span>）第二次只写入误差 <span
+            class="math inline">v_2-v_1</span>，读出的正是 <span
+            class="math inline">v_2</span>。</li>
+            <li><strong>在线回归</strong>：对损失 <span
+            class="math inline">\mathcal{L}(S)=\tfrac12\lVert k_t S -
+            v_t\rVert^2</span> 做一步梯度下降，<span
+            class="math inline">S \leftarrow S - \beta_t \nabla
+            \mathcal{L} = S + \beta_t k_t^\top (v_t - k_t
+            S)</span>，正好是 delta rule。每个 token 都对记忆做一次
+            SGD，<span class="math inline">\beta_t</span>
+            是学习率，<span class="math inline">\gamma_t</span> 是
+            weight decay。</li>
+            </ul>
+            <figure>
+            <img src="./WikiImage/linear_attention_delta_rule.svg"
+            alt="Gated Delta Rule 一步更新" />
+            <figcaption aria-hidden="true">Gated Delta Rule
+            一步更新</figcaption>
+            </figure>
+            <h4 id="矩阵并行形式">矩阵（并行）形式</h4>
+            <p>把递归在整段序列上展开，可以得到等价的矩阵形式（<span
+            class="math inline">M</span> 是因果 mask，<span
+            class="math inline">M^-</span> 是严格下三角 mask，<span
+            class="math inline">\Gamma</span> 是累积衰减
+            mask；为简洁省略 <span
+            class="math inline">\beta</span>，可视作并入 <span
+            class="math inline">k, v</span>）：</p>
+            <table>
+            <colgroup>
+            <col style="width: 50%" />
+            <col style="width: 50%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>模型/方法</th>
+            <th>矩阵形式</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>Softmax Attention</td>
+            <td><span class="math inline">(\exp(QK^\top) \odot
+            M)V</span></td>
+            </tr>
+            <tr>
+            <td>最早的线性 Attention</td>
+            <td><span class="math inline">(QK^\top \odot M)V</span></td>
+            </tr>
+            <tr>
+            <td>加入遗忘门</td>
+            <td><span class="math inline">(QK^\top \odot
+            \Gamma)V</span></td>
+            </tr>
+            <tr>
+            <td>DeltaNet</td>
+            <td><span class="math inline">(QK^\top \odot M)(I + KK^\top
+            \odot M^-)^{-1}V</span></td>
+            </tr>
+            <tr>
+            <td>Gated DeltaNet</td>
+            <td><span class="math inline">(QK^\top \odot \Gamma)(I +
+            KK^\top \odot \Gamma^-)^{-1}V</span></td>
+            </tr>
+            </tbody>
+            </table>
+            <p><span class="math display">
+            \Gamma_{i,j} =
+            \begin{cases}
+            \displaystyle \prod_{\tau=j+1}^{i} \gamma_\tau, &amp; i &gt;
+            j \\
+            1, &amp; i = j \\
+            0, &amp; i &lt; j
+            \end{cases}
+            </span></p>
+            <p>那个下三角逆矩阵 <span class="math inline">(I + KK^\top
+            \odot M^-)^{-1}</span> 不是额外加的归一化，而是 delta rule
+            递归在多步展开后的<strong>闭式解</strong>：每一步的误差
+            <span class="math inline">\Delta_t</span>
+            依赖前面所有步写入的结果，把这条依赖链解开就是一个下三角线性方程组。它的实际用途是让
+            prefill 可以按块并行（见下文 chunkwise 一节）。</p>
+            <h3 id="gated-deltanet">Gated DeltaNet</h3>
+            <p>Gated DeltaNet（GDN，Qwen3-Next / Qwen3.5 的 linear
+            层）把更新写成更紧凑的形式：</p>
+            <p><span class="math display">
+            S_t = \alpha_t \left(I - \beta_t k_t^\top k_t\right) S_{t-1}
+            + \beta_t k_t^\top v_t,
+            \qquad \alpha_t = e^{g_t} \in (0, 1],\quad \alpha_t \text{
+            是每个 head 一个标量}
+            </span></p>
+            <p><span class="math inline">(I - \beta_t k_t^\top
+            k_t)</span> 是一个“部分 Householder 变换”：只沿 <span
+            class="math inline">k_t</span> 方向把旧记忆收缩 <span
+            class="math inline">\beta_t</span>，其余方向不动。这也是
+            q、k 必须做 <strong>L2 归一化</strong>的原因：<span
+            class="math inline">\lVert k_t\rVert = 1</span> 时这个矩阵沿
+            <span class="math inline">k_t</span> 方向的特征值是 <span
+            class="math inline">1-\beta_t \in [0,
+            1)</span>，递归不会发散。</p>
+            <p>门的参数化沿用 Mamba2：</p>
+            <p><span class="math display">
+            g_t = -\exp(\texttt{A\_log}) \cdot \mathrm{softplus}(a_t +
+            \texttt{dt\_bias}),
+            \qquad \beta_t = \mathrm{sigmoid}(b_t)
+            </span></p>
+            <p><code>A_log</code>、<code>dt_bias</code> 是每个 v-head
+            一个的可学习参数，<span class="math inline">a_t, b_t</span>
+            由输入投影 <code>in_proj_ba</code> 给出（每个 v-head
+            各一个数）。<span
+            class="math inline">\exp(\texttt{A\_log})</span> 决定这个
+            head 的基础衰减速率，<span
+            class="math inline">\mathrm{softplus}(a_t+\texttt{dt\_bias})</span>
+            是数据相关的“步长”，两者相乘再取负保证 <span
+            class="math inline">g_t \le 0</span>。</p>
+            <p>一个与 kernel 语义一致的逐 token 参考实现：</p>
             <div class="sourceCode" id="cb1"><pre
-            class="sourceCode py"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> forward(<span class="va">self</span>, x, mask<span class="op">=</span><span class="va">None</span>, cache<span class="op">=</span><span class="va">None</span>):</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># x: [b, t, d]</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    b, t, d <span class="op">=</span> x.shape</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    h <span class="op">=</span> <span class="va">self</span>.num_heads</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    d_head <span class="op">=</span> d <span class="op">//</span> h</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    qkv <span class="op">=</span> <span class="va">self</span>.qkv_proj(x)</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    q <span class="op">=</span> qkv[:, :, :d].view(b, t, h, d_head).transpose(<span class="dv">1</span>, <span class="dv">2</span>)</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    k <span class="op">=</span> qkv[:, :, d:<span class="dv">2</span> <span class="op">*</span> d].view(b, t, h, d_head).transpose(<span class="dv">1</span>, <span class="dv">2</span>)</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    v <span class="op">=</span> qkv[:, :, <span class="dv">2</span> <span class="op">*</span> d:].view(b, t, h, d_head).transpose(<span class="dv">1</span>, <span class="dv">2</span>)</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># [b, h, t, d_head]</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    q <span class="op">=</span> F.normalize(F.silu(q), dim<span class="op">=-</span><span class="dv">1</span>)</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    k <span class="op">=</span> F.normalize(F.silu(k), dim<span class="op">=-</span><span class="dv">1</span>)</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Shared across heads: [b, 1, t, 1]</span></span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    beta <span class="op">=</span> torch.sigmoid(<span class="va">self</span>.w_beta(x)).view(b, <span class="dv">1</span>, t, <span class="dv">1</span>)</span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> cache <span class="kw">is</span> <span class="va">None</span>:</span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>        S <span class="op">=</span> x.new_zeros(b, h, d_head, d_head)</span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>        S <span class="op">=</span> cache</span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>    outputs <span class="op">=</span> []</span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(t):</span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>        <span class="co"># [b, h, 1, d_head]</span></span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>        q_i <span class="op">=</span> q[:, :, i:i <span class="op">+</span> <span class="dv">1</span>, :]</span>
-<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>        k_i <span class="op">=</span> k[:, :, i:i <span class="op">+</span> <span class="dv">1</span>, :]</span>
-<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>        v_i <span class="op">=</span> v[:, :, i:i <span class="op">+</span> <span class="dv">1</span>, :]</span>
-<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>        beta_i <span class="op">=</span> beta[:, :, i:i <span class="op">+</span> <span class="dv">1</span>, :]</span>
-<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Read current prediction:</span></span>
-<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>        <span class="co"># [b, h, 1, d_head]</span></span>
-<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>        v_old <span class="op">=</span> k_i <span class="op">@</span> S</span>
-<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Delta / prediction error:</span></span>
-<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>        <span class="co"># [b, h, 1, d_head]</span></span>
-<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>        delta <span class="op">=</span> beta_i <span class="op">*</span> (v_i <span class="op">-</span> v_old)</span>
-<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Outer-product state update:</span></span>
-<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>        <span class="co"># [b, h, d_head, 1] @ [b, h, 1, d_head]</span></span>
-<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>        <span class="co"># -&gt; [b, h, d_head, d_head]</span></span>
-<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>        S <span class="op">=</span> S <span class="op">+</span> k_i.transpose(<span class="op">-</span><span class="dv">1</span>, <span class="op">-</span><span class="dv">2</span>) <span class="op">@</span> delta</span>
-<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Read from the updated state:</span></span>
-<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>        <span class="co"># [b, h, 1, d_head]</span></span>
-<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a>        o_i <span class="op">=</span> q_i <span class="op">@</span> S</span>
-<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>        outputs.append(o_i)</span>
-<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>    <span class="co"># [b, h, t, d_head]</span></span>
-<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a>    o <span class="op">=</span> torch.cat(outputs, dim<span class="op">=</span><span class="dv">2</span>)</span>
-<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a>    <span class="co"># [b, t, d]</span></span>
-<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a>    o <span class="op">=</span> o.transpose(<span class="dv">1</span>, <span class="dv">2</span>).contiguous().view(b, t, d)</span>
-<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">self</span>.o_proj(o), S</span></code></pre></div>
+            class="sourceCode py"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> gated_delta_rule_ref(q, k, v, g, beta, S<span class="op">=</span><span class="va">None</span>):</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># q, k: [b, h, t, dk]   v: [b, h, t, dv]</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># g: [b, h, t]（log 空间衰减，≤ 0）   beta: [b, h, t]</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    b, h, t, dk <span class="op">=</span> k.shape</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    q <span class="op">=</span> F.normalize(q, dim<span class="op">=-</span><span class="dv">1</span>) <span class="op">*</span> dk <span class="op">**</span> <span class="op">-</span><span class="fl">0.5</span>   <span class="co"># 先 L2Norm 再乘 scale</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    k <span class="op">=</span> F.normalize(k, dim<span class="op">=-</span><span class="dv">1</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> S <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>        S <span class="op">=</span> k.new_zeros(b, h, dk, v.shape[<span class="op">-</span><span class="dv">1</span>])</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    outs <span class="op">=</span> []</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(t):</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>        q_i, k_i, v_i <span class="op">=</span> q[:, :, i], k[:, :, i], v[:, :, i]</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>        S <span class="op">=</span> S <span class="op">*</span> g[:, :, i].exp()[..., <span class="va">None</span>, <span class="va">None</span>]                 <span class="co"># ① 衰减</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>        v_hat <span class="op">=</span> torch.einsum(<span class="st">&quot;bhk,bhkv-&gt;bhv&quot;</span>, k_i, S)             <span class="co"># ② 预测</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>        delta <span class="op">=</span> beta[:, :, i, <span class="va">None</span>] <span class="op">*</span> (v_i <span class="op">-</span> v_hat)               <span class="co"># ③ 误差</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>        S <span class="op">=</span> S <span class="op">+</span> torch.einsum(<span class="st">&quot;bhk,bhv-&gt;bhkv&quot;</span>, k_i, delta)         <span class="co"># ④ 写回</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>        outs.append(torch.einsum(<span class="st">&quot;bhk,bhkv-&gt;bhv&quot;</span>, q_i, S))        <span class="co"># ⑤ 读出</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> torch.stack(outs, dim<span class="op">=</span><span class="dv">2</span>), S</span></code></pre></div>
+            <p>GDN 的 v-head 数可以多于 k-head 数（GVA，类似 GQA
+            反过来：多个 v-head 共享一组 q/k），状态按 v-head 存，形状是
+            <span class="math inline">[H_V, d_v, d_k]</span>。</p>
+            <h3 id="kda逐通道的遗忘门">KDA：逐通道的遗忘门</h3>
+            <p>Kimi Delta Attention（KDA，Kimi-Linear 的 linear
+            层）只改了一处：遗忘门从每个 head
+            一个<strong>标量</strong>变成每个 head 一个长度 <span
+            class="math inline">d_k</span> 的<strong>向量</strong>。</p>
+            <p><span class="math display">
+            S_t = \left(I - \beta_t k_t^\top k_t\right)
+            \mathrm{Diag}(\alpha_t)\, S_{t-1} + \beta_t k_t^\top v_t,
+            \qquad \alpha_t \in (0, 1]^{d_k}
+            </span></p>
+            <p><span class="math inline">S</span> 的第 <span
+            class="math inline">i</span> 行只被 key 的第 <span
+            class="math inline">i</span> 个通道写入和读出，所以 <span
+            class="math inline">\mathrm{Diag}(\alpha_t)</span>
+            按行衰减，等于让不同特征通道拥有不同的记忆“半衰期”：有的通道几乎永久保留，有的通道每几个
+            token 就清空。这是 GLA 式细粒度门控与 delta rule
+            的结合。上面的参考实现只需改一行：<code>g</code> 变成
+            <code>[b, h, t, dk]</code>，衰减写成
+            <code>S * g[:, :, i].exp()[..., None]</code>。</p>
+            <figure>
+            <img
+            src="./WikiImage/linear_attention_gate_granularity.svg"
+            alt="遗忘门粒度：GDN vs KDA" />
+            <figcaption aria-hidden="true">遗忘门粒度：GDN vs
+            KDA</figcaption>
+            </figure>
+            <p>门的参数化与 GDN 同构，只是 <span
+            class="math inline">f_t</span>
+            变成了向量，并且由<strong>低秩投影</strong>得到以控制参数量：</p>
+            <p><span class="math display">
+            f_t = W_{f_b}\,(W_{f_a}\, x_t) \in \mathbb{R}^{H \cdot
+            d_k},\qquad
+            g_t = -\exp(\texttt{A\_log}[h]) \cdot \mathrm{softplus}(f_t
+            + \texttt{dt\_bias})
+            </span></p>
+            <p>其中
+            <code>f_a_proj: hidden → head_dim</code>、<code>f_b_proj: head_dim → H·head_dim</code>；<code>A_log</code>
+            每个 head 一个，<code>dt_bias</code> 每个通道一个（<span
+            class="math inline">[H \cdot d_k]</span>）。部分模型（如
+            Kimi K3，config 中的 <code>gate_lower_bound</code>）改用
+            “safe gate”：<span class="math inline">g =
+            \text{lower\_bound} \cdot
+            \mathrm{sigmoid}(\exp(\texttt{A\_log}) \cdot (f +
+            \texttt{dt\_bias}))</span>，把衰减限制在一个有界区间内。</p>
+            <table>
+            <colgroup>
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th></th>
+            <th>Gated DeltaNet</th>
+            <th>KDA</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>遗忘门</td>
+            <td>每 head 一个标量 <span
+            class="math inline">\alpha_t</span></td>
+            <td>每 head 一个 <span class="math inline">d_k</span> 维向量
+            <span class="math inline">\alpha_t</span></td>
+            </tr>
+            <tr>
+            <td>门的来源</td>
+            <td><code>in_proj_ba</code> 直接投影</td>
+            <td><code>f_a_proj</code> → <code>f_b_proj</code>
+            低秩投影</td>
+            </tr>
+            <tr>
+            <td>头数</td>
+            <td>v-head 可多于 k-head（GVA）</td>
+            <td>q/k/v 头数相同</td>
+            </tr>
+            <tr>
+            <td>输出门</td>
+            <td><code>RMSNormGated(o, z)</code>，z 来自
+            <code>in_proj_qkvz</code></td>
+            <td><code>RMSNorm(o) ⊙ sigmoid(g)</code>，g 来自低秩
+            <code>g_a_proj → g_b_proj</code></td>
+            </tr>
+            <tr>
+            <td>搭配的 full attention 层</td>
+            <td>Gated Attention（GQA）</td>
+            <td>MLA</td>
+            </tr>
+            <tr>
+            <td>SGLang 模型</td>
+            <td><code>Qwen3GatedDeltaNet</code>（<code>models/qwen3_next.py</code>）</td>
+            <td><code>KimiDeltaAttention</code>（<code>models/kimi_linear.py</code>）</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>代价是门张量从 <span class="math inline">[T, H]</span>
+            变成 <span class="math inline">[T, H, d_k]</span>，chunk
+            kernel 里的衰减也不能再当作一个标量 mask 提出来，需要把
+            <span class="math inline">k</span>
+            按累积衰减逐通道缩放（kernel 里的
+            <code>kg</code>）。好在状态递推的结构没变，SGLang 的 KDA
+            prefill 直接复用了 GDN 的块间递推 kernel
+            <code>chunk_gated_delta_rule_fwd_h</code>，只是传入向量门
+            <code>gk</code>。</p>
+            <h3
+            id="两种计算形态chunkwise-prefill-与-recurrent-decode">两种计算形态：chunkwise
+            prefill 与 recurrent decode</h3>
+            <p>逐 token 的递归在 decode 时刚好合适（每步本来就只有一个
+            token），但用在 prefill 上就是 <span
+            class="math inline">T</span> 步串行，GPU
+            吃不满。矩阵形式虽然完全并行，却又回到了 <span
+            class="math inline">T^2</span>。chunkwise
+            算法折中两者：把序列切成大小 <span
+            class="math inline">C=64</span>
+            的块（<code>fla/chunk.py</code> 中的
+            <code>CHUNK_SIZE</code>）。</p>
+            <ul>
+            <li><strong>块内</strong>：64 次 rank-1 更新用 WY / UT
+            表示合并成一次矩阵运算。前文矩阵形式里的下三角逆，在这里只需要对一个
+            <span class="math inline">64\times 64</span>
+            的块求（<code>solve_tril</code>）。</li>
+            <li><strong>块间</strong>：只沿块边界传递状态 <span
+            class="math inline">S_i</span>。先用 <span
+            class="math inline">S_i</span>
+            扣掉历史已能预测的部分（<code>v_new = U − W·S_i</code>），再更新到
+            <span class="math inline">S_{i+1}</span>。</li>
+            </ul>
+            <p>串行步数从 <span class="math inline">T</span> 降到 <span
+            class="math inline">T/64</span>，总计算量是 <span
+            class="math inline">O(T\,C\,d + T\,d^2)</span>。</p>
+            <figure>
+            <img src="./WikiImage/linear_attention_chunkwise.svg"
+            alt="Chunkwise 并行" />
+            <figcaption aria-hidden="true">Chunkwise 并行</figcaption>
+            </figure>
+            <p>这个形态在 serving 上有一个副产品：每个块边界的状态 <span
+            class="math inline">h</span>
+            都会被物化出来，等于免费拿到了“前缀长度为 64
+            的倍数处”的状态快照，prefix cache
+            就是靠它来保存中间状态的（见下文）。</p>
+            <p>decode 时没有 chunk，直接调用 fused recurrent
+            kernel（<code>fused_recurrent_gated_delta_rule_packed_decode</code>
+            / <code>fused_recurrent_kda_packed_decode</code>，或者非
+            packed 的
+            <code>fused_sigmoid_gating_delta_rule_update</code>）。它在一个
+            kernel 里完成门计算和上图五步更新，并原地改写 pool
+            里的状态。</p>
+            <h3 id="一层-gdn-kda-的完整数据流">一层 GDN / KDA
+            的完整数据流</h3>
+            <p>delta rule 只是一层的核心，GDN 和 KDA
+            在它前后都包了一样的骨架：</p>
+            <figure>
+            <img
+            src="./WikiImage/linear_attention_layer_dataflow.svg"
+            alt="一层 GDN / KDA 的数据流" />
+            <figcaption aria-hidden="true">一层 GDN / KDA
+            的数据流</figcaption>
+            </figure>
+            <p>有两个容易被忽略的组件：</p>
+            <ul>
+            <li><strong>short conv</strong>：q/k/v 在进入 delta rule
+            之前，先过一个 kernel=4 的 depthwise 因果卷积再接
+            SiLU。linear 层没有
+            RoPE，这个卷积提供了局部的位置/顺序信息，同时让 key
+            能混合相邻 token，便于形成“归纳头”式的匹配。</li>
+            <li><strong>输出门</strong>：delta rule 的输出要经过一个门控
+            RMSNorm。GDN 的门 z 由 <code>in_proj_qkvz</code>
+            一起投影出来，KDA 的门由低秩 <code>g_a → g_b</code> 得到、用
+            sigmoid 激活。</li>
+            </ul>
+            <p>结果是每个 linear
+            层有<strong>两份</strong>与序列长度无关的状态：conv
+            state（最近 <span class="math inline">K-1=3</span>
+            步的卷积输入）和 SSM state <span
+            class="math inline">S</span>。</p>
+            <h3 id="在-sglang-中的实现">在 SGLang 中的实现</h3>
+            <p>以下路径都相对于 <code>python/sglang/srt/</code>。</p>
+            <h4 id="混合层结构">混合层结构</h4>
+            <p>纯 linear
+            模型的召回能力不够，所以实际模型都是混合结构：</p>
+            <ul>
+            <li><strong>Qwen3-Next</strong>：每
+            <code>full_attention_interval</code>（默认 4）层放一层 full
+            attention，判定条件是
+            <code>(l+1) % full_attention_interval == 0</code>，其余是
+            GDN 层，比例为 3:1。</li>
+            <li><strong>Kimi-Linear</strong>：config 里有一个
+            <code>kda_layers</code> 列表，由 <code>is_kda_layer</code>
+            判定哪些层是 KDA，其余层是 MLA。</li>
+            </ul>
+            <p>模型层只负责投影和门控，真正的 attention 计算交给
+            <code>layers/radix_linear_attention.py</code> 里的
+            <code>RadixLinearAttention</code>。它带着
+            <code>layer_id</code>、头数/维度、conv
+            权重、<code>A_log</code>、<code>dt_bias</code> 等信息，把
+            <code>mixed_qkv, a, b</code> 交给当前的 attention
+            backend。这和 full attention 层的
+            <code>RadixAttention</code> 是对称的。</p>
+            <h4 id="状态存在哪里两种显存">状态存在哪里：两种显存</h4>
+            <figure>
+            <img
+            src="./WikiImage/linear_attention_hybrid_serving.svg"
+            alt="混合模型的服务形态" />
+            <figcaption
+            aria-hidden="true">混合模型的服务形态</figcaption>
+            </figure>
+            <ul>
+            <li><strong><code>HybridLinearKVPool</code></strong>（<code>mem_cache/memory_pool.py</code>）：只为
+            full attention 层分配 per-token
+            KV。<code>full_attention_layer_id_mapping</code> 把全局
+            layer id 映射到紧凑的 KV buffer 下标。</li>
+            <li><strong><code>MambaPool</code></strong>：为 linear
+            层分配 per-request 的状态 slot，张量布局是
+            <code>[num_mamba_layers, size+1, *shape]</code>。<code>HybridReqToTokenPool</code>
+            用 <code>req_index_to_mamba_index_mapping</code>
+            把请求映射到 slot，用 <code>mamba_map</code> 把全局 layer id
+            映射到 linear 层序号。</li>
+            <li><strong>状态形状</strong>（<code>configs/mamba_utils.py</code>）：
+            <ul>
+            <li>GDN（<code>Mamba2StateShape</code>）：conv 为
+            <code>(conv_dim, K−1)</code>，其中
+            <code>conv_dim = HV·d_v + 2·HK·d_k</code>；temporal 为
+            <code>(HV, d_v, d_k)</code>。</li>
+            <li>KDA（<code>KimiLinearStateShape</code>）：conv 为转置的
+            <code>(K−1, …)</code>；temporal 为
+            <code>(H, d, d)</code>。</li>
+            <li>注意 temporal 按 <code>[V, K]</code> 存，与上文数学约定
+            <span class="math inline">S\in\mathbb{R}^{d_k\times
+            d_v}</span> 互为转置。</li>
+            </ul></li>
+            <li><strong>dtype</strong>：conv 默认
+            bf16（<code>SGLANG_MAMBA_CONV_DTYPE</code>）。SSM 默认
+            fp32，可由 config 的 <code>mamba_ssm_dtype</code> 或
+            <code>SGLANG_MAMBA_SSM_DTYPE</code> 覆盖，KDA
+            只读环境变量。状态被反复读写、误差会累积，所以默认不用低精度。</li>
+            <li><strong>两个 pool 的比例</strong>：由
+            <code>--mamba-full-memory-ratio</code>（默认
+            0.9）控制。</li>
+            </ul>
+            <p>图中的账说明了取舍：每个请求的固定状态约等于 3K token 的
+            KV。所以短请求在 linear
+            层上反而更“贵”，长上下文才是混合模型的主场。</p>
+            <h4 id="backend-路由与两条路径">backend 路由与两条路径</h4>
+            <p><code>layers/attention/hybrid_linear_attn_backend.py</code>
+            中的 <code>HybridLinearAttnBackend</code> 持有两个子
+            backend，用 <code>_is_full_attn(layer_id)</code>
+            按层路由：full attention 层走普通 backend（FlashInfer / FA3
+            / MLA 等），linear 层走 <code>GDNAttnBackend</code> /
+            <code>KDAAttnBackend</code>（<code>layers/attention/linear/</code>，都继承
+            <code>MambaAttnBackendBase</code>）。</p>
+            <p>metadata 只在每个 batch 开始时准备一次，主要包括：</p>
+            <ul>
+            <li><code>mamba_cache_indices</code>：每个请求对应的状态
+            slot，由 <code>get_mamba_indices</code> 得到；</li>
+            <li><code>query_start_loc</code>：变长序列在拼接 batch
+            里的起点。</li>
+            </ul>
+            <p>以 GDN 为例，两条路径的分工如下：</p>
+            <ul>
+            <li><strong>decode</strong>：先通过
+            <code>mamba2_layer_cache(layer_id)</code> 取出该层的
+            conv/temporal 状态，然后 <code>causal_conv1d_update</code>
+            把卷积窗口滑动一格，最后用 recurrent kernel 原地更新 <span
+            class="math inline">S</span>。</li>
+            <li><strong>extend</strong>：<code>has_initial_states = extend_prefix_lens &gt; 0</code>
+            决定是否从 pool 里读入初始状态（命中 prefix cache
+            的请求才有）。之后依次执行
+            <code>causal_conv1d_fn</code>、<code>fused_gdn_gating</code>，再调用
+            chunk kernel <code>chunk_gated_delta_rule</code>；KDA
+            对应调用 <code>chunk_kda</code>。</li>
+            </ul>
+            <h4 id="kernel-抽象">kernel 抽象</h4>
+            <p>具体 kernel 被再抽象一层：</p>
+            <ul>
+            <li><code>layers/attention/linear/kernels/kernel_backend.py</code>
+            定义 <code>LinearAttnKernelBase</code>，要求实现
+            <code>decode</code> /
+            <code>extend</code>，<code>target_verify</code> 可选。</li>
+            <li>实现有
+            <code>TritonGDNKernel</code>、<code>TritonKDAKernel</code>，以及
+            CuTe DSL、FlashInfer、FlashKDA 等变体。</li>
+            <li><code>GDNKernelDispatcher</code> /
+            <code>KDAKernelDispatcher</code> 按阶段选择实现。</li>
+            <li>命令行用 <code>--linear-attn-backend</code>，或分阶段的
+            <code>--linear-attn-decode-backend</code> /
+            <code>--linear-attn-prefill-backend</code> 指定；verify
+            阶段未设置时跟随 decode。</li>
+            </ul>
+            <h4 id="prefix-cache-与投机解码">prefix cache
+            与投机解码</h4>
+            <p>这两个特性都会撞上同一个事实：<strong>状态是对整段前缀的压缩，不能切开</strong>。KV
+            cache 可以按 token 截断复用；而 <span
+            class="math inline">S_t</span> 只对应前缀长度恰好为 <span
+            class="math inline">t</span>
+            的位置，任意截断点的状态都需要事先存下来。</p>
+            <ul>
+            <li><strong>prefix cache</strong>：由
+            <code>mem_cache/mamba_radix_cache.py</code> 中的
+            <code>MambaRadixCache</code> 负责。
+            <ul>
+            <li>radix 树节点除了 KV 索引，还挂一个状态
+            slot。节点被分裂时，前半段直接得到
+            <code>mamba_value = None</code>（源码注释：mamba cache can
+            not be split）。</li>
+            <li>为了让更多前缀可命中，prefill 会把 chunk kernel
+            物化的块边界状态 <span class="math inline">h</span> 拷进
+            track slot。decode 则按
+            <code>--mamba-track-interval</code>（默认
+            256）定期留快照。</li>
+            <li>命中后，状态先拷贝到请求自己的
+            slot（COW）再继续更新，以免污染缓存。</li>
+            <li><code>--enable-int8-mamba-checkpoint</code>
+            可以把缓存的状态存成 int8，大约省一半空间。</li>
+            </ul></li>
+            <li><strong>投机解码</strong>：verify 时有多个 draft
+            token，但只有被接受的前缀才能提交状态。
+            <ul>
+            <li><code>target_verify</code> 以
+            <code>disable_state_update=True</code> 运行，把每个 draft
+            位置的中间状态写进 <code>SpeculativeState</code> 的
+            buffer。</li>
+            <li>accept 之后，由
+            <code>update_mamba_state_after_mtp_verify</code>
+            按接受长度把对应的中间状态 scatter 回 pool。</li>
+            <li>另一条路是
+            <code>--enable-linear-replayssm-spec</code>（仅限 topk ≤ 1
+            的链式 draft）：verify 不再给每个 draft
+            存一份完整状态，只把每步的原始输入（k、v、gate、β）存进每个
+            slot 的小窗口；commit 时把被接受的前缀重放进 fp32 状态。状态
+            <span class="math inline">d_k\times d_v</span>
+            远大于单步输入，这样省掉了大量显存和带宽。</li>
+            </ul></li>
+            </ul>
+            <h3 id="小结">小结</h3>
+            <p>Linear attention 的核心是把 softmax attention
+            随长度增长的 KV cache，换成一个 <span
+            class="math inline">d_k\times d_v</span>
+            的固定状态，attention 因此变成
+            RNN。随之而来的问题是固定容量的记忆怎么写、怎么忘：</p>
+            <ul>
+            <li>delta rule 用“只写误差”实现改写，相当于每个 token
+            对记忆做一步在线回归；</li>
+            <li>遗忘门负责淘汰旧信息。GDN 用每 head 一个标量，KDA
+            把它细化成逐通道向量，让不同特征有不同的时间尺度。</li>
+            </ul>
+            <p>工程上，chunkwise 算法让 prefill 能并行，recurrent kernel
+            让 decode 只需常数开销。SGLang 用“full attention 层
+            per-token KV + linear 层 per-request 状态
+            slot”的两种显存来服务混合模型；代价是状态不可切分，prefix
+            cache 和投机解码都要靠显式的状态快照来补。</p>
           </main>
         <aside class="wiki-toc">
       <ul>
-      <li><a href="#softmax-attention"
-      id="toc-softmax-attention">Softmax Attention</a></li>
-      <li><a href="#linear-attention" id="toc-linear-attention">Linear
-      Attention</a></li>
-      <li><a href="#deltanet" id="toc-deltanet">DeltaNet</a></li>
+      <li><a href="#问题softmax-attention-的两笔账"
+      id="toc-问题softmax-attention-的两笔账">问题：Softmax Attention
+      的两笔账</a></li>
+      <li><a href="#核心抽象把历史压缩成一个状态矩阵"
+      id="toc-核心抽象把历史压缩成一个状态矩阵">核心抽象：把历史压缩成一个状态矩阵</a></li>
+      <li><a href="#演化从累加到-gated-delta-rule"
+      id="toc-演化从累加到-gated-delta-rule">演化：从累加到 Gated Delta
+      Rule</a></li>
+      <li><a href="#gated-deltanet" id="toc-gated-deltanet">Gated
+      DeltaNet</a></li>
+      <li><a href="#kda逐通道的遗忘门"
+      id="toc-kda逐通道的遗忘门">KDA：逐通道的遗忘门</a></li>
+      <li><a href="#两种计算形态chunkwise-prefill-与-recurrent-decode"
+      id="toc-两种计算形态chunkwise-prefill-与-recurrent-decode">两种计算形态：chunkwise
+      prefill 与 recurrent decode</a></li>
+      <li><a href="#一层-gdn-kda-的完整数据流"
+      id="toc-一层-gdn-kda-的完整数据流">一层 GDN / KDA
+      的完整数据流</a></li>
+      <li><a href="#在-sglang-中的实现" id="toc-在-sglang-中的实现">在
+      SGLang 中的实现</a></li>
+      <li><a href="#小结" id="toc-小结">小结</a></li>
       </ul>
     </aside>
       </div>
-  <script type="text/javascript">
-    (function () {
-      function markActive() {
-        var here = location.href.split('#')[0];
-        var links = document.querySelectorAll('.wiki-sidebar a');
-        for (var i = 0; i < links.length; i++) {
-          if (links[i].href.split('#')[0] === here) {
-            links[i].classList.add('active');
-          }
-        }
-      }
-      // load the shared site directory once (served from the wiki root);
-      // kept in a standalone file so adding a page needn't rebuild every page.
-      var nav = document.getElementById('wiki-sidebar');
-      if (nav) {
-        fetch('/wiki_sidebar.html')
-          .then(function (r) { return r.ok ? r.text() : ''; })
-          .then(function (html) {
-            if (html) {
-              nav.innerHTML = html;
-              nav.hidden = false;
-              markActive();
-            }
-          })
-          .catch(function () {});
-      }
-      // keep bootstrap table styling (previously done by sticky_menu.js)
-      var tables = document.getElementsByTagName('table');
-      for (var j = 0; j < tables.length; j++) {
-        tables[j].classList.add('table');
-      }
-    })();
-  </script>
 </body>
 
 </html>

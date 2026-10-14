@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 530" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="530" rx="12" fill="#ffffff"/>
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#868e96"/>
+    </marker>
+    <pattern id="cell" x="0" y="0" width="17" height="24" patternUnits="userSpaceOnUse">
+      <rect x="0.5" y="0.5" width="15" height="23" rx="2" fill="#edf2ff" stroke="#4c6ef5" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">FP4 张量 = 打包的 4-bit 码 + 分块 scale</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">E2M1 只有 16 个码位（最大 6.0），单靠它装不下真实数值；幅值交给每块一个 scale</text>
+
+  <!-- ① packing -->
+  <text x="40" y="90" font-size="14" font-weight="700" fill="#3b5bdb">① 打包：两个 E2M1 共用一个 uint8</text>
+  <g font-family="monospace" font-size="11.5" text-anchor="middle">
+    <rect x="40" y="104" width="38" height="26" rx="5" fill="#edf2ff" stroke="#4c6ef5"/><text x="59" y="121" fill="#3b5bdb">e0</text>
+    <rect x="80" y="104" width="38" height="26" rx="5" fill="#edf2ff" stroke="#4c6ef5"/><text x="99" y="121" fill="#3b5bdb">e1</text>
+    <rect x="120" y="104" width="38" height="26" rx="5" fill="#edf2ff" stroke="#4c6ef5"/><text x="139" y="121" fill="#3b5bdb">e2</text>
+    <rect x="160" y="104" width="38" height="26" rx="5" fill="#edf2ff" stroke="#4c6ef5"/><text x="179" y="121" fill="#3b5bdb">e3</text>
+    <rect x="200" y="104" width="38" height="26" rx="5" fill="#edf2ff" stroke="#4c6ef5"/><text x="219" y="121" fill="#3b5bdb">e4</text>
+    <rect x="240" y="104" width="38" height="26" rx="5" fill="#edf2ff" stroke="#4c6ef5"/><text x="259" y="121" fill="#3b5bdb">e5</text>
+    <text x="300" y="121" fill="#868e96">…</text>
+  </g>
+  <text x="160" y="150" text-anchor="middle" font-size="11.5" fill="#868e96">逻辑 shape [N, K]，每个 4 bit</text>
+  <path d="M320 117 L380 117" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <g font-family="monospace" font-size="11.5" text-anchor="middle">
+    <rect x="390" y="104" width="100" height="26" rx="5" fill="#e6fcf5" stroke="#0ca678"/>
+    <line x1="440" y1="104" x2="440" y2="130" stroke="#0ca678"/>
+    <text x="415" y="121" fill="#0b7285">e1</text><text x="465" y="121" fill="#0b7285">e0</text>
+    <rect x="496" y="104" width="100" height="26" rx="5" fill="#e6fcf5" stroke="#0ca678"/>
+    <line x1="546" y1="104" x2="546" y2="130" stroke="#0ca678"/>
+    <text x="521" y="121" fill="#0b7285">e3</text><text x="571" y="121" fill="#0b7285">e2</text>
+    <rect x="602" y="104" width="100" height="26" rx="5" fill="#e6fcf5" stroke="#0ca678"/>
+    <line x1="652" y1="104" x2="652" y2="130" stroke="#0ca678"/>
+    <text x="627" y="121" fill="#0b7285">e5</text><text x="677" y="121" fill="#0b7285">e4</text>
+    <text x="724" y="121" fill="#868e96">…</text>
+  </g>
+  <text x="546" y="150" text-anchor="middle" font-size="11.5" fill="#868e96">存储 shape [N, K/2]，dtype uint8 · 高 4 位 = 奇数下标，低 4 位 = 偶数下标</text>
+  <line x1="40" y1="170" x2="860" y2="170" stroke="#e9ecef" stroke-width="1.5"/>
+
+  <!-- ② MXFP4 -->
+  <text x="40" y="198" font-size="14" font-weight="700" fill="#3b5bdb">② MXFP4：32 个元素一块，块内共享一个 E8M0 scale</text>
+  <rect x="51" y="216" width="544" height="24" fill="url(#cell)"/>
+  <path d="M51 248 L51 254 L595 254 L595 248" fill="none" stroke="#868e96" stroke-width="1.5"/>
+  <text x="323" y="270" text-anchor="middle" font-size="11.5" fill="#868e96">32 × 4 bit = 16 B 数据</text>
+  <path d="M600 228 L636 228" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <rect x="644" y="208" width="196" height="42" rx="8" fill="#fff9db" stroke="#f08c00"/>
+  <text x="742" y="226" text-anchor="middle" font-size="12.5" font-weight="700" fill="#e8590c">E8M0 scale · 1 B</text>
+  <text x="742" y="243" text-anchor="middle" font-size="11" fill="#495057" font-family="monospace">2^(e − 127)，只有指数</text>
+  <text x="40" y="296" font-size="12" fill="#495057" font-family="monospace">x ≈ e2m1 × 2^(e − 127)</text>
+  <text x="860" y="296" text-anchor="end" font-size="12" font-weight="700" fill="#495057">4 + 8/32 = 4.25 bit / 元素</text>
+  <line x1="40" y1="312" x2="860" y2="312" stroke="#e9ecef" stroke-width="1.5"/>
+
+  <!-- ③ NVFP4 -->
+  <text x="40" y="338" font-size="14" font-weight="700" fill="#3b5bdb">③ NVFP4：16 个元素一块，E4M3 block scale + FP32 global scale</text>
+  <rect x="51" y="360" width="272" height="24" fill="url(#cell)"/>
+  <rect x="340" y="360" width="272" height="24" fill="url(#cell)"/>
+  <path d="M187 384 L187 400" stroke="#868e96" stroke-width="1.5"/>
+  <path d="M476 384 L476 400" stroke="#868e96" stroke-width="1.5"/>
+  <rect x="132" y="400" width="110" height="30" rx="7" fill="#fff9db" stroke="#f08c00"/>
+  <text x="187" y="420" text-anchor="middle" font-size="12" font-weight="700" fill="#e8590c">E4M3 · 1 B</text>
+  <rect x="421" y="400" width="110" height="30" rx="7" fill="#fff9db" stroke="#f08c00"/>
+  <text x="476" y="420" text-anchor="middle" font-size="12" font-weight="700" fill="#e8590c">E4M3 · 1 B</text>
+  <rect x="644" y="356" width="196" height="74" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="742" y="378" text-anchor="middle" font-size="12.5" font-weight="700" fill="#5f3dc4">FP32 global scale</text>
+  <text x="742" y="397" text-anchor="middle" font-size="11" fill="#495057">整张量 1 个</text>
+  <text x="742" y="416" text-anchor="middle" font-size="11" fill="#495057" font-family="monospace">weight_scale_2</text>
+  <text x="40" y="458" font-size="12" fill="#495057" font-family="monospace">x ≈ e2m1 × block_scale(E4M3) × global_scale(FP32)</text>
+  <text x="860" y="458" text-anchor="end" font-size="12" font-weight="700" fill="#495057">4 + 8/16 = 4.5 bit / 元素</text>
+
+  <!-- note -->
+  <rect x="40" y="474" width="820" height="44" rx="9" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="450" y="492" text-anchor="middle" font-size="12" fill="#495057">块越小、scale 越能贴住局部幅值，但 scale 开销越大；E8M0 只能是 2 的幂，E4M3 scale 可以细调。</text>
+  <text x="450" y="509" text-anchor="middle" font-size="12" fill="#495057">PyTorch 侧多半只看到 uint8：打包顺序、scale 布局和反量化公式都由 kernel 与 checkpoint 约定。</text>
+</svg>

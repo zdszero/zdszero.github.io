@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 630" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="630" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">数据放在哪：账本在 CPU，内容在 GPU</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">调度决策只读 CPU 侧；kernel 只读 GPU 侧；两边都要的量各存一份、各自推进</text>
+
+  <defs>
+    <marker id="arG" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#868e96"/></marker>
+    <marker id="arA" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#f08c00"/></marker>
+  </defs>
+
+  <!-- column banners -->
+  <rect x="40" y="76" width="330" height="32" rx="8" fill="#4c6ef5"/>
+  <text x="205" y="97" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">CPU · 调度器进程（Python 对象 / 主机内存）</text>
+  <rect x="530" y="76" width="330" height="32" rx="8" fill="#0ca678"/>
+  <text x="695" y="97" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">GPU · 显存（device 张量）</text>
+
+  <!-- Row A: request slots -->
+  <rect x="40" y="120" width="330" height="50" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="54" y="141" font-size="12" font-weight="700" fill="#3b5bdb" font-family="monospace">ReqToTokenPool.free_slots · req_pool_idx</text>
+  <text x="54" y="159" font-size="11" fill="#495057">空闲行号是 Python list；请求只拿一个 int 行号</text>
+  <rect x="530" y="120" width="330" height="50" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="544" y="141" font-size="12" font-weight="700" fill="#0b7285" font-family="monospace">req_to_token [slots, max_ctx] int32</text>
+  <text x="544" y="159" font-size="11" fill="#495057">每行 = 一个请求所有 token 的 KV slot 下标</text>
+  <text x="450" y="138" text-anchor="middle" font-size="12" font-weight="700" fill="#212529">请求槽位</text>
+  <path d="M374 150 L524 150" stroke="#868e96" stroke-width="2" marker-end="url(#arG)"/>
+  <text x="450" y="165" text-anchor="middle" font-size="10" fill="#868e96">行号指向表的一行</text>
+
+  <!-- Row B: KV slots -->
+  <rect x="40" y="180" width="330" height="50" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="54" y="201" font-size="12" font-weight="700" fill="#3b5bdb" font-family="monospace">available_size() = len(free_pages)</text>
+  <text x="54" y="219" font-size="11" fill="#495057">shape 是 CPU 端元数据，读长度不触发同步</text>
+  <rect x="530" y="180" width="330" height="50" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="544" y="201" font-size="12" font-weight="700" fill="#0b7285" font-family="monospace">free_pages · KV buffer (k/v 每层)</text>
+  <text x="544" y="219" font-size="11" fill="#495057">空闲表本身在 GPU：alloc 切片、free 做 cat</text>
+  <text x="450" y="198" text-anchor="middle" font-size="12" font-weight="700" fill="#212529">KV 槽位</text>
+  <path d="M526 210 L376 210" stroke="#868e96" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#arG)"/>
+  <text x="450" y="225" text-anchor="middle" font-size="10" fill="#868e96">只读长度</text>
+
+  <!-- Row C: radix tree -->
+  <rect x="40" y="240" width="330" height="50" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="54" y="261" font-size="12" font-weight="700" fill="#3b5bdb" font-family="monospace">TreeNode: children · lock_ref · LRU</text>
+  <text x="54" y="279" font-size="11" fill="#495057">树结构、引用计数、驱逐顺序都在 CPU 上算</text>
+  <rect x="530" y="240" width="330" height="50" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="544" y="261" font-size="12" font-weight="700" fill="#0b7285" font-family="monospace">node.value → req.prefix_indices</text>
+  <text x="544" y="279" font-size="11" fill="#495057">命中前缀的 KV 下标张量，在 GPU 上 cat</text>
+  <text x="450" y="258" text-anchor="middle" font-size="12" font-weight="700" fill="#212529">前缀树</text>
+  <path d="M374 270 L524 270" stroke="#868e96" stroke-width="2" marker-end="url(#arG)"/>
+  <text x="450" y="285" text-anchor="middle" font-size="10" fill="#868e96">节点持有下标</text>
+
+  <!-- Row D: seq lens (mirror) -->
+  <rect x="40" y="300" width="330" height="50" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="54" y="321" font-size="12" font-weight="700" fill="#3b5bdb" font-family="monospace">seq_lens_cpu · seq_lens_sum · kv_*_len</text>
+  <text x="54" y="339" font-size="11" fill="#495057">预算、分页、CUDA graph 选档用的长度</text>
+  <rect x="530" y="300" width="330" height="50" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="544" y="321" font-size="12" font-weight="700" fill="#0b7285" font-family="monospace">seq_lens · orig_seq_lens</text>
+  <text x="544" y="339" font-size="11" fill="#495057">attention kernel、positions 用的长度</text>
+  <text x="450" y="318" text-anchor="middle" font-size="12" font-weight="700" fill="#212529">序列长度</text>
+  <path d="M376 330 L524 330" stroke="#868e96" stroke-width="2" stroke-dasharray="2 4"/>
+  <text x="450" y="345" text-anchor="middle" font-size="10" fill="#868e96">镜像：各自 +1，不互读</text>
+
+  <!-- Row E: step inputs -->
+  <rect x="40" y="360" width="330" height="50" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="54" y="381" font-size="12" font-weight="700" fill="#3b5bdb" font-family="monospace">prefill_input_ids_cpu (pinned)</text>
+  <text x="54" y="399" font-size="11" fill="#495057">新请求的输入 token，先暂存在锁页内存</text>
+  <rect x="530" y="360" width="330" height="50" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="544" y="381" font-size="12" font-weight="700" fill="#0b7285" font-family="monospace">input_ids · out_cache_loc · positions</text>
+  <text x="544" y="399" font-size="11" fill="#495057">本步 forward 的输入与 KV 写入位置</text>
+  <text x="450" y="378" text-anchor="middle" font-size="12" font-weight="700" fill="#212529">本步输入</text>
+  <path d="M374 390 L524 390" stroke="#f08c00" stroke-width="2" marker-end="url(#arA)"/>
+  <text x="450" y="405" text-anchor="middle" font-size="10" fill="#e8590c">H2D（forward 入口才发）</text>
+
+  <!-- Row F: sampling -->
+  <rect x="40" y="420" width="330" height="50" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="54" y="441" font-size="12" font-weight="700" fill="#3b5bdb" font-family="monospace">req.sampling_params · grammar 状态机</text>
+  <text x="54" y="459" font-size="11" fill="#495057">每个请求自己的 temperature / top_p / stop</text>
+  <rect x="530" y="420" width="330" height="50" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="544" y="441" font-size="12" font-weight="700" fill="#0b7285" font-family="monospace">SamplingBatchInfo · penalizer · vocab_mask</text>
+  <text x="544" y="459" font-size="11" fill="#495057">按 batch 拼成张量，在 GPU 上采样</text>
+  <text x="450" y="438" text-anchor="middle" font-size="12" font-weight="700" fill="#212529">采样参数</text>
+  <path d="M374 450 L524 450" stroke="#f08c00" stroke-width="2" marker-end="url(#arA)"/>
+  <text x="450" y="465" text-anchor="middle" font-size="10" fill="#e8590c">H2D（组 batch 时）</text>
+
+  <!-- Row G: results -->
+  <rect x="40" y="480" width="330" height="50" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="54" y="501" font-size="12" font-weight="700" fill="#3b5bdb" font-family="monospace">req.output_ids (array) · 结束判定</text>
+  <text x="54" y="519" font-size="11" fill="#495057">记账、stop 检查、发给 detokenizer</text>
+  <rect x="530" y="480" width="330" height="50" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="544" y="501" font-size="12" font-weight="700" fill="#0b7285" font-family="monospace">next_token_ids · FutureMap 缓冲</text>
+  <text x="544" y="519" font-size="11" fill="#495057">采样结果；下一步输入直接在 GPU 内取</text>
+  <text x="450" y="498" text-anchor="middle" font-size="12" font-weight="700" fill="#212529">采样结果</text>
+  <path d="M526 510 L376 510" stroke="#f08c00" stroke-width="2" marker-end="url(#arA)"/>
+  <text x="450" y="525" text-anchor="middle" font-size="10" fill="#e8590c">D2H（晚一步读）</text>
+
+  <!-- note -->
+  <rect x="40" y="548" width="820" height="62" rx="10" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="58" y="572" font-size="12" fill="#495057">规律：CPU 记“哪些格子空着、归谁”，GPU 存“格子里的数据”。每一步真正过边界的只有橙色三行——</text>
+  <text x="58" y="592" font-size="12" fill="#495057">新输入和采样参数往下拷，采样结果往上拷；其余都是“CPU 拿下标、GPU 拿内容”，或两边各存一份镜像。</text>
+</svg>

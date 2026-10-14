@@ -25,82 +25,27 @@
   </title>
     <link rel="stylesheet" href="./WikiTheme/theme/bootstrap.css"  />
         <script defer=""
-        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
-        type="text/javascript"></script>
-        <style type="text/css">
-    /* ---- three column wiki layout (left: site directory, center: content, right: page TOC) ---- */
-    .wiki-layout {
-      display: flex;
-      align-items: flex-start;
-      gap: 24px;
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 0 20px;
-      box-sizing: border-box;
-    }
-    .wiki-sidebar {
-      flex: 0 0 240px;
-      width: 240px;
-      position: sticky;
-      top: 0;
-      max-height: 100vh;
-      overflow-y: auto;
-      padding: 10px 4px 20px 0;
-      border-right: 1px solid #eee;
-      font-size: 14px;
-    }
-    .wiki-sidebar[hidden] { display: none; }
-    .wiki-toc {
-      flex: 0 0 220px;
-      width: 220px;
-      position: sticky;
-      top: 0;
-      max-height: 100vh;
-      overflow-y: auto;
-      padding: 10px 0 20px 4px;
-      border-left: 1px solid #eee;
-      font-size: 14px;
-    }
-    .wiki-main {
-      flex: 1 1 auto;
-      min-width: 0;
-      max-width: 820px;
-      padding: 10px 0 40px;
-    }
-    /* site directory tree */
-    .wiki-sidebar .wiki-home {
-      display: block;
-      font-weight: bold;
-      margin-bottom: 10px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid #eee;
-      text-decoration: none;
-      color: #333;
-    }
-    .wiki-sidebar ul { list-style: none; margin: 0 0 0 12px; padding: 0; }
-    .wiki-sidebar > ul { margin-left: 0; }
-    .wiki-sidebar li { line-height: 1.7; }
-    .wiki-sidebar a { text-decoration: none; color: #555; }
-    .wiki-sidebar a:hover { color: #0088cc; text-decoration: underline; }
-    .wiki-sidebar a.active { color: #0088cc; font-weight: bold; }
-    /* page TOC */
-    .wiki-toc ul { list-style: none; margin: 0 0 0 12px; padding: 0; }
-    .wiki-toc > ul { margin-left: 0; }
-    .wiki-toc li { line-height: 1.6; }
-    .wiki-toc a { text-decoration: none; color: #555; }
-    .wiki-toc a:hover { color: #0088cc; }
-    @media (max-width: 980px) {
-      .wiki-layout { flex-direction: column; }
-      .wiki-sidebar, .wiki-toc {
-        position: static;
-        width: 100%;
-        flex-basis: auto;
-        max-height: none;
-        border: 0;
-      }
-      .wiki-main { max-width: none; }
-    }
-  </style>
+        src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+        <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+        </script>
+        <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+        <!-- wiki three-column layout styles/behavior, kept external so the ~5KB
+       block isn't duplicated into every generated page -->
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/wiki-layout.css" />
+  <script defer src="./WikiTheme/wiki-layout.js"></script>
 </head>
 
 <body>
@@ -118,84 +63,387 @@
     <div class="wiki-layout">
     <nav class="wiki-sidebar" id="wiki-sidebar" hidden></nav>
     <main class="wiki-main">
-            <p>将 MHA 的计算量从 <span
-            class="math inline">\(O(T^2)\)</span> 变为了 <span
-            class="math inline">\(O(T)\)</span>，将访存量变为了从 <span
-            class="math inline">\(O(T)\)</span> 变成了 <span
-            class="math inline">\(O(W)\)</span></p>
+            <p><strong>SWA（Sliding Window Attention）= 每个 query
+            只看最近 <span class="math inline">W</span> 个
+            token。</strong> 这样每层 attention 的计算量从 <span
+            class="math inline">O(T^2)</span> 降到 <span
+            class="math inline">O(TW)</span>，每层需要保留的 KV 从 <span
+            class="math inline">T</span> 条降到 <span
+            class="math inline">W</span> 条。实际模型会把 SWA 层和 full
+            attention 层混合堆叠，推理引擎为此要管理”同一个
+            token、两种寿命”的 KV。下文先讲要解决的问题和设计，再对照
+            SGLang 的实现。</p>
+            <h3 id="问题full-attention-的两笔账都随-t-增长">问题：Full
+            Attention 的两笔账都随 T 增长</h3>
+            <p>记 batch 为 <span
+            class="math inline">B</span>，序列长度为 <span
+            class="math inline">T</span>，层数为 <span
+            class="math inline">L</span>，头数为 <span
+            class="math inline">H</span>，head dim 为 <span
+            class="math inline">D</span>。只算 attention 核心（<span
+            class="math inline">QK^\top</span> 和 <span
+            class="math inline">AV</span>），单层的开销如下：</p>
+            <table>
+            <colgroup>
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th></th>
+            <th>Full（因果）</th>
+            <th>SWA（窗口 <span class="math inline">W</span>）</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>prefill 计算量</td>
+            <td><span class="math inline">\approx 2BT^2HD</span></td>
+            <td><span class="math inline">\approx 4BTWHD</span></td>
+            </tr>
+            <tr>
+            <td>decode 每步读 KV</td>
+            <td><span class="math inline">\propto T</span></td>
+            <td><span class="math inline">\propto W</span></td>
+            </tr>
+            <tr>
+            <td>KV cache 大小</td>
+            <td><span class="math inline">B L T (d_{qk} + d_v)
+            H_{kv}</span></td>
+            <td><span class="math inline">B L W (d_{qk} + d_v)
+            H_{kv}</span></td>
+            </tr>
+            </tbody>
+            </table>
+            <p>Full attention 的因果 mask 是一个下三角，有效打分约 <span
+            class="math inline">T^2/2</span> 个，所以是 <span
+            class="math inline">2BT^2HD</span>。SWA 的每个 query 固定看
+            <span class="math inline">W</span> 个 key，两者之比约为
+            <span class="math inline">2W/T</span>。比如 <span
+            class="math inline">T=32\text{K}</span>、<span
+            class="math inline">W=128</span> 时，SWA 层的 attention
+            计算量和 KV 都不到 full 的 1%。</p>
+            <p>代价是看不到窗口外的信息。单层 SWA 只能看 <span
+            class="math inline">W</span> 个 token；堆叠 <span
+            class="math inline">L</span>
+            层后，信息可以一层层往后传，理论感受野约为 <span
+            class="math inline">L \cdot
+            W</span>。但这种间接传递是有损的，“大海捞针”式的远距离精确召回仍然要靠能看全局的层。</p>
+            <h3 id="设计局部交给-swa全局交给少数-full-层">设计：局部交给
+            SWA，全局交给少数 full 层</h3>
+            <figure>
+            <img src="./WikiImage/swa_mask_receptive.svg"
+            alt="Full mask 与 SWA mask" />
+            <figcaption aria-hidden="true">Full mask 与 SWA
+            mask</figcaption>
+            </figure>
+            <p>所以实际模型几乎都是<strong>混合结构</strong>：大部分层是
+            SWA，负责局部建模；每隔几层插一层 full
+            attention，负责全局召回。</p>
             <ul>
-            <li>MHA 的计算量（单层）：<span
-            class="math inline">\(2BT^2HD\)</span></li>
-            <li>SWA 的计算量（单层）：<span
-            class="math inline">\(4BWHD\)</span></li>
-            <li>MHA 需要存储的 kv cache：<span class="math inline">\(B L
-            T (d_{qk} + d_{v}) H_{kv}\)</span></li>
-            <li>SWA 需要存储的 kv cache：<span class="math inline">\(B L
-            W (d_{qk} + d_{v}) H_{kv}\)</span></li>
+            <li><strong>GPT-OSS</strong>：<code>layer_types</code> 中
+            <code>sliding_attention</code> 和
+            <code>full_attention</code> 交替出现。</li>
+            <li><strong>MiMo-V2-Flash</strong>：48 层中 39 层 SWA、9 层
+            full，窗口 128，由 <code>hybrid_layer_pattern</code>
+            指定。SWA 层和 full 层的 KV 头数不同（SWA 层 8 个，full 层 4
+            个）。</li>
+            <li><strong>Llama4</strong>：每 4 层中的前 3 层是 chunked
+            local attention，第 4 层是全局 attention。</li>
             </ul>
-            <p>推理引擎中有一个参数为
-            <code>--swa-full-tokens-ratio</code>，表示 SWA 和 GQA
-            占用显存的比值。</p>
-            <p>可以通过以上公式进行估算，以 mimo v2 flash 为例：</p>
+            <p>这类模型通常还会给 attention 加一个可学习的
+            sink（GPT-OSS、MiMo-V2 都有），让某个 query
+            在窗口内找不到相关 token 时，可以把权重”泄”到 sink
+            上，而不是被迫平均分给窗口内的 token。</p>
+            <p>混合结构带来了推理侧的核心问题：<strong>同一个 token
+            在不同层的 KV 寿命不同。</strong> full 层的 KV
+            要跟着请求一直活下去，还可能被 prefix cache 复用；SWA 层的
+            KV 在它滑出窗口之后就再也不会被读到。如果所有层共用一个按
+            token 分配的 KV pool，SWA 层就会白白占着 <span
+            class="math inline">T - W</span> 条无用的
+            KV，混合结构省下来的显存全部浪费掉。</p>
+            <h3 id="抽象一个-token两个地址">抽象：一个
+            token，两个地址</h3>
+            <p>推理引擎的解法是把两种寿命拆到两个池里：</p>
             <ul>
-            <li>总共 48 层，39 层 swa，9 层 gqa</li>
-            <li>swa 层：
-            <ul>
-            <li><code>window_size=128</code></li>
-            <li><code>num_heads=64</code></li>
-            <li><code>num_kv_heads=8</code></li>
-            </ul></li>
-            <li>gqa 层：
-            <ul>
-            <li><code>num_heads=64</code></li>
-            <li><code>num_kv_heads=4</code></li>
-            </ul></li>
-            <li>swa 和 gqa 层 <span
-            class="math inline">\(d_{qk}\)</span> 和 <span
-            class="math inline">\(d_{v}\)</span> 相同</li>
+            <li><strong>full pool</strong>：只给 full 层用，按 token
+            分配，跟普通的 KV pool 一样，请求活多久它就活多久；</li>
+            <li><strong>SWA pool</strong>：只给 SWA 层用，也按 token
+            分配，但 token 滑出窗口后就立即归还。</li>
             </ul>
-            <p>定义最大序列长度为 <span
-            class="math inline">\(T\)</span>，swa 和 gqa 需要占用的 kv
-            cache 比值为：</p>
-            <p><span class="math display">\[
-            \frac{L_{\text{swa}} \cdot W \cdot 8}{L_{\text{gqa}} \cdot T
-            \cdot 4} = \frac{39 \cdot 128 \cdot 8}{9 \cdot T \cdot 4}
-            \]</span></p>
+            <p>关键是<strong>以 full
+            索引为主地址</strong>。调度器、<code>req_to_token</code>、radix
+            树看到的都只有 full 索引，和非 SWA 模型完全一样。SWA
+            索引则通过一张映射表 <code>full_to_swa[full_idx]</code>
+            派生出来，只有 attention backend 在读写 SWA
+            层时才需要翻译一次。</p>
+            <p>于是”释放某个 token 的 SWA KV”就变成两步：把
+            <code>full_to_swa[full_idx]</code> 指向的 SWA slot 还给 SWA
+            allocator，再把映射置 0。full
+            索引本身保持不变，上层的数据结构都不需要改。</p>
+            <figure>
+            <img src="./WikiImage/swa_dual_pool.svg"
+            alt="SWA 双池与索引映射" />
+            <figcaption aria-hidden="true">SWA
+            双池与索引映射</figcaption>
+            </figure>
+            <p>这个抽象还顺带解决了”两个池谁先满”的问题：一个请求能否被调度，要同时看两个池的余量，两边分别记账、分别回收。</p>
+            <h3 id="实现">实现</h3>
+            <p>以下路径都相对于 <code>python/sglang/srt/</code>。</p>
+            <h4 id="哪些模型哪些层">哪些模型、哪些层</h4>
+            <ul>
+            <li><code>configs/model_config.py</code> 中的
+            <code>is_hybrid_swa_model</code> 是一个架构白名单，包括
+            GPT-OSS、Llama4、MiMo-V2、Step3p5、Gemma4、DeepSeek-V4
+            等。白名单内的模型，再由 <code>get_hybrid_layer_ids</code>
+            按各自的 config
+            字段（<code>layer_types</code>、<code>hybrid_layer_pattern</code>
+            等）拆出 <code>swa_attention_layer_ids</code> 和
+            <code>full_attention_layer_ids</code>。</li>
+            <li><code>--disable-hybrid-swa-memory</code>
+            会关掉双池，模型退化成一个普通 pool。此时每层仍然按窗口计算
+            attention，只是 SWA 层的 KV 不再提前释放。Gemma2/3 在这个
+            fork 里就被强制走这条路。</li>
+            <li>每一层的窗口大小通过
+            <code>RadixAttention(sliding_window_size=...)</code>
+            传入，<code>-1</code> 表示 full attention。注意
+            GPT-OSS、Gemma 的
+            <code>get_attention_sliding_window_size</code> 返回的是
+            <code>config.sliding_window - 1</code>，即不含当前 token
+            的窗口长度。</li>
+            </ul>
+            <h4 id="双池与映射表">双池与映射表</h4>
+            <ul>
+            <li><strong><code>SWAKVPool</code></strong>（<code>mem_cache/swa_memory_pool.py</code>）：内部持有
+            <code>full_kv_pool</code> 和 <code>swa_kv_pool</code>
+            两个普通 KV pool。<code>layers_mapping</code> 把全局 layer
+            id 映射成
+            <code>(池内层号, 是否 SWA 层)</code>，<code>get_key_buffer</code>
+            等接口据此转发到对应的池。</li>
+            <li><strong><code>SWATokenToKVPoolAllocator</code></strong>（<code>mem_cache/allocator/swa.py</code>）：持有
+            <code>full_attn_allocator</code> 和
+            <code>swa_attn_allocator</code>，以及映射表
+            <code>full_to_swa_index_mapping</code>。
+            <ul>
+            <li>映射表长度为 <code>size + page_size + 1</code>，值为 0
+            表示”没有 SWA slot”。末尾追加的 <code>-1</code> 是哨兵，让
+            <code>last_loc = -1</code> 翻译后仍是 <code>-1</code>。</li>
+            <li><code>alloc</code> / <code>alloc_extend</code> /
+            <code>alloc_decode</code> 在两个 allocator
+            中各分配同样数量的 slot，再写入映射。</li>
+            <li><code>free</code> 先释放 full slot，再调用
+            <code>free_swa</code>。<code>free_swa</code>
+            只释放映射值大于 0 的 SWA slot，然后把映射置 0。因此先
+            <code>free_swa</code>、后 <code>free</code>
+            不会重复释放。</li>
+            <li><code>available_size()</code>
+            返回两个池余量的较小值。调度器的准入检查（<code>managers/schedule_policy.py</code>）也分别维护
+            <code>rem_total_tokens</code> 和 <code>rem_swa_tokens</code>
+            两份预算。</li>
+            </ul></li>
+            </ul>
+            <h4
+            id="显存怎么分--swa-full-tokens-ratio">显存怎么分：<code>--swa-full-tokens-ratio</code></h4>
+            <p>这个参数（默认 0.8）是<strong>每层的 token
+            数之比</strong>：SWA pool 的 token 容量 ÷ full pool 的 token
+            容量，与 SWA 层和 full
+            层的层数无关，也不是两者占用显存的比值。</p>
+            <p><code>model_executor/pool_configurator.py</code> 中的
+            <code>HybridSWAPoolConfigurator</code>
+            按下面的方式求解两个池的大小（省略了投机解码 draft
+            层的项）：</p>
+            <p><span class="math display">
+            \text{cell} = F \cdot L_{\text{full}} + r \cdot S \cdot
+            L_{\text{swa}}, \qquad
+            N_{\text{full}} = \left\lfloor
+            \frac{\text{可用显存}}{\text{cell}} \right\rfloor, \qquad
+            N_{\text{swa}} = r \cdot N_{\text{full}}
+            </span></p>
+            <p>其中 <span class="math inline">F</span>、<span
+            class="math inline">S</span> 分别是 full 层和 SWA 层单个
+            token、单层的 KV
+            字节数（<code>num_kv_heads × (head_dim + v_head_dim) × dtype_size</code>），两个结果都向下对齐到
+            page。记 page 大小为 <span
+            class="math inline">P</span>，如果 <span
+            class="math inline">N_{\text{swa}} \le W + P</span>，说明
+            SWA pool 连一个请求都放不下，启动时直接报错。</p>
+            <p>以 MiMo-V2-Flash 估算（假设两类层的 head dim 相同，于是
+            <span class="math inline">S = 2F</span>）：</p>
+            <ul>
+            <li>默认 <span class="math inline">r=0.8</span>：cell <span
+            class="math inline">= 9F + 0.8 \times 39 \times 2F =
+            71.4F</span>，SWA pool 占了约 <strong>87%</strong> 的 KV
+            显存；</li>
+            <li>改成 <span class="math inline">r=0.05</span>：cell <span
+            class="math inline">= 12.9F</span>，full pool 的 token
+            容量变成原来的约 5.5 倍。</li>
+            </ul>
+            <p>那 <span class="math inline">r</span>
+            至少要多大？对正在运行的请求，SWA 层只需保留约 <span
+            class="math inline">W + I + P</span> 个 token，其中 <span
+            class="math inline">I</span> 是下一节的释放间隔（默认
+            128）。假设平均序列长度为 <span
+            class="math inline">\bar{T}</span>，full pool 满载时大约有
+            <span class="math inline">N_{\text{full}}/\bar{T}</span>
+            个请求，所需的 <span class="math inline">r</span> 约为 <span
+            class="math inline">(W + I + P) /
+            \bar{T}</span>，长上下文场景下只有百分之几。多出来的 SWA
+            容量用来给 radix cache 保留已缓存前缀的 SWA KV：<span
+            class="math inline">r</span> 越小，full pool 的并发越高，但
+            prefix cache 越容易因为 SWA KV 被淘汰而无法命中。</p>
+            <p>一些模型会改写默认值，例如 DeepSeek-V4 和 Inkling 改成
+            0.1（<code>arg_groups/overrides.py</code>，仅当用户没有显式设置时生效）。另外，这个
+            fork 有一条 <code>SWAChunkCapPoolConfigurator</code>
+            路径：在关闭 radix cache、开启 chunked prefill 并设置了
+            <code>max_running_requests</code> 时，SWA pool 按”每请求窗口
+            + 余量”× 请求数直接封顶，剩下的显存全部给 full pool，此时
+            ratio 不生效。</p>
+            <h4 id="运行时把滑出窗口的-kv-还回去">运行时：把滑出窗口的
+            KV 还回去</h4>
+            <p>每个请求在 <code>req.kv.swa_evicted_seqlen</code>
+            中记录”SWA KV 已经释放到哪个位置”。在
+            <code>[0, swa_evicted_seqlen)</code> 范围内，full 层的 KV
+            仍在，SWA 层的 KV 已经归还。</p>
+            <ul>
+            <li><strong>入口</strong>：<code>ScheduleBatch.maybe_evict_swa</code>（<code>managers/schedule_batch.py</code>），在
+            <code>alloc_for_extend</code> /
+            <code>alloc_for_decode</code>
+            以及投机解码的分配路径里调用。</li>
+            <li><strong>decode</strong>：不是每步都释放。只有当滑出窗口的
+            token 累积到 <code>SGLANG_SWA_EVICTION_INTERVAL</code>（默认
+            128）个以上时，才调用一次
+            <code>_evict_swa</code>，以摊薄释放开销。这也是上面估算中要加上
+            interval 的原因。</li>
+            <li><strong>chunked prefill</strong>：chunk cache
+            模式下，每个 chunk 开始前把上一个 chunk
+            窗口以外的部分释放掉。开启 overlap 调度时要晚一个
+            chunk，因为上一个 extend batch 可能还在 GPU 上读这些
+            KV。</li>
+            <li><strong>真正的释放逻辑</strong>在
+            <code>mem_cache/common.py</code> 的
+            <code>free_swa_out_of_window_slots</code>：
+            <ul>
+            <li>下界是 <code>cache_protected_len</code>，即已经交给
+            radix 树管理的前缀，那部分由树负责回收；</li>
+            <li>上界在 chunk cache 下是 <code>pre_len - W</code>，在
+            radix cache 下是
+            <code>pre_len - max(W, page_size)</code>，保证最后一个叶子不会整段变成
+            tombstone；</li>
+            <li>结果对齐到 page 后，对
+            <code>req_to_token[req, old:new]</code> 调用
+            <code>free_swa</code>，再推进
+            <code>swa_evicted_seqlen</code>。</li>
+            </ul></li>
+            </ul>
+            <h4 id="prefix-cachetombstone-与窗口命中规则">Prefix
+            cache：tombstone 与窗口命中规则</h4>
+            <p>普通 radix cache 的规则是：只要前缀在树里，就能复用。SWA
+            让这条规则变复杂了，因为树上一个节点可能处于”full KV
+            还在、SWA KV 已经被淘汰”的状态，这种节点称为
+            <strong>tombstone</strong>。</p>
+            <p>从匹配终点继续 prefill 时，SWA 层需要看到终点之前 <span
+            class="math inline">W</span> 个 token 的 KV；更早的 token
+            是否还有 SWA KV
+            无关紧要。所以命中规则是：<strong>匹配终点之前，必须有至少
+            <span class="math inline">W</span> 个连续的非 tombstone
+            token。</strong>
+            不满足时，匹配回退到上一个满足条件的位置。</p>
+            <figure>
+            <img src="./WikiImage/swa_radix_tombstone.svg"
+            alt="SWA radix cache 的 tombstone 与命中规则" />
+            <figcaption aria-hidden="true">SWA radix cache 的 tombstone
+            与命中规则</figcaption>
+            </figure>
+            <p>围绕这个规则，树的其他操作也都分成 full 和 SWA 两份：</p>
+            <ul>
+            <li><strong>两条 LRU</strong>：full 淘汰会删掉节点；SWA
+            淘汰只释放节点的 SWA KV，把它变成 tombstone，full KV
+            继续留着。叶子节点不允许是
+            tombstone，否则就会出现”永远命中不了却占着 full
+            KV”的节点。</li>
+            <li><strong>锁也只锁窗口</strong>：请求使用某条前缀时，full
+            锁一直加到根节点；SWA 锁只从终点往上加到累计 <span
+            class="math inline">W</span> 个 token
+            为止，更早的节点仍然可以被 SWA 淘汰。</li>
+            <li><strong>插入时恢复</strong>：请求结束后写回树时，<code>[0, swa_evicted_seqlen)</code>
+            这一段本来就没有 SWA KV，会被插成 tombstone
+            前缀；如果新请求重新算出了某个 tombstone 节点的 SWA
+            KV，就用它把节点”复活”。</li>
+            </ul>
+            <p>这个 fork 里，开启 radix cache 的混合 SWA 模型走的是
+            <code>UnifiedRadixCache</code>（<code>mem_cache/unified_radix_cache.py</code>），由
+            <code>mem_cache/registry.py</code> 以
+            <code>[FULL, SWA]</code> 两个 component 组合构造。SWA
+            的逻辑在
+            <code>mem_cache/unified_cache/components/swa_component.py</code>：tombstone
+            表示为该 component 的 value 为 <code>None</code>，命中规则在
+            <code>create_match_validator</code> 中实现，遇到 tombstone
+            时把累计长度清零，累计到 <code>sliding_window_size</code>
+            才算有效。早期独立实现的
+            <code>SWARadixCache</code>（<code>mem_cache/swa_radix_cache.py</code>，用
+            <code>swa_tombstone</code> 字段和 <code>full_lru_list</code>
+            /
+            <code>swa_lru_list</code>）仍保留在代码里，设计相同，但已经没有工厂函数会构造它。纯
+            SWA 模型（没有 full 层）则用
+            <code>PureSWARadixCache</code>。</p>
+            <h4 id="attention-backend读写前翻译一次索引">Attention
+            backend：读写前翻译一次索引</h4>
+            <p>backend 拿到的
+            <code>page_table</code>、<code>out_cache_loc</code> 都是
+            full 索引。对 SWA 层，需要先用
+            <code>SWAKVPool.translate_loc_from_full_to_swa</code>（就是
+            <code>full_to_swa_index_mapping[idx]</code>）翻译成 SWA
+            索引：</p>
+            <ul>
+            <li><strong>FlashAttention</strong>：每个 batch 准备
+            metadata 时，一次性算出 <code>swa_page_table</code> 和
+            <code>swa_out_cache_loc</code>。SWA 层用它们读写 KV，并把
+            <code>window_size=(sliding_window_size, 0)</code> 传给
+            kernel。</li>
+            <li><strong>FlashInfer</strong>：为 SWA 层和 full
+            层各准备一个 wrapper。SWA wrapper 把 <code>seq_lens</code>
+            截断到 <code>W + 1</code>，只把窗口内的那段 KV
+            索引翻译后交给 kernel。</li>
+            <li><strong>Triton</strong>：<code>update_sliding_window_buffer</code>
+            按 <code>min(seq_len, W)</code> 构造窗口内的
+            <code>window_kv_indices</code>，再做翻译。</li>
+            </ul>
+            <p>写 KV 时，backend 把 full 和 SWA 两个位置打包成
+            <code>KVWriteLoc</code> 交给 pool。SWA 层要求
+            <code>swa_loc</code> 已经翻译好，pool 内部不再翻译，这样一个
+            batch 只需翻译一次，所有 SWA 层共用。</p>
+            <h3 id="小结">小结</h3>
+            <p>SWA 用固定窗口换掉了 full attention 随长度增长的计算和
+            KV，再用少数 full 层补回全局召回。推理侧的关键抽象是”一个
+            token、两个地址”：full 索引是唯一的主地址，SWA 索引通过
+            <code>full_to_swa_index_mapping</code> 派生，释放 SWA KV
+            只需归还 slot 并把映射置
+            0。这样调度器、<code>req_to_token</code>、radix
+            树都不用改变形态，只需要多维护一份 SWA
+            预算。<code>--swa-full-tokens-ratio</code> 决定两个池的
+            token 容量之比：它设得越大，越多 SWA KV 能留给 prefix
+            cache；设得越小，full pool 的并发越高。prefix cache 则通过
+            tombstone 和”终点前 <span class="math inline">W</span> 个
+            token 连续有效”的命中规则，让两种寿命的 KV
+            共存在同一棵树上。</p>
           </main>
+        <aside class="wiki-toc">
+      <ul>
+      <li><a href="#问题full-attention-的两笔账都随-t-增长"
+      id="toc-问题full-attention-的两笔账都随-t-增长">问题：Full
+      Attention 的两笔账都随 T 增长</a></li>
+      <li><a href="#设计局部交给-swa全局交给少数-full-层"
+      id="toc-设计局部交给-swa全局交给少数-full-层">设计：局部交给
+      SWA，全局交给少数 full 层</a></li>
+      <li><a href="#抽象一个-token两个地址"
+      id="toc-抽象一个-token两个地址">抽象：一个
+      token，两个地址</a></li>
+      <li><a href="#实现" id="toc-实现">实现</a></li>
+      <li><a href="#小结" id="toc-小结">小结</a></li>
+      </ul>
+    </aside>
       </div>
-  <script type="text/javascript">
-    (function () {
-      function markActive() {
-        var here = location.href.split('#')[0];
-        var links = document.querySelectorAll('.wiki-sidebar a');
-        for (var i = 0; i < links.length; i++) {
-          if (links[i].href.split('#')[0] === here) {
-            links[i].classList.add('active');
-          }
-        }
-      }
-      // load the shared site directory once (served from the wiki root);
-      // kept in a standalone file so adding a page needn't rebuild every page.
-      var nav = document.getElementById('wiki-sidebar');
-      if (nav) {
-        fetch('/wiki_sidebar.html')
-          .then(function (r) { return r.ok ? r.text() : ''; })
-          .then(function (html) {
-            if (html) {
-              nav.innerHTML = html;
-              nav.hidden = false;
-              markActive();
-            }
-          })
-          .catch(function () {});
-      }
-      // keep bootstrap table styling (previously done by sticky_menu.js)
-      var tables = document.getElementsByTagName('table');
-      for (var j = 0; j < tables.length; j++) {
-        tables[j].classList.add('table');
-      }
-    })();
-  </script>
 </body>
 
 </html>

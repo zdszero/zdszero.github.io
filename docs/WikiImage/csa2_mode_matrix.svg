@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 560" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="560" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">层维度上其实有两个开关：cache 共不共享，索引复不复用</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">「这些位置长什么样」与「哪些位置重要」可以分开决定——拆开之后才有 Reindex 这一格</text>
+  <text x="530" y="92" text-anchor="middle" font-size="13" font-weight="700" fill="#495057">Top-K 索引：本层自己选？</text>
+  <text x="390" y="116" text-anchor="middle" font-size="12" fill="#868e96">本层选（不复用）</text>
+  <text x="700" y="116" text-anchor="middle" font-size="12" fill="#868e96">复用前层的选择</text>
+  <text x="40" y="96" font-size="13" font-weight="700" fill="#495057">main KV + indexer K：</text>
+  <text x="40" y="114" font-size="13" font-weight="700" fill="#495057">本层自己存？</text>
+  <text x="40" y="196" font-size="12" fill="#868e96">本层存</text>
+  <text x="40" y="214" font-size="12" fill="#868e96">（不共享）</text>
+  <text x="40" y="352" font-size="12" fill="#868e96">复用前层</text>
+  <text x="40" y="370" font-size="12" fill="#868e96">（共享）</text>
+  <rect x="240" y="130" width="300" height="140" rx="10" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="258" y="158" font-size="14" font-weight="700" fill="#3b5bdb">Full</text>
+  <text x="522" y="158" text-anchor="end" font-size="11" fill="#868e96">V4 的 CSA 每层都是这格</text>
+  <text x="258" y="186" font-size="12" fill="#495057">本层算 main KV、indexer K、indexer Q</text>
+  <text x="258" y="206" font-size="12" fill="#495057">全量打分，选出本层 Top-K</text>
+  <text x="258" y="226" font-size="12" fill="#495057">存储 ✗ 不省　　indexer 计算 ✗ 不省</text>
+  <text x="258" y="246" font-size="12" fill="#495057">唯一的「产出者」：cache 与候选池都从这来</text>
+  <rect x="550" y="130" width="300" height="140" rx="10" fill="#f8f9fa" stroke="#adb5bd" stroke-dasharray="5 3"/>
+  <text x="568" y="158" font-size="14" font-weight="700" fill="#495057">只复用索引</text>
+  <text x="832" y="158" text-anchor="end" font-size="11" fill="#868e96">IndexCache 在这格</text>
+  <text x="568" y="186" font-size="12" fill="#495057">每层仍有自己的 main KV</text>
+  <text x="568" y="206" font-size="12" fill="#495057">借用前层选出的位置去读本层 cache</text>
+  <text x="568" y="226" font-size="12" fill="#495057">存储 ✗ 不省　　indexer 计算 ✓ 省</text>
+  <text x="568" y="246" font-size="12" fill="#495057">CSA2 不使用这一格</text>
+  <rect x="240" y="286" width="300" height="140" rx="10" fill="#fff4e6" stroke="#f08c00"/>
+  <text x="258" y="314" font-size="14" font-weight="700" fill="#e8590c">Reindex</text>
+  <text x="522" y="314" text-anchor="end" font-size="11" fill="#868e96">CSA2 新增的格</text>
+  <text x="258" y="342" font-size="12" fill="#495057">cache 用前层的，本层只算 indexer Q</text>
+  <text x="258" y="362" font-size="12" fill="#495057">在候选池内重新打分、选本层 Top-K</text>
+  <text x="258" y="382" font-size="12" fill="#495057">存储 ✓ 省　　indexer 计算 △ 只打池内分</text>
+  <text x="258" y="402" font-size="12" fill="#495057">选择仍可逐层特化</text>
+  <rect x="550" y="286" width="300" height="140" rx="10" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="568" y="314" font-size="14" font-weight="700" fill="#0b7285">Reuse</text>
+  <text x="832" y="314" text-anchor="end" font-size="11" fill="#868e96">占 V4.1-Flash 的 30/40 层</text>
+  <text x="568" y="342" font-size="12" fill="#495057">cache 和 Top-K 都用前层的</text>
+  <text x="568" y="362" font-size="12" fill="#495057">不算 indexer Q、不打分</text>
+  <text x="568" y="382" font-size="12" fill="#495057">存储 ✓ 省　　indexer 计算 ✓ 省</text>
+  <text x="568" y="402" font-size="12" fill="#495057">代价：选择不再特化</text>
+  <rect x="24" y="446" width="852" height="94" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="44" y="472" font-size="12" fill="#495057">只沿对角线走（Full ↔ Reuse）时，「共享 cache」和「复用索引」总是绑在一起：要么都省、要么都不省。</text>
+  <text x="44" y="494" font-size="12" fill="#495057">把两件事拆开，左下角的 Reindex 才存在——cache 共享省显存，但每层仍然能挑出自己关心的位置。</text>
+  <text x="44" y="516" font-size="12" fill="#868e96">每层都仍然自己算 main Q 和 SWA KV；三种模式只在 main KV、indexer K、Top-K 三样东西的来源上不同。</text>
+</svg>

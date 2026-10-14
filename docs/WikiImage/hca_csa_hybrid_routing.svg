@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="600" rx="12" fill="#ffffff"/>
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#868e96"/>
+    </marker>
+    <marker id="aro" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#f08c00"/>
+    </marker>
+  </defs>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">近处看原文，远处看摘要：一个 query 的 KV 从哪来</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">SWA 原始 KV + 压缩 KV + sink 拼成一条 key 序列，做一次联合 softmax</text>
+
+  <!-- token axis -->
+  <rect x="40" y="78" width="580" height="34" rx="6" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="330" y="100" text-anchor="middle" font-size="12.5" fill="#495057">压缩路：所有已凑满一个块的历史 token</text>
+  <rect x="630" y="78" width="230" height="34" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="745" y="100" text-anchor="middle" font-size="12.5" font-weight="700" fill="#3b5bdb">SWA 路：最近 128 个 token</text>
+  <text x="40" y="130" font-size="11" fill="#868e96">两路覆盖范围有重叠：窗口里已凑满的块同样会被压缩，也能被 Top-k 选中（代码不做排除）</text>
+  <text x="862" y="130" text-anchor="end" font-size="11" fill="#868e96">当前 query →</text>
+  <!-- CSA lane -->
+  <rect x="24" y="140" width="852" height="150" rx="10" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="44" y="164" font-size="13.5" font-weight="700" fill="#212529">CSA 层（compress_ratio = 4）</text>
+  <text x="290" y="164" font-size="11.5" fill="#868e96">轻压缩 + 稀疏选择</text>
+  <rect x="60" y="180" width="20" height="24" rx="3" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="83" y="180" width="20" height="24" rx="3" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="106" y="180" width="20" height="24" rx="3" fill="#fff4e6" stroke="#f08c00"/>
+  <rect x="129" y="180" width="20" height="24" rx="3" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="152" y="180" width="20" height="24" rx="3" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="175" y="180" width="20" height="24" rx="3" fill="#fff4e6" stroke="#f08c00"/>
+  <rect x="198" y="180" width="20" height="24" rx="3" fill="#fff4e6" stroke="#f08c00"/>
+  <rect x="221" y="180" width="20" height="24" rx="3" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="244" y="180" width="20" height="24" rx="3" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="267" y="180" width="20" height="24" rx="3" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="290" y="180" width="20" height="24" rx="3" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="313" y="180" width="20" height="24" rx="3" fill="#fff4e6" stroke="#f08c00"/>
+  <rect x="336" y="180" width="20" height="24" rx="3" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="359" y="180" width="20" height="24" rx="3" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="382" y="180" width="20" height="24" rx="3" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="405" y="180" width="20" height="24" rx="3" fill="#fff4e6" stroke="#f08c00"/>
+  <rect x="428" y="180" width="20" height="24" rx="3" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="451" y="180" width="20" height="24" rx="3" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="474" y="180" width="20" height="24" rx="3" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="497" y="180" width="20" height="24" rx="3" fill="#fff4e6" stroke="#f08c00"/>
+  <rect x="520" y="180" width="20" height="24" rx="3" fill="#fff4e6" stroke="#f08c00"/>
+  <rect x="543" y="180" width="20" height="24" rx="3" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="566" y="180" width="20" height="24" rx="3" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="589" y="180" width="20" height="24" rx="3" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="640" y="180" width="24" height="24" rx="3" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="667" y="180" width="24" height="24" rx="3" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="694" y="180" width="24" height="24" rx="3" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="721" y="180" width="24" height="24" rx="3" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="748" y="180" width="24" height="24" rx="3" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="775" y="180" width="24" height="24" rx="3" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="802" y="180" width="24" height="24" rx="3" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="829" y="180" width="24" height="24" rx="3" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="60" y="224" font-size="11.5" fill="#0b7285">n/4 条压缩 KV</text>
+  <text x="60" y="242" font-size="11.5" fill="#e8590c">橙色 = Top-k 选中（Flash 512 / Pro 1024）</text>
+  <text x="746" y="224" text-anchor="middle" font-size="11.5" fill="#3b5bdb">原始 KV，全部参与</text>
+  <rect x="330" y="236" width="270" height="40" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="465" y="253" text-anchor="middle" font-size="12.5" font-weight="700" fill="#5f3dc4">Lightning Indexer</text>
+  <text x="465" y="269" text-anchor="middle" font-size="11" fill="#495057">给每条压缩 KV 打分，取 Top-k</text>
+  <path d="M465 236 L465 212" fill="none" stroke="#7048e8" stroke-width="2" stroke-dasharray="4 3" marker-end="url(#ar)"/>
+  <!-- HCA lane -->
+  <rect x="24" y="304" width="852" height="116" rx="10" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="44" y="328" font-size="13.5" font-weight="700" fill="#212529">HCA 层（compress_ratio = 128）</text>
+  <text x="306" y="328" font-size="11.5" fill="#868e96">重压缩 + 全量（dense）</text>
+  <rect x="60" y="344" width="100" height="24" rx="3" fill="#fff4e6" stroke="#f08c00"/>
+  <rect x="170" y="344" width="100" height="24" rx="3" fill="#fff4e6" stroke="#f08c00"/>
+  <rect x="280" y="344" width="100" height="24" rx="3" fill="#fff4e6" stroke="#f08c00"/>
+  <rect x="390" y="344" width="100" height="24" rx="3" fill="#fff4e6" stroke="#f08c00"/>
+  <rect x="500" y="344" width="100" height="24" rx="3" fill="#fff4e6" stroke="#f08c00"/>
+  <rect x="640" y="344" width="24" height="24" rx="3" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="667" y="344" width="24" height="24" rx="3" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="694" y="344" width="24" height="24" rx="3" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="721" y="344" width="24" height="24" rx="3" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="748" y="344" width="24" height="24" rx="3" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="775" y="344" width="24" height="24" rx="3" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="802" y="344" width="24" height="24" rx="3" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="829" y="344" width="24" height="24" rx="3" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="60" y="390" font-size="11.5" fill="#e8590c">n/128 条压缩 KV，不做选择，全部参与</text>
+  <text x="746" y="390" text-anchor="middle" font-size="11.5" fill="#3b5bdb">原始 KV，全部参与</text>
+  <text x="60" y="408" font-size="11" fill="#868e96">n = 1M 时约 8K 条，比 CSA 的 n/4 = 256K 条少两个数量级</text>
+  <!-- concat -->
+  <text x="40" y="446" font-size="12.5" font-weight="700" fill="#495057">拼成一条 key 序列（每个 head）</text>
+  <rect x="40" y="456" width="190" height="46" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="135" y="476" text-anchor="middle" font-size="12.5" font-weight="700" fill="#3b5bdb">K_swa</text>
+  <text x="135" y="493" text-anchor="middle" font-size="11" fill="#495057">≤ 128 条</text>
+  <rect x="236" y="456" width="320" height="46" rx="8" fill="#fff4e6" stroke="#f08c00"/>
+  <text x="396" y="476" text-anchor="middle" font-size="12.5" font-weight="700" fill="#e8590c">K_comp</text>
+  <text x="396" y="493" text-anchor="middle" font-size="11" fill="#495057">CSA：Top-k 条 ／ HCA：全部 n/128 条</text>
+  <rect x="562" y="456" width="110" height="46" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="617" y="476" text-anchor="middle" font-size="12.5" font-weight="700" fill="#495057">sink</text>
+  <text x="617" y="493" text-anchor="middle" font-size="11" fill="#495057">只有 logit</text>
+  <path d="M678 479 L708 479" fill="none" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <rect x="714" y="456" width="146" height="46" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="787" y="476" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0b7285">联合 softmax</text>
+  <text x="787" y="493" text-anchor="middle" font-size="11" fill="#495057">× [V_swa ‖ V_comp ‖ 0]</text>
+  <rect x="24" y="520" width="852" height="64" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="44" y="545" font-size="12" fill="#495057">三段共用一个 softmax 分母：近处、远处、sink 互相竞争权重，而不是两次 attention 的结果相加。</text>
+  <text x="44" y="567" font-size="12" fill="#495057">sink 只进分母、不贡献 V —— 近处远处都不相关时，把注意力"泄"掉，输出趋近于 0。</text>
+</svg>

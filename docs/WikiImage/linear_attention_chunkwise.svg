@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 524" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="524" rx="12" fill="#ffffff"/>
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#868e96"/>
+    </marker>
+  </defs>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">Chunkwise 并行：prefill 如何避免逐 token 串行</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">块内用矩阵乘并行，块间只传递状态；串行步数从 T 降到 T/64</text>
+
+  <!-- state / chunk row -->
+  <g>
+    <rect x="33" y="96" width="60" height="64" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+    <text x="63" y="122" text-anchor="middle" font-size="13" font-weight="700" fill="#0b7285" font-family="monospace">S_0</text>
+    <text x="63" y="142" text-anchor="middle" font-size="10" fill="#868e96">来自 pool</text>
+    <rect x="291" y="96" width="60" height="64" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+    <text x="321" y="132" text-anchor="middle" font-size="13" font-weight="700" fill="#0b7285" font-family="monospace">S_1</text>
+    <rect x="549" y="96" width="60" height="64" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+    <text x="579" y="132" text-anchor="middle" font-size="13" font-weight="700" fill="#0b7285" font-family="monospace">S_2</text>
+    <rect x="807" y="96" width="60" height="64" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+    <text x="837" y="122" text-anchor="middle" font-size="13" font-weight="700" fill="#0b7285" font-family="monospace">S_3</text>
+    <text x="837" y="142" text-anchor="middle" font-size="10" fill="#868e96">写回 pool</text>
+  </g>
+  <g>
+    <rect x="107" y="80" width="170" height="96" rx="9" fill="#fff9db" stroke="#f08c00"/>
+    <text x="122" y="100" font-size="12.5" font-weight="700" fill="#e8590c">chunk 0（64 token）</text>
+    <path d="M122 112 L122 166 L176 166 Z" fill="#ffe8cc" stroke="#f08c00"/>
+    <text x="188" y="134" font-size="11" fill="#495057">块内 C×C</text>
+    <text x="188" y="152" font-size="11" fill="#495057">矩阵乘并行</text>
+    <rect x="365" y="80" width="170" height="96" rx="9" fill="#fff9db" stroke="#f08c00"/>
+    <text x="380" y="100" font-size="12.5" font-weight="700" fill="#e8590c">chunk 1（64 token）</text>
+    <path d="M380 112 L380 166 L434 166 Z" fill="#ffe8cc" stroke="#f08c00"/>
+    <text x="446" y="134" font-size="11" fill="#495057">块内 C×C</text>
+    <text x="446" y="152" font-size="11" fill="#495057">矩阵乘并行</text>
+    <rect x="623" y="80" width="170" height="96" rx="9" fill="#fff9db" stroke="#f08c00"/>
+    <text x="638" y="100" font-size="12.5" font-weight="700" fill="#e8590c">chunk 2（≤64 token）</text>
+    <path d="M638 112 L638 166 L692 166 Z" fill="#ffe8cc" stroke="#f08c00"/>
+    <text x="704" y="134" font-size="11" fill="#495057">块内 C×C</text>
+    <text x="704" y="152" font-size="11" fill="#495057">矩阵乘并行</text>
+  </g>
+  <g stroke="#0ca678" stroke-width="2" fill="none">
+    <path d="M93 128 L103 128" marker-end="url(#ar)"/>
+    <path d="M277 128 L287 128" marker-end="url(#ar)"/>
+    <path d="M351 128 L361 128" marker-end="url(#ar)"/>
+    <path d="M535 128 L545 128" marker-end="url(#ar)"/>
+    <path d="M609 128 L619 128" marker-end="url(#ar)"/>
+    <path d="M793 128 L803 128" marker-end="url(#ar)"/>
+  </g>
+  <path d="M63 190 L63 196 L837 196 L837 190" fill="none" stroke="#0ca678" stroke-width="1.5"/>
+  <text x="450" y="214" text-anchor="middle" font-size="11.5" fill="#0b7285">串行依赖只沿着 S_0 → S_1 → S_2 → S_3 这条链；每个 chunk 边界的状态都会被物化（可用于 prefix cache 快照）</text>
+  <!-- intra / inter -->
+  <rect x="33" y="232" width="410" height="122" rx="10" fill="#fff9db" stroke="#f08c00"/>
+  <text x="49" y="256" font-size="13.5" font-weight="700" fill="#e8590c">块内（intra-chunk）：一次性并行</text>
+  <text x="49" y="280" font-size="12" fill="#495057">把 64 次 rank-1 更新合并成一次矩阵运算（WY / UT 表示）</text>
+  <text x="49" y="302" font-size="11.5" fill="#343a40" font-family="monospace">T = (I + StrictTril(diag(β)KKᵀ ⊙ Γ))⁻¹</text>
+  <text x="49" y="322" font-size="11.5" fill="#343a40" font-family="monospace">W = T·diag(β)K   U = T·diag(β)V</text>
+  <text x="49" y="342" font-size="11" fill="#868e96">下三角求逆 = solve_tril；即演化表里 (I + KKᵀ⊙Γ⁻)⁻¹ 的出处</text>
+  <rect x="457" y="232" width="410" height="122" rx="10" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="473" y="256" font-size="13.5" font-weight="700" fill="#0b7285">块间（inter-chunk）：串行，只有 T/64 步</text>
+  <text x="473" y="280" font-size="11.5" fill="#343a40" font-family="monospace">v_new = U − W·S_i     扣掉历史已能预测的部分</text>
+  <text x="473" y="302" font-size="11.5" fill="#343a40" font-family="monospace">S_(i+1) = decay(S_i) + K̃ᵀ·v_new</text>
+  <text x="473" y="322" font-size="11.5" fill="#343a40" font-family="monospace">o = q·S_i（历史） + 块内因果项（局部）</text>
+  <text x="473" y="342" font-size="11" fill="#868e96">decay 对 GDN 是标量，对 KDA 是逐通道向量 gk</text>
+
+  <!-- kernel pipeline -->
+  <text x="33" y="382" font-size="12" font-weight="700" fill="#495057">SGLang extend kernel 流水（sglang/kernels/ops/attention/fla/）</text>
+  <g>
+    <rect x="33" y="392" width="195" height="62" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+    <text x="45" y="412" font-size="12" font-weight="700" fill="#495057">① gate 前缀和</text>
+    <text x="45" y="430" font-size="10.5" fill="#495057" font-family="monospace">chunk_local_cumsum</text>
+    <text x="45" y="446" font-size="10.5" fill="#868e96" font-family="monospace">KDA: kda_gate_chunk_cumsum</text>
+    <rect x="246" y="392" width="195" height="62" rx="8" fill="#fff9db" stroke="#f08c00"/>
+    <text x="258" y="412" font-size="12" font-weight="700" fill="#e8590c">② 块内 WY 表示</text>
+    <text x="258" y="430" font-size="10.5" fill="#495057" font-family="monospace">kkt + solve_tril + w,u</text>
+    <text x="258" y="446" font-size="10.5" fill="#868e96" font-family="monospace">KDA: chunk_kda_fwd_intra</text>
+    <rect x="459" y="392" width="195" height="62" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+    <text x="471" y="412" font-size="12" font-weight="700" fill="#0b7285">③ 块间状态递推</text>
+    <text x="471" y="430" font-size="10.5" fill="#495057" font-family="monospace">chunk_gated_delta_rule_fwd_h</text>
+    <text x="471" y="446" font-size="10.5" fill="#868e96">GDN / KDA 共用</text>
+    <rect x="672" y="392" width="195" height="62" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+    <text x="684" y="412" font-size="12" font-weight="700" fill="#3b5bdb">④ 输出</text>
+    <text x="684" y="430" font-size="10.5" fill="#495057" font-family="monospace">chunk_fwd_o</text>
+    <text x="684" y="446" font-size="10.5" fill="#868e96" font-family="monospace">KDA: chunk_gla_fwd_o_gk</text>
+  </g>
+  <g stroke="#868e96" stroke-width="2">
+    <path d="M228 423 L242 423" marker-end="url(#ar)"/>
+    <path d="M441 423 L455 423" marker-end="url(#ar)"/>
+    <path d="M654 423 L668 423" marker-end="url(#ar)"/>
+  </g>
+
+  <rect x="33" y="468" width="834" height="42" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="49" y="494" font-size="12" fill="#495057">decode 每步只有 1 个 token，不存在 chunk：直接走 fused recurrent kernel，按图 2 的五步原地更新 pool 里的状态。</text>
+</svg>

@@ -1,0 +1,137 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 584" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="584" rx="12" fill="#ffffff"/>
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#868e96"/>
+    </marker>
+  </defs>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">SWA radix cache：tombstone 与窗口命中规则</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">W = 4。一条已缓存路径 A→F，新请求的前缀与它完全相同</text>
+  <rect x="560" y="70" width="22" height="14" rx="3" fill="#fff5f5" stroke="#fa5252" stroke-width="1"/>
+  <text x="590" y="82" font-size="11" fill="#c92a2a">tombstone：full KV 还在，SWA KV 已被淘汰</text>
+  <text x="30" y="112" font-size="12" fill="#212529" font-weight="700">节点</text>
+  <text x="30" y="150" font-size="12" fill="#3b5bdb" font-weight="700">full KV</text>
+  <text x="30" y="188" font-size="12" fill="#0b7285" font-weight="700">SWA KV</text>
+  <text x="30" y="236" font-size="12" fill="#212529" font-weight="700">连续长度</text>
+  <text x="30" y="252" font-size="11" fill="#868e96" font-family="monospace">len</text>
+  <text x="30" y="280" font-size="12" fill="#212529" font-weight="700">可作为终点</text>
+  <rect x="132" y="94" width="180" height="26" rx="6" fill="#f8f9fa" stroke="#adb5bd" stroke-width="1"/>
+  <text x="222" y="112" font-size="12" fill="#495057" font-weight="700" text-anchor="middle">A</text>
+  <rect x="133" y="134" width="40" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5" stroke-width="1"/>
+  <text x="153" y="151" font-size="11" fill="#3b5bdb" text-anchor="middle" font-family="monospace">0</text>
+  <rect x="133" y="172" width="40" height="26" rx="4" fill="#e6fcf5" stroke="#0ca678" stroke-width="1"/>
+  <text x="153" y="189" font-size="11" fill="#0b7285" text-anchor="middle" font-family="monospace">0</text>
+  <rect x="179" y="134" width="40" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5" stroke-width="1"/>
+  <text x="199" y="151" font-size="11" fill="#3b5bdb" text-anchor="middle" font-family="monospace">1</text>
+  <rect x="179" y="172" width="40" height="26" rx="4" fill="#e6fcf5" stroke="#0ca678" stroke-width="1"/>
+  <text x="199" y="189" font-size="11" fill="#0b7285" text-anchor="middle" font-family="monospace">1</text>
+  <rect x="225" y="134" width="40" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5" stroke-width="1"/>
+  <text x="245" y="151" font-size="11" fill="#3b5bdb" text-anchor="middle" font-family="monospace">2</text>
+  <rect x="225" y="172" width="40" height="26" rx="4" fill="#e6fcf5" stroke="#0ca678" stroke-width="1"/>
+  <text x="245" y="189" font-size="11" fill="#0b7285" text-anchor="middle" font-family="monospace">2</text>
+  <rect x="271" y="134" width="40" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5" stroke-width="1"/>
+  <text x="291" y="151" font-size="11" fill="#3b5bdb" text-anchor="middle" font-family="monospace">3</text>
+  <rect x="271" y="172" width="40" height="26" rx="4" fill="#e6fcf5" stroke="#0ca678" stroke-width="1"/>
+  <text x="291" y="189" font-size="11" fill="#0b7285" text-anchor="middle" font-family="monospace">3</text>
+  <text x="222" y="244" font-size="11" fill="#495057" text-anchor="middle" font-family="monospace">∞（未遇到 tombstone）</text>
+  <text x="222" y="281" font-size="15" fill="#0ca678" font-weight="700" text-anchor="middle">✓</text>
+  <line x1="314" y1="90" x2="314" y2="290" stroke="#e9ecef" stroke-width="1"/>
+  <rect x="316" y="94" width="134" height="26" rx="6" fill="#fff5f5" stroke="#fa5252" stroke-width="1"/>
+  <text x="383" y="112" font-size="12" fill="#c92a2a" font-weight="700" text-anchor="middle">B</text>
+  <rect x="317" y="134" width="40" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5" stroke-width="1"/>
+  <text x="337" y="151" font-size="11" fill="#3b5bdb" text-anchor="middle" font-family="monospace">4</text>
+  <rect x="317" y="172" width="40" height="26" rx="4" fill="#ffffff" stroke="#fa5252" stroke-width="1" stroke-dasharray="5 3"/>
+  <text x="337" y="189" font-size="11" fill="#fa5252" text-anchor="middle">—</text>
+  <rect x="363" y="134" width="40" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5" stroke-width="1"/>
+  <text x="383" y="151" font-size="11" fill="#3b5bdb" text-anchor="middle" font-family="monospace">5</text>
+  <rect x="363" y="172" width="40" height="26" rx="4" fill="#ffffff" stroke="#fa5252" stroke-width="1" stroke-dasharray="5 3"/>
+  <text x="383" y="189" font-size="11" fill="#fa5252" text-anchor="middle">—</text>
+  <rect x="409" y="134" width="40" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5" stroke-width="1"/>
+  <text x="429" y="151" font-size="11" fill="#3b5bdb" text-anchor="middle" font-family="monospace">6</text>
+  <rect x="409" y="172" width="40" height="26" rx="4" fill="#ffffff" stroke="#fa5252" stroke-width="1" stroke-dasharray="5 3"/>
+  <text x="429" y="189" font-size="11" fill="#fa5252" text-anchor="middle">—</text>
+  <text x="383" y="244" font-size="11" fill="#495057" text-anchor="middle" font-family="monospace">清零 → 0</text>
+  <text x="383" y="281" font-size="15" fill="#fa5252" font-weight="700" text-anchor="middle">✗</text>
+  <line x1="452" y1="90" x2="452" y2="290" stroke="#e9ecef" stroke-width="1"/>
+  <rect x="454" y="94" width="88" height="26" rx="6" fill="#f8f9fa" stroke="#adb5bd" stroke-width="1"/>
+  <text x="498" y="112" font-size="12" fill="#495057" font-weight="700" text-anchor="middle">C</text>
+  <rect x="455" y="134" width="40" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5" stroke-width="1"/>
+  <text x="475" y="151" font-size="11" fill="#3b5bdb" text-anchor="middle" font-family="monospace">7</text>
+  <rect x="455" y="172" width="40" height="26" rx="4" fill="#e6fcf5" stroke="#0ca678" stroke-width="1"/>
+  <text x="475" y="189" font-size="11" fill="#0b7285" text-anchor="middle" font-family="monospace">7</text>
+  <rect x="501" y="134" width="40" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5" stroke-width="1"/>
+  <text x="521" y="151" font-size="11" fill="#3b5bdb" text-anchor="middle" font-family="monospace">8</text>
+  <rect x="501" y="172" width="40" height="26" rx="4" fill="#e6fcf5" stroke="#0ca678" stroke-width="1"/>
+  <text x="521" y="189" font-size="11" fill="#0b7285" text-anchor="middle" font-family="monospace">8</text>
+  <text x="498" y="244" font-size="11" fill="#495057" text-anchor="middle" font-family="monospace">+2 → 2</text>
+  <text x="498" y="281" font-size="15" fill="#fa5252" font-weight="700" text-anchor="middle">✗</text>
+  <line x1="544" y1="90" x2="544" y2="290" stroke="#e9ecef" stroke-width="1"/>
+  <rect x="546" y="94" width="134" height="26" rx="6" fill="#f8f9fa" stroke="#adb5bd" stroke-width="1"/>
+  <text x="613" y="112" font-size="12" fill="#495057" font-weight="700" text-anchor="middle">D</text>
+  <rect x="547" y="134" width="40" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5" stroke-width="1"/>
+  <text x="567" y="151" font-size="11" fill="#3b5bdb" text-anchor="middle" font-family="monospace">9</text>
+  <rect x="547" y="172" width="40" height="26" rx="4" fill="#e6fcf5" stroke="#0ca678" stroke-width="1"/>
+  <text x="567" y="189" font-size="11" fill="#0b7285" text-anchor="middle" font-family="monospace">9</text>
+  <rect x="593" y="134" width="40" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5" stroke-width="1"/>
+  <text x="613" y="151" font-size="11" fill="#3b5bdb" text-anchor="middle" font-family="monospace">10</text>
+  <rect x="593" y="172" width="40" height="26" rx="4" fill="#e6fcf5" stroke="#0ca678" stroke-width="1"/>
+  <text x="613" y="189" font-size="11" fill="#0b7285" text-anchor="middle" font-family="monospace">10</text>
+  <rect x="639" y="134" width="40" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5" stroke-width="1"/>
+  <text x="659" y="151" font-size="11" fill="#3b5bdb" text-anchor="middle" font-family="monospace">11</text>
+  <rect x="639" y="172" width="40" height="26" rx="4" fill="#e6fcf5" stroke="#0ca678" stroke-width="1"/>
+  <text x="659" y="189" font-size="11" fill="#0b7285" text-anchor="middle" font-family="monospace">11</text>
+  <text x="613" y="244" font-size="11" fill="#495057" text-anchor="middle" font-family="monospace">+3 → 5</text>
+  <text x="613" y="281" font-size="15" fill="#0ca678" font-weight="700" text-anchor="middle">✓</text>
+  <line x1="682" y1="90" x2="682" y2="290" stroke="#e9ecef" stroke-width="1"/>
+  <rect x="684" y="94" width="88" height="26" rx="6" fill="#fff5f5" stroke="#fa5252" stroke-width="1"/>
+  <text x="728" y="112" font-size="12" fill="#c92a2a" font-weight="700" text-anchor="middle">E</text>
+  <rect x="685" y="134" width="40" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5" stroke-width="1"/>
+  <text x="705" y="151" font-size="11" fill="#3b5bdb" text-anchor="middle" font-family="monospace">12</text>
+  <rect x="685" y="172" width="40" height="26" rx="4" fill="#ffffff" stroke="#fa5252" stroke-width="1" stroke-dasharray="5 3"/>
+  <text x="705" y="189" font-size="11" fill="#fa5252" text-anchor="middle">—</text>
+  <rect x="731" y="134" width="40" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5" stroke-width="1"/>
+  <text x="751" y="151" font-size="11" fill="#3b5bdb" text-anchor="middle" font-family="monospace">13</text>
+  <rect x="731" y="172" width="40" height="26" rx="4" fill="#ffffff" stroke="#fa5252" stroke-width="1" stroke-dasharray="5 3"/>
+  <text x="751" y="189" font-size="11" fill="#fa5252" text-anchor="middle">—</text>
+  <text x="728" y="244" font-size="11" fill="#495057" text-anchor="middle" font-family="monospace">清零 → 0</text>
+  <text x="728" y="281" font-size="15" fill="#fa5252" font-weight="700" text-anchor="middle">✗</text>
+  <line x1="774" y1="90" x2="774" y2="290" stroke="#e9ecef" stroke-width="1"/>
+  <rect x="776" y="94" width="88" height="26" rx="6" fill="#f8f9fa" stroke="#adb5bd" stroke-width="1"/>
+  <text x="820" y="112" font-size="12" fill="#495057" font-weight="700" text-anchor="middle">F</text>
+  <rect x="777" y="134" width="40" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5" stroke-width="1"/>
+  <text x="797" y="151" font-size="11" fill="#3b5bdb" text-anchor="middle" font-family="monospace">14</text>
+  <rect x="777" y="172" width="40" height="26" rx="4" fill="#e6fcf5" stroke="#0ca678" stroke-width="1"/>
+  <text x="797" y="189" font-size="11" fill="#0b7285" text-anchor="middle" font-family="monospace">14</text>
+  <rect x="823" y="134" width="40" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5" stroke-width="1"/>
+  <text x="843" y="151" font-size="11" fill="#3b5bdb" text-anchor="middle" font-family="monospace">15</text>
+  <rect x="823" y="172" width="40" height="26" rx="4" fill="#e6fcf5" stroke="#0ca678" stroke-width="1"/>
+  <text x="843" y="189" font-size="11" fill="#0b7285" text-anchor="middle" font-family="monospace">15</text>
+  <text x="820" y="244" font-size="11" fill="#495057" text-anchor="middle" font-family="monospace">+2 → 2</text>
+  <text x="820" y="281" font-size="15" fill="#fa5252" font-weight="700" text-anchor="middle">✗</text>
+  <line x1="866" y1="90" x2="866" y2="290" stroke="#e9ecef" stroke-width="1"/>
+  <path d="M132 310 L132 304 L680 304 L680 310" fill="none" stroke="#f08c00" stroke-width="1.5"/>
+  <text x="406" y="324" font-size="12" fill="#e8590c" font-weight="700" text-anchor="middle">命中 12 个 token（到 D 结束）：终点前连续 SWA KV = C + D = 5 ≥ W</text>
+  <text x="774" y="324" font-size="12" fill="#c92a2a" text-anchor="middle">E、F 不可用</text>
+  <rect x="30" y="346" width="268" height="120" rx="10" fill="#f3f0ff" stroke="#5f3dc4" stroke-width="1"/>
+  <text x="44" y="370" font-size="13" fill="#5f3dc4" font-weight="700">两条 LRU</text>
+  <text x="44" y="394" font-size="11.5" fill="#495057">full 淘汰：删除节点</text>
+  <text x="44" y="413" font-size="11.5" fill="#495057">SWA 淘汰：只还 SWA KV，</text>
+  <text x="44" y="432" font-size="11.5" fill="#495057">节点变 tombstone，full KV 保留</text>
+  <text x="44" y="451" font-size="11.5" fill="#495057">叶子不允许是 tombstone</text>
+  <rect x="316" y="346" width="268" height="120" rx="10" fill="#edf2ff" stroke="#3b5bdb" stroke-width="1"/>
+  <text x="330" y="370" font-size="13" fill="#3b5bdb" font-weight="700">锁只锁窗口</text>
+  <text x="330" y="394" font-size="11.5" fill="#495057">full 锁：从终点一直加到根</text>
+  <text x="330" y="413" font-size="11.5" fill="#495057">SWA 锁：从终点往上，</text>
+  <text x="330" y="432" font-size="11.5" fill="#495057">累计 ≥ W 个 token 就停</text>
+  <text x="330" y="451" font-size="11.5" fill="#495057">更早的节点仍可被 SWA 淘汰</text>
+  <rect x="602" y="346" width="268" height="120" rx="10" fill="#fff4e6" stroke="#e8590c" stroke-width="1"/>
+  <text x="616" y="370" font-size="13" fill="#e8590c" font-weight="700">插入时恢复</text>
+  <text x="616" y="394" font-size="11.5" fill="#495057">[0, swa_evicted_seqlen) 本来</text>
+  <text x="616" y="413" font-size="11.5" fill="#495057">就没有 SWA KV → 插成 tombstone</text>
+  <text x="616" y="432" font-size="11.5" fill="#495057">新请求重算出的 SWA KV</text>
+  <text x="616" y="451" font-size="11.5" fill="#495057">可以“复活” tombstone 节点</text>
+  <rect x="30" y="484" width="840" height="82" rx="8" fill="#f8f9fa" stroke="#e9ecef" stroke-width="1"/>
+  <text x="46" y="506" font-size="12" fill="#495057">从终点继续 prefill 时，SWA 层只需要终点前 W 个 token 的 KV，更早的 token 有没有 SWA KV 无关紧要。</text>
+  <text x="46" y="524" font-size="12" fill="#495057">所以命中规则是：匹配终点之前必须有 ≥ W 个连续的非 tombstone token；遇到 tombstone 就清零重新累计。</text>
+  <text x="46" y="542" font-size="12" fill="#495057">实现：swa_component.py 的 create_match_validator（UnifiedRadixCache 中 tombstone 即 SWA component value = None）。</text>
+</svg>

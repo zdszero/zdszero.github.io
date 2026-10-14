@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 520" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="520" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">CPU 与 GPU：两块独立内存，搬运要走 PCIe</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">.cuda()/.cpu() 触发跨设备拷贝；pinned 内存 + non_blocking 让拷贝和计算重叠；.item()/.numpy() 会强制同步</text>
+
+  <!-- Host box -->
+  <rect x="50" y="86" width="360" height="250" rx="12" fill="#f8f9fa" stroke="#adb5bd" stroke-width="1.5"/>
+  <text x="70" y="112" font-size="14" font-weight="700" fill="#495057">主机内存 · CPU / host</text>
+
+  <!-- pageable -->
+  <rect x="70" y="126" width="320" height="86" rx="9" fill="#ffffff" stroke="#dee2e6"/>
+  <text x="86" y="148" font-size="12.5" font-weight="700" fill="#868e96">pageable（可换页，默认）</text>
+  <text x="86" y="170" font-size="11" fill="#868e96">OS 可能把它换出 → DMA 不能直接读</text>
+  <text x="86" y="190" font-size="11" fill="#e8590c">拷贝前要先 stage 到一块临时 pinned 缓冲</text>
+  <text x="86" y="206" font-size="11" fill="#e8590c">→ 多一次搬运，且阻塞线程</text>
+
+  <!-- pinned -->
+  <rect x="70" y="220" width="320" height="100" rx="9" fill="#fff9db" stroke="#f08c00"/>
+  <text x="86" y="242" font-size="12.5" font-weight="700" fill="#e8590c">pinned / page-locked（pin_memory=True）</text>
+  <text x="86" y="264" font-size="11" fill="#b26a00">锁定物理页，DMA 可直接读写</text>
+  <text x="86" y="284" font-size="11" fill="#b26a00">配合 non_blocking=True → 拷贝交给 copy engine，</text>
+  <text x="86" y="300" font-size="11" fill="#b26a00">CPU 立即返回，和 GPU 计算重叠</text>
+
+  <!-- Device box -->
+  <rect x="490" y="86" width="360" height="250" rx="12" fill="#edf2ff" stroke="#4c6ef5" stroke-width="1.5"/>
+  <text x="510" y="112" font-size="14" font-weight="700" fill="#3b5bdb">显存 · GPU / device (cuda:0)</text>
+  <rect x="510" y="126" width="320" height="86" rx="9" fill="#ffffff" stroke="#bac8ff"/>
+  <text x="526" y="148" font-size="12.5" font-weight="700" fill="#3b5bdb">模型权重 · KV Cache · 激活</text>
+  <text x="526" y="170" font-size="11" fill="#868e96">kernel 只能读显存里的张量</text>
+  <text x="526" y="190" font-size="11" fill="#868e96">host 上的 tensor 不能直接参与 GPU 运算</text>
+  <rect x="510" y="220" width="320" height="100" rx="9" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="526" y="242" font-size="12.5" font-weight="700" fill="#0b7285">GPU 异步执行队列（stream）</text>
+  <text x="526" y="264" font-size="11" fill="#0b7285">launch kernel 后 CPU 不等它，继续往下跑</text>
+  <text x="526" y="284" font-size="11" fill="#0b7285">结果什么时候算好？要显式同步才知道</text>
+  <text x="526" y="300" font-size="11" fill="#c92a2a">读结果（.item()/.cpu()）= 原地等它算完</text>
+
+  <!-- PCIe arrows -->
+  <path d="M414 180 L486 180" stroke="#868e96" stroke-width="2.5" marker-end="url(#arDv)"/>
+  <path d="M486 250 L414 250" stroke="#868e96" stroke-width="2.5" marker-end="url(#arDv)"/>
+  <text x="450" y="166" text-anchor="middle" font-size="10.5" font-weight="700" fill="#495057">.cuda()</text>
+  <text x="450" y="270" text-anchor="middle" font-size="10.5" font-weight="700" fill="#495057">.cpu()</text>
+  <text x="450" y="300" text-anchor="middle" font-size="9.5" fill="#868e96">copy engine</text>
+  <text x="450" y="312" text-anchor="middle" font-size="9.5" fill="#868e96">PCIe / NVLink</text>
+
+  <!-- sync barrier strip -->
+  <text x="50" y="366" font-size="13.5" font-weight="700" fill="#c92a2a">强制同步点：这些调用会卡住 CPU，直到 GPU 把结果算完并搬回 host</text>
+  <g font-family="monospace" font-size="12">
+    <rect x="50" y="378" width="150" height="34" rx="7" fill="#fff5f5" stroke="#fa5252"/><text x="125" y="400" text-anchor="middle" fill="#c92a2a">.item()</text>
+    <rect x="212" y="378" width="150" height="34" rx="7" fill="#fff5f5" stroke="#fa5252"/><text x="287" y="400" text-anchor="middle" fill="#c92a2a">.cpu()</text>
+    <rect x="374" y="378" width="150" height="34" rx="7" fill="#fff5f5" stroke="#fa5252"/><text x="449" y="400" text-anchor="middle" fill="#c92a2a">.numpy()</text>
+    <rect x="536" y="378" width="150" height="34" rx="7" fill="#fff5f5" stroke="#fa5252"/><text x="611" y="400" text-anchor="middle" fill="#c92a2a">.tolist()</text>
+    <rect x="698" y="378" width="152" height="34" rx="7" fill="#fff5f5" stroke="#fa5252"/><text x="774" y="400" text-anchor="middle" fill="#c92a2a">print(tensor)</text>
+  </g>
+  <text x="50" y="434" font-size="11" fill="#868e96">在热路径（每个 decode step）里频繁 .item() 会把异步流水打成同步串行，是常见的隐形性能坑。</text>
+
+  <!-- note -->
+  <rect x="50" y="448" width="800" height="56" rx="10" fill="#f1f3f5" stroke="#dee2e6"/>
+  <text x="68" y="470" font-size="12" fill="#495057">SGLang 的实践：host 侧 KV 池用 <tspan font-family="monospace" fill="#3b5bdb">pin_memory=True</tspan> 分配，换入换出时 <tspan font-family="monospace" fill="#3b5bdb">.to("cpu", non_blocking=True)</tspan> 让搬运与计算重叠；</text>
+  <text x="68" y="490" font-size="12" fill="#495057">同时尽量把 <tspan font-family="monospace" fill="#c92a2a">.cpu().numpy()</tspan> / <tspan font-family="monospace" fill="#c92a2a">.tolist()</tspan> 这类同步点收拢到每步末尾一次，避免在循环中反复打断 GPU 流水。</text>
+
+  <defs>
+    <marker id="arDv" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#868e96"/></marker>
+  </defs>
+</svg>

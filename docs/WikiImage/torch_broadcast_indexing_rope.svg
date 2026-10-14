@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 560" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="560" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">RoPE 的一次 forward：gather、广播、拼接、写回</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">以 SGLang RotaryEmbedding.forward_native 为例；T = token 数，H = head 数，D = head_size，r = rotary_dim</text>
+
+  <!-- legend -->
+  <g font-size="11.5">
+    <rect x="250" y="70" width="14" height="14" rx="3" fill="#e6fcf5" stroke="#0ca678"/><text x="270" y="82" fill="#495057">常驻 buffer</text>
+    <rect x="360" y="70" width="14" height="14" rx="3" fill="#edf2ff" stroke="#4c6ef5"/><text x="380" y="82" fill="#495057">view（零拷贝）</text>
+    <rect x="480" y="70" width="14" height="14" rx="3" fill="#fff9db" stroke="#f08c00"/><text x="500" y="82" fill="#495057">新分配的张量</text>
+  </g>
+
+  <!-- row 1: cos/sin lookup -->
+  <text x="30" y="114" font-size="13" font-weight="700" fill="#212529">① 按位置取 cos/sin</text>
+  <rect x="30" y="124" width="230" height="72" rx="9" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="46" y="146" font-size="13" font-weight="700" fill="#0b7285">cos_sin_cache</text>
+  <text x="46" y="166" font-size="12" font-family="monospace" fill="#495057">[max_pos, r]</text>
+  <text x="46" y="185" font-size="11" fill="#868e96">按 fp32 算好 cat(cos, sin) 后注册</text>
+
+  <rect x="335" y="124" width="230" height="72" rx="9" fill="#fff9db" stroke="#f08c00"/>
+  <text x="351" y="146" font-size="13" font-weight="700" fill="#e8590c">cos_sin</text>
+  <text x="351" y="166" font-size="12" font-family="monospace" fill="#495057">[T, r]</text>
+  <text x="351" y="185" font-size="11" fill="#868e96">index_select(0, positions)：gather 副本</text>
+
+  <rect x="640" y="124" width="230" height="72" rx="9" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="656" y="146" font-size="13" font-weight="700" fill="#3b5bdb">cos, sin</text>
+  <text x="656" y="166" font-size="12" font-family="monospace" fill="#495057">[T, 1, r/2]</text>
+  <text x="656" y="185" font-size="11" fill="#868e96">chunk + unsqueeze(-2)；.to(x.dtype)</text>
+  <path d="M262 160 L331 160" fill="none" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <path d="M567 160 L636 160" fill="none" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+
+  <!-- row 2: broadcast -->
+  <text x="30" y="232" font-size="13" font-weight="700" fill="#212529">② 旋转：cos/sin 沿 head 维广播</text>
+  <rect x="30" y="242" width="230" height="86" rx="9" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="46" y="264" font-size="13" font-weight="700" fill="#3b5bdb">x1, x2</text>
+  <text x="46" y="284" font-size="12" font-family="monospace" fill="#495057">[T, H, r/2]</text>
+  <text x="46" y="302" font-size="11" fill="#868e96">query.view(T,-1,D)[..., :r]</text>
+  <text x="46" y="318" font-size="11" fill="#868e96">再 chunk 成两半，都是 view</text>
+
+  <rect x="335" y="242" width="230" height="86" rx="9" fill="#fff9db" stroke="#f08c00"/>
+  <text x="351" y="264" font-size="13" font-weight="700" fill="#e8590c">o1, o2</text>
+  <text x="351" y="284" font-size="12" font-family="monospace" fill="#495057">x1*cos - x2*sin</text>
+  <text x="351" y="302" font-size="11" fill="#868e96">[T,1,r/2] 与 [T,H,r/2] 对齐：</text>
+  <text x="351" y="318" font-size="11" fill="#868e96">每个 token 的 cos 被 H 个 head 复用</text>
+
+  <rect x="640" y="242" width="230" height="86" rx="9" fill="#fff9db" stroke="#f08c00"/>
+  <text x="656" y="264" font-size="13" font-weight="700" fill="#e8590c">query（新）</text>
+  <text x="656" y="284" font-size="12" font-family="monospace" fill="#495057">[T, H, D] → reshape</text>
+  <text x="656" y="302" font-size="11" fill="#868e96">cat(o1, o2)，再 cat 上 query_pass</text>
+  <text x="656" y="318" font-size="11" fill="#868e96">两次 cat，各分配一次输出</text>
+  <path d="M262 285 L331 285" fill="none" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <path d="M567 285 L636 285" fill="none" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <path d="M755 198 C755 214 470 212 455 238" fill="none" stroke="#4c6ef5" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arB)"/>
+  <!-- row 3: in-place fused kernel side lane -->
+  <text x="30" y="366" font-size="13" font-weight="700" fill="#212529">③ 对照：forward_cuda 的原地路径</text>
+  <rect x="30" y="376" width="840" height="86" rx="9" fill="#f3f0ff" stroke="#7048e8" stroke-dasharray="6 4"/>
+  <rect x="46" y="392" width="230" height="56" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="62" y="414" font-size="12.5" font-weight="700" fill="#3b5bdb">q_rope, k_rope</text>
+  <text x="62" y="434" font-size="11.5" font-family="monospace" fill="#495057">query.view(...)[..., :r]</text>
+  <path d="M278 420 L340 420" fill="none" stroke="#7048e8" stroke-width="2" marker-end="url(#arG)"/>
+  <rect x="346" y="392" width="300" height="56" rx="8" fill="#ffffff" stroke="#7048e8"/>
+  <text x="362" y="414" font-size="12.5" font-weight="700" fill="#5f3dc4">apply_rope_with_cos_sin_cache_inplace</text>
+  <text x="362" y="434" font-size="11" fill="#495057">kernel 内按 positions 读 cache，原地写 q/k</text>
+  <text x="662" y="410" font-size="11.5" fill="#495057">· 无 gather 副本、无 cat</text>
+  <text x="662" y="428" font-size="11.5" fill="#495057">· 写进 view = 改原 query</text>
+  <text x="662" y="446" font-size="11.5" fill="#495057">· 可选融合写 KV cache</text>
+
+  <rect x="30" y="478" width="840" height="66" rx="9" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="48" y="500" font-size="12" fill="#495057">关键：同样的数学，native 路径由“一次 gather + 广播 + 两次 cat”组成，返回的是新张量，调用方必须使用返回值；</text>
+  <text x="48" y="518" font-size="12" fill="#495057">CUDA 路径把它们压进一个原地 kernel，返回的 query/key 仍是原对象。读 RoPE 代码时要分清：广播在哪一维、</text>
+  <text x="48" y="536" font-size="12" fill="#495057">哪一步分配了新存储、结果是写回原张量还是换了一个新张量。</text>
+
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#868e96"/></marker>
+    <marker id="arB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#4c6ef5"/></marker>
+    <marker id="arG" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#7048e8"/></marker>
+  </defs>
+</svg>

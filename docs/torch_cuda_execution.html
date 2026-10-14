@@ -1,0 +1,649 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    Torch CUDA 异步执行
+  </title>
+    <link rel="stylesheet" href="./WikiTheme/theme/bootstrap.css"  />
+        <style type="text/css">
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+      <!-- wiki three-column layout styles/behavior, kept external so the ~5KB
+       block isn't duplicated into every generated page -->
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/wiki-layout.css" />
+  <script defer src="./WikiTheme/wiki-layout.js"></script>
+</head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">Torch CUDA 异步执行</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="wiki-layout">
+    <nav class="wiki-sidebar" id="wiki-sidebar" hidden></nav>
+    <main class="wiki-main">
+            <ul>
+            <li>一次 forward 的 Python 调用已经返回，GPU
+            算完了吗？为什么连续两行
+            <code>y = f(x)</code>、<code>z = g(y)</code>
+            之间不需要加同步？</li>
+            <li>代码里只多了一行
+            <code>.item()</code>，吞吐为什么明显下降？</li>
+            <li>用 <code>time.perf_counter()</code> 包住一次 matmul
+            只有几微秒，服务延迟却很高——到底测到了什么？</li>
+            </ul>
+            <p>这些问题都来自同一个事实：<strong>CUDA
+            调用的“返回”“排定先后”和“真正完成”是三个不同的时刻。</strong>
+            本篇先建立这个模型，再用它解释 Event、同步点、异步搬运、跨
+            stream 的存储生命周期、计时和报错位置，最后看 SGLang 的
+            overlap scheduler 如何让 prefill/decode 的 CPU 调度与 GPU
+            计算重叠。本篇以 CUDA
+            后端为例；其他设备后端的同步规则需要分别确认。stream 与
+            SM、warp 的硬件关系见 <a
+            href="./cuda_stream.html">Stream</a>。</p>
+            <h3 id="抽象cpu-是生产者stream-是队列">抽象：CPU
+            是生产者，stream 是队列</h3>
+            <p>核心的一句话：<strong>CPU 不执行 GPU
+            计算，它只把命令排进队列。</strong> 大多数 CUDA 运算在 CPU
+            侧只是“提交”：把 kernel 和参数放进某个
+            stream，然后立刻返回，Python 接着往下跑。GPU 从 stream
+            里按顺序取出工作执行。</p>
+            <p>于是一个 CUDA 调用有三个需要分开的时刻：</p>
+            <ul>
+            <li><strong>提交（submitted）</strong>：Python
+            调用返回。此时只能说“这项工作已经排上队”。</li>
+            <li><strong>排序（ordered）</strong>：同一 stream
+            中的工作按提交顺序执行，所以 <code>z = g(y)</code> 天然排在
+            <code>y = f(x)</code> 之后，两行之间无需同步。不同 stream
+            之间没有这种顺序，依赖需要显式建立。</li>
+            <li><strong>完成（completed）</strong>：GPU
+            真正算完，结果可以被主机读取。</li>
+            </ul>
+            <figure>
+            <img
+            src="./WikiImage/torch_cuda_execution_timeline.svg"
+            alt="CPU 提交与 GPU 执行的时间线" />
+            <figcaption aria-hidden="true">CPU 提交与 GPU
+            执行的时间线</figcaption>
+            </figure>
+            <p>这个模型下，性能的关键是让 CPU <strong>始终领先</strong>
+            GPU：只要 Python 不需要知道数据里的值，CPU
+            就能持续往队列里放工作，GPU 一直有活干。一旦 CPU
+            需要某个值，它必须停下等待“完成”时刻；等它回来继续提交时，GPU
+            队列可能已经空了，出现空泡。总体执行语义见 <a
+            href="https://docs.pytorch.org/docs/stable/notes/cuda">CUDA
+            semantics</a>。</p>
+            <p>由此得到统一判据：<strong>这一行代码只需要“排序”，还是需要“完成”？</strong>
+            只需要排序的依赖，应该交给 GPU
+            队列表达；只有真正要读值时，才让 CPU 等待完成。</p>
+            <h3 id="混淆点一gpu-等-gpu还是-cpu-等-gpu">混淆点一：GPU 等
+            GPU，还是 CPU 等 GPU</h3>
+            <p>创建多个 stream
+            不等于让有依赖的计算自动并行；反过来，不同 stream
+            上有依赖的工作，也不会自动排好先后。建立依赖有两类手段，等待的主体不同：</p>
+            <table>
+            <colgroup>
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>手段</th>
+            <th>谁等待</th>
+            <th>用途</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td><code>stream.wait_stream(other)</code> /
+            <code>stream.wait_event(event)</code></td>
+            <td>消费 stream 中后续工作等待</td>
+            <td>建立 GPU 工作之间的依赖，CPU 通常继续执行</td>
+            </tr>
+            <tr>
+            <td><code>event.synchronize()</code></td>
+            <td>CPU 等待指定事件完成</td>
+            <td>CPU 即将读取结果</td>
+            </tr>
+            <tr>
+            <td><code>torch.cuda.synchronize()</code></td>
+            <td>CPU 等待指定设备上所有 stream 完成</td>
+            <td>调试、整体计时，范围较大</td>
+            </tr>
+            </tbody>
+            </table>
+            <figure>
+            <img
+            src="./WikiImage/torch_cuda_execution_streams.svg"
+            alt="两种等待" />
+            <figcaption aria-hidden="true">两种等待</figcaption>
+            </figure>
+            <p>前一类把依赖写进 GPU 队列：调用立即返回，只有消费 stream
+            里排在其后的工作被推迟。后一类让 CPU 线程阻塞。设计跨 stream
+            流程时，应尽量用前者表达“谁在谁之后”，把后者留给真正要读值的一处。</p>
+            <h4 id="event插在-stream-里的一个标记">Event：插在 stream
+            里的一个标记</h4>
+            <p>上面三种手段背后都是同一个对象。<code>torch.cuda.Event</code>
+            不是“完成通知”，而是<strong>排进某条 stream
+            的一个标记</strong>：<code>event.record(stream)</code> 在
+            CPU 侧立即返回，GPU
+            执行到这个位置时，标记才算“发生”。之后谁去看这个标记、怎么看，决定了它的三种用法：</p>
+            <table>
+            <colgroup>
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>操作</th>
+            <th>谁在等</th>
+            <th>用法</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td><code>consumer.wait_event(e)</code></td>
+            <td>consumer stream 中其后的工作</td>
+            <td>GPU 等 GPU：只等“生产者走到这一步”，比
+            <code>wait_stream</code> 更精确</td>
+            </tr>
+            <tr>
+            <td><code>e.synchronize()</code></td>
+            <td>CPU 线程阻塞</td>
+            <td>CPU 等 GPU：读值前确认这一步已完成</td>
+            </tr>
+            <tr>
+            <td><code>e.query()</code></td>
+            <td>无人等待，立即返回 bool</td>
+            <td>CPU 轮询：已完成就处理，未完成就先干别的</td>
+            </tr>
+            <tr>
+            <td><code>start.elapsed_time(end)</code></td>
+            <td>需两端都已完成</td>
+            <td>计时：两个标记之间的设备时间，需
+            <code>enable_timing=True</code></td>
+            </tr>
+            </tbody>
+            </table>
+            <p><code>wait_stream(producer)</code> 等价于“在 producer
+            当前末尾 record 一个 event，再让 consumer 等它”，所以会把
+            producer 上已提交的<strong>全部</strong>工作都当成依赖。如果
+            consumer 只依赖其中前半段，在那一点单独 record 一个 event 再
+            <code>wait_event</code>，就能少等一段：</p>
+            <div class="sourceCode" id="cb1"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>done <span class="op">=</span> torch.cuda.Event()</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> torch.cuda.stream(producer):</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    a <span class="op">=</span> f(x)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    done.record()        <span class="co"># 只标记 a 的完成点</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    b <span class="op">=</span> g(a)             <span class="co"># producer 继续做与 consumer 无关的工作</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> torch.cuda.stream(consumer):</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    consumer.wait_event(done)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    c <span class="op">=</span> h(a)             <span class="co"># 只等 a，不等 b</span></span></code></pre></div>
+            <p>Event 的语义见 <a
+            href="https://docs.pytorch.org/docs/stable/generated/torch.cuda.Event.html">torch.cuda.Event</a>。注意
+            event 只表达执行顺序，不管内存是否会被提前复用——那是下文“跨
+            stream 生命周期”的问题。</p>
+            <h3
+            id="混淆点二隐式同步python-想知道数据里的值">混淆点二：隐式同步——Python
+            想知道数据里的值</h3>
+            <p><code>x.shape</code>、<code>x.stride()</code>、<code>x.dtype</code>
+            等元数据一般可在 CPU 侧直接获取，不需要等待 GPU。CUDA
+            张量的<strong>值</strong>则需要等待设备计算完成并取回主机，例如：</p>
+            <ul>
+            <li>CUDA 标量的
+            <code>.item()</code>、<code>bool(tensor)</code>；</li>
+            <li>用 CUDA 标量驱动 Python 的 <code>if</code>；</li>
+            <li><code>.tolist()</code> 或打印 CUDA 张量的具体值；</li>
+            <li>默认阻塞的 GPU 到 CPU 拷贝。</li>
+            </ul>
+            <div class="sourceCode" id="cb2"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>next_token <span class="op">=</span> logits.argmax(dim<span class="op">=-</span><span class="dv">1</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 若下一步仍在 GPU 使用 next_token，这里可以继续排队。</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 若调用 next_token[0].item()，CPU 就需要等待这个值。</span></span></code></pre></div>
+            <p>这些写法在代码里看不到“synchronize”字样，却等价于让 CPU
+            停在“完成”时刻，即上面时间线图的 B
+            情形。采样完成后向客户端发送
+            token，终究需要访问结果；优化重点是减少不必要的读取、批量搬运，并把同步放在真正需要结果的位置。不要在每个中间层为了日志读取
+            CUDA 标量。</p>
+            <p>默认 <code>.numpy()</code> 不能直接转换 CUDA
+            张量，通常先调用
+            <code>.cpu()</code>；同步发生在取回数据的路径，而不是“任何
+            <code>.numpy()</code> 都会同步 GPU”。</p>
+            <h4 id="同步点清单">同步点清单</h4>
+            <p>隐式同步的共同特征是：<strong>CPU 必须知道某个只有 GPU
+            算完才知道的东西</strong>——要么是值，要么是由值决定的输出大小。按这个判据可以归成几类：</p>
+            <table>
+            <colgroup>
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>类别</th>
+            <th>常见写法</th>
+            <th>CPU 需要知道什么</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>显式等待</td>
+            <td><code>torch.cuda.synchronize()</code>、<code>event.synchronize()</code>、<code>stream.synchronize()</code></td>
+            <td>工作是否完成</td>
+            </tr>
+            <tr>
+            <td>读值</td>
+            <td><code>.item()</code>、<code>.tolist()</code>、<code>bool(t)</code>、<code>if t:</code>、<code>print(t)</code></td>
+            <td>张量的值</td>
+            </tr>
+            <tr>
+            <td>输出形状依赖数据</td>
+            <td><code>torch.nonzero(t)</code>、布尔掩码
+            <code>x[mask]</code>、<code>torch.unique(t)</code>、未给
+            <code>output_size</code> 的
+            <code>repeat_interleave</code></td>
+            <td>结果有多少个元素，才能分配输出</td>
+            </tr>
+            <tr>
+            <td>设备到主机拷贝</td>
+            <td>默认的
+            <code>.cpu()</code>、<code>.to("cpu")</code>、拷到 pageable
+            内存</td>
+            <td>拷贝完成后数据才可用</td>
+            </tr>
+            <tr>
+            <td>分配器回收</td>
+            <td>缓存不够时释放缓存块重新向驱动申请、<code>torch.cuda.empty_cache()</code></td>
+            <td>驱动释放显存需要等待相关工作</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>第三类最容易漏：<code>x[mask]</code>
+            看起来只是索引，但输出长度取决于 <code>mask</code>
+            里有多少个 <code>True</code>，CPU
+            必须先拿到这个数才能分配结果。热路径上可以改写成固定形状的计算（如
+            <code>torch.where</code>、预分配后再写入），或使用
+            <code>torch.nonzero_static</code>
+            这类显式给出输出大小的接口。</p>
+            <p>排查时可以打开
+            <code>torch.cuda.set_sync_debug_mode("warn")</code>，让
+            PyTorch 在发生同步的 CUDA 操作处告警；它覆盖的是 PyTorch
+            能识别的同步调用，不能替代 profiler 中 CPU
+            时间线上的等待观察。见 <a
+            href="https://docs.pytorch.org/docs/stable/generated/torch.cuda.set_sync_debug_mode.html">set_sync_debug_mode</a>。</p>
+            <h3
+            id="混淆点三non_blocking-与计算重叠是两件事">混淆点三：non_blocking
+            与计算重叠是两件事</h3>
+            <p><code>non_blocking=True</code> 请求让搬运尽可能不阻塞
+            CPU，解决的是“CPU 是否等待”；搬运能否与 GPU
+            计算<strong>重叠</strong>，是另一个问题，取决于 pinned
+            memory、copy engine、stream
+            安排以及两项工作之间是否有数据依赖。</p>
+            <p>即使源张量已经 pinned，如果拷贝和计算都放在同一个
+            stream，后续计算仍按顺序等待拷贝——这正是“排序”规则。为了重叠，通常要把独立工作放在不同
+            stream，并建立正确的消费依赖。临时调用
+            <code>pin_memory()</code>
+            本身需要开销，不一定比直接拷贝更快。见官方 <a
+            href="https://docs.pytorch.org/tutorials/intermediate/pinmem_nonblock.html">pinned
+            memory 与 non_blocking 教程</a>。</p>
+            <p>异步传输把“提交”和“完成”拉开了距离，也就要求在这段时间里遵守缓冲区生命周期：</p>
+            <ul>
+            <li>pinned CPU 源缓冲区在 H2D 完成前不能被覆盖；</li>
+            <li>异步 D2H 的 CPU 目标缓冲区，在拷贝完成前不能读取；</li>
+            <li>跨 stream 使用 CUDA
+            张量，除了计算依赖，还要保证分配器不会过早复用其存储，见下一节。</li>
+            </ul>
+            <h3
+            id="混淆点四跨-stream-时顺序和生命周期要分别保证">混淆点四：跨
+            stream 时，顺序和生命周期要分别保证</h3>
+            <p>跨 stream
+            使用一个张量，需要同时回答两个问题：<strong>消费者会不会读得太早</strong>（顺序），<strong>存储会不会被回收得太早</strong>（生命周期）。<code>wait_stream</code>/<code>wait_event</code>
+            只解决前者。</p>
+            <p>生命周期问题来自 caching allocator
+            的一个前提：每个块记住它的<strong>分配
+            stream</strong>，Python 引用归零时，块立即回到这条 stream
+            的缓存，下一次在同一 stream 上的分配可以马上复用——这在单
+            stream
+            下是安全的，因为后来的工作必然排在先前工作之后。但如果另一条
+            stream 还在读这块存储，分配 stream
+            上新分配的张量就可能覆盖它，而 CPU 侧看不到任何错误。</p>
+            <p>两种常见处理：</p>
+            <ul>
+            <li><strong><code>t.record_stream(s)</code></strong>：告诉分配器“<code>t</code>
+            也被 stream <code>s</code> 使用”。之后 <code>t</code>
+            被释放时，分配器在 <code>s</code> 上记一个
+            event，等它完成后才复用该块。适合“分配在 A、交给 B
+            用完即弃”的张量，代价是复用推迟，峰值可能升高。</li>
+            <li><strong>延长 Python
+            引用</strong>：把张量挂在某个容器里，直到确定消费者 stream
+            已经越过使用点再放手。不依赖分配器细节，但要自己证明“放手时机足够晚”。</li>
+            </ul>
+            <p>还有一个对称的问题：<strong>写后读之外，还有读后写（WAR）。</strong>
+            生产者 stream 下一轮要覆写一块共享缓冲区时，必须等消费者
+            stream 把上一轮内容读完——这同样需要 event
+            依赖，而不是只在“写完才能读”的方向上建依赖。分配器层面的细节与示意图见
+            <a href="./torch_memory_management.html">显存管理：跨 stream
+            生命周期</a>，<a
+            href="https://docs.pytorch.org/docs/stable/notes/cuda#cuda-streams">CUDA
+            semantics</a> 中也有 <code>record_stream</code> 的说明。</p>
+            <h3
+            id="混淆点五计时测的是哪个时刻">混淆点五：计时测的是哪个时刻</h3>
+            <p>只用 <code>time.perf_counter()</code> 包围异步 CUDA
+            调用，停表时只到了“提交”时刻，测到的可能主要是 CPU
+            提交时间。CUDA Event 则是排进 stream 的标记，GPU
+            执行到它时才记录时间，因此能度量设备上一段工作。</p>
+            <figure>
+            <img src="./WikiImage/torch_cuda_execution_timing.svg"
+            alt="三种计时区间" />
+            <figcaption aria-hidden="true">三种计时区间</figcaption>
+            </figure>
+            <div class="sourceCode" id="cb3"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> torch.randn(<span class="dv">1024</span>, <span class="dv">1024</span>, device<span class="op">=</span><span class="st">&quot;cuda&quot;</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">5</span>):</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    y <span class="op">=</span> x <span class="op">@</span> x  <span class="co"># 预热</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>torch.cuda.synchronize()</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>start <span class="op">=</span> torch.cuda.Event(enable_timing<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>end <span class="op">=</span> torch.cuda.Event(enable_timing<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>start.record()</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> x <span class="op">@</span> x</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>end.record()</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>end.synchronize()</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>elapsed_ms <span class="op">=</span> start.elapsed_time(end)</span></code></pre></div>
+            <p>这测量两个事件之间的设备时间，不直接代表包含请求排队、CPU
+            调度、数据处理和网络返回的服务延迟。跨 stream
+            的工作要纳入事件依赖，不能假定一对事件自动覆盖所有
+            stream。</p>
+            <p>测端到端耗时可在测量区间前后同步，再使用 CPU
+            时钟；但不要把用于测量的同步长期留在生产热路径。<code>torch.profiler</code>
+            的 CPU/CUDA trace
+            可以把两条时间线并排画出来，帮助区分提交间隙、搬运、kernel
+            执行与同步等待。见 <a
+            href="https://docs.pytorch.org/docs/stable/profiler.html">PyTorch
+            Profiler</a>。</p>
+            <h3
+            id="混淆点六异步错误为什么出现在后一行">混淆点六：异步错误为什么出现在后一行</h3>
+            <p>报错同样遵循“完成”时刻：kernel 在 GPU
+            上执行出错时，提交它的 Python
+            调用早已返回，错误只能在<strong>下一次 CPU 与 CUDA
+            交互</strong>时被发现——可能是后续的同步、一次拷贝，或另一个毫不相关的
+            kernel 提交。因此 Python
+            堆栈指向的往往是“发现错误的地方”，而不是“出错的地方”。</p>
+            <p>还要知道两点：</p>
+            <ul>
+            <li><strong>有些错误是粘性的。</strong>
+            非法内存访问这类错误会让当前进程的 CUDA context
+            进入不可用状态，之后的 CUDA
+            调用都会失败，通常只能重启进程。服务里看到一串连锁报错时，第一条才有诊断价值。</li>
+            <li><strong>设备端断言也是异步的。</strong>
+            <code>torch._assert_async(cond)</code> 把检查放到 GPU
+            上，不让 CPU 读值，失败时同样延后报告。SGLang 在 CI
+            中用它校验 <code>FutureMap</code>
+            的读取：<code>managers/overlap_utils.py</code> 的
+            <code>_assert_nonneg_and_invalidate()</code> 断言读出的
+            token 非负并把槽位写回
+            <code>-1</code>，专门捕获“没写就读”的接力
+            bug，生产环境默认关闭。</li>
+            </ul>
+            <p>定位手段按代价从低到高：</p>
+            <ol type="1">
+            <li><code>CUDA_LAUNCH_BLOCKING=1</code>：每次 kernel
+            提交后等待完成，让报错位置与出错 kernel
+            对应；它改变执行时序，不能用于性能测试，也可能让依赖时序的问题消失。见
+            <a
+            href="https://docs.pytorch.org/docs/stable/cuda_environment_variables.html">CUDA
+            环境变量</a>。</li>
+            <li>在怀疑区域前后临时插入
+            <code>torch.cuda.synchronize()</code>，二分缩小范围。</li>
+            <li><code>compute-sanitizer</code>
+            检查越界访问、竞争等内存错误，开销很大，适合离线复现。</li>
+            </ol>
+            <h3 id="在-sglang-中overlap-scheduler-把同步推迟一拍">在
+            SGLang 中：overlap scheduler 把同步推迟一拍</h3>
+            <p>推理服务每个 decode step 都必须把新 token 取回
+            CPU，用来判断停止条件、更新请求状态、发给客户端——这个同步躲不掉。SGLang
+            的 overlap scheduler
+            做的事，是让这次必要的等待发生在<strong>下一批已经入队之后</strong>，从而
+            CPU 在等，GPU
+            不空转。上面“两种等待”图描绘的正是这条流水线。</p>
+            <p>主循环是
+            <code>python/sglang/srt/managers/scheduler.py</code> 中的
+            <code>Scheduler.event_loop_overlap</code>：先
+            <code>run_batch()</code> 提交当前批次，把
+            <code>(batch, result)</code> 放进
+            <code>result_queue</code>，再弹出<strong>上一批</strong>的结果处理。几个与本篇对应的细节：</p>
+            <ul>
+            <li><strong>用 stream 依赖代替 CPU 同步。</strong>
+            调度线程的 GPU 工作在 <code>schedule_stream</code>
+            上；<code>run_batch()</code> 里先
+            <code>forward_stream.wait_stream(self.schedule_stream)</code>
+            再执行 forward，结果拷贝前又让
+            <code>copy_stream.wait_stream(self.forward_stream)</code>。这些都只是“排序”，CPU
+            不停。代码注释说明了动机：结果 D2H 放在
+            <code>copy_stream</code> 上，可与下一次 forward
+            重叠，而不是在 <code>forward_stream</code> 上串行。</li>
+            <li><strong>异步 D2H 同时处理目标与源的生命周期。</strong>
+            <code>managers/utils.py</code> 中的
+            <code>_async_d2h()</code> 在 CUDA 上先分配 pinned 的 CPU
+            目标张量，再
+            <code>copy_(t, non_blocking=True)</code>，并对源张量调用
+            <code>record_stream()</code>，防止缓存分配器在拷贝 stream
+            完成前复用源存储。<code>GenerationBatchResult.copy_to_cpu()</code>
+            用它搬运 <code>next_token_ids</code>、logprob 等，最后
+            <code>copy_done.record()</code>。</li>
+            <li><strong>唯一的硬等待放在读值之前。</strong>
+            <code>managers/scheduler_components/batch_result_processor.py</code>
+            中，<code>SchedulerBatchResultProcessor.process_batch_result_decode()</code>
+            先 <code>result.copy_done.synchronize()</code>，之后
+            <code>_normalize_decode_outputs()</code> 才对
+            <code>next_token_ids</code> 调用
+            <code>.tolist()</code>。由于此时读的是已同步的 CPU pinned
+            张量，<code>.tolist()</code> 不再触发设备同步。</li>
+            </ul>
+            <div class="sourceCode" id="cb4"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># scheduler.py, run_batch()（节选、简化）</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="va">self</span>.copy_stream.wait_stream(<span class="va">self</span>.forward_stream)   <span class="co"># GPU 等 GPU</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="va">self</span>.copy_stream_ctx:</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    batch_result.copy_to_cpu(...)                   <span class="co"># pinned D2H + copy_done.record()</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 下一轮循环处理该结果时：</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>result.copy_done.synchronize()                      <span class="co"># CPU 等 GPU，只在这里</span></span></code></pre></div>
+            <h4
+            id="下一批的输入还没回到-cpufuturemap">下一批的输入还没回到
+            CPU：FutureMap</h4>
+            <p>推迟同步带来一个新问题：decode 第 N+1 步的输入正是第 N
+            步采样出的 token，而 CPU 调度第 N+1 批时，这些 token 还在
+            GPU 上没算完。若为此读值，重叠就前功尽弃。</p>
+            <p>SGLang 的做法是让这条数据依赖<strong>完全留在 GPU
+            上</strong>。<code>managers/overlap_utils.py</code> 的
+            <code>FutureMap</code> 持有一块按 <code>req_pool_idx</code>
+            索引、常驻 GPU 的 <code>output_tokens_buf</code>：</p>
+            <ul>
+            <li>第 N 批 forward
+            之后，<code>Scheduler._relay_forward_payload()</code> 调用
+            <code>future_map.stash()</code>，在 forward_stream 上执行
+            <code>output_tokens_buf[req_pool_indices] = next_token_ids</code>；</li>
+            <li>第 N+1 批进入 forward
+            时，<code>resolve_forward_inputs()</code> 执行
+            <code>input_ids = output_tokens_buf[req_pool_indices]</code>。</li>
+            </ul>
+            <figure>
+            <img
+            src="./WikiImage/torch_cuda_execution_future_map.svg"
+            alt="FutureMap 接力 token" />
+            <figcaption aria-hidden="true">FutureMap 接力
+            token</figcaption>
+            </figure>
+            <p>CPU 调度时只需要知道“这个请求在哪个槽位”，不需要知道
+            token 的值；scatter 与 gather 排在同一条 forward_stream
+            上，读必然发生在写之后。这正是本篇的判据：<strong>这里只需要“排序”，所以不必等“完成”。</strong>
+            同一函数也处理 prefill：prefill 的输入来自 CPU，用 pinned 的
+            <code>prefill_input_ids_cpu</code> 以
+            <code>non_blocking=True</code> 拷入；混合批次再
+            <code>torch.cat</code> 上 decode 部分从
+            <code>FutureMap</code> gather 出的 token。</p>
+            <h4
+            id="重叠的代价生命周期与读后写">重叠的代价：生命周期与读后写</h4>
+            <p>CPU 领先 GPU 一拍，意味着 Python 侧的对象可能比 GPU
+            上使用它的工作“先结束”，这正是上文混淆点四的两个问题：</p>
+            <ul>
+            <li><strong>保活两拍。</strong> 调度线程在 schedule_stream
+            上准备的 batch 张量交给 forward_stream
+            使用；<code>_forward_isolation()</code> 在 overlap
+            模式下调用 <code>record_batch_in_overlap()</code>，把 batch
+            及其字段快照放进长度为 2 的环形缓冲
+            <code>batch_record_buf</code>，保证这些张量在后续两轮内不会被分配器回收。源码注释直言这是“hacky
+            way”，更可靠的方式是逐个
+            <code>record_stream</code>——两种生命周期手段在同一段代码里都出现了。</li>
+            <li><strong>读后写屏障。</strong> <code>run_batch()</code>
+            返回后，<code>_apply_war_barrier()</code> 让 schedule_stream
+            等待 forward 对共享缓冲区的读取完成（有细粒度的
+            <code>shared_read_done_event</code> 时
+            <code>wait_event</code>，否则退化为
+            <code>wait_stream(forward_stream)</code>），防止调度线程为下一批覆写仍在被读取的数据。</li>
+            </ul>
+            <p>这一设计也有边界：设置
+            <code>SGLANG_DISABLE_CONSECUTIVE_PREFILL_OVERLAP</code>
+            后（默认关闭），<code>is_disable_overlap_for_batch()</code>
+            会在连续两个 prefill 批次时先处理上一批结果，以吞吐换首批的
+            TTFT；ROCm（<code>_is_hip</code>）路径则直接在
+            <code>forward_stream</code> 上拷贝，注释给出的理由是跨
+            stream 同步的代价高于它所重叠的小型
+            D2H。重叠是否值得，仍取决于具体硬件和测量。</p>
+            <h3 id="小结">小结</h3>
+            <p>把 CUDA 执行看成“CPU 往 stream 队列里提交命令、GPU
+            按序消费”，就能把提交、排序、完成三个时刻分开：同 stream
+            的先后天然成立，跨 stream 的先后用 event 写进队列，只有
+            Python 真正需要值（或由值决定的形状）时才让 CPU
+            等待完成。隐式同步、<code>non_blocking</code> 的边界、跨
+            stream
+            的存储回收、计时读数和延迟报错，都是这三个时刻被混淆的不同表现。SGLang
+            的 overlap scheduler 把这套模型用到极致：结果 D2H 走独立
+            stream，下一批输入经 <code>FutureMap</code> 在 GPU
+            内接力，CPU
+            唯一的硬等待推迟到下一批入队之后。读推理热路径时依次问：这里需要排序还是需要完成？谁在等谁？异步期间缓冲区由谁保活、谁会覆写？再用
+            profiler 的双时间线验证。</p>
+          </main>
+        <aside class="wiki-toc">
+      <ul>
+      <li><a href="#抽象cpu-是生产者stream-是队列"
+      id="toc-抽象cpu-是生产者stream-是队列">抽象：CPU 是生产者，stream
+      是队列</a></li>
+      <li><a href="#混淆点一gpu-等-gpu还是-cpu-等-gpu"
+      id="toc-混淆点一gpu-等-gpu还是-cpu-等-gpu">混淆点一：GPU 等
+      GPU，还是 CPU 等 GPU</a></li>
+      <li><a href="#混淆点二隐式同步python-想知道数据里的值"
+      id="toc-混淆点二隐式同步python-想知道数据里的值">混淆点二：隐式同步——Python
+      想知道数据里的值</a></li>
+      <li><a href="#混淆点三non_blocking-与计算重叠是两件事"
+      id="toc-混淆点三non_blocking-与计算重叠是两件事">混淆点三：non_blocking
+      与计算重叠是两件事</a></li>
+      <li><a href="#混淆点四跨-stream-时顺序和生命周期要分别保证"
+      id="toc-混淆点四跨-stream-时顺序和生命周期要分别保证">混淆点四：跨
+      stream 时，顺序和生命周期要分别保证</a></li>
+      <li><a href="#混淆点五计时测的是哪个时刻"
+      id="toc-混淆点五计时测的是哪个时刻">混淆点五：计时测的是哪个时刻</a></li>
+      <li><a href="#混淆点六异步错误为什么出现在后一行"
+      id="toc-混淆点六异步错误为什么出现在后一行">混淆点六：异步错误为什么出现在后一行</a></li>
+      <li><a href="#在-sglang-中overlap-scheduler-把同步推迟一拍"
+      id="toc-在-sglang-中overlap-scheduler-把同步推迟一拍">在 SGLang
+      中：overlap scheduler 把同步推迟一拍</a></li>
+      <li><a href="#小结" id="toc-小结">小结</a></li>
+      </ul>
+    </aside>
+      </div>
+</body>
+
+</html>

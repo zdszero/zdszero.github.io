@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 470" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="470" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">一次计算里的三种精度：存储、累加、输出舍入</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">以 BF16 matmul C = A·B 为例：.dtype 只告诉你最后一格存成什么，看不到中间怎么算</text>
+
+  <!-- stage 1: storage -->
+  <rect x="40" y="86" width="180" height="128" rx="10" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="130" y="110" text-anchor="middle" font-size="13.5" font-weight="700" fill="#0b7285">① 存储 storage</text>
+  <text x="130" y="136" text-anchor="middle" font-size="12" font-family="monospace" fill="#0b7285">A [M, K] bf16</text>
+  <text x="130" y="156" text-anchor="middle" font-size="12" font-family="monospace" fill="#0b7285">B [K, N] bf16</text>
+  <text x="130" y="182" text-anchor="middle" font-size="11.5" fill="#495057">2 B / 元素，躺在显存里</text>
+  <text x="130" y="200" text-anchor="middle" font-size="11" fill="#868e96">决定容量与带宽</text>
+
+  <!-- stage 2: compute -->
+  <rect x="250" y="86" width="180" height="128" rx="10" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="340" y="110" text-anchor="middle" font-size="13.5" font-weight="700" fill="#3b5bdb">② 计算 compute</text>
+  <text x="340" y="136" text-anchor="middle" font-size="12" font-family="monospace" fill="#3b5bdb">a_ik × b_kj</text>
+  <text x="340" y="162" text-anchor="middle" font-size="11.5" fill="#495057">Tensor Core 读 bf16 输入</text>
+  <text x="340" y="182" text-anchor="middle" font-size="11.5" fill="#495057">逐对相乘</text>
+  <text x="340" y="200" text-anchor="middle" font-size="11" fill="#868e96">FP32 输入还可能走 TF32</text>
+
+  <!-- stage 3: accumulate (highlight) -->
+  <rect x="460" y="86" width="190" height="128" rx="10" fill="#fff9db" stroke="#f08c00" stroke-width="2"/>
+  <text x="555" y="110" text-anchor="middle" font-size="13.5" font-weight="700" fill="#e8590c">③ 累加 accumulate</text>
+  <text x="555" y="136" text-anchor="middle" font-size="12" font-family="monospace" fill="#e8590c">acc += a·b  (K 次)</text>
+  <text x="555" y="162" text-anchor="middle" font-size="11.5" fill="#495057">常见为 FP32 累加器</text>
+  <text x="555" y="182" text-anchor="middle" font-size="11.5" fill="#495057">长归约的误差主要在这里</text>
+  <text x="555" y="200" text-anchor="middle" font-size="11" fill="#868e96">由 kernel 实现决定，不由 .dtype</text>
+
+  <!-- stage 4: output -->
+  <rect x="680" y="86" width="180" height="128" rx="10" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="770" y="110" text-anchor="middle" font-size="13.5" font-weight="700" fill="#5f3dc4">④ 输出舍入 output</text>
+  <text x="770" y="136" text-anchor="middle" font-size="12" font-family="monospace" fill="#5f3dc4">C = acc.to(bf16)</text>
+  <text x="770" y="162" text-anchor="middle" font-size="11.5" fill="#495057">写回时再舍入一次</text>
+  <text x="770" y="182" text-anchor="middle" font-size="11.5" fill="#495057">C.dtype == bf16</text>
+  <text x="770" y="200" text-anchor="middle" font-size="11" fill="#868e96">只有这一格对你可见</text>
+
+  <path d="M220 150 L248 150" stroke="#868e96" stroke-width="2" marker-end="url(#arP)"/>
+  <path d="M430 150 L458 150" stroke="#868e96" stroke-width="2" marker-end="url(#arP)"/>
+  <path d="M650 150 L678 150" stroke="#868e96" stroke-width="2" marker-end="url(#arP)"/>
+
+  <!-- bracket under output -->
+  <path d="M690 226 L690 234 L850 234 L850 226" fill="none" stroke="#7048e8" stroke-width="1.5"/>
+  <text x="770" y="252" text-anchor="middle" font-size="11.5" fill="#5f3dc4">print(C.dtype) 只能看到这里</text>
+
+  <!-- lower: RMSNorm worked example -->
+  <text x="40" y="288" font-size="13.5" font-weight="700" fill="#212529">同样的分层，在框架代码里常写成显式的升 / 降精度</text>
+  <text x="40" y="308" font-size="11.5" fill="#868e96">SGLang RMSNorm.forward_native（layers/layernorm.py）的数据路径</text>
+
+  <rect x="40" y="322" width="170" height="64" rx="9" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="125" y="346" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0b7285">输入 x, residual</text>
+  <text x="125" y="368" text-anchor="middle" font-size="11.5" font-family="monospace" fill="#0b7285">bf16 存储</text>
+
+  <rect x="240" y="322" width="150" height="64" rx="9" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="315" y="346" text-anchor="middle" font-size="12.5" font-weight="700" fill="#3b5bdb">升精度</text>
+  <text x="315" y="368" text-anchor="middle" font-size="11" font-family="monospace" fill="#3b5bdb">x.to(float32)</text>
+
+  <rect x="420" y="322" width="250" height="64" rx="9" fill="#fff9db" stroke="#f08c00" stroke-width="2"/>
+  <text x="545" y="346" text-anchor="middle" font-size="12.5" font-weight="700" fill="#e8590c">FP32 中完成加法与归约</text>
+  <text x="545" y="368" text-anchor="middle" font-size="11" font-family="monospace" fill="#e8590c">x+res · pow(2).mean · rsqrt</text>
+
+  <rect x="700" y="322" width="160" height="64" rx="9" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="780" y="346" text-anchor="middle" font-size="12.5" font-weight="700" fill="#5f3dc4">降回原 dtype</text>
+  <text x="780" y="368" text-anchor="middle" font-size="11" font-family="monospace" fill="#5f3dc4">.to(orig_dtype)</text>
+
+  <path d="M210 354 L238 354" stroke="#868e96" stroke-width="2" marker-end="url(#arP)"/>
+  <path d="M390 354 L418 354" stroke="#868e96" stroke-width="2" marker-end="url(#arP)"/>
+  <path d="M670 354 L698 354" stroke="#868e96" stroke-width="2" marker-end="url(#arP)"/>
+
+  <!-- note -->
+  <rect x="40" y="410" width="820" height="40" rx="9" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="58" y="435" font-size="12" fill="#495057">关键：低精度用于“存”和“搬”（省显存与带宽），高精度用于“累加”（保住小量）；读代码时对每个算子分别问这三格各是什么。</text>
+
+  <defs>
+    <marker id="arP" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#868e96"/></marker>
+  </defs>
+</svg>

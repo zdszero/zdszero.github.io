@@ -25,82 +25,27 @@
   </title>
     <link rel="stylesheet" href="./WikiTheme/theme/bootstrap.css"  />
         <script defer=""
-        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
-        type="text/javascript"></script>
-        <style type="text/css">
-    /* ---- three column wiki layout (left: site directory, center: content, right: page TOC) ---- */
-    .wiki-layout {
-      display: flex;
-      align-items: flex-start;
-      gap: 24px;
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 0 20px;
-      box-sizing: border-box;
-    }
-    .wiki-sidebar {
-      flex: 0 0 240px;
-      width: 240px;
-      position: sticky;
-      top: 0;
-      max-height: 100vh;
-      overflow-y: auto;
-      padding: 10px 4px 20px 0;
-      border-right: 1px solid #eee;
-      font-size: 14px;
-    }
-    .wiki-sidebar[hidden] { display: none; }
-    .wiki-toc {
-      flex: 0 0 220px;
-      width: 220px;
-      position: sticky;
-      top: 0;
-      max-height: 100vh;
-      overflow-y: auto;
-      padding: 10px 0 20px 4px;
-      border-left: 1px solid #eee;
-      font-size: 14px;
-    }
-    .wiki-main {
-      flex: 1 1 auto;
-      min-width: 0;
-      max-width: 820px;
-      padding: 10px 0 40px;
-    }
-    /* site directory tree */
-    .wiki-sidebar .wiki-home {
-      display: block;
-      font-weight: bold;
-      margin-bottom: 10px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid #eee;
-      text-decoration: none;
-      color: #333;
-    }
-    .wiki-sidebar ul { list-style: none; margin: 0 0 0 12px; padding: 0; }
-    .wiki-sidebar > ul { margin-left: 0; }
-    .wiki-sidebar li { line-height: 1.7; }
-    .wiki-sidebar a { text-decoration: none; color: #555; }
-    .wiki-sidebar a:hover { color: #0088cc; text-decoration: underline; }
-    .wiki-sidebar a.active { color: #0088cc; font-weight: bold; }
-    /* page TOC */
-    .wiki-toc ul { list-style: none; margin: 0 0 0 12px; padding: 0; }
-    .wiki-toc > ul { margin-left: 0; }
-    .wiki-toc li { line-height: 1.6; }
-    .wiki-toc a { text-decoration: none; color: #555; }
-    .wiki-toc a:hover { color: #0088cc; }
-    @media (max-width: 980px) {
-      .wiki-layout { flex-direction: column; }
-      .wiki-sidebar, .wiki-toc {
-        position: static;
-        width: 100%;
-        flex-basis: auto;
-        max-height: none;
-        border: 0;
-      }
-      .wiki-main { max-width: none; }
-    }
-  </style>
+        src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+        <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+        </script>
+        <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+        <!-- wiki three-column layout styles/behavior, kept external so the ~5KB
+       block isn't duplicated into every generated page -->
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/wiki-layout.css" />
+  <script defer src="./WikiTheme/wiki-layout.js"></script>
 </head>
 
 <body>
@@ -122,27 +67,26 @@
             API”，但底层要用一堆点对点的
             <code>send</code>/<code>recv</code>
             拼出来。<strong>Ring（环）</strong> 是最经典的拼法：把 <span
-            class="math inline">\(P\)</span> 张 GPU
+            class="math inline">P</span> 张 GPU
             逻辑上首尾相连成一个环，每张卡只和左右两个邻居通信，数据像接力一样绕环传递。</p>
             <h2 id="为什么用-ring带宽最优">为什么用 ring：带宽最优</h2>
             <p>Ring
             之所以成为大数据量集合通信的默认算法，核心原因是它<strong>带宽最优（bandwidth-optimal）</strong>：</p>
             <ul>
             <li>每张卡在每一步只发送 <span
-            class="math inline">\(M/P\)</span>
-            大小的分片，同时从上游收到 <span
-            class="math inline">\(M/P\)</span>，<strong>发送和接收各自占用一条独立链路，双工满载</strong>。</li>
-            <li>经过 <span class="math inline">\(P-1\)</span>
+            class="math inline">M/P</span> 大小的分片，同时从上游收到
+            <span
+            class="math inline">M/P</span>，<strong>发送和接收各自占用一条独立链路，双工满载</strong>。</li>
+            <li>经过 <span class="math inline">P-1</span>
             步，每张卡累计只发送了 <span
-            class="math inline">\(\frac{P-1}{P}M\)</span>
+            class="math inline">\frac{P-1}{P}M</span>
             的数据——这已经是集合通信的理论下界，与 <span
-            class="math inline">\(P\)</span>
-            无关地逼近“只传一份数据”。</li>
+            class="math inline">P</span> 无关地逼近“只传一份数据”。</li>
             </ul>
-            <p>代价是<strong>延迟随 <span
-            class="math inline">\(P\)</span> 线性增长</strong>（要走满
-            <span class="math inline">\(P-1\)</span> 跳），所以 ring
-            适合大 message、卡数不太多（如节点内 8 卡）的场景。</p>
+            <p>代价是<strong>延迟随 <span class="math inline">P</span>
+            线性增长</strong>（要走满 <span
+            class="math inline">P-1</span> 跳），所以 ring 适合大
+            message、卡数不太多（如节点内 8 卡）的场景。</p>
             <p>{{&lt; region note &gt;}} <strong>Ring vs Tree —— NCCL
             是怎么选的？</strong></p>
             <table>
@@ -163,14 +107,14 @@
             <tbody>
             <tr>
             <td><strong>Ring</strong></td>
-            <td><span class="math inline">\(O(P)\)</span></td>
+            <td><span class="math inline">O(P)</span></td>
             <td>最优，<span
-            class="math inline">\(\frac{P-1}{P}M\)</span></td>
+            class="math inline">\frac{P-1}{P}M</span></td>
             <td>大 message、大数据量</td>
             </tr>
             <tr>
             <td><strong>Tree</strong>（double-binary tree）</td>
-            <td><span class="math inline">\(O(\log P)\)</span></td>
+            <td><span class="math inline">O(\log P)</span></td>
             <td>略差</td>
             <td>小 message、大规模节点、延迟敏感</td>
             </tr>
@@ -197,8 +141,8 @@
             <figcaption aria-hidden="true">ReduceScatter</figcaption>
             </figure>
             <p>ReduceScatter 是 AllGather 的“镜像”：数据同样分成 <span
-            class="math inline">\(P\)</span> 份绕环传 <span
-            class="math inline">\(P-1\)</span>
+            class="math inline">P</span> 份绕环传 <span
+            class="math inline">P-1</span>
             步，但每一跳除了转发还会<strong>就地累加（reduce）</strong>，最终每张卡只保留其中一个分片的完整归约结果。</p>
             <p>以 TP4 为例，在 3 轮 ring 通信过后，假设完整数据分为 4 个
             Shard A, B, C, D：</p>
@@ -219,9 +163,9 @@
             <figcaption aria-hidden="true">All2All</figcaption>
             </figure>
             <p>All2All 中每张卡都要把自己的第 <span
-            class="math inline">\(j\)</span> 块数据发给第 <span
-            class="math inline">\(j\)</span> 张卡，是 <strong>MoE 的
-            Expert Parallel</strong> 里最核心的通信模式——token
+            class="math inline">j</span> 块数据发给第 <span
+            class="math inline">j</span> 张卡，是 <strong>MoE 的 Expert
+            Parallel</strong> 里最核心的通信模式——token
             按照路由结果被分发到持有对应 expert 的卡上，算完再 All2All
             收回。它没有归约，只有数据的重新分布，因此单卡通信量与
             AllGather/ReduceScatter 同阶。</p>
@@ -230,23 +174,22 @@
             ReduceScatter, All2All 估算</h4>
             <p><strong>AllGather, ReduceScatter, All2All 的 ring
             机制都类似</strong></p>
-            <p><span class="math display">\[\boxed{T_{\text{AllGather}}
-            = T_{\text{All2All}} = T_{\text{ReduceScatter}} = (P-1)
-            \times
-            \frac{\text{local\_bytes}}{\text{BW\_unidirectional}}}\]</span></p>
+            <p><span class="math display">\boxed{T_{\text{AllGather}} =
+            T_{\text{All2All}} = T_{\text{ReduceScatter}} = (P-1) \times
+            \frac{\text{local\_bytes}}{\text{BW\_unidirectional}}}</span></p>
             <h4 id="allreduce-估算">AllReduce 估算</h4>
             <p><strong>系数 2 来自
             AllReduce</strong>，它分两个阶段：</p>
-            <p><span class="math display">\[\boxed{T_{\text{AllReduce}}
-            = 2(P-1) \times
-            \frac{\text{local\_bytes}}{\text{BW\_unidirectional}}}\]</span></p>
+            <p><span class="math display">\boxed{T_{\text{AllReduce}} =
+            2(P-1) \times
+            \frac{\text{local\_bytes}}{\text{BW\_unidirectional}}}</span></p>
             <ul>
             <li>Phase 1（ReduceScatter）：<span
-            class="math inline">\((P-1)\)</span> 步，每步传 <span
-            class="math inline">\(M/P\)</span></li>
+            class="math inline">(P-1)</span> 步，每步传 <span
+            class="math inline">M/P</span></li>
             <li>Phase 2（AllGather）：<span
-            class="math inline">\((P-1)\)</span> 步，每步传 <span
-            class="math inline">\(M/P\)</span></li>
+            class="math inline">(P-1)</span> 步，每步传 <span
+            class="math inline">M/P</span></li>
             <li>合计乘 2</li>
             </ul>
             <p>公式中的 <strong>2 代表 AllReduce
@@ -277,39 +220,6 @@
       </ul>
     </aside>
       </div>
-  <script type="text/javascript">
-    (function () {
-      function markActive() {
-        var here = location.href.split('#')[0];
-        var links = document.querySelectorAll('.wiki-sidebar a');
-        for (var i = 0; i < links.length; i++) {
-          if (links[i].href.split('#')[0] === here) {
-            links[i].classList.add('active');
-          }
-        }
-      }
-      // load the shared site directory once (served from the wiki root);
-      // kept in a standalone file so adding a page needn't rebuild every page.
-      var nav = document.getElementById('wiki-sidebar');
-      if (nav) {
-        fetch('/wiki_sidebar.html')
-          .then(function (r) { return r.ok ? r.text() : ''; })
-          .then(function (html) {
-            if (html) {
-              nav.innerHTML = html;
-              nav.hidden = false;
-              markActive();
-            }
-          })
-          .catch(function () {});
-      }
-      // keep bootstrap table styling (previously done by sticky_menu.js)
-      var tables = document.getElementsByTagName('table');
-      for (var j = 0; j < tables.length; j++) {
-        tables[j].classList.add('table');
-      }
-    })();
-  </script>
 </body>
 
 </html>

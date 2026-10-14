@@ -25,8 +25,23 @@
   </title>
     <link rel="stylesheet" href="./WikiTheme/theme/bootstrap.css"  />
         <script defer=""
-        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
-        type="text/javascript"></script>
+        src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+        <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+        </script>
+        <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
       <style type="text/css">
     html { -webkit-text-size-adjust: 100%; }
     pre > code.sourceCode { white-space: pre; position: relative; }
@@ -93,80 +108,10 @@
     code span.vs { color: #4070a0; } /* VerbatimString */
     code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
   </style>
-      <style type="text/css">
-    /* ---- three column wiki layout (left: site directory, center: content, right: page TOC) ---- */
-    .wiki-layout {
-      display: flex;
-      align-items: flex-start;
-      gap: 24px;
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 0 20px;
-      box-sizing: border-box;
-    }
-    .wiki-sidebar {
-      flex: 0 0 240px;
-      width: 240px;
-      position: sticky;
-      top: 0;
-      max-height: 100vh;
-      overflow-y: auto;
-      padding: 10px 4px 20px 0;
-      border-right: 1px solid #eee;
-      font-size: 14px;
-    }
-    .wiki-sidebar[hidden] { display: none; }
-    .wiki-toc {
-      flex: 0 0 220px;
-      width: 220px;
-      position: sticky;
-      top: 0;
-      max-height: 100vh;
-      overflow-y: auto;
-      padding: 10px 0 20px 4px;
-      border-left: 1px solid #eee;
-      font-size: 14px;
-    }
-    .wiki-main {
-      flex: 1 1 auto;
-      min-width: 0;
-      max-width: 820px;
-      padding: 10px 0 40px;
-    }
-    /* site directory tree */
-    .wiki-sidebar .wiki-home {
-      display: block;
-      font-weight: bold;
-      margin-bottom: 10px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid #eee;
-      text-decoration: none;
-      color: #333;
-    }
-    .wiki-sidebar ul { list-style: none; margin: 0 0 0 12px; padding: 0; }
-    .wiki-sidebar > ul { margin-left: 0; }
-    .wiki-sidebar li { line-height: 1.7; }
-    .wiki-sidebar a { text-decoration: none; color: #555; }
-    .wiki-sidebar a:hover { color: #0088cc; text-decoration: underline; }
-    .wiki-sidebar a.active { color: #0088cc; font-weight: bold; }
-    /* page TOC */
-    .wiki-toc ul { list-style: none; margin: 0 0 0 12px; padding: 0; }
-    .wiki-toc > ul { margin-left: 0; }
-    .wiki-toc li { line-height: 1.6; }
-    .wiki-toc a { text-decoration: none; color: #555; }
-    .wiki-toc a:hover { color: #0088cc; }
-    @media (max-width: 980px) {
-      .wiki-layout { flex-direction: column; }
-      .wiki-sidebar, .wiki-toc {
-        position: static;
-        width: 100%;
-        flex-basis: auto;
-        max-height: none;
-        border: 0;
-      }
-      .wiki-main { max-width: none; }
-    }
-  </style>
+      <!-- wiki three-column layout styles/behavior, kept external so the ~5KB
+       block isn't duplicated into every generated page -->
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/wiki-layout.css" />
+  <script defer src="./WikiTheme/wiki-layout.js"></script>
 </head>
 
 <body>
@@ -185,15 +130,15 @@
     <nav class="wiki-sidebar" id="wiki-sidebar" hidden></nav>
     <main class="wiki-main">
             <p>如果神经网络只堆叠线性层，那么无论堆叠多少层，整体仍然是线性变换。以两个无偏置线性层为例：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             y = W_2(W_1x) = (W_2W_1)x.
-            \]</span></p>
-            <p>矩阵 <span class="math inline">\(W_2W_1\)</span>
+            </span></p>
+            <p>矩阵 <span class="math inline">W_2W_1</span>
             仍然可以合并成一个矩阵，因此增加层数并没有增加函数的非线性表达能力。插入激活函数
-            <span class="math inline">\(\phi\)</span> 后，计算变成</p>
-            <p><span class="math display">\[
+            <span class="math inline">\phi</span> 后，计算变成</p>
+            <p><span class="math display">
             y = W_2\phi(W_1x),
-            \]</span></p>
+            </span></p>
             <p>一般无法再合并为一个线性变换。</p>
             <p>激活函数通常承担以下作用：</p>
             <ul>
@@ -206,8 +151,8 @@
             <p>在现代 Transformer 中，常见名称可以分成两类：</p>
             <ol type="1">
             <li><strong>标量激活函数</strong>：<code>ReLU</code>、<code>Sigmoid</code>、<code>Tanh</code>、<code>GELU</code>、<code>SiLU</code>，逐元素地把
-            <span class="math inline">\(x\)</span> 映射为 <span
-            class="math inline">\(\phi(x)\)</span>；</li>
+            <span class="math inline">x</span> 映射为 <span
+            class="math inline">\phi(x)</span>；</li>
             <li><strong>门控 MLP
             激活结构</strong>：<code>GLU</code>、<code>SwiGLU</code>、<code>GeGLU</code>、<code>SiTU</code>，同时接收
             gate 和 up/value 两路张量并逐元素相乘。</li>
@@ -219,68 +164,68 @@
             <h3 id="基础函数">基础函数</h3>
             <h4 id="sigmoid">Sigmoid</h4>
             <p>Sigmoid 定义为</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \sigma(x)=\frac{1}{1+e^{-x}}.
-            \]</span></p>
+            </span></p>
             <p>其输出范围为</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             0 &lt; \sigma(x) &lt; 1,
-            \]</span></p>
+            </span></p>
             <p>导数为</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \sigma&#39;(x)=\sigma(x)(1-\sigma(x)).
-            \]</span></p>
+            </span></p>
             <p>Sigmoid
             可以把任意实数压缩到零和一之间，因此很适合作为概率或门控系数。输入很大时门接近打开，输入很小时门接近关闭。</p>
-            <p>但当 <span class="math inline">\(|x|\)</span>
+            <p>但当 <span class="math inline">|x|</span>
             很大时，导数趋近于零，容易出现梯度饱和：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \lim_{x\to\pm\infty}\sigma&#39;(x)=0.
-            \]</span></p>
+            </span></p>
             <p>现代 Transformer 通常不会把 Sigmoid 单独作为整个 MLP
             的主激活函数，但它是 <code>SiLU</code>
             和许多门控结构的重要组成部分。</p>
             <h4 id="tanh">Tanh</h4>
             <p>双曲正切定义为</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \tanh(x)=\frac{e^x-e^{-x}}{e^x+e^{-x}}.
-            \]</span></p>
+            </span></p>
             <p>其输出范围为</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             -1 &lt; \tanh(x) &lt; 1,
-            \]</span></p>
+            </span></p>
             <p>导数为</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \frac{d}{dx}\tanh(x)=1-\tanh^2(x).
-            \]</span></p>
+            </span></p>
             <p>与 Sigmoid 相比，Tanh
             的输出以零为中心，但在绝对值较大的区域同样会饱和。Tanh
             还可以用来构造平滑限幅函数：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \operatorname{softcap}_{c}(x)=c\tanh\left(\frac{x}{c}\right).
-            \]</span></p>
-            <p>当 <span class="math inline">\(|x|\ll c\)</span> 时，</p>
-            <p><span class="math display">\[
+            </span></p>
+            <p>当 <span class="math inline">|x|\ll c</span> 时，</p>
+            <p><span class="math display">
             \operatorname{softcap}_{c}(x)\approx x;
-            \]</span></p>
-            <p>当 <span class="math inline">\(|x|\to\infty\)</span>
-            时，输出平滑地趋近于 <span class="math inline">\(\pm
-            c\)</span>。Kimi K3 的 SiTU 正是使用这种方式限制 gate 和 up
+            </span></p>
+            <p>当 <span class="math inline">|x|\to\infty</span>
+            时，输出平滑地趋近于 <span class="math inline">\pm
+            c</span>。Kimi K3 的 SiTU 正是使用这种方式限制 gate 和 up
             分支的幅度。</p>
             <h4 id="relu">ReLU</h4>
             <p>ReLU 定义为</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \operatorname{ReLU}(x)=\max(0,x).
-            \]</span></p>
+            </span></p>
             <p>其分段导数为</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \operatorname{ReLU}&#39;(x)=
             \begin{cases}
             0, &amp; x&lt;0,\\
             1, &amp; x&gt;0.
             \end{cases}
-            \]</span></p>
-            <p>在 <span class="math inline">\(x=0\)</span>
+            </span></p>
+            <p>在 <span class="math inline">x=0</span>
             处不可导，实际框架会约定一个次梯度，通常取零。</p>
             <p>ReLU
             的优点是计算简单，正半轴不会饱和，并且能产生精确的零值。缺点是负半轴全部被截断；如果神经元长期落在负区间，其梯度可能持续为零，这通常称为
@@ -291,42 +236,42 @@
             <h3 id="gelu">GELU</h3>
             <h4 id="精确定义">精确定义</h4>
             <p>GELU 是 Gaussian Error Linear Unit。它可以写成</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \operatorname{GELU}(x)=x\Phi(x),
-            \]</span></p>
-            <p>其中 <span class="math inline">\(\Phi(x)\)</span>
+            </span></p>
+            <p>其中 <span class="math inline">\Phi(x)</span>
             是标准正态分布的累积分布函数：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \Phi(x)=\frac{1}{2}\left(1+\operatorname{erf}\left(\frac{x}{\sqrt{2}}\right)\right).
-            \]</span></p>
+            </span></p>
             <p>因此</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \operatorname{GELU}(x)
             =\frac{x}{2}\left(1+\operatorname{erf}\left(\frac{x}{\sqrt{2}}\right)\right).
-            \]</span></p>
+            </span></p>
             <p>它的直观含义不是像 ReLU
             那样确定地保留所有正数、丢弃所有负数，而是根据输入在标准高斯分布中的位置进行平滑加权。</p>
-            <p>当 <span class="math inline">\(x\)</span> 很大时，<span
-            class="math inline">\(\Phi(x)\to 1\)</span>，因此</p>
-            <p><span class="math display">\[
+            <p>当 <span class="math inline">x</span> 很大时，<span
+            class="math inline">\Phi(x)\to 1</span>，因此</p>
+            <p><span class="math display">
             \operatorname{GELU}(x)\approx x.
-            \]</span></p>
-            <p>当 <span class="math inline">\(x\)</span> 很小时，<span
-            class="math inline">\(\Phi(x)\to
-            0\)</span>，因此输出趋近于零。GELU
+            </span></p>
+            <p>当 <span class="math inline">x</span> 很小时，<span
+            class="math inline">\Phi(x)\to
+            0</span>，因此输出趋近于零。GELU
             在负半轴并不恒为零，会保留一小段平滑的负输出。</p>
             <p>其导数为</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \operatorname{GELU}&#39;(x)=\Phi(x)+x\varphi(x),
-            \]</span></p>
+            </span></p>
             <p>其中标准正态概率密度为</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \varphi(x)=\frac{1}{\sqrt{2\pi}}e^{-x^2/2}.
-            \]</span></p>
+            </span></p>
             <h4 id="tanh-近似">Tanh 近似</h4>
             <p>精确 GELU 需要计算 <code>erf</code>。工程实现经常采用
             Tanh 近似：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \operatorname{GELU}_{\tanh}(x)
             \approx
             \frac{x}{2}
@@ -336,7 +281,7 @@
             \left(x+0.044715x^3\right)
             \right)
             \right].
-            \]</span></p>
+            </span></p>
             <p>在 PyTorch 中，两种形式分别对应：</p>
             <div class="sourceCode" id="cb1"><pre
             class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn.functional <span class="im">as</span> F</span>
@@ -347,30 +292,30 @@
             通常隐含了具体变体。推理时不能仅因为近似版本更快就任意替换，否则可能产生精度偏差。</p>
             <h4 id="quickgelu">QuickGELU</h4>
             <p>另一种近似是 QuickGELU：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \operatorname{QuickGELU}(x)=x\sigma(1.702x).
-            \]</span></p>
+            </span></p>
             <p>它在形式上与 SiLU 很相似，区别主要是 Sigmoid
             输入前的缩放系数。QuickGELU
             常见于部分视觉和多模态模型，但不能和精确 GELU、Tanh-GELU 或
             SiLU 视为完全相同的函数。</p>
             <h3 id="silu-与-swish">SiLU 与 Swish</h3>
             <p>SiLU 是 Sigmoid Linear Unit，定义为</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \operatorname{SiLU}(x)=x\sigma(x)=\frac{x}{1+e^{-x}}.
-            \]</span></p>
+            </span></p>
             <p>在多数大模型语境中，SiLU 与参数为一的 Swish
             是同一个函数：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \operatorname{Swish}_{\beta}(x)=x\sigma(\beta x),
             \qquad
             \operatorname{SiLU}(x)=\operatorname{Swish}_{1}(x).
-            \]</span></p>
+            </span></p>
             <p>其导数为</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \operatorname{SiLU}&#39;(x)
             =\sigma(x)+x\sigma(x)(1-\sigma(x)).
-            \]</span></p>
+            </span></p>
             <p>SiLU 有几个重要性质：</p>
             <ul>
             <li>平滑且处处可导；</li>
@@ -380,11 +325,11 @@
             <li>输出没有上界，但负方向的输出幅度有限并趋近于零。</li>
             </ul>
             <p>极限行为为</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \lim_{x\to+\infty}\operatorname{SiLU}(x)=x,
             \qquad
             \lim_{x\to-\infty}\operatorname{SiLU}(x)=0^{-}.
-            \]</span></p>
+            </span></p>
             <p>PyTorch 中可以直接调用：</p>
             <div class="sourceCode" id="cb2"><pre
             class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn.functional <span class="im">as</span> F</span>
@@ -414,31 +359,31 @@
             <tbody>
             <tr>
             <td>ReLU</td>
-            <td><span class="math inline">\(\max(0,x)\)</span></td>
+            <td><span class="math inline">\max(0,x)</span></td>
             <td>在零点不光滑</td>
             <td>全部截为零</td>
-            <td>近似 <span class="math inline">\(x\)</span></td>
+            <td>近似 <span class="math inline">x</span></td>
             <td>经典 CNN、MLP</td>
             </tr>
             <tr>
             <td>GELU</td>
-            <td><span class="math inline">\(x\Phi(x)\)</span></td>
+            <td><span class="math inline">x\Phi(x)</span></td>
             <td>平滑</td>
             <td>保留小幅负值</td>
-            <td>近似 <span class="math inline">\(x\)</span></td>
+            <td>近似 <span class="math inline">x</span></td>
             <td>BERT、GPT 系模型</td>
             </tr>
             <tr>
             <td>SiLU</td>
-            <td><span class="math inline">\(x\sigma(x)\)</span></td>
+            <td><span class="math inline">x\sigma(x)</span></td>
             <td>平滑</td>
             <td>保留小幅负值</td>
-            <td>近似 <span class="math inline">\(x\)</span></td>
+            <td>近似 <span class="math inline">x</span></td>
             <td>LLaMA、现代门控 MLP</td>
             </tr>
             <tr>
             <td>Tanh</td>
-            <td><span class="math inline">\(\tanh(x)\)</span></td>
+            <td><span class="math inline">\tanh(x)</span></td>
             <td>平滑</td>
             <td>压缩到负一和零之间</td>
             <td>饱和到一</td>
@@ -446,7 +391,7 @@
             </tr>
             <tr>
             <td>Sigmoid</td>
-            <td><span class="math inline">\(\sigma(x)\)</span></td>
+            <td><span class="math inline">\sigma(x)</span></td>
             <td>平滑</td>
             <td>接近零</td>
             <td>饱和到一</td>
@@ -455,35 +400,35 @@
             </tbody>
             </table>
             <p>GELU 与 SiLU 的曲线和用途相近，但定义并不相同：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \operatorname{GELU}(x)=x\Phi(x),
             \qquad
             \operatorname{SiLU}(x)=x\sigma(x).
-            \]</span></p>
+            </span></p>
             <p>两者都可以理解为“输入乘以一个随输入变化的软门”，但 GELU
             的门来自高斯累积分布，SiLU 的门来自 Logistic
             Sigmoid。对于已经训练好的模型，不能把二者任意互换。</p>
             <h3 id="glu-与门控-mlp">GLU 与门控 MLP</h3>
             <h4 id="一般形式">一般形式</h4>
             <p>GLU 是 Gated Linear Unit。设输入为 <span
-            class="math inline">\(x\)</span>，门控投影和数值投影分别为</p>
-            <p><span class="math display">\[
+            class="math inline">x</span>，门控投影和数值投影分别为</p>
+            <p><span class="math display">
             g=xW_g,
             \qquad
             u=xW_u.
-            \]</span></p>
+            </span></p>
             <p>一般化的门控激活可以写成</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             h=\phi(g)\odot u,
-            \]</span></p>
+            </span></p>
             <p>再经过降维投影：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             y=hW_d.
-            \]</span></p>
-            <p>其中 <span class="math inline">\(\odot\)</span>
+            </span></p>
+            <p>其中 <span class="math inline">\odot</span>
             表示逐元素乘法。门控分支 <span
-            class="math inline">\(\phi(g)\)</span> 决定数值分支 <span
-            class="math inline">\(u\)</span>
+            class="math inline">\phi(g)</span> 决定数值分支 <span
+            class="math inline">u</span>
             的哪些通道应该增强、衰减或改变符号。</p>
             <h4 id="常见命名">常见命名</h4>
             <p>GLU 家族通常根据门控分支使用的激活函数命名：</p>
@@ -497,38 +442,37 @@
             <tbody>
             <tr>
             <td>GLU</td>
-            <td><span class="math inline">\(\sigma(g)\odot
-            u\)</span></td>
+            <td><span class="math inline">\sigma(g)\odot u</span></td>
             </tr>
             <tr>
             <td>ReGLU</td>
-            <td><span class="math inline">\(\operatorname{ReLU}(g)\odot
-            u\)</span></td>
+            <td><span class="math inline">\operatorname{ReLU}(g)\odot
+            u</span></td>
             </tr>
             <tr>
             <td>GeGLU</td>
-            <td><span class="math inline">\(\operatorname{GELU}(g)\odot
-            u\)</span></td>
+            <td><span class="math inline">\operatorname{GELU}(g)\odot
+            u</span></td>
             </tr>
             <tr>
             <td>SwiGLU</td>
-            <td><span class="math inline">\(\operatorname{SiLU}(g)\odot
-            u\)</span></td>
+            <td><span class="math inline">\operatorname{SiLU}(g)\odot
+            u</span></td>
             </tr>
             </tbody>
             </table>
             <p>因此 SwiGLU 不是 SiLU 的另一个名称。二者关系是：SwiGLU 在
             gate 分支应用 SiLU，再乘以独立的 up/value 分支。</p>
             <p>SwiGLU 的完整形式为</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \operatorname{SwiGLU}(x) =
             \operatorname{SiLU}(xW_g)\odot(xW_u),
-            \]</span></p>
+            </span></p>
             <p>也就是</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \operatorname{SwiGLU}(x) =
             \left[(xW_g)\sigma(xW_g)\right]\odot(xW_u).
-            \]</span></p>
+            </span></p>
             <p>对应的 PyTorch 伪代码是：</p>
             <div class="sourceCode" id="cb3"><pre
             class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>gate <span class="op">=</span> gate_proj(x)</span>
@@ -538,16 +482,16 @@
             <h4 id="为什么-kernel-常叫-silu_and_mul">为什么 kernel 常叫
             <code>silu_and_mul</code></h4>
             <p>推理框架经常让一次 GEMM 同时产生 gate 和 up 两路：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             [g,u]=x[W_g,W_u].
-            \]</span></p>
+            </span></p>
             <p>如果拼接结果的最后一维为 <span
-            class="math inline">\(2D_{ff}\)</span>，激活 kernel
-            将其切成两个宽度为 <span
-            class="math inline">\(D_{ff}\)</span> 的张量，然后计算</p>
-            <p><span class="math display">\[
+            class="math inline">2D_{ff}</span>，激活 kernel
+            将其切成两个宽度为 <span class="math inline">D_{ff}</span>
+            的张量，然后计算</p>
+            <p><span class="math display">
             h=\operatorname{SiLU}(g)\odot u.
-            \]</span></p>
+            </span></p>
             <p>所以性能分析中常见
             <code>silu_and_mul</code>、<code>act_and_mul</code> 或 fused
             SwiGLU kernel。它融合了以下操作：</p>
@@ -566,79 +510,78 @@
             <p>Kimi K3 使用的 SiTU，也称
             SiTuGLU，是一种带平滑限幅的门控激活。它不是常见的通用标量激活函数，而是作用在
             gate 和 up 两个分支上的 GLU 结构。</p>
-            <p>设 gate 分支为 <span class="math inline">\(g\)</span>，up
-            分支为 <span class="math inline">\(u\)</span>，gate softcap
-            参数为 <span class="math inline">\(\beta\)</span>，up 分支的
-            softcap 参数为 <span
-            class="math inline">\(\lambda\)</span>，则 SiTU 定义为</p>
-            <p><span class="math display">\[
+            <p>设 gate 分支为 <span class="math inline">g</span>，up
+            分支为 <span class="math inline">u</span>，gate softcap
+            参数为 <span class="math inline">\beta</span>，up 分支的
+            softcap 参数为 <span class="math inline">\lambda</span>，则
+            SiTU 定义为</p>
+            <p><span class="math display">
             \widetilde{g} =
             \beta\tanh\left(\frac{g}{\beta}\right)\sigma(g),
-            \]</span></p>
-            <p><span class="math display">\[
+            </span></p>
+            <p><span class="math display">
             \widetilde{u} =
             \lambda\tanh\left(\frac{u}{\lambda}\right),
-            \]</span></p>
-            <p><span class="math display">\[
+            </span></p>
+            <p><span class="math display">
             \operatorname{SiTU}(g,u)=\widetilde{g}\odot\widetilde{u}.
-            \]</span></p>
+            </span></p>
             <p>如果不对 up 分支启用 softcap，则可以令</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \widetilde{u}=u.
-            \]</span></p>
+            </span></p>
             <p>Kimi K3 的一种配置使用</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \beta=4,
             \qquad
             \lambda=25.
-            \]</span></p>
+            </span></p>
             <p>具体参数属于模型配置，不能把上述数值当成所有 SiTU
             模型的固定常量。</p>
             <h4 id="与-swiglu-的关系">与 SwiGLU 的关系</h4>
             <p>SwiGLU 为</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \operatorname{SwiGLU}(g,u) =
             g\sigma(g)\odot u.
-            \]</span></p>
+            </span></p>
             <p>SiTU 则把两路输入先做平滑限幅：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \eta\tanh\left(\frac{g}{\beta}\right)
             \quad\text{替代}\quad g,
-            \]</span></p>
+            </span></p>
             <p>并可选地使用</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \lambda\tanh\left(\frac{u}{\lambda}\right)
             \quad\text{替代}\quad u.
-            \]</span></p>
-            <p>当 <span class="math inline">\(|g|\ll\beta\)</span> 且
-            <span class="math inline">\(|u|\ll\lambda\)</span> 时，由于
-            <span class="math inline">\(\tanh(z)\approx
-            z\)</span>，有</p>
-            <p><span class="math display">\[
+            </span></p>
+            <p>当 <span class="math inline">|g|\ll\beta</span> 且 <span
+            class="math inline">|u|\ll\lambda</span> 时，由于 <span
+            class="math inline">\tanh(z)\approx z</span>，有</p>
+            <p><span class="math display">
             \widetilde{g}\approx g\sigma(g),
             \qquad
             \widetilde{u}\approx u.
-            \]</span></p>
+            </span></p>
             <p>因此在输入幅度较小时，SiTU 近似 SwiGLU：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \operatorname{SiTU}(g,u)
             \approx
             \operatorname{SwiGLU}(g,u).
-            \]</span></p>
+            </span></p>
             <p>当输入幅度很大时，SiTU 的 softcap 开始发挥作用：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \left|\beta\tanh\left(\frac{g}{\beta}\right)\right|&lt;\beta,
             \qquad
             \left|\lambda\tanh\left(\frac{u}{\lambda}\right)\right|&lt;\lambda.
-            \]</span></p>
+            </span></p>
             <p>因此 SiTU 可以抑制 gate 和 up
             分支中的极端值。若两路都启用
             softcap，则输出幅度满足一个粗略上界：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             |\operatorname{SiTU}(g,u)|&lt;\beta\lambda,
-            \]</span></p>
+            </span></p>
             <p>因为 <span
-            class="math inline">\(0&lt;\sigma(g)&lt;1\)</span>。这个有界性质对低精度训练、量化和异常值控制可能更友好，但最终效果取决于模型训练方式，不能把激活函数替换视为纯推理优化。</p>
+            class="math inline">0&lt;\sigma(g)&lt;1</span>。这个有界性质对低精度训练、量化和异常值控制可能更友好，但最终效果取决于模型训练方式，不能把激活函数替换视为纯推理优化。</p>
             <h4 id="situ-的-pytorch-参考实现">SiTU 的 PyTorch
             参考实现</h4>
             <div class="sourceCode" id="cb4"><pre
@@ -654,56 +597,56 @@
 <span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> gate <span class="op">*</span> up</span></code></pre></div>
             <p>这里输入最后一维为 <span
-            class="math inline">\(2D_{ff}\)</span>，输出最后一维为 <span
-            class="math inline">\(D_{ff}\)</span>。它和
+            class="math inline">2D_{ff}</span>，输出最后一维为 <span
+            class="math inline">D_{ff}</span>。它和
             <code>silu_and_mul</code> 一样适合融合成一个 elementwise
             kernel，也可以与第一层 GEMM、量化或 MoE
             路由后的计算进一步融合。</p>
             <h3 id="参数量与中间维度">参数量与中间维度</h3>
             <p>标准两层 MLP 为</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             y=W_d\phi(W_ux),
-            \]</span></p>
+            </span></p>
             <p>忽略 bias 时，参数量约为</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             P_{\text{standard}}=2D_{model}D_{ff}.
-            \]</span></p>
+            </span></p>
             <p>门控 MLP 有 gate、up 和 down 三个矩阵：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             y=W_d\left[\phi(W_gx)\odot(W_ux)\right],
-            \]</span></p>
+            </span></p>
             <p>参数量约为</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             P_{\text{gated}}=3D_{model}D_{ff}.
-            \]</span></p>
+            </span></p>
             <p>如果直接使用相同的 <span
-            class="math inline">\(D_{ff}\)</span>，门控 MLP 的参数和
-            GEMM 计算量都会更大。为了与扩展倍率为四的标准 MLP
+            class="math inline">D_{ff}</span>，门控 MLP 的参数和 GEMM
+            计算量都会更大。为了与扩展倍率为四的标准 MLP
             保持接近的参数量，可以令</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             3D_{model}D_{ff}^{\text{gated}}
             \approx
             2D_{model}(4D_{model}),
-            \]</span></p>
+            </span></p>
             <p>得到</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             D_{ff}^{\text{gated}}
             \approx
             \frac{8}{3}D_{model}.
-            \]</span></p>
+            </span></p>
             <p>这就是许多门控 Transformer 的 intermediate size 接近
             <span
-            class="math inline">\(8D_{model}/3\)</span>，而不是简单使用
-            <span class="math inline">\(4D_{model}\)</span>
+            class="math inline">8D_{model}/3</span>，而不是简单使用
+            <span class="math inline">4D_{model}</span>
             的原因之一。实际维度还会对齐到适合 TP 切分和硬件 GEMM
             的整数倍。</p>
             <h3 id="推理与量化注意事项">推理与量化注意事项</h3>
             <h4 id="不要擅自替换激活函数">不要擅自替换激活函数</h4>
             <p>激活函数是模型训练参数的一部分。即使 GELU、SiLU 和 SiTU
             的曲线看起来相似，替换后也会改变每层输出：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \phi_1(x)\ne\phi_2(x).
-            \]</span></p>
+            </span></p>
             <p>误差经过多层 residual block
             累积，可能影响困惑度、生成结果和数值稳定性。推理实现必须遵循模型配置中的激活类型、近似方式和
             SiTU 参数。</p>
@@ -751,13 +694,13 @@
             平滑限制 gate，并可同时限制 up。</li>
             </ul>
             <p>最容易混淆的关系是</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \operatorname{SiLU}(x)=x\sigma(x),
-            \]</span></p>
-            <p><span class="math display">\[
+            </span></p>
+            <p><span class="math display">
             \operatorname{SwiGLU}(g,u)=\operatorname{SiLU}(g)\odot u,
-            \]</span></p>
-            <p><span class="math display">\[
+            </span></p>
+            <p><span class="math display">
             \operatorname{SiTU}(g,u) =
             \left[
             \beta\tanh\left(\frac{g}{\beta}\right)\sigma(g)
@@ -766,7 +709,7 @@
             \left[
             \lambda\tanh\left(\frac{u}{\lambda}\right)
             \right].
-            \]</span></p>
+            </span></p>
             <p>前者是单输入标量函数，后两者是双分支门控 MLP
             激活结构。</p>
           </main>
@@ -791,39 +734,6 @@
       </ul>
     </aside>
       </div>
-  <script type="text/javascript">
-    (function () {
-      function markActive() {
-        var here = location.href.split('#')[0];
-        var links = document.querySelectorAll('.wiki-sidebar a');
-        for (var i = 0; i < links.length; i++) {
-          if (links[i].href.split('#')[0] === here) {
-            links[i].classList.add('active');
-          }
-        }
-      }
-      // load the shared site directory once (served from the wiki root);
-      // kept in a standalone file so adding a page needn't rebuild every page.
-      var nav = document.getElementById('wiki-sidebar');
-      if (nav) {
-        fetch('/wiki_sidebar.html')
-          .then(function (r) { return r.ok ? r.text() : ''; })
-          .then(function (html) {
-            if (html) {
-              nav.innerHTML = html;
-              nav.hidden = false;
-              markActive();
-            }
-          })
-          .catch(function () {});
-      }
-      // keep bootstrap table styling (previously done by sticky_menu.js)
-      var tables = document.getElementsByTagName('table');
-      for (var j = 0; j < tables.length; j++) {
-        tables[j].classList.add('table');
-      }
-    })();
-  </script>
 </body>
 
 </html>

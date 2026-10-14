@@ -25,82 +25,27 @@
   </title>
     <link rel="stylesheet" href="./WikiTheme/theme/bootstrap.css"  />
         <script defer=""
-        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
-        type="text/javascript"></script>
-        <style type="text/css">
-    /* ---- three column wiki layout (left: site directory, center: content, right: page TOC) ---- */
-    .wiki-layout {
-      display: flex;
-      align-items: flex-start;
-      gap: 24px;
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 0 20px;
-      box-sizing: border-box;
-    }
-    .wiki-sidebar {
-      flex: 0 0 240px;
-      width: 240px;
-      position: sticky;
-      top: 0;
-      max-height: 100vh;
-      overflow-y: auto;
-      padding: 10px 4px 20px 0;
-      border-right: 1px solid #eee;
-      font-size: 14px;
-    }
-    .wiki-sidebar[hidden] { display: none; }
-    .wiki-toc {
-      flex: 0 0 220px;
-      width: 220px;
-      position: sticky;
-      top: 0;
-      max-height: 100vh;
-      overflow-y: auto;
-      padding: 10px 0 20px 4px;
-      border-left: 1px solid #eee;
-      font-size: 14px;
-    }
-    .wiki-main {
-      flex: 1 1 auto;
-      min-width: 0;
-      max-width: 820px;
-      padding: 10px 0 40px;
-    }
-    /* site directory tree */
-    .wiki-sidebar .wiki-home {
-      display: block;
-      font-weight: bold;
-      margin-bottom: 10px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid #eee;
-      text-decoration: none;
-      color: #333;
-    }
-    .wiki-sidebar ul { list-style: none; margin: 0 0 0 12px; padding: 0; }
-    .wiki-sidebar > ul { margin-left: 0; }
-    .wiki-sidebar li { line-height: 1.7; }
-    .wiki-sidebar a { text-decoration: none; color: #555; }
-    .wiki-sidebar a:hover { color: #0088cc; text-decoration: underline; }
-    .wiki-sidebar a.active { color: #0088cc; font-weight: bold; }
-    /* page TOC */
-    .wiki-toc ul { list-style: none; margin: 0 0 0 12px; padding: 0; }
-    .wiki-toc > ul { margin-left: 0; }
-    .wiki-toc li { line-height: 1.6; }
-    .wiki-toc a { text-decoration: none; color: #555; }
-    .wiki-toc a:hover { color: #0088cc; }
-    @media (max-width: 980px) {
-      .wiki-layout { flex-direction: column; }
-      .wiki-sidebar, .wiki-toc {
-        position: static;
-        width: 100%;
-        flex-basis: auto;
-        max-height: none;
-        border: 0;
-      }
-      .wiki-main { max-width: none; }
-    }
-  </style>
+        src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+        <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+        </script>
+        <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+        <!-- wiki three-column layout styles/behavior, kept external so the ~5KB
+       block isn't duplicated into every generated page -->
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/wiki-layout.css" />
+  <script defer src="./WikiTheme/wiki-layout.js"></script>
 </head>
 
 <body>
@@ -120,7 +65,7 @@
     <main class="wiki-main">
             <p><strong>一句话</strong>：mHC
             把“每层把结果加回同一条残差流”改成“维护 <span
-            class="math inline">\(n\)</span>
+            class="math inline">n</span>
             条并行残差流，每层从这些流里读出输入，算完后再按一张受限的分配表写回”。</p>
             <p>它处在一条很长的发展线索上：残差连接 → 门控残差 →
             多条残差流 → <strong>受约束的</strong>多条残差流。理解 mHC
@@ -147,24 +92,23 @@
             <tr>
             <td>1997 前后</td>
             <td>LSTM 的 cell state</td>
-            <td><span class="math inline">\(c_t=f_t\odot
-            c_{t-1}+i_t\odot \tilde c_t\)</span></td>
+            <td><span class="math inline">c_t=f_t\odot c_{t-1}+i_t\odot
+            \tilde c_t</span></td>
             <td>长序列中的遗忘与梯度</td>
             <td>作用在时间维，不是层间</td>
             </tr>
             <tr>
             <td>2015</td>
             <td>Highway Networks</td>
-            <td>门控短路 <span class="math inline">\(T(x)\odot
-            F(x)+(1-T(x))\odot x\)</span></td>
+            <td>门控短路 <span class="math inline">T(x)\odot
+            F(x)+(1-T(x))\odot x</span></td>
             <td>极深网络的梯度与训练</td>
             <td>读写同一个状态，通路仍只有一条</td>
             </tr>
             <tr>
             <td>2015</td>
             <td>ResNet</td>
-            <td><span class="math inline">\(h+\mathcal
-            F(h)\)</span></td>
+            <td><span class="math inline">h+\mathcal F(h)</span></td>
             <td>深层退化、梯度衰减</td>
             <td>单条加性通道，只能叠加不能搬运</td>
             </tr>
@@ -192,7 +136,7 @@
             <tr>
             <td>2024 前后</td>
             <td>Hyper-Connections</td>
-            <td>残差流扩成 <span class="math inline">\(n\)</span> 条，逐
+            <td>残差流扩成 <span class="math inline">n</span> 条，逐
             token 学读、写与混合</td>
             <td>跨层信息通道太窄</td>
             <td>自由混合矩阵在深层可能指数放大或衰减</td>
@@ -202,8 +146,8 @@
             <td>mHC（DeepSeek-V4、GLM-5.3 等）</td>
             <td>把混合矩阵约束为双随机（Sinkhorn 投影）</td>
             <td>HC 的深层不稳定</td>
-            <td>残差状态与通信量 <span class="math inline">\(\times
-            n\)</span>，实现复杂</td>
+            <td>残差状态与通信量 <span class="math inline">\times
+            n</span>，实现复杂</td>
             </tr>
             </tbody>
             </table>
@@ -216,31 +160,30 @@
             Highway、LSTM、各种门控残差的回答是把“传多少”变成可学的系数。它们让幅度可调，但读写仍作用在同一个状态上。</li>
             <li><strong>通路本身够不够宽、够不够灵活？</strong>
             Hyper-Connections 的回答是把一条通路变成 <span
-            class="math inline">\(n\)</span>
-            条，并把“谁读谁、谁写谁”变成逐 token 可学的路由。</li>
+            class="math inline">n</span> 条，并把“谁读谁、谁写谁”变成逐
+            token 可学的路由。</li>
             </ol>
             <p>每次放开自由度都会换来新的不稳定：门控需要归一化来兜底，自由矩阵需要约束来兜底。mHC
             就是第三步的兜底方案，也是它名字里“流形约束”的来源。</p>
             <h3 id="核心-insight">核心 insight</h3>
             <p><strong>残差连接的本质是把“串联”变成“并联 +
             累加”。</strong> 没有残差时，第 <span
-            class="math inline">\(l\)</span> 层的输入只能来自第 <span
-            class="math inline">\(l-1\)</span>
+            class="math inline">l</span> 层的输入只能来自第 <span
+            class="math inline">l-1</span>
             层，梯度必须逐层穿过雅可比；有了残差，第 <span
-            class="math inline">\(l\)</span> 层可以近似直接读到第 <span
-            class="math inline">\(l-k\)</span>
+            class="math inline">l</span> 层可以近似直接读到第 <span
+            class="math inline">l-k</span>
             层的内容。代价是“累加”本身没有选择能力：一旦某个特征被写进残差流，后面只能不断往上叠，模型没有机制说“这条信息现在应该被搬走或抑制”。</p>
             <p><strong>因此残差流更像一块共享总线，而单条总线的路由能力是零。</strong>
             可解释性研究把残差流描述为所有层共享的通信通道：每层读进来、算完再写回去。总线越窄、通道越少，“哪一层的输出对哪一层有用”就只能靠权重间接安排。HC
             的洞察是：与其让所有层在一条总线上挤，不如给模型 <span
-            class="math inline">\(n\)</span>
+            class="math inline">n</span>
             条并行总线，并把“读哪条、写哪条”显式参数化。</p>
             <p><strong>但把混合矩阵完全放开，深层会失控。</strong>
-            如果每层都乘一个自由学习的 <span
-            class="math inline">\(n\times n\)</span> 矩阵，<span
-            class="math inline">\(L\)</span> 层之后累积的是 <span
-            class="math inline">\(C^{(L)}\cdots
-            C^{(1)}\)</span>，它的增益可以随深度指数放大或衰减，残差连接原本提供的稳定传播反而被抵消。这正是“自由度换表达力”的典型代价。</p>
+            如果每层都乘一个自由学习的 <span class="math inline">n\times
+            n</span> 矩阵，<span class="math inline">L</span>
+            层之后累积的是 <span class="math inline">C^{(L)}\cdots
+            C^{(1)}</span>，它的增益可以随深度指数放大或衰减，残差连接原本提供的稳定传播反而被抵消。这正是“自由度换表达力”的典型代价。</p>
             <p><strong>mHC
             的选择不是调参兜底，而是把矩阵限制在一个天然安全的集合里。</strong>
             非负、行和为 1、列和为 1
@@ -248,13 +191,12 @@
             Sinkhorn
             迭代精确投影上去，而不是依赖“初始化得小一点”或“加一个正则项”这类逐点手段。</p>
             <h3 id="双随机约束的直觉">双随机约束的直觉</h3>
-            <p>把 <span class="math inline">\(n\)</span> 条流看成 <span
-            class="math inline">\(n\)</span> 个寄存器，<span
-            class="math inline">\(C_{jk}\)</span> 看成“第 <span
-            class="math inline">\(k\)</span> 条寄存器的内容有 <span
-            class="math inline">\(C_{jk}\)</span>
-            的份额在这一层之后被搬到第 <span
-            class="math inline">\(j\)</span> 条”。于是：</p>
+            <p>把 <span class="math inline">n</span> 条流看成 <span
+            class="math inline">n</span> 个寄存器，<span
+            class="math inline">C_{jk}</span> 看成“第 <span
+            class="math inline">k</span> 条寄存器的内容有 <span
+            class="math inline">C_{jk}</span> 的份额在这一层之后被搬到第
+            <span class="math inline">j</span> 条”。于是：</p>
             <ul>
             <li>行和为 1
             表示每条输出寄存器收到的是一次<strong>加权平均</strong>，不会凭空放大；</li>
@@ -262,18 +204,18 @@
             表示每条输入寄存器把自己<strong>完整地分发</strong>出去，内容不丢也不增。</li>
             </ul>
             <p>一个具体例子是“带自环的循环搬运”：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             C=\begin{bmatrix}
             0.5 &amp; 0.5 &amp; 0 &amp; 0\\
             0 &amp; 0.5 &amp; 0.5 &amp; 0\\
             0 &amp; 0 &amp; 0.5 &amp; 0.5\\
             0.5 &amp; 0 &amp; 0 &amp; 0.5
             \end{bmatrix},
-            \]</span></p>
+            </span></p>
             <p>每行、每列的和都是
             1。它的作用可以读成：每条流把一半内容留在原地，一半交给下一条流。另一个常见形式是
             <span
-            class="math inline">\(C=\frac12(I+P)\)</span>，即“一半保持、一半与邻居交换”。Birkhoff–von
+            class="math inline">C=\frac12(I+P)</span>，即“一半保持、一半与邻居交换”。Birkhoff–von
             Neumann
             定理给出统一的图像：任何双随机矩阵都是置换矩阵的凸组合，所以它的语义是<strong>随机重排各条流的平均</strong>，而不是对表示做任意线性变换。</p>
             <p>从这个角度看，mHC
@@ -292,74 +234,73 @@
             </thead>
             <tbody>
             <tr>
-            <td><span class="math inline">\(n\)</span></td>
+            <td><span class="math inline">n</span></td>
             <td>残差流条数（配置项 <code>hc_mult</code>，DeepSeek-V4 为
             4）</td>
             </tr>
             <tr>
-            <td><span class="math inline">\(d\)</span></td>
+            <td><span class="math inline">d</span></td>
             <td>hidden 维，即每条流的宽度</td>
             </tr>
             <tr>
-            <td><span class="math inline">\(H^{(l)}\in\mathbb R^{n\times
-            d}\)</span></td>
-            <td>第 <span class="math inline">\(l\)</span>
+            <td><span class="math inline">H^{(l)}\in\mathbb R^{n\times
+            d}</span></td>
+            <td>第 <span class="math inline">l</span>
             个子层入口的残差流堆叠</td>
             </tr>
             <tr>
-            <td><span class="math inline">\(\mathcal
-            F^{(l)}\)</span></td>
-            <td>第 <span class="math inline">\(l\)</span>
-            个子层（attention 或 MLP/MoE）</td>
+            <td><span class="math inline">\mathcal F^{(l)}</span></td>
+            <td>第 <span class="math inline">l</span> 个子层（attention
+            或 MLP/MoE）</td>
             </tr>
             <tr>
             <td><span
-            class="math inline">\(\text{pre}^{(l)},\text{post}^{(l)}\in\mathbb
-            R^{n}\)</span></td>
+            class="math inline">\text{pre}^{(l)},\text{post}^{(l)}\in\mathbb
+            R^{n}</span></td>
             <td>读系数与写系数</td>
             </tr>
             <tr>
-            <td><span class="math inline">\(C^{(l)}\in\mathbb R^{n\times
-            n}\)</span></td>
+            <td><span class="math inline">C^{(l)}\in\mathbb R^{n\times
+            n}</span></td>
             <td>跨流混合矩阵</td>
             </tr>
             <tr>
             <td><span
-            class="math inline">\(W_{\text{mix}}^{(l)}\)</span></td>
+            class="math inline">W_{\text{mix}}^{(l)}</span></td>
             <td>从残差流生成全部混合系数的投影矩阵</td>
             </tr>
             </tbody>
             </table>
             <p>一个子层的完整更新为</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             h^{(l)}_{\text{in}}=\sum_{j=1}^{n}\text{pre}^{(l)}_j\odot
             H^{(l)}_j,
             \qquad
             y^{(l)}=\mathcal
             F^{(l)}\!\left(\operatorname{Norm}\!\left(h^{(l)}_{\text{in}}\right)\right),
-            \]</span></p>
-            <p><span class="math display">\[
+            </span></p>
+            <p><span class="math display">
             H^{(l+1)}_j=\text{post}^{(l)}_j\,y^{(l)}+\sum_{k=1}^{n}C^{(l)}_{jk}\,H^{(l)}_k
             .
-            \]</span></p>
-            <p>当 <span class="math inline">\(n=1\)</span>、<span
-            class="math inline">\(\text{pre}=\text{post}=1\)</span>、<span
-            class="math inline">\(C=[1]\)</span>
+            </span></p>
+            <p>当 <span class="math inline">n=1</span>、<span
+            class="math inline">\text{pre}=\text{post}=1</span>、<span
+            class="math inline">C=[1]</span>
             时，它退化成标准残差。混合系数每 token 独立生成：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             m^{(l)}=W_{\text{mix}}^{(l)}\operatorname{RMSNorm}\!\left(\operatorname{vec}\!\left(H^{(l)}\right)\right)\in\mathbb
             R^{\,n(n+2)},
-            \]</span></p>
-            <p>其中 <span class="math inline">\(n(n+2)\)</span>
-            分成三段：前 <span class="math inline">\(n\)</span>
-            个是读系数，接着 <span class="math inline">\(n\)</span>
-            个是写系数，最后 <span class="math inline">\(n^2\)</span>
-            个组成混合矩阵的 logits。DeepSeek-V4 里 <span
-            class="math inline">\(n=4\)</span>，所以每个 token
-            每个子层只有 24 个混合系数；生成它们的投影形状是 <span
-            class="math inline">\(n(n+2)\times nd\)</span>（<span
-            class="math inline">\(n=4\)</span> 时约 <span
-            class="math inline">\(96d\)</span>
+            </span></p>
+            <p>其中 <span class="math inline">n(n+2)</span> 分成三段：前
+            <span class="math inline">n</span> 个是读系数，接着 <span
+            class="math inline">n</span> 个是写系数，最后 <span
+            class="math inline">n^2</span> 个组成混合矩阵的
+            logits。DeepSeek-V4 里 <span
+            class="math inline">n=4</span>，所以每个 token 每个子层只有
+            24 个混合系数；生成它们的投影形状是 <span
+            class="math inline">n(n+2)\times nd</span>（<span
+            class="math inline">n=4</span> 时约 <span
+            class="math inline">96d</span>
             个参数），相对主干权重可以忽略。</p>
             <pre class="text"><code>H (n × d) ──► h_in = Σ_j pre_j ⊙ H_j ──► Norm ──► 子层 F ──► y
    │                                                          │
@@ -367,53 +308,53 @@
                 comb 由 Sinkhorn 投影到双随机集合</code></pre>
             <h3 id="约束保证了什么">约束保证了什么</h3>
             <p>直觉之外，这三条性质可以严格写下来。设</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \mathcal B_n=\left\{C\in\mathbb R_{\ge 0}^{n\times n}\
             \middle|\ C\mathbf{1}=\mathbf{1},\ \mathbf{1}^{\mathsf
             T}C=\mathbf{1}^{\mathsf T}\right\}.
-            \]</span></p>
+            </span></p>
             <p>行和为 1 说明每条新流是旧流的凸组合，</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \left\|\sum_{k}C_{jk}H_k\right\|_\infty\le\max_k\left\|H_k\right\|_\infty,
-            \]</span></p>
+            </span></p>
             <p>所以混合部分不会放大最大范数；非负性同时排除了流之间的相消。列和为
             1 说明流间的平均（直流分量）在混合中保持不变：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \frac1n\sum_{j=1}^{n}\sum_{k=1}^{n}C_{jk}H_k
             =\frac1n\sum_{k=1}^{n}\left(\sum_{j=1}^{n}C_{jk}\right)H_k
             =\frac1n\sum_{k=1}^{n}H_k .
-            \]</span></p>
+            </span></p>
             <p>第三条性质在深层更重要。<span
-            class="math inline">\(\mathcal B_n\)</span> 对乘法封闭，</p>
-            <p><span class="math display">\[
+            class="math inline">\mathcal B_n</span> 对乘法封闭，</p>
+            <p><span class="math display">
             C_1,C_2\in\mathcal B_n\ \Longrightarrow\ C_1C_2\in\mathcal
             B_n,
-            \]</span></p>
+            </span></p>
             <p>于是任意层的累积混合 <span
-            class="math inline">\(C^{(L)}\cdots C^{(1)}\)</span>
+            class="math inline">C^{(L)}\cdots C^{(1)}</span>
             仍然是双随机矩阵，其 <span
-            class="math inline">\(\ell_\infty\)</span> 诱导范数恒为
+            class="math inline">\ell_\infty</span> 诱导范数恒为
             1。深度不再带来新的增益自由度，这就是“把不稳定性挡在结构之外”的含义。</p>
             <p>需要注意它并<strong>不能</strong>禁止流之间趋同：均匀平均矩阵
             <span
-            class="math inline">\(\frac1n\mathbf{1}\mathbf{1}^{\mathsf
-            T}\)</span>
+            class="math inline">\frac1n\mathbf{1}\mathbf{1}^{\mathsf
+            T}</span>
             本身也是双随机的。约束排除的是任意线性放大与衰减，抗坍缩仍要靠门控与训练动力学。</p>
             <h3
             id="sinkhorn把自由系数投影到双随机集合">Sinkhorn：把自由系数投影到双随机集合</h3>
             <p>系数生成后，实现里的激活方式把 24
             个原始系数分成三组：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \text{pre}_j=\sigma\!\left(s_0 m_j+b_j\right)+\epsilon,
             \qquad
             \text{post}_j=2\sigma\!\left(s_1 m_{n+j}+b_{n+j}\right),
-            \]</span></p>
-            <p><span class="math display">\[
+            </span></p>
+            <p><span class="math display">
             S_{jk}=s_2\,m_{2n+jk}+b_{2n+jk},
-            \]</span></p>
-            <p>其中 <span class="math inline">\(s\in\mathbb
-            R^{3}\)</span>、<span class="math inline">\(b\in\mathbb
-            R^{n(n+2)}\)</span>
+            </span></p>
+            <p>其中 <span class="math inline">s\in\mathbb
+            R^{3}</span>、<span class="math inline">b\in\mathbb
+            R^{n(n+2)}</span>
             是可学习的逐组尺度与偏置。两组门控的值域不同，作用也不同：</p>
             <table>
             <colgroup>
@@ -434,73 +375,71 @@
             </thead>
             <tbody>
             <tr>
-            <td><span class="math inline">\(\text{pre}\)</span></td>
-            <td><span class="math inline">\(n\)</span></td>
+            <td><span class="math inline">\text{pre}</span></td>
+            <td><span class="math inline">n</span></td>
             <td><span
-            class="math inline">\(\sigma(\cdot)+\epsilon\)</span></td>
-            <td><span class="math inline">\((0,1+\epsilon]\)</span></td>
-            <td>从 <span class="math inline">\(n\)</span>
+            class="math inline">\sigma(\cdot)+\epsilon</span></td>
+            <td><span class="math inline">(0,1+\epsilon]</span></td>
+            <td>从 <span class="math inline">n</span>
             条流读出子层输入；每条流自身的贡献只能衰减</td>
             </tr>
             <tr>
-            <td><span class="math inline">\(\text{post}\)</span></td>
-            <td><span class="math inline">\(n\)</span></td>
-            <td><span class="math inline">\(2\sigma(\cdot)\)</span></td>
-            <td><span class="math inline">\((0,2)\)</span></td>
+            <td><span class="math inline">\text{post}</span></td>
+            <td><span class="math inline">n</span></td>
+            <td><span class="math inline">2\sigma(\cdot)</span></td>
+            <td><span class="math inline">(0,2)</span></td>
             <td>把子层输出写回各条流，初值接近 1，可增可减</td>
             </tr>
             <tr>
-            <td><span class="math inline">\(C\)</span></td>
-            <td><span class="math inline">\(n^2\)</span></td>
+            <td><span class="math inline">C</span></td>
+            <td><span class="math inline">n^2</span></td>
             <td>仿射后 Sinkhorn</td>
-            <td><span class="math inline">\(\mathcal B_n\)</span></td>
+            <td><span class="math inline">\mathcal B_n</span></td>
             <td>跨流混合，即深度连接</td>
             </tr>
             </tbody>
             </table>
-            <p>混合矩阵的 logits <span class="math inline">\(S\)</span>
-            经过 Sinkhorn–Knopp 迭代。先做一次数值稳定的行 softmax，</p>
-            <p><span class="math display">\[
+            <p>混合矩阵的 logits <span class="math inline">S</span> 经过
+            Sinkhorn–Knopp 迭代。先做一次数值稳定的行 softmax，</p>
+            <p><span class="math display">
             K_{jk}=\exp\!\left(S_{jk}-\max_{k&#39;}S_{jk&#39;}\right),
             \qquad
             C^{(0)}_{jk}=\frac{K_{jk}}{\sum_{k&#39;}K_{jk&#39;}}+\epsilon,
-            \]</span></p>
+            </span></p>
             <p>再反复做“行归一化 → 列归一化”，</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             C^{(t+1)}=\operatorname{colnorm}_{\epsilon}\!\left(\operatorname{rownorm}_{\epsilon}\!\left(C^{(t)}\right)\right),
             \qquad
             \operatorname{rownorm}_{\epsilon}(x)=\frac{x}{\sum
             x+\epsilon},
-            \]</span></p>
-            <p>迭代 <span class="math inline">\(R\)</span> 次后取 <span
-            class="math inline">\(C=C^{(R)}\)</span>。DeepSeek-V4 取
-            <span class="math inline">\(R=20\)</span>、<span
-            class="math inline">\(\epsilon=10^{-6}\)</span>，系数生成与
+            </span></p>
+            <p>迭代 <span class="math inline">R</span> 次后取 <span
+            class="math inline">C=C^{(R)}</span>。DeepSeek-V4 取 <span
+            class="math inline">R=20</span>、<span
+            class="math inline">\epsilon=10^{-6}</span>，系数生成与
             Sinkhorn 全部在 fp32 下进行，每次迭代都是 <span
-            class="math inline">\(O(n^2)\)</span> 的逐 token 计算。</p>
+            class="math inline">O(n^2)</span> 的逐 token 计算。</p>
             <p>这套迭代有标准解释：交替缩放收敛到 <span
-            class="math inline">\(C=D_1KD_2\)</span>，即把 <span
-            class="math inline">\(K\)</span> 投影到“行列和均为
+            class="math inline">C=D_1KD_2</span>，即把 <span
+            class="math inline">K</span> 投影到“行列和均为
             1”的矩阵集合上，等价于在 KL 意义下求
             I-投影，也是熵正则最优传输的矩阵缩放形式。它对应熵正则问题</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \min_{C\in\mathcal B_n}\ \left\langle C,-S\right\rangle-\tau
             H(C),
             \qquad
             H(C)=-\sum_{j,k}C_{jk}\log C_{jk},
-            \]</span></p>
-            <p>实现里 <span class="math inline">\(K=\exp(S)\)</span>
-            对应 <span class="math inline">\(\tau=1\)</span>
-            的参数化，因此 logits 的尺度 <span
-            class="math inline">\(s_2\)</span>
-            实际扮演温度倒数的角色：<span
-            class="math inline">\(s_2\)</span>
+            </span></p>
+            <p>实现里 <span class="math inline">K=\exp(S)</span> 对应
+            <span class="math inline">\tau=1</span> 的参数化，因此
+            logits 的尺度 <span class="math inline">s_2</span>
+            实际扮演温度倒数的角色：<span class="math inline">s_2</span>
             越大，混合越接近置换矩阵（接近硬路由）；<span
-            class="math inline">\(s_2\)</span>
+            class="math inline">s_2</span>
             越小，混合越接近均匀平均。迭代次数 <span
-            class="math inline">\(R\)</span>
+            class="math inline">R</span>
             是精度与延迟的折中，误差随迭代线性收敛，<span
-            class="math inline">\(\epsilon\)</span>
+            class="math inline">\epsilon</span>
             则提供数值下限、避免除零。</p>
             <h3 id="接入-transformer">接入 Transformer</h3>
             <h4 id="位置与流水">位置与流水</h4>
@@ -511,16 +450,16 @@
             属于 launch-bound 而不是 bandwidth-bound，所以 mHC 的统计与
             Sinkhorn 被放到独立 stream 上与 attention、FFN 重叠。</p>
             <h4 id="宽度与并行">宽度与并行</h4>
-            <p>残差流的宽度从 <span class="math inline">\(d\)</span>
-            变成 <span class="math inline">\(n
-            d\)</span>，这会同时放大三类成本：激活显存、序列并行/张量并行下需要搬运的激活体积，以及投机解码
+            <p>残差流的宽度从 <span class="math inline">d</span> 变成
+            <span class="math inline">n
+            d</span>，这会同时放大三类成本：激活显存、序列并行/张量并行下需要搬运的激活体积，以及投机解码
             draft 模型的 hidden 宽度（DeepSeek-V4 与 Qwen4-Exp 的 draft
-            直接沿用 <span class="math inline">\(n d\)</span>
-            的布局）。它与 KV Cache 无关——KV 仍然来自 attention 自己的
+            直接沿用 <span class="math inline">n d</span> 的布局）。它与
+            KV Cache 无关——KV 仍然来自 attention 自己的
             latent，不会因为残差流变宽而变化。新增的参数只有每个子层
-            <span class="math inline">\(O(n^2d)\)</span>
+            <span class="math inline">O(n^2d)</span>
             量级的系数投影，以及 <span
-            class="math inline">\(3+n(n+2)\)</span> 个 scale/bias。</p>
+            class="math inline">3+n(n+2)</span> 个 scale/bias。</p>
             <h3 id="收益与代价">收益与代价</h3>
             <table>
             <colgroup>
@@ -540,23 +479,23 @@
             <tbody>
             <tr>
             <td>标准残差</td>
-            <td><span class="math inline">\(C=[1]\)</span></td>
+            <td><span class="math inline">C=[1]</span></td>
             <td>无</td>
             <td>单条恒等通路</td>
             </tr>
             <tr>
             <td>Hyper-Connections</td>
-            <td><span class="math inline">\(C\)</span> 自由</td>
+            <td><span class="math inline">C</span> 自由</td>
             <td>无</td>
             <td>累积乘积可能指数放大或衰减</td>
             </tr>
             <tr>
             <td>mHC</td>
-            <td><span class="math inline">\(C\in\mathcal
-            B_n\)</span>，逐 token</td>
+            <td><span class="math inline">C\in\mathcal B_n</span>，逐
+            token</td>
             <td>双随机 + Sinkhorn 20 次</td>
             <td>累积混合始终双随机，<span
-            class="math inline">\(\ell_\infty\)</span> 范数不超过 1</td>
+            class="math inline">\ell_\infty</span> 范数不超过 1</td>
             </tr>
             <tr>
             <td>iHC（如腾讯 Hy4）</td>
@@ -567,16 +506,15 @@
             </tbody>
             </table>
             <p><strong>收益</strong>：跨层信息通道从 1 条变成 <span
-            class="math inline">\(n\)</span> 条并且逐 token
+            class="math inline">n</span> 条并且逐 token
             条件化；双随机约束让任意深度的混合有界，改善极深网络的训练稳定性；混合语义可解释为“流的重排与搬运”，比自由矩阵更难产生极端增益。</p>
             <p><strong>代价</strong>：残差流带来的激活显存与并行通信量按
-            <span class="math inline">\(n\)</span>
-            倍增长；每个子层多一次 <span
-            class="math inline">\(n(n+2)\times nd\)</span> 的系数
+            <span class="math inline">n</span> 倍增长；每个子层多一次
+            <span class="math inline">n(n+2)\times nd</span> 的系数
             GEMM、一次行 softmax 和 <span
-            class="math inline">\(R=20\)</span> 次 <span
-            class="math inline">\(O(n^2)\)</span> 的归一化，在 decode
-            这种 launch-bound 区间必须靠融合与重叠消化；没有任何 FLOP
+            class="math inline">R=20</span> 次 <span
+            class="math inline">O(n^2)</span> 的归一化，在 decode 这种
+            launch-bound 区间必须靠融合与重叠消化；没有任何 FLOP
             收益，它改的是信息传播和稳定性，不是单层计算量。</p>
             <h3 id="与其他稳定技术的分工">与其他稳定技术的分工</h3>
             <p>这些技术控制的对象不同，可以叠加而不冲突：</p>
@@ -602,21 +540,21 @@
             使流间平均不变（内容守恒），对乘法封闭使任意深度的累积混合仍有界。它还等价于置换矩阵的凸组合，语义上是搬运而不是任意线性变换。</li>
             <li><strong>为什么用 Sinkhorn 而不是裁剪或正则项？</strong>
             需要的是“每步都精确落在集合里”的结构性保证，而不是逐点惩罚；Sinkhorn（矩阵缩放）是把
-            <span class="math inline">\(\exp(S)\)</span> 投影到 Birkhoff
+            <span class="math inline">\exp(S)</span> 投影到 Birkhoff
             多面体的标准算法，固定迭代次数就是取一个近似投影。</li>
             <li><strong>双随机能保证流不坍缩吗？</strong>
             不能。均匀平均矩阵本身也是双随机的，约束排除的只是放大与衰减；抗坍缩依赖门控与训练动力学。</li>
             <li><strong>为什么 pre 用 <span
-            class="math inline">\(\sigma\)</span>、post 用 <span
-            class="math inline">\(2\sigma\)</span>？</strong> pre
+            class="math inline">\sigma</span>、post 用 <span
+            class="math inline">2\sigma</span>？</strong> pre
             限制每条流自身的贡献在 <span
-            class="math inline">\((0,1)\)</span>，读出的子层输入不会被单条流放大；<span
-            class="math inline">\(2\sigma\)</span> 初值接近
+            class="math inline">(0,1)</span>，读出的子层输入不会被单条流放大；<span
+            class="math inline">2\sigma</span> 初值接近
             1，写回系数可增可减，保留放大能力。</li>
             <li><strong>每个 token 每个子层有多少系数？</strong> <span
-            class="math inline">\(n(n+2)\)</span>，<span
-            class="math inline">\(n=4\)</span> 时是 24，即 4 个读系数、4
-            个写系数和一个 <span class="math inline">\(4\times4\)</span>
+            class="math inline">n(n+2)</span>，<span
+            class="math inline">n=4</span> 时是 24，即 4 个读系数、4
+            个写系数和一个 <span class="math inline">4\times4</span>
             的逐 token 混合矩阵。</li>
             <li><strong>mHC 会减少 FLOP 或显存吗？</strong>
             都不会。它让残差流变宽、显存与通信量上升，换来的是跨层通道容量与训练稳定性。</li>
@@ -641,9 +579,9 @@
             Neumann 把它解释为“流的重排平均”。</li>
             <li>Sinkhorn 迭代把无约束 logits 投影到 Birkhoff
             多面体；DeepSeek-V4 用 <span
-            class="math inline">\(n=4\)</span>、<span
-            class="math inline">\(R=20\)</span>、<span
-            class="math inline">\(\epsilon=10^{-6}\)</span>，系数全程
+            class="math inline">n=4</span>、<span
+            class="math inline">R=20</span>、<span
+            class="math inline">\epsilon=10^{-6}</span>，系数全程
             fp32。</li>
             <li>接入方式是包住每个子层：读 pre、算子层、写 post、混
             comb；系数计算可与主 GEMM 重叠，decode 时与 attention/FFN
@@ -675,39 +613,6 @@
       </ul>
     </aside>
       </div>
-  <script type="text/javascript">
-    (function () {
-      function markActive() {
-        var here = location.href.split('#')[0];
-        var links = document.querySelectorAll('.wiki-sidebar a');
-        for (var i = 0; i < links.length; i++) {
-          if (links[i].href.split('#')[0] === here) {
-            links[i].classList.add('active');
-          }
-        }
-      }
-      // load the shared site directory once (served from the wiki root);
-      // kept in a standalone file so adding a page needn't rebuild every page.
-      var nav = document.getElementById('wiki-sidebar');
-      if (nav) {
-        fetch('/wiki_sidebar.html')
-          .then(function (r) { return r.ok ? r.text() : ''; })
-          .then(function (html) {
-            if (html) {
-              nav.innerHTML = html;
-              nav.hidden = false;
-              markActive();
-            }
-          })
-          .catch(function () {});
-      }
-      // keep bootstrap table styling (previously done by sticky_menu.js)
-      var tables = document.getElementsByTagName('table');
-      for (var j = 0; j < tables.length; j++) {
-        tables[j].classList.add('table');
-      }
-    })();
-  </script>
 </body>
 
 </html>

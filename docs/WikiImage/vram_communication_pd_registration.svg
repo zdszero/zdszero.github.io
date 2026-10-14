@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 520" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="ar" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#868e96"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="880" height="520" rx="12" fill="#ffffff"/>
+  <text x="440" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">PD 传输的注册内存：注册已有区域，而非额外拷贝</text>
+  <text x="440" y="56" text-anchor="middle" font-size="13" fill="#868e96">Mooncake batch_register / NIXL register_memory；实线为默认，虚线为显式开启</text>
+
+  <!-- Prefill node -->
+  <rect x="24" y="76" width="340" height="360" rx="10" fill="#f8f9fa" stroke="#adb5bd"/>
+  <text x="194" y="100" text-anchor="middle" font-size="14" font-weight="700" fill="#495057">Prefill 节点</text>
+  <rect x="40" y="112" width="308" height="190" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="56" y="132" font-size="12" font-weight="700" fill="#3b5bdb">GPU HBM</text>
+  <rect x="56" y="142" width="276" height="56" rx="6" fill="#ffffff" stroke="#4c6ef5" stroke-width="2"/>
+  <text x="194" y="165" text-anchor="middle" font-size="13" font-weight="600" fill="#3b5bdb">KV pool（kv_data_ptrs）+ state</text>
+  <text x="194" y="185" text-anchor="middle" font-size="11" fill="#495057">原地注册，不新增 HBM</text>
+  <rect x="56" y="212" width="276" height="74" rx="6" fill="#fff4e6" stroke="#f08c00" stroke-dasharray="5 3"/>
+  <text x="194" y="234" text-anchor="middle" font-size="12" font-weight="600" fill="#e8590c">staging buffer（opt-in）</text>
+  <text x="194" y="253" text-anchor="middle" font-size="11" fill="#495057">每队列 chunk_pages × sum(kv_item_lens)</text>
+  <text x="194" y="271" text-anchor="middle" font-size="11" fill="#868e96">异构 attn TP 时聚合 head 切片</text>
+  <rect x="40" y="316" width="308" height="104" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="56" y="336" font-size="12" font-weight="700" fill="#0b7285">Host pinned DRAM（不计显存）</text>
+  <rect x="56" y="348" width="276" height="56" rx="6" fill="#ffffff" stroke="#0ca678" stroke-width="2"/>
+  <text x="194" y="371" text-anchor="middle" font-size="13" font-weight="600" fill="#0b7285">aux MetadataBuffers</text>
+  <text x="194" y="390" text-anchor="middle" font-size="11" fill="#495057">output ids / logprob，64B 对齐</text>
+
+  <!-- Decode node -->
+  <rect x="516" y="76" width="340" height="360" rx="10" fill="#f8f9fa" stroke="#adb5bd"/>
+  <text x="686" y="100" text-anchor="middle" font-size="14" font-weight="700" fill="#495057">Decode 节点</text>
+  <rect x="532" y="112" width="308" height="190" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="548" y="132" font-size="12" font-weight="700" fill="#3b5bdb">GPU HBM</text>
+  <rect x="548" y="142" width="276" height="56" rx="6" fill="#ffffff" stroke="#4c6ef5" stroke-width="2"/>
+  <text x="686" y="165" text-anchor="middle" font-size="13" font-weight="600" fill="#3b5bdb">token_to_kv_pool（"VRAM"）</text>
+  <text x="686" y="185" text-anchor="middle" font-size="11" fill="#495057">RDMA 直接写入目标 slot</text>
+  <rect x="548" y="212" width="276" height="74" rx="6" fill="#fff4e6" stroke="#f08c00" stroke-dasharray="5 3"/>
+  <text x="686" y="234" text-anchor="middle" font-size="12" font-weight="600" fill="#e8590c">staging ring（opt-in）</text>
+  <text x="686" y="253" text-anchor="middle" font-size="11" fill="#495057">SGLANG_DISAGG_STAGING_POOL_SIZE_MB</text>
+  <text x="686" y="271" text-anchor="middle" font-size="11" fill="#868e96">默认 4096 MB</text>
+  <rect x="532" y="316" width="308" height="104" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="548" y="336" font-size="12" font-weight="700" fill="#0b7285">Host pinned DRAM（不计显存）</text>
+  <rect x="548" y="348" width="132" height="56" rx="6" fill="#ffffff" stroke="#0ca678" stroke-width="2"/>
+  <text x="614" y="371" text-anchor="middle" font-size="12" font-weight="600" fill="#0b7285">aux 元数据</text>
+  <text x="614" y="390" text-anchor="middle" font-size="11" fill="#495057">"DRAM"</text>
+  <rect x="692" y="348" width="132" height="56" rx="6" fill="#ffffff" stroke="#0ca678" stroke-dasharray="5 3"/>
+  <text x="758" y="371" text-anchor="middle" font-size="12" font-weight="600" fill="#0b7285">hisparse host KV</text>
+  <text x="758" y="390" text-anchor="middle" font-size="11" fill="#495057">mem_pool_host</text>
+
+  <!-- transfers -->
+  <rect x="384" y="150" width="112" height="40" rx="6" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="440" y="168" text-anchor="middle" font-size="12" font-weight="600" fill="#5f3dc4">RDMA NIC</text>
+  <text x="440" y="183" text-anchor="middle" font-size="10" fill="#495057">已注册区域间读写</text>
+  <line x1="332" y1="170" x2="380" y2="170" stroke="#868e96" stroke-width="1.5" marker-end="url(#ar)"/>
+  <line x1="496" y1="170" x2="544" y2="170" stroke="#868e96" stroke-width="1.5" marker-end="url(#ar)"/>
+  <line x1="332" y1="249" x2="544" y2="249" stroke="#f08c00" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#ar)"/>
+  <text x="440" y="242" text-anchor="middle" font-size="10" fill="#e8590c">整块传输</text>
+  <line x1="332" y1="376" x2="544" y2="376" stroke="#868e96" stroke-width="1.5" marker-end="url(#ar)"/>
+  <text x="440" y="368" text-anchor="middle" font-size="10" fill="#495057">aux 传输</text>
+
+  <rect x="24" y="452" width="832" height="48" rx="6" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="440" y="472" text-anchor="middle" font-size="12" fill="#495057">默认只有“注册”成本，没有额外 HBM；额外显存来自显式开启的 staging buffer（custom mempool 只改变 KV pool 的分配方式）</text>
+  <text x="440" y="490" text-anchor="middle" font-size="11" fill="#868e96">pinned host 内存受主机内存与锁页限制约束，nvidia-smi 看不到</text>
+</svg>

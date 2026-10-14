@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 480" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="480" rx="12" fill="#ffffff"/>
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#868e96"/>
+    </marker>
+  </defs>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">.to(dtype) 换数值，.view(dtype) 换解释</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">同一个 BF16 张量，两种“改 dtype”：一种逐元素重新编码，一种只改元数据、按新规则读同一批字节</text>
+
+  <!-- source tensor -->
+  <rect x="270" y="74" width="360" height="66" rx="9" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="450" y="95" text-anchor="middle" font-size="13" font-weight="700" fill="#495057">x：BF16，shape [4, 8]，2 B / 元素</text>
+  <g font-family="monospace" font-size="12" fill="#495057" text-anchor="middle">
+    <text x="345" y="116">1.0</text><text x="450" y="116">0.3</text><text x="555" y="116">500.0</text>
+    <text x="345" y="132" fill="#868e96">0x3F80</text><text x="450" y="132" fill="#868e96">0x3E9A</text><text x="555" y="132" fill="#868e96">0x43FA</text>
+  </g>
+  <path d="M340 140 L240 170" stroke="#868e96" stroke-width="2" fill="none" marker-end="url(#ar)"/>
+  <path d="M560 140 L660 170" stroke="#868e96" stroke-width="2" fill="none" marker-end="url(#ar)"/>
+
+  <!-- LEFT: to -->
+  <rect x="40" y="176" width="400" height="226" rx="10" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="60" y="200" font-size="14" font-weight="700" fill="#0b7285">x.to(torch.float8_e4m3fn) · 数值转换</text>
+  <g font-family="monospace" font-size="12">
+    <rect x="60" y="214" width="80" height="26" rx="6" fill="#ffffff" stroke="#adb5bd"/>
+    <text x="100" y="231" text-anchor="middle" fill="#495057">1.0</text>
+    <rect x="186" y="214" width="120" height="26" rx="6" fill="#ffffff" stroke="#0ca678"/>
+    <text x="246" y="231" text-anchor="middle" fill="#0b7285">1.0    0x38</text>
+    <rect x="60" y="250" width="80" height="26" rx="6" fill="#ffffff" stroke="#adb5bd"/>
+    <text x="100" y="267" text-anchor="middle" fill="#495057">0.3</text>
+    <rect x="186" y="250" width="120" height="26" rx="6" fill="#ffffff" stroke="#0ca678"/>
+    <text x="246" y="267" text-anchor="middle" fill="#0b7285">0.3125 0x2A</text>
+    <rect x="60" y="286" width="80" height="26" rx="6" fill="#ffffff" stroke="#adb5bd"/>
+    <text x="100" y="303" text-anchor="middle" fill="#495057">500.0</text>
+    <rect x="186" y="286" width="120" height="26" rx="6" fill="#fff5f5" stroke="#fa5252"/>
+    <text x="246" y="303" text-anchor="middle" fill="#c92a2a">NaN    0x7F</text>
+  </g>
+  <path d="M142 227 L182 227" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <path d="M142 263 L182 263" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <path d="M142 299 L182 299" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <g font-size="11.5" fill="#495057">
+    <text x="318" y="231">精确可表示</text>
+    <text x="318" y="267">舍入到最近值</text>
+    <text x="318" y="303" fill="#c92a2a">超出 ±448，不报错</text>
+  </g>
+  <g font-size="12" fill="#495057">
+    <text x="60" y="338">• 新分配 storage：1 B / 元素，shape 仍是 [4, 8]</text>
+    <text x="60" y="360">• 每个元素各自重新编码，信息在这里丢失</text>
+    <text x="60" y="382" fill="#868e96">• 所以 FP8 之前要先除以 scale，把数值挪进范围</text>
+  </g>
+
+  <!-- RIGHT: view -->
+  <rect x="460" y="176" width="400" height="226" rx="10" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="480" y="200" font-size="14" font-weight="700" fill="#3b5bdb">x.view(torch.uint8) · 位重解释</text>
+  <g font-family="monospace" font-size="12">
+    <rect x="480" y="216" width="110" height="30" rx="6" fill="#ffffff" stroke="#adb5bd"/>
+    <text x="535" y="235" text-anchor="middle" fill="#495057">1.0 = 0x3F80</text>
+    <rect x="640" y="216" width="70" height="30" rx="6" fill="#ffffff" stroke="#4c6ef5"/>
+    <text x="675" y="235" text-anchor="middle" fill="#3b5bdb">0x80</text>
+    <rect x="716" y="216" width="70" height="30" rx="6" fill="#ffffff" stroke="#4c6ef5"/>
+    <text x="751" y="235" text-anchor="middle" fill="#3b5bdb">0x3F</text>
+    <text x="713" y="266" text-anchor="middle" font-size="11.5" fill="#868e96">uint8 128 , 63（小端）</text>
+  </g>
+  <path d="M592 231 L634 231" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <g font-size="12" fill="#495057">
+    <text x="480" y="300">• 共享 storage，零拷贝，字节一个不变</text>
+    <text x="480" y="322">• shape [4, 8] → [4, 16]：元素变小，最后一维放大</text>
+    <text x="480" y="344">• 要求 stride(-1) == 1，否则直接报错</text>
+    <text x="480" y="366" fill="#868e96">• 反过来 .view(bfloat16) 就能原样读回</text>
+  </g>
+
+  <!-- note -->
+  <rect x="40" y="418" width="820" height="46" rx="9" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="450" y="437" text-anchor="middle" font-size="12" fill="#495057">SGLang 写 FP8 KV：k / k_scale → .to(float8_e4m3fn)（真转换）→ .view(uint8) 写进 uint8 buffer；</text>
+  <text x="450" y="455" text-anchor="middle" font-size="12" fill="#495057">读给 attention 时 buffer.view(float8_e4m3fn)。一次数值转换，两次零拷贝“换眼镜”。</text>
+</svg>

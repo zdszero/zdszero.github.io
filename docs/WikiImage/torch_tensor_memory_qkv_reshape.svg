@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 470" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#868e96"/>
+    </marker>
+    <pattern id="cell" x="90" y="0" width="15" height="20" patternUnits="userSpaceOnUse">
+      <path d="M15 0 V20" stroke="#ffffff" stroke-width="1.2"/>
+    </pattern>
+  </defs>
+  <rect x="0" y="0" width="900" height="470" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">fused QKV：一次 split、几次 view，数据一个字节都没动</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">例：T=4 个 token，H=8 个 Q head，KV=2 个 K/V head（GQA），D=4；每个 token 一行 (8+2+2)×4 = 48 个元素</text>
+
+  <!-- segment labels -->
+  <text x="330" y="90" text-anchor="middle" font-size="12" font-weight="700" fill="#3b5bdb">Q 段：H×D = 32</text>
+  <text x="630" y="90" text-anchor="middle" font-size="12" font-weight="700" fill="#0b7285">K 段：KV×D = 8</text>
+  <text x="750" y="90" text-anchor="middle" font-size="12" font-weight="700" fill="#5f3dc4">V 段：8</text>
+
+  <!-- storage rows -->
+  <g font-size="11" fill="#868e96" font-family="monospace" text-anchor="end">
+    <text x="82" y="114">t0</text><text x="82" y="136">t1</text><text x="82" y="158">t2</text><text x="82" y="180">t3</text>
+  </g>
+  <g stroke-width="1">
+    <rect x="90" y="100" width="480" height="20" fill="#edf2ff" stroke="#4c6ef5"/>
+    <rect x="570" y="100" width="120" height="20" fill="#e6fcf5" stroke="#0ca678"/>
+    <rect x="690" y="100" width="120" height="20" fill="#f3f0ff" stroke="#7048e8"/>
+    <rect x="90" y="122" width="480" height="20" fill="#edf2ff" stroke="#4c6ef5"/>
+    <rect x="570" y="122" width="120" height="20" fill="#e6fcf5" stroke="#0ca678"/>
+    <rect x="690" y="122" width="120" height="20" fill="#f3f0ff" stroke="#7048e8"/>
+    <rect x="90" y="144" width="480" height="20" fill="#edf2ff" stroke="#4c6ef5"/>
+    <rect x="570" y="144" width="120" height="20" fill="#e6fcf5" stroke="#0ca678"/>
+    <rect x="690" y="144" width="120" height="20" fill="#f3f0ff" stroke="#7048e8"/>
+    <rect x="90" y="166" width="480" height="20" fill="#edf2ff" stroke="#4c6ef5"/>
+    <rect x="570" y="166" width="120" height="20" fill="#e6fcf5" stroke="#0ca678"/>
+    <rect x="690" y="166" width="120" height="20" fill="#f3f0ff" stroke="#7048e8"/>
+  </g>
+  <rect x="90" y="100" width="720" height="86" fill="url(#cell)" opacity="0.9"/>
+  <!-- head boundaries inside K -->
+  <path d="M630 100 V186" stroke="#0ca678" stroke-width="1.5"/>
+  <text x="600" y="201" text-anchor="middle" font-size="10" fill="#0b7285">kv head 0</text>
+  <text x="660" y="201" text-anchor="middle" font-size="10" fill="#0b7285">kv head 1</text>
+  <!-- k view outline -->
+  <rect x="566" y="96" width="128" height="91" rx="4" fill="none" stroke="#f08c00" stroke-width="2.2" stroke-dasharray="6 3"/>
+  <text x="818" y="132" font-size="11" font-weight="700" fill="#e8590c">k 的视野</text>
+  <text x="818" y="148" font-size="10.5" fill="#e8590c" font-family="monospace">offset=32</text>
+  <text x="818" y="163" font-size="10.5" fill="#e8590c" font-family="monospace">stride0=48</text>
+  <text x="90" y="224" font-size="11.5" fill="#495057">同一块 storage，行主序存放；k 每行只看 8 个元素，跳到下一行要越过 40 个不属于它的元素 → 是 view，但不连续</text>
+  <!-- step 1 -->
+  <rect x="30" y="238" width="190" height="132" rx="10" fill="#f8f9fa" stroke="#adb5bd"/>
+  <text x="46" y="262" font-size="13" font-weight="700" fill="#495057">① qkv_proj 输出</text>
+  <g font-family="monospace" font-size="11.5" fill="#495057">
+    <text x="46" y="286">qkv: [T, 48]</text>
+    <text x="46" y="306">stride (48, 1)</text>
+    <text x="46" y="326">offset 0</text>
+  </g>
+  <rect x="46" y="340" width="100" height="20" rx="10" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="96" y="354" text-anchor="middle" font-size="11" fill="#0b7285">新分配 · 连续</text>
+  <path d="M222 304 L244 304" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+
+  <!-- step 2 -->
+  <rect x="248" y="238" width="196" height="132" rx="10" fill="#fff9db" stroke="#f08c00"/>
+  <text x="264" y="262" font-size="13" font-weight="700" fill="#e8590c">② split(dim=-1)</text>
+  <g font-family="monospace" font-size="11.5" fill="#495057">
+    <text x="264" y="286">k: [T, 8]</text>
+    <text x="264" y="306">stride (48, 1)</text>
+    <text x="264" y="326">offset 32</text>
+  </g>
+  <rect x="264" y="340" width="112" height="20" rx="10" fill="#fff4e6" stroke="#f08c00"/>
+  <text x="320" y="354" text-anchor="middle" font-size="11" fill="#e8590c">view · 非连续</text>
+  <path d="M446 304 L468 304" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+
+  <!-- step 3 -->
+  <rect x="472" y="238" width="196" height="132" rx="10" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="488" y="262" font-size="13" font-weight="700" fill="#0b7285">③ k.view(-1, KV, D)</text>
+  <g font-family="monospace" font-size="11.5" fill="#495057">
+    <text x="488" y="286">k: [T, 2, 4]</text>
+    <text x="488" y="306">stride (48, 4, 1)</text>
+    <text x="488" y="326">offset 32</text>
+  </g>
+  <rect x="488" y="340" width="164" height="20" rx="10" fill="#ffffff" stroke="#0ca678"/>
+  <text x="570" y="354" text-anchor="middle" font-size="11" fill="#0b7285">view 成功：只拆最后一维</text>
+  <path d="M670 304 L692 304" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+
+  <!-- step 4 -->
+  <rect x="696" y="238" width="176" height="132" rx="10" fill="#fff5f5" stroke="#fa5252"/>
+  <text x="710" y="262" font-size="13" font-weight="700" fill="#c92a2a">④ 转成 [B, H, T, D]</text>
+  <g font-family="monospace" font-size="11" fill="#495057">
+    <text x="710" y="284">q.view(1,T,H,D)</text>
+    <text x="710" y="300">  .transpose(1, 2)</text>
+    <text x="710" y="320">stride (192,4,48,1)</text>
+  </g>
+  <rect x="710" y="334" width="150" height="28" rx="8" fill="#ffffff" stroke="#fa5252"/>
+  <text x="785" y="346" text-anchor="middle" font-size="10" fill="#c92a2a">view · 维度乱序</text>
+  <text x="785" y="358" text-anchor="middle" font-size="10" fill="#c92a2a">再合并 T×D 就必须 copy</text>
+
+  <!-- note -->
+  <rect x="30" y="392" width="842" height="58" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="48" y="415" font-size="12" fill="#495057">关键：<tspan font-weight="700" fill="#212529">拆分最后一维</tspan>（48 → 8 → 2×4）只改 shape/stride，永远是 view；<tspan font-weight="700" fill="#212529">交换维度</tspan>也是 view，但会让 stride 乱序。</text>
+  <text x="48" y="436" font-size="12" fill="#495057">真正的拷贝推迟到“有人要求某种连续布局”的那一刻：<tspan font-family="monospace">reshape</tspan>/<tspan font-family="monospace">contiguous</tspan> 合并维度，或 kernel 只接受特定 stride。</text>
+</svg>

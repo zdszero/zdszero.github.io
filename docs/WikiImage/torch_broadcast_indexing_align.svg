@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 504" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="504" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">广播：从尾部对齐维度，大小为 1 的一侧被拉伸</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">规则只看数字：每一对维度相等，或其中一侧为 1；缺失的前导维度补 1。它不知道每一维代表什么</text>
+
+  <line x1="450" y1="78" x2="450" y2="290" stroke="#dee2e6" stroke-width="1.5"/>
+
+  <!-- LEFT: alignment table -->
+  <text x="50" y="96" font-size="14" font-weight="700" fill="#3b5bdb">① 尾部对齐，逐维比较</text>
+  <g font-size="11.5" fill="#868e96" text-anchor="middle">
+    <text x="200" y="120">dim −2</text>
+    <text x="300" y="120">dim −1</text>
+  </g>
+  <g font-size="12" fill="#495057" font-family="monospace">
+    <text x="50" y="150">x  (4, 1)</text>
+    <text x="50" y="194">y  (4,)</text>
+    <text x="50" y="246">z = x + y</text>
+  </g>
+  <g font-family="monospace" font-size="13" font-weight="700" text-anchor="middle">
+    <rect x="160" y="128" width="80" height="34" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+    <text x="200" y="150" fill="#3b5bdb">4</text>
+    <rect x="260" y="128" width="80" height="34" rx="8" fill="#fff9db" stroke="#f08c00"/>
+    <text x="300" y="150" fill="#e8590c">1 → 4</text>
+    <rect x="160" y="172" width="80" height="34" rx="8" fill="#fff9db" stroke="#f08c00" stroke-dasharray="4 3"/>
+    <text x="200" y="194" fill="#e8590c">补1 → 4</text>
+    <rect x="260" y="172" width="80" height="34" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+    <text x="300" y="194" fill="#0b7285">4</text>
+    <rect x="160" y="224" width="80" height="34" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+    <text x="200" y="246" fill="#5f3dc4">4</text>
+    <rect x="260" y="224" width="80" height="34" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+    <text x="300" y="246" fill="#5f3dc4">4</text>
+  </g>
+  <line x1="50" y1="215" x2="350" y2="215" stroke="#adb5bd" stroke-width="1" stroke-dasharray="3 3"/>
+  <text x="50" y="282" font-size="11.5" fill="#868e96">每一维：相等 → 保留；一侧为 1 → 拉伸；否则报错</text>
+
+  <!-- RIGHT: worked example -->
+  <text x="480" y="96" font-size="14" font-weight="700" fill="#5f3dc4">② 输入共 8 个元素，输出 16 个</text>
+  <text x="518" y="128" text-anchor="middle" font-size="11.5" fill="#868e96">x ↓  y →</text>
+  <g font-family="monospace" font-size="12.5" font-weight="700" text-anchor="middle">
+    <g fill="#e6fcf5" stroke="#0ca678"><rect x="580" y="106" width="56" height="26" rx="6"/><rect x="642" y="106" width="56" height="26" rx="6"/><rect x="704" y="106" width="56" height="26" rx="6"/><rect x="766" y="106" width="56" height="26" rx="6"/></g>
+    <g fill="#0b7285"><text x="608" y="124">0</text><text x="670" y="124">10</text><text x="732" y="124">20</text><text x="794" y="124">30</text></g>
+    <g fill="#edf2ff" stroke="#4c6ef5"><rect x="490" y="142" width="56" height="28" rx="6"/><rect x="490" y="174" width="56" height="28" rx="6"/><rect x="490" y="206" width="56" height="28" rx="6"/><rect x="490" y="238" width="56" height="28" rx="6"/></g>
+    <g fill="#3b5bdb"><text x="518" y="161">0</text><text x="518" y="193">1</text><text x="518" y="225">2</text><text x="518" y="257">3</text></g>
+    <g fill="#f3f0ff" stroke="#7048e8">
+      <rect x="580" y="142" width="56" height="28" rx="6"/><rect x="642" y="142" width="56" height="28" rx="6"/><rect x="704" y="142" width="56" height="28" rx="6"/><rect x="766" y="142" width="56" height="28" rx="6"/>
+      <rect x="580" y="174" width="56" height="28" rx="6"/><rect x="642" y="174" width="56" height="28" rx="6"/><rect x="704" y="174" width="56" height="28" rx="6"/><rect x="766" y="174" width="56" height="28" rx="6"/>
+      <rect x="580" y="206" width="56" height="28" rx="6"/><rect x="642" y="206" width="56" height="28" rx="6"/><rect x="704" y="206" width="56" height="28" rx="6"/><rect x="766" y="206" width="56" height="28" rx="6"/>
+      <rect x="580" y="238" width="56" height="28" rx="6"/><rect x="642" y="238" width="56" height="28" rx="6"/><rect x="704" y="238" width="56" height="28" rx="6"/><rect x="766" y="238" width="56" height="28" rx="6"/>
+    </g>
+    <g fill="#5f3dc4">
+      <text x="608" y="161">0</text><text x="670" y="161">10</text><text x="732" y="161">20</text><text x="794" y="161">30</text>
+      <text x="608" y="193">1</text><text x="670" y="193">11</text><text x="732" y="193">21</text><text x="794" y="193">31</text>
+      <text x="608" y="225">2</text><text x="670" y="225">12</text><text x="732" y="225">22</text><text x="794" y="225">32</text>
+      <text x="608" y="257">3</text><text x="670" y="257">13</text><text x="732" y="257">23</text><text x="794" y="257">33</text>
+    </g>
+  </g>
+  <text x="480" y="282" font-size="11.5" fill="#868e96">z[i, j] = x[i, 0] + y[j]：输入不必先复制，但输出是完整的 4×4</text>
+
+  <!-- BOTTOM: attention mask pitfall -->
+  <rect x="40" y="300" width="820" height="146" rx="10" fill="#fff4e6" stroke="#f08c00"/>
+  <text x="60" y="322" font-size="13" font-weight="700" fill="#e8590c">③ 陷阱：数字凑巧能对上，语义却错了（decode 时 query 长度 Q = 1）</text>
+  <g font-family="monospace" font-size="12" fill="#495057">
+    <text x="60" y="355">score</text>
+    <text x="60" y="391">mask [B, K]</text>
+    <text x="60" y="427">mask[:, None, None, :]</text>
+  </g>
+  <g font-family="monospace" font-size="12.5" font-weight="700" text-anchor="middle">
+    <g fill="#edf2ff" stroke="#4c6ef5"><rect x="260" y="336" width="80" height="28" rx="6"/><rect x="350" y="336" width="80" height="28" rx="6"/><rect x="440" y="336" width="80" height="28" rx="6"/><rect x="530" y="336" width="80" height="28" rx="6"/></g>
+    <g fill="#3b5bdb"><text x="300" y="355">B</text><text x="390" y="355">H</text><text x="480" y="355">Q=1</text><text x="570" y="355">K</text></g>
+    <g fill="#ffffff" stroke="#adb5bd" stroke-dasharray="4 3"><rect x="260" y="372" width="80" height="28" rx="6"/><rect x="350" y="372" width="80" height="28" rx="6"/></g>
+    <rect x="440" y="372" width="80" height="28" rx="6" fill="#fff5f5" stroke="#fa5252"/>
+    <rect x="530" y="372" width="80" height="28" rx="6" fill="#e6fcf5" stroke="#0ca678"/>
+    <text x="300" y="391" fill="#868e96">补1</text><text x="390" y="391" fill="#868e96">补1</text>
+    <text x="480" y="391" fill="#c92a2a">B</text><text x="570" y="391" fill="#0b7285">K</text>
+    <g fill="#e6fcf5" stroke="#0ca678"><rect x="260" y="408" width="80" height="28" rx="6"/><rect x="350" y="408" width="80" height="28" rx="6"/><rect x="440" y="408" width="80" height="28" rx="6"/><rect x="530" y="408" width="80" height="28" rx="6"/></g>
+    <g fill="#0b7285"><text x="300" y="427">B</text><text x="390" y="427">1</text><text x="480" y="427">1</text><text x="570" y="427">K</text></g>
+  </g>
+  <g font-size="12">
+    <text x="628" y="391" fill="#c92a2a">→ [B, H, B, K]：B 对到了 Q 维</text>
+    <text x="628" y="408" fill="#c92a2a" font-size="11">加法偏置不报错，结果被放大 B 倍</text>
+    <text x="628" y="427" fill="#0b7285">→ [B, H, 1, K]：按语义对齐 ✓</text>
+  </g>
+
+  <rect x="40" y="456" width="820" height="36" rx="9" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="58" y="479" font-size="12" fill="#495057">关键：先写出每一维的语义，再用 unsqueeze / None 显式补出大小为 1 的维度；不要依赖“恰好相等”或“恰好为 1”的维度大小。</text>
+</svg>

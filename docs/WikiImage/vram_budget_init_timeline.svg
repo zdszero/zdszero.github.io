@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" font-family="-apple-system, 'PingFang SC', 'Helvetica Neue', Arial, sans-serif">
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#495057"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="900" height="600" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="600" fill="#212529">SGLang 启动阶段的空闲显存瀑布</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">示意数字：单卡 80 GB，8B 模型 bf16，mem_fraction_static = 0.85（单位 GiB）</text>
+
+  <!-- axes: y(v) = 470 - 4.75 v -->
+  <line x1="90" y1="470" x2="790" y2="470" stroke="#495057" stroke-width="1.5"/>
+  <line x1="90" y1="470" x2="90" y2="82" stroke="#495057" stroke-width="1.5" marker-end="url(#ar)"/>
+  <text x="84" y="78" text-anchor="end" font-size="11" fill="#495057">free</text>
+  <text x="84" y="474" text-anchor="end" font-size="11" fill="#868e96">0</text>
+  <text x="84" y="285" text-anchor="end" font-size="11" fill="#868e96">40</text>
+  <line x1="88" y1="280" x2="92" y2="280" stroke="#495057"/>
+
+  <!-- pre_model_load_memory reference line -->
+  <line x1="90" y1="99.5" x2="790" y2="99.5" stroke="#1c7ed6" stroke-width="1" stroke-dasharray="6 4"/>
+  <text x="788" y="94" text-anchor="end" font-size="12" font-weight="600" fill="#1c7ed6">pre_model_load_memory = 78.0</text>
+
+  <!-- slack band -->
+  <rect x="90" y="414.4" width="700" height="55.6" fill="#fff4e6" opacity="0.7"/>
+  <line x1="90" y1="414.4" x2="790" y2="414.4" stroke="#f08c00" stroke-width="1" stroke-dasharray="6 4"/>
+  <text x="788" y="408" text-anchor="end" font-size="12" font-weight="600" fill="#f08c00">slack = pre × (1 − f) = 11.7</text>
+
+  <!-- col0 start: 79.2 -->
+  <rect x="110" y="93.8" width="80" height="376.2" fill="#ebfbee" stroke="#2f9e44"/>
+  <text x="150" y="88" text-anchor="middle" font-size="11" fill="#2f9e44">79.2</text>
+
+  <!-- col1 dist init: 78.0 (Δ1.2) -->
+  <rect x="220" y="93.8" width="80" height="5.7" fill="#fff0f6" stroke="#d6336c"/>
+  <rect x="220" y="99.5" width="80" height="370.5" fill="#ebfbee" stroke="#2f9e44"/>
+  <text x="260" y="116" text-anchor="middle" font-size="11" fill="#d6336c">−1.2 NCCL 等</text>
+
+  <!-- col2 weights: 63.0 (Δ15.0) -->
+  <rect x="330" y="99.5" width="80" height="71.25" fill="#d0ebff" stroke="#1c7ed6"/>
+  <text x="370" y="132" text-anchor="middle" font-size="12" fill="#212529">权重</text>
+  <text x="370" y="148" text-anchor="middle" font-size="11" fill="#1c7ed6">−15.0</text>
+  <rect x="330" y="170.75" width="80" height="299.25" fill="#ebfbee" stroke="#2f9e44"/>
+  <text x="370" y="188" text-anchor="middle" font-size="11" fill="#2f9e44">avail 63.0</text>
+
+  <!-- col3 KV pool: 11.7 (Δ51.3) -->
+  <rect x="440" y="170.75" width="80" height="243.65" fill="#e5dbff" stroke="#7048e8"/>
+  <text x="480" y="282" text-anchor="middle" font-size="12" fill="#212529">KV 池</text>
+  <text x="480" y="299" text-anchor="middle" font-size="11" fill="#7048e8">rest = 51.3</text>
+  <text x="480" y="315" text-anchor="middle" font-size="11" fill="#868e96">≈ 420k tokens</text>
+  <rect x="440" y="414.4" width="80" height="55.6" fill="#ebfbee" stroke="#2f9e44"/>
+  <text x="480" y="446" text-anchor="middle" font-size="11" fill="#2f9e44">11.7</text>
+
+  <!-- col4 attention backend: 11.5 (Δ0.2) -->
+  <rect x="550" y="414.4" width="80" height="1" fill="#f1f3f5" stroke="#495057"/>
+  <rect x="550" y="415.4" width="80" height="54.6" fill="#ebfbee" stroke="#2f9e44"/>
+  <text x="590" y="446" text-anchor="middle" font-size="11" fill="#2f9e44">11.5</text>
+
+  <!-- col5 graph capture: 8.5 (Δ3.0) -->
+  <rect x="660" y="415.4" width="80" height="14.2" fill="#ffe8cc" stroke="#f08c00"/>
+  <rect x="660" y="429.6" width="80" height="40.4" fill="#ebfbee" stroke="#2f9e44"/>
+  <text x="700" y="453" text-anchor="middle" font-size="11" fill="#2f9e44">8.5</text>
+  <line x1="700" y1="360" x2="700" y2="412" stroke="#f08c00" stroke-width="1.2" marker-end="url(#ar)"/>
+  <text x="700" y="340" text-anchor="middle" font-size="12" fill="#212529">graph 私有池</text>
+  <text x="700" y="355" text-anchor="middle" font-size="11" fill="#f08c00">−3.0，吃 slack</text>
+
+  <!-- remaining annotation -->
+  <path d="M748,429.6 L756,429.6 L756,470 L748,470" fill="none" stroke="#2f9e44" stroke-width="1.5"/>
+  <text x="762" y="446" font-size="11" fill="#2f9e44">留给运行期</text>
+  <text x="762" y="461" font-size="11" fill="#2f9e44">activation</text>
+
+  <!-- stage labels -->
+  <text x="150" y="490" text-anchor="middle" font-size="12" fill="#212529">起点</text>
+  <text x="150" y="506" text-anchor="middle" font-size="10" fill="#868e96">CUDA context 已建</text>
+  <text x="260" y="490" text-anchor="middle" font-size="12" fill="#212529">① 分布式初始化</text>
+  <text x="260" y="506" text-anchor="middle" font-size="10" fill="#868e96">bootstrap.py</text>
+  <text x="370" y="490" text-anchor="middle" font-size="12" fill="#212529">② 加载权重</text>
+  <text x="370" y="506" text-anchor="middle" font-size="10" fill="#868e96">load_model()</text>
+  <text x="480" y="490" text-anchor="middle" font-size="12" fill="#212529">③ 分配 KV 池</text>
+  <text x="480" y="506" text-anchor="middle" font-size="10" fill="#868e96">alloc_memory_pool()</text>
+  <text x="590" y="490" text-anchor="middle" font-size="12" fill="#212529">④ attn backend</text>
+  <text x="590" y="506" text-anchor="middle" font-size="10" fill="#868e96">init_attention_backend</text>
+  <text x="700" y="490" text-anchor="middle" font-size="12" fill="#212529">⑤ 捕获 graph</text>
+  <text x="700" y="506" text-anchor="middle" font-size="10" fill="#868e96">init_cuda_graphs()</text>
+
+  <!-- note strip -->
+  <rect x="40" y="528" width="820" height="54" rx="6" fill="#fff9db" stroke="#f08c00"/>
+  <text x="450" y="550" text-anchor="middle" font-size="12" fill="#495057">KV 在 graph 之前分配：③ 只能按 available − slack 预先切走，graph 和运行期峰值都必须落在 slack 里</text>
+  <text x="450" y="570" text-anchor="middle" font-size="12" fill="#495057">post-capture 模式：③ 只预留 VA，⑤ 之后实测 free − headroom，再提交 KV 的物理页</text>
+</svg>

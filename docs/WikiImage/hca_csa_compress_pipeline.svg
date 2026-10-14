@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 620" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="620" rx="12" fill="#ffffff"/>
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#868e96"/>
+    </marker>
+  </defs>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">压缩 KV 怎么一步步产生：state ring → 压缩 kernel → 压缩 KV 池</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">decode 时每个 token 都写 ring，凑满 m 个才产出一条压缩 KV；没凑满的尾巴只靠 SWA 看见</text>
+  <rect x="24" y="76" width="400" height="62" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="40" y="98" font-size="13" font-weight="700" fill="#495057">① 新 token 的 hidden x_t</text>
+  <text x="40" y="118" font-size="11.5" fill="#495057">wkv_gate（BF16 GEMM，FP32 输出）→ 每通道一组 (C, Z)</text>
+  <path d="M224 142 L224 160" fill="none" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <rect x="24" y="164" width="400" height="170" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="40" y="186" font-size="13" font-weight="700" fill="#5f3dc4">② 写入 compress state ring（FP32）</text>
+  <text x="40" y="208" font-size="11.5" font-weight="700" fill="#495057">CSA</text>
+  <rect x="80" y="194" width="26" height="22" rx="3" fill="#e5dbff" stroke="#7048e8"/>
+  <rect x="110" y="194" width="26" height="22" rx="3" fill="#e5dbff" stroke="#7048e8"/>
+  <rect x="140" y="194" width="26" height="22" rx="3" fill="#e5dbff" stroke="#7048e8"/>
+  <rect x="170" y="194" width="26" height="22" rx="3" fill="#e5dbff" stroke="#7048e8"/>
+  <rect x="200" y="194" width="26" height="22" rx="3" fill="#e5dbff" stroke="#7048e8"/>
+  <rect x="230" y="194" width="26" height="22" rx="3" fill="#e5dbff" stroke="#7048e8"/>
+  <rect x="260" y="194" width="26" height="22" rx="3" fill="#ffffff" stroke="#7048e8"/>
+  <rect x="290" y="194" width="26" height="22" rx="3" fill="#ffffff" stroke="#7048e8"/>
+  <text x="330" y="210" font-size="11" fill="#868e96">8 槽 = 2m</text>
+  <text x="40" y="236" font-size="11" fill="#495057">每槽 [Cᵇ|Cᵃ|Zᵇ|Zᵃ] = 4×512 FP32 = 8 KB；按 SWA page 挂载</text>
+  <text x="40" y="270" font-size="11.5" font-weight="700" fill="#495057">HCA</text>
+  <rect x="80" y="256" width="12" height="22" rx="2" fill="#e5dbff" stroke="#7048e8"/>
+  <rect x="95" y="256" width="12" height="22" rx="2" fill="#e5dbff" stroke="#7048e8"/>
+  <rect x="110" y="256" width="12" height="22" rx="2" fill="#e5dbff" stroke="#7048e8"/>
+  <rect x="125" y="256" width="12" height="22" rx="2" fill="#e5dbff" stroke="#7048e8"/>
+  <rect x="140" y="256" width="12" height="22" rx="2" fill="#e5dbff" stroke="#7048e8"/>
+  <rect x="155" y="256" width="12" height="22" rx="2" fill="#e5dbff" stroke="#7048e8"/>
+  <rect x="170" y="256" width="12" height="22" rx="2" fill="#e5dbff" stroke="#7048e8"/>
+  <rect x="185" y="256" width="12" height="22" rx="2" fill="#e5dbff" stroke="#7048e8"/>
+  <rect x="200" y="256" width="12" height="22" rx="2" fill="#e5dbff" stroke="#7048e8"/>
+  <rect x="215" y="256" width="12" height="22" rx="2" fill="#e5dbff" stroke="#7048e8"/>
+  <rect x="230" y="256" width="12" height="22" rx="2" fill="#e5dbff" stroke="#7048e8"/>
+  <rect x="245" y="256" width="12" height="22" rx="2" fill="#e5dbff" stroke="#7048e8"/>
+  <rect x="260" y="256" width="12" height="22" rx="2" fill="#e5dbff" stroke="#7048e8"/>
+  <rect x="275" y="256" width="12" height="22" rx="2" fill="#e5dbff" stroke="#7048e8"/>
+  <rect x="290" y="256" width="12" height="22" rx="2" fill="#e5dbff" stroke="#7048e8"/>
+  <rect x="305" y="256" width="12" height="22" rx="2" fill="#e5dbff" stroke="#7048e8"/>
+  <text x="322" y="272" font-size="11" fill="#868e96">… 128 槽 = m</text>
+  <text x="40" y="298" font-size="11" fill="#495057">每槽 [C|Z] = 2×512 FP32 = 4 KB；按请求预留</text>
+  <text x="40" y="320" font-size="11" fill="#868e96">indexer 另有一份 c4 ring：4×128 FP32 = 2 KB/槽</text>
+  <path d="M224 338 L224 356" fill="none" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <text x="236" y="352" font-size="11" fill="#e8590c">seq_len % m == 0 时触发</text>
+  <rect x="24" y="360" width="400" height="82" rx="8" fill="#fff9db" stroke="#f08c00"/>
+  <text x="40" y="382" font-size="13" font-weight="700" fill="#e8590c">③ flash_c4 / flash_c128 压缩 kernel</text>
+  <text x="40" y="402" font-size="11.5" fill="#495057">读 ring 的 2m（CSA）或 m（HCA）个槽：Z + ape → softmax</text>
+  <text x="40" y="420" font-size="11.5" fill="#495057">Σ S⊙C → RMSNorm → RoPE（indexer 那份再做 Hadamard）</text>
+  <path d="M224 446 L224 464" fill="none" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <rect x="24" y="468" width="400" height="62" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="40" y="490" font-size="13" font-weight="700" fill="#0b7285">④ 写入压缩 KV 池（FP8，584 B/条）</text>
+  <text x="40" y="510" font-size="11.5" fill="#495057">位置 = raw_out_loc // m；之后 attention 按页索引读取</text>
+  <rect x="444" y="76" width="432" height="454" rx="10" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="464" y="102" font-size="13.5" font-weight="700" fill="#212529">每层各池子的单位成本</text>
+  <text x="464" y="120" font-size="11" fill="#868e96">折算到「每个历史 token」；n = 上下文长度</text>
+  <text x="464" y="146" font-size="11" font-weight="700" fill="#868e96">池</text>
+  <text x="640" y="146" font-size="11" font-weight="700" fill="#868e96">条目</text>
+  <text x="760" y="146" font-size="11" font-weight="700" fill="#868e96">≈ B / token</text>
+  <path d="M464 154 L856 154" stroke="#dee2e6" stroke-width="1"/>
+  <rect x="464" y="165" width="10" height="10" rx="2" fill="#ffffff" stroke="#4c6ef5"/>
+  <text x="482" y="174" font-size="11.5" font-weight="700" fill="#3b5bdb">SWA 原始 KV（所有层）</text>
+  <text x="640" y="174" font-size="11" font-family="monospace" fill="#495057">584 B × 窗口</text>
+  <text x="760" y="174" font-size="11" font-family="monospace" fill="#495057">只留近 128</text>
+  <rect x="464" y="195" width="10" height="10" rx="2" fill="#ffffff" stroke="#0ca678"/>
+  <text x="482" y="204" font-size="11.5" font-weight="700" fill="#0b7285">CSA 压缩 KV</text>
+  <text x="640" y="204" font-size="11" font-family="monospace" fill="#495057">584 B × n/4</text>
+  <text x="760" y="204" font-size="11" font-family="monospace" fill="#495057">146</text>
+  <rect x="464" y="225" width="10" height="10" rx="2" fill="#ffffff" stroke="#0ca678"/>
+  <text x="482" y="234" font-size="11.5" font-weight="700" fill="#0b7285">HCA 压缩 KV</text>
+  <text x="640" y="234" font-size="11" font-family="monospace" fill="#495057">584 B × n/128</text>
+  <text x="760" y="234" font-size="11" font-family="monospace" fill="#495057">4.6</text>
+  <rect x="464" y="255" width="10" height="10" rx="2" fill="#ffffff" stroke="#7048e8"/>
+  <text x="482" y="264" font-size="11.5" font-weight="700" fill="#5f3dc4">CSA indexer K</text>
+  <text x="640" y="264" font-size="11" font-family="monospace" fill="#495057">132 B × n/4</text>
+  <text x="760" y="264" font-size="11" font-family="monospace" fill="#495057">33</text>
+  <rect x="464" y="285" width="10" height="10" rx="2" fill="#ffffff" stroke="#f08c00"/>
+  <text x="482" y="294" font-size="11.5" font-weight="700" fill="#e8590c">CSA state ring</text>
+  <text x="640" y="294" font-size="11" font-family="monospace" fill="#495057">8 KB × 8 / SWA 页</text>
+  <text x="760" y="294" font-size="11" font-family="monospace" fill="#495057">随 SWA 走</text>
+  <rect x="464" y="315" width="10" height="10" rx="2" fill="#ffffff" stroke="#f08c00"/>
+  <text x="482" y="324" font-size="11.5" font-weight="700" fill="#e8590c">HCA state ring</text>
+  <text x="640" y="324" font-size="11" font-family="monospace" fill="#495057">4 KB × 128 / 请求</text>
+  <text x="760" y="324" font-size="11" font-family="monospace" fill="#495057">随请求数走</text>
+  <path d="M464 348 L856 348" stroke="#dee2e6" stroke-width="1"/>
+  <text x="464" y="372" font-size="11.5" font-weight="700" fill="#495057">584 B 怎么来</text>
+  <text x="464" y="392" font-size="11" font-family="monospace" fill="#495057">448 FP8 nope + 64×2 BF16 rope</text>
+  <text x="464" y="410" font-size="11" font-family="monospace" fill="#495057">+ 7 个 FP8 scale + 1 pad</text>
+  <text x="464" y="436" font-size="11.5" font-weight="700" fill="#495057">132 B 怎么来</text>
+  <text x="464" y="456" font-size="11" font-family="monospace" fill="#495057">128 FP8 + 1 个 FP32 scale</text>
+  <text x="464" y="484" font-size="11" fill="#868e96">一条 HCA ring = 128 × 4 KB = 512 KB / 层 / 请求，</text>
+  <text x="464" y="502" font-size="11" fill="#868e96">比 1M 上下文的 HCA 压缩 KV（≈4.8 MB）小一个量级，</text>
+  <text x="464" y="520" font-size="11" fill="#868e96">但与 n 无关——短请求多时它反而是大头</text>
+  <rect x="24" y="546" width="852" height="58" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="44" y="570" font-size="12" fill="#495057">ring 存的是「还没压完的原料」：FP32、每槽比成品宽好几倍，但只保留最近 2m / m 个 token。</text>
+  <text x="44" y="590" font-size="12" fill="#495057">成品压缩 KV 才是随上下文线性增长的那部分：CSA ≈ 179 B/token/层（含 indexer），HCA ≈ 4.6 B/token/层。</text>
+</svg>

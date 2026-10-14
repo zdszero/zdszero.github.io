@@ -1,0 +1,404 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    Torch kernel 与编译执行
+  </title>
+    <link rel="stylesheet" href="./WikiTheme/theme/bootstrap.css"  />
+        <style type="text/css">
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+      <!-- wiki three-column layout styles/behavior, kept external so the ~5KB
+       block isn't duplicated into every generated page -->
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/wiki-layout.css" />
+  <script defer src="./WikiTheme/wiki-layout.js"></script>
+</head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">Torch kernel 与编译执行</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="wiki-layout">
+    <nav class="wiki-sidebar" id="wiki-sidebar" hidden></nav>
+    <main class="wiki-main">
+            <ul>
+            <li><code>torch.sigmoid(x * scale + bias)</code>
+            只有一行，为什么 profiler 里是三个
+            kernel、两个临时张量？</li>
+            <li>开了 <code>torch.compile</code> 首次请求慢得离谱，换个
+            batch size 又慢一次——编译不是“一次就好”吗？</li>
+            <li>CUDA Graph 和 <code>torch.compile</code> 都号称“加速
+            decode”，它们省的是同一样东西吗？</li>
+            </ul>
+            <p>这些问题的共同根源是：<strong>Python
+            代码描述的是计算的语义，GPU 实际执行的是另一回事。</strong>
+            同一条 Torch 表达式，在不同设备、dtype、shape、stride
+            或编译状态下，可能走不同执行路径。阅读推理代码时，API
+            告诉我们算什么；判断性能还需要观察实际 kernel、临时数据与
+            CPU 提交成本。</p>
+            <h3
+            id="抽象语义分派kernel-三层以及三类成本">抽象：语义、分派、kernel
+            三层，以及三类成本</h3>
+            <p>把一次调用拆成三层来看：</p>
+            <ul>
+            <li><strong>语义层</strong>：<code>x * scale</code>、<code>F.scaled_dot_product_attention(...)</code>
+            规定结果是什么；</li>
+            <li><strong>分派层</strong>：Python 解释执行、dispatcher 按
+            device/dtype/layout 选算子实现、SDPA 这类接口再挑后端；</li>
+            <li><strong>kernel 层</strong>：真正提交给 GPU 的
+            kernel，以及它们读写显存的方式。</li>
+            </ul>
+            <p>性能损耗也相应地落在三处：<strong>中间结果在显存里来回搬</strong>（kernel
+            层）、<strong>Python 与逐算子分派的 CPU
+            开销</strong>（分派层）、<strong>每个 kernel
+            一次的提交开销</strong>（CPU→GPU
+            边界）。几种常见优化各自只砍其中一类——融合减少显存往返和
+            launch 次数，<code>torch.compile</code> 让 Python 侧只剩
+            guard 检查，CUDA Graph 把整段提交压缩成一次
+            replay，后端选择则换掉 kernel 本身的算法。</p>
+            <figure>
+            <img src="./WikiImage/torch_kernel_compile_costs.svg"
+            alt="三种优化各砍一类成本" />
+            <figcaption
+            aria-hidden="true">三种优化各砍一类成本</figcaption>
+            </figure>
+            <p>这张图的意义在于给出判据：先确认瓶颈落在哪一类成本上，再选对应手段。对一个
+            GPU 已经满载的长 matmul 开 CUDA
+            Graph，几乎不会有收益；对一串 CPU 提交跟不上的小 kernel 换
+            attention 后端，也解决不了问题。</p>
+            <h3 id="表达式算子和-kernel-不是一一对应">表达式、算子和
+            kernel 不是一一对应</h3>
+            <div class="sourceCode" id="cb1"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> pointwise(x, scale, bias):</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> torch.sigmoid(x <span class="op">*</span> scale <span class="op">+</span> bias)</span></code></pre></div>
+            <p>在普通 eager
+            执行中，这段代码通常由多个算子完成，产生中间结果，并分别提交工作。编译器在条件允许时可以融合逐元素计算，减少中间结果写入与
+            kernel launch。</p>
+            <figure>
+            <img src="./WikiImage/torch_kernel_compile_fusion.svg"
+            alt="融合省下的是显存往返" />
+            <figcaption
+            aria-hidden="true">融合省下的是显存往返</figcaption>
+            </figure>
+            <p>关键在于：<strong>逐元素链的乘加次数在融合前后一样，省下的是
+            <code>t1</code>、<code>t2</code>
+            写回显存再读出的流量。</strong>
+            这类计算通常受带宽限制，所以减少 HBM
+            往返就是主要收益；matmul、attention
+            这类计算密集算子则主要取决于后端 kernel 本身。</p>
+            <p>反过来，一个高层算子也可能调用多个
+            kernel，或者为了适配布局先复制再计算；<code>view()</code>
+            等元数据操作甚至可能没有计算 kernel。不要用 Python
+            代码行数估计 GPU 工作量。编译过程见 <a
+            href="https://docs.pytorch.org/docs/stable/user_guide/torch_compiler/compile/programming_model.dynamo_core_concepts.html">Dynamo
+            Core Concepts</a>。</p>
+            <p>性能问题可以按证据区分为：</p>
+            <table>
+            <colgroup>
+            <col style="width: 50%" />
+            <col style="width: 50%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>现象</th>
+            <th>应优先检查</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>GPU kernel 之间有明显空隙</td>
+            <td>CPU 调度、提交开销、同步等待</td>
+            </tr>
+            <tr>
+            <td>大量短逐元素 kernel 和临时张量</td>
+            <td>融合机会、重复类型转换与复制</td>
+            </tr>
+            <tr>
+            <td>长时间 matmul 或 attention kernel</td>
+            <td>shape、dtype、后端、计算与带宽效率</td>
+            </tr>
+            <tr>
+            <td>特定 batch/长度突然变慢</td>
+            <td>后端切换、重编译、padding 与 workspace</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>具体瓶颈应由 profiler 和对照测量确认，不能一概把 decode
+            归为某一种瓶颈。</p>
+            <h3
+            id="sdpa统一接口后面有多个后端">SDPA：统一接口后面有多个后端</h3>
+            <p><code>scaled_dot_product_attention()</code>
+            可根据输入和环境选择 FlashAttention、memory-efficient
+            attention 或 math 等实现。可用性取决于设备、dtype、head
+            dimension、mask、布局及版本；同一 API
+            不保证每次走同一后端。这是“分派层”最典型的例子：语义不变，算法换了。</p>
+            <p>排查时可以用 <code>sdpa_kernel()</code>
+            限定后端，确认目标路径是否可用：</p>
+            <div class="sourceCode" id="cb2"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch.nn.attention <span class="im">import</span> SDPBackend, sdpa_kernel</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn.functional <span class="im">as</span> F</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># q、k、v 由调用方提供；若不满足后端约束，可能告警或报错</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> sdpa_kernel(backends<span class="op">=</span>[SDPBackend.FLASH_ATTENTION]):</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    out <span class="op">=</span> F.scaled_dot_product_attention(q, k, v, dropout_p<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div>
+            <p>限定后端适合诊断和可控场景，不应跳过数值、shape
+            范围和性能验证就全局强制。支持的后端与输入约束见 <a
+            href="https://docs.pytorch.org/docs/stable/generated/torch.nn.functional.scaled_dot_product_attention">SDPA
+            官方文档</a>。</p>
+            <p>接口语义也需要核对：SDPA 布尔 <code>attn_mask</code> 中
+            <code>True</code> 表示允许参与 attention，而
+            <code>MultiheadAttention.key_padding_mask</code> 中
+            <code>True</code> 表示忽略该位置。对于 cache decode，query
+            和 key 长度不等时，还需要确认 <code>is_causal</code>
+            的对齐方式；不能把任意非方阵场景都当成所需的“右下角对齐”因果
+            mask。该接口默认非方阵 causal bias 为左上对齐，构造 mask
+            时要匹配真实位置关系。细节同见上述文档。</p>
+            <p>SGLang 的
+            <code>layers/attention/torch_native_backend.py</code>（<code>TorchNativeAttnBackend</code>，直接调用
+            SDPA 的后端）给出了两种处理：decode 路径每个请求只有一个新
+            query，它本来就能看到全部历史 KV，所以默认
+            <code>causal=False</code>；extend
+            路径（<code>_run_sdpa_forward_extend</code>）则对每个请求先
+            <code>torch.empty</code> 出长度等于 KV 长度的 query
+            缓冲区，把真实 query 写到 <code>[prefix_len:]</code>
+            位置，再以方阵调用 SDPA 并设置
+            <code>is_causal</code>，这样左上对齐与真实位置就一致了；代价是前缀位置的冗余计算。它同时用
+            <code>k_cache[per_req_tokens]</code> 逐请求 gather
+            K/V——高级索引读取会产生副本（见 <a
+            href="./torch_broadcast_indexing.html">广播与索引</a>），加上按请求的
+            Python 循环，源码注释自己也写着 “Need optimize the
+            performance
+            later”——它适合做对照与兜底，而不是高性能路径。</p>
+            <h3
+            id="torch.compile捕获guard-与重编译">torch.compile：捕获、guard
+            与重编译</h3>
+            <p><code>torch.compile()</code>
+            尝试捕获可编译的计算图，再由后端生成优化实现。它不是把任意
+            Python forward 永久编译成一个固定
+            kernel，更准确的心智模型是：<strong>一个按 guard
+            索引的编译产物缓存。</strong></p>
+            <figure>
+            <img src="./WikiImage/torch_kernel_compile_guards.svg"
+            alt="torch.compile 的 guard 与重编译" />
+            <figcaption aria-hidden="true">torch.compile 的 guard
+            与重编译</figcaption>
+            </figure>
+            <ul>
+            <li><strong>graph
+            break</strong>：遇到不能捕获的代码时，默认可回到 Python
+            执行，再继续捕获下一段图，跨段优化受限。</li>
+            <li><strong>guard</strong>：已编译结果带有适用条件，可能包括输入
+            shape、stride、dtype、device 和部分 Python 状态。</li>
+            <li><strong>recompile</strong>：条件不满足时，可能重新编译一个适用版本；动态形状能减少部分
+            shape 变化引起的重编译，但不能解决所有 guard
+            变化。超过缓存上限后会回退到 eager。</li>
+            </ul>
+            <p>数据依赖的 Python
+            分支、主机标量读取和自定义函数调用，是值得优先排查的区域；具体支持能力随版本演进。见
+            <a
+            href="https://docs.pytorch.org/docs/stable/generated/torch.compile">torch.compile</a>、<a
+            href="https://docs.pytorch.org/docs/stable/user_guide/torch_compiler/torch.compiler_dynamic_shapes.html">Dynamic
+            Shapes</a> 和 <a
+            href="https://docs.pytorch.org/docs/main/user_guide/torch_compiler/compile/programming_model.recompilation.html">重编译排查</a>。</p>
+            <p>在请求 batch、prefill 长度和 decode token
+            数不断变化的服务中，必须统计整个输入分布，而不只测一个固定
+            shape。可用
+            <code>TORCH_LOGS="graph_breaks,recompiles"</code>
+            辅助定位断图与重复编译。</p>
+            <h3 id="cuda-graph重放命令与计算融合分别理解">CUDA
+            Graph：重放命令，与计算融合分别理解</h3>
+            <p>CUDA Graph 将一段 GPU 工作捕获后重复提交，主要减少 CPU
+            提交开销。它本身不自动把多个 kernel 融合成一个；编译器融合与
+            graph replay 可以互相配合——前者改变“有哪些
+            kernel”，后者改变“怎么把它们交给 GPU”。</p>
+            <p>手工捕获的图通常要求重放时使用稳定的地址和适用的形状。典型模式是先分配固定缓冲区，每次把新内容写入缓冲区，再
+            replay；不能只把 Python
+            变量重新绑定到另一个张量，就认为图会读取新地址。</p>
+            <p>不同输入规模可以通过分桶和 padding
+            适配，但需要屏蔽无效位置，并计入额外计算与常驻显存。多份图、私有内存池和静态缓冲区也可能提高占用。更详细的捕获与重放原理见
+            <a href="./cuda_graph.html">Cuda Graph</a> 和 <a
+            href="https://docs.pytorch.org/docs/stable/notes/cuda#cuda-graphs">PyTorch
+            CUDA Graphs</a>。</p>
+            <h3 id="compile-产物被装进-cuda-graph">compile 产物被装进
+            CUDA Graph</h3>
+            <p>SGLang 的 decode
+            路径把上面几层叠在一起，读代码时可以对照三类成本（基于
+            <code>python/sglang/srt/</code> 当前代码）：</p>
+            <ul>
+            <li><strong>分桶捕获。</strong>
+            <code>model_executor/runner/base_cuda_graph_runner.py</code>
+            的 <code>get_batch_sizes_to_capture()</code> 算出要捕获的
+            batch size 列表 <code>capture_bs</code>；运行时
+            <code>_pad_to_bucket()</code> 用 <code>bisect_left</code>
+            把真实 batch 向上补到最近的桶，超过最大桶的 batch 由
+            <code>can_run_graph()</code> 拒绝、回退非 graph 路径。</li>
+            <li><strong>静态缓冲区 + <code>copy_</code>。</strong>
+            <code>DecodeCudaGraphRunner</code>（<code>model_executor/runner/decode_cuda_graph_runner.py</code>）replay
+            前执行
+            <code>self.buffers.input_ids[: self.raw_num_token].copy_(forward_batch.input_ids)</code>、<code>positions</code>
+            同理——正是“写入固定地址，而不是换绑变量”。</li>
+            <li><strong>compile 是可选的一层。</strong>
+            <code>--enable-torch-compile</code>（<code>server_args.py</code>，标注为实验特性，默认关闭）打开后，只对不超过
+            <code>--torch-compile-max-bs</code>（默认 32）的桶编译，即
+            <code>compile_bs</code>。<code>capture()</code> 对每个桶进入
+            <code>compilation/torch_compile_decoration.py</code> 的
+            <code>patch_model()</code>：命中 <code>compile_bs</code>
+            时返回
+            <code>torch.compile(torch.no_grad()(model.forward), mode=..., dynamic=...)</code>，否则返回原
+            <code>model.forward</code>，然后再交给 CUDA Graph
+            捕获。</li>
+            <li><strong>静态 shape、放宽缓存。</strong> CUDA 上
+            <code>dynamic</code> 为 False（只有 HIP 且设置
+            <code>SGLANG_TORCH_DYNAMIC_SHAPE</code>
+            时为动态），每个桶各编译一份；<code>set_torch_compile_config()</code>
+            因此把 dynamo 的 <code>cache_size_limit</code> 调到
+            1024，避免桶多时触发上限回退。默认 <code>mode</code> 是
+            <code>max-autotune-no-cudagraphs</code>（可由
+            <code>SGLANG_TORCH_COMPILE_MODE</code> 覆盖），即不让
+            Inductor 自己再套 CUDA Graph，graph 统一由 runner
+            捕获。</li>
+            </ul>
+            <p>所以开启 compile 后启动变慢、显存占用变化，是“桶数 × 编译
+            + 捕获”的一次性成本；稳定运行时，每步 decode
+            只剩拷入输入和一次 replay。</p>
+            <h3
+            id="验证顺序正确性冷启动稳定运行">验证顺序：正确性、冷启动、稳定运行</h3>
+            <ol type="1">
+            <li>固定输入，比较 eager 与优化路径的数值输出、mask 和 KV
+            cache 更新。</li>
+            <li>分别记录编译、预热和 capture
+            成本，避免混入稳定吞吐。</li>
+            <li>覆盖真实 batch、序列长度、dtype
+            与布局范围，观察断图和重编译。</li>
+            <li>使用 profiler 检查实际 kernel
+            数量、复制和同步；计时方式见 <a
+            href="./torch_cuda_execution.html">CUDA 异步执行</a>。</li>
+            <li>同时记录延迟、吞吐和峰值显存，判断收益是否适合实际服务。</li>
+            </ol>
+            <h3 id="小结">小结</h3>
+            <p>Python 表达式只规定语义；实际成本由分派路径和最终 kernel
+            决定。把损耗拆成“显存往返、Python/分派开销、kernel
+            提交开销、算法本身”四类，就能对上手段：融合减少中间数据与部分提交，<code>torch.compile</code>
+            用 guard 缓存换掉 Python 解释，CUDA Graph
+            减少重复提交，后端选择改变算法路径。它们解决的问题不同、可以叠加（SGLang
+            decode 正是 compile 产物装进 CUDA
+            Graph），收益也需要分别验证：图捕获了什么、后端执行了什么、数据如何流动。</p>
+          </main>
+        <aside class="wiki-toc">
+      <ul>
+      <li><a href="#抽象语义分派kernel-三层以及三类成本"
+      id="toc-抽象语义分派kernel-三层以及三类成本">抽象：语义、分派、kernel
+      三层，以及三类成本</a></li>
+      <li><a href="#表达式算子和-kernel-不是一一对应"
+      id="toc-表达式算子和-kernel-不是一一对应">表达式、算子和 kernel
+      不是一一对应</a></li>
+      <li><a href="#sdpa统一接口后面有多个后端"
+      id="toc-sdpa统一接口后面有多个后端">SDPA：统一接口后面有多个后端</a></li>
+      <li><a href="#torch.compile捕获guard-与重编译"
+      id="toc-torch.compile捕获guard-与重编译">torch.compile：捕获、guard
+      与重编译</a></li>
+      <li><a href="#cuda-graph重放命令与计算融合分别理解"
+      id="toc-cuda-graph重放命令与计算融合分别理解">CUDA
+      Graph：重放命令，与计算融合分别理解</a></li>
+      <li><a href="#compile-产物被装进-cuda-graph"
+      id="toc-compile-产物被装进-cuda-graph">compile 产物被装进 CUDA
+      Graph</a></li>
+      <li><a href="#验证顺序正确性冷启动稳定运行"
+      id="toc-验证顺序正确性冷启动稳定运行">验证顺序：正确性、冷启动、稳定运行</a></li>
+      <li><a href="#小结" id="toc-小结">小结</a></li>
+      </ul>
+    </aside>
+      </div>
+</body>
+
+</html>

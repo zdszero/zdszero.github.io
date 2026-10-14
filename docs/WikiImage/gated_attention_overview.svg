@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 450" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="450" rx="12" fill="#ffffff"/>
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#868e96"/>
+    </marker>
+    <marker id="arA" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#f08c00"/>
+    </marker>
+  </defs>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">Gated Attention：在注意力输出上加一个“音量旋钮”</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">主路径不变；多出的门控支路只读当前 token 的 hidden state</text>
+
+  <!-- main lane -->
+  <rect x="30" y="130" width="100" height="60" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="80" y="156" text-anchor="middle" font-size="14" font-weight="700" fill="#495057">X</text>
+  <text x="80" y="176" text-anchor="middle" font-size="11" fill="#868e96" font-family="monospace">[T, d]</text>
+
+  <rect x="170" y="130" width="130" height="60" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="235" y="156" text-anchor="middle" font-size="13" font-weight="700" fill="#495057">Q / K / V 投影</text>
+  <text x="235" y="176" text-anchor="middle" font-size="11" fill="#868e96" font-family="monospace">W_Q, W_K, W_V</text>
+
+  <rect x="340" y="120" width="170" height="80" rx="10" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="425" y="144" text-anchor="middle" font-size="14" font-weight="700" fill="#3b5bdb">SDPA</text>
+  <text x="425" y="164" text-anchor="middle" font-size="11" fill="#495057" font-family="monospace">softmax(QKᵀ/√d)·V</text>
+  <text x="425" y="184" text-anchor="middle" font-size="11" fill="#868e96">行和 = 1 → V 的凸组合</text>
+
+  <circle cx="565" cy="160" r="18" fill="#fff9db" stroke="#f08c00" stroke-width="1.5"/>
+  <text x="565" y="166" text-anchor="middle" font-size="18" font-weight="700" fill="#e8590c">⊙</text>
+  <text x="565" y="112" text-anchor="middle" font-size="11.5" font-weight="700" fill="#e8590c">SDPA 之后、o_proj 之前</text>
+
+  <rect x="620" y="130" width="110" height="60" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="675" y="156" text-anchor="middle" font-size="13" font-weight="700" fill="#495057">o_proj</text>
+  <text x="675" y="176" text-anchor="middle" font-size="11" fill="#868e96" font-family="monospace">W_O</text>
+
+  <rect x="770" y="130" width="100" height="60" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="820" y="156" text-anchor="middle" font-size="13" font-weight="700" fill="#495057">+ residual</text>
+  <text x="820" y="176" text-anchor="middle" font-size="11" fill="#868e96">写回残差流</text>
+
+  <g stroke="#868e96" stroke-width="2" fill="none">
+    <path d="M130 160 H166" marker-end="url(#ar)"/>
+    <path d="M300 160 H336" marker-end="url(#ar)"/>
+    <path d="M510 160 H543" marker-end="url(#ar)"/>
+    <path d="M583 160 H616" marker-end="url(#ar)"/>
+    <path d="M730 160 H766" marker-end="url(#ar)"/>
+  </g>
+  <!-- KV cache -->
+  <rect x="340" y="226" width="170" height="44" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="425" y="244" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0b7285">KV cache</text>
+  <text x="425" y="261" text-anchor="middle" font-size="11" fill="#495057">只存 K / V，历史 token</text>
+  <g stroke="#868e96" stroke-width="2" fill="none">
+    <path d="M235 190 V248 H336" marker-end="url(#ar)"/>
+    <path d="M425 226 V204" marker-end="url(#ar)"/>
+  </g>
+
+  <!-- gate lane -->
+  <rect x="340" y="306" width="170" height="50" rx="8" fill="#fff4e6" stroke="#f08c00"/>
+  <text x="425" y="326" text-anchor="middle" font-size="13" font-weight="700" fill="#e8590c">门控投影 W_g</text>
+  <text x="425" y="345" text-anchor="middle" font-size="11" fill="#495057" font-family="monospace">g = X·W_g</text>
+  <circle cx="565" cy="331" r="18" fill="#fff9db" stroke="#f08c00" stroke-width="1.5"/>
+  <text x="565" y="336" text-anchor="middle" font-size="15" font-weight="700" fill="#e8590c">σ</text>
+  <g stroke="#f08c00" stroke-width="2" fill="none">
+    <path d="M80 190 V331 H336" marker-end="url(#arA)"/>
+    <path d="M510 331 H543" marker-end="url(#arA)"/>
+    <path d="M565 313 V182" marker-end="url(#arA)"/>
+  </g>
+  <text x="200" y="322" text-anchor="middle" font-size="11" fill="#e8590c">当前 token 的 x</text>
+  <text x="598" y="300" font-size="11.5" fill="#495057">gate ∈ (0, 1)</text>
+  <text x="598" y="318" font-size="11.5" fill="#495057" font-family="monospace">[T, H] 或 [T, H·d_v]</text>
+  <text x="598" y="336" font-size="11.5" fill="#495057">只依赖当前 token：</text>
+  <text x="598" y="354" font-size="11.5" fill="#495057">不读历史，也不进 KV cache</text>
+
+  <!-- note -->
+  <rect x="30" y="384" width="840" height="48" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="450" y="404" text-anchor="middle" font-size="12" fill="#495057">softmax 只决定“看谁”，门控决定“说多少”：σ → 0 时 head 可以近乎静音，</text>
+  <text x="450" y="422" text-anchor="middle" font-size="12" fill="#495057">不必把概率堆到某个 sink token 上；同时 W_V 与 W_O 之间多了一个非线性</text>
+</svg>

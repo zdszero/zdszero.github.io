@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 500" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="500" rx="12" fill="#ffffff"/>
+  <defs>
+    <marker id="arb" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#4c6ef5"/></marker>
+    <marker id="art" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#0ca678"/></marker>
+    <marker id="ara" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#f08c00"/></marker>
+    <marker id="arg" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#7048e8"/></marker>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#868e96"/></marker>
+  </defs>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">PP rank 之间的四条通道：两条单向链 + 两条环</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">例：PP=4。每个 rank 是一份独立的调度器进程，彼此只通过相邻 P2P 交换数据</text>
+
+  <!-- tokenizer -->
+  <rect x="40" y="74" width="150" height="34" rx="8" fill="#f8f9fa" stroke="#adb5bd"/>
+  <text x="115" y="96" text-anchor="middle" font-size="12.5" font-weight="600" fill="#495057">TokenizerManager</text>
+  <path d="M115 108 L115 128" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+
+  <!-- rank boxes -->
+  <g>
+    <rect x="40" y="132" width="150" height="150" rx="10" fill="#f8f9fa" stroke="#adb5bd"/>
+    <rect x="250" y="132" width="150" height="150" rx="10" fill="#f8f9fa" stroke="#adb5bd"/>
+    <rect x="460" y="132" width="150" height="150" rx="10" fill="#f8f9fa" stroke="#adb5bd"/>
+    <rect x="670" y="132" width="150" height="150" rx="10" fill="#f8f9fa" stroke="#adb5bd"/>
+  </g>
+  <g font-size="14" font-weight="700" fill="#212529" text-anchor="middle">
+    <text x="115" y="154">PP0</text><text x="325" y="154">PP1</text><text x="535" y="154">PP2</text><text x="745" y="154">PP3（last）</text>
+  </g>
+  <g font-size="11" fill="#868e96" text-anchor="middle">
+    <text x="115" y="170">层 0–15 · 唯一入口</text><text x="325" y="170">层 16–31</text><text x="535" y="170">层 32–47</text><text x="745" y="170">层 48–63 · 采样</text>
+  </g>
+  <g font-size="11" fill="#495057" text-anchor="middle">
+    <text x="115" y="226">waiting_queue</text><text x="115" y="242">radix cache</text><text x="115" y="258">KV pool · req 对象</text>
+    <text x="325" y="226">waiting_queue</text><text x="325" y="242">radix cache</text><text x="325" y="258">KV pool · req 对象</text>
+    <text x="535" y="226">waiting_queue</text><text x="535" y="242">radix cache</text><text x="535" y="258">KV pool · req 对象</text>
+    <text x="745" y="226">waiting_queue</text><text x="745" y="242">radix cache</text><text x="745" y="258">KV pool · req 对象</text>
+  </g>
+  <g font-size="10.5" fill="#868e96" text-anchor="middle">
+    <text x="115" y="206">本地副本：</text><text x="325" y="206">本地副本：</text><text x="535" y="206">本地副本：</text><text x="745" y="206">本地副本：</text>
+  </g>
+  <!-- LANES: forward chain (meta, hidden states) -->
+  <g stroke-width="2" fill="none">
+    <path d="M192 192 L246 192" stroke="#4c6ef5" marker-end="url(#arb)"/>
+    <path d="M402 192 L456 192" stroke="#4c6ef5" marker-end="url(#arb)"/>
+    <path d="M612 192 L666 192" stroke="#4c6ef5" marker-end="url(#arb)"/>
+    <path d="M192 214 L246 214" stroke="#0ca678" marker-end="url(#art)"/>
+    <path d="M402 214 L456 214" stroke="#0ca678" marker-end="url(#art)"/>
+    <path d="M612 214 L666 214" stroke="#0ca678" marker-end="url(#art)"/>
+    <path d="M192 240 L246 240" stroke="#f08c00" marker-end="url(#ara)"/>
+    <path d="M402 240 L456 240" stroke="#f08c00" marker-end="url(#ara)"/>
+    <path d="M612 240 L666 240" stroke="#f08c00" marker-end="url(#ara)"/>
+    <path d="M192 264 L246 264" stroke="#7048e8" stroke-dasharray="5 3" marker-end="url(#arg)"/>
+    <path d="M402 264 L456 264" stroke="#7048e8" stroke-dasharray="5 3" marker-end="url(#arg)"/>
+    <path d="M612 264 L666 264" stroke="#7048e8" stroke-dasharray="5 3" marker-end="url(#arg)"/>
+    <!-- ring closing edges: last -> first -->
+    <path d="M780 282 L780 314 L90 314 L90 286" stroke="#f08c00" marker-end="url(#ara)"/>
+    <path d="M800 282 L800 336 L70 336 L70 286" stroke="#7048e8" stroke-dasharray="5 3" marker-end="url(#arg)"/>
+  </g>
+  <text x="435" y="308" text-anchor="middle" font-size="11.5" font-weight="600" fill="#e8590c">outputs 环：PP3 采样结果 → PP0 → PP1 → PP2 → PP3</text>
+  <text x="435" y="352" text-anchor="middle" font-size="11.5" font-weight="600" fill="#5f3dc4">consensus 第二遍：PP3 得到的共识 → PP0 → … → PP3</text>
+
+  <!-- legend -->
+  <g font-size="12">
+    <rect x="40" y="370" width="14" height="10" rx="2" fill="#4c6ef5"/>
+    <text x="62" y="380" fill="#3b5bdb" font-weight="700">meta</text>
+    <text x="140" y="380" fill="#495057">recv_reqs 列表（新请求、AbortReq 等控制消息）· pickled pyobj · CPU 组 · 单向链</text>
+    <rect x="40" y="392" width="14" height="10" rx="2" fill="#0ca678"/>
+    <text x="62" y="402" fill="#0b7285" font-weight="700">hidden</text>
+    <text x="140" y="402" fill="#495057">PPProxyTensors（hidden_states / residual）· NCCL · 仅当本 mb 有 batch 才收发 · 单向链</text>
+    <rect x="40" y="414" width="14" height="10" rx="2" fill="#f08c00"/>
+    <text x="62" y="424" fill="#e8590c" font-weight="700">outputs</text>
+    <text x="140" y="424" fill="#495057">next_token_ids / logprobs / spec relay · NCCL · 末 rank 产出，走完整个环</text>
+    <rect x="40" y="436" width="14" height="10" rx="2" fill="#7048e8"/>
+    <text x="62" y="446" fill="#5f3dc4" font-weight="700">consensus</text>
+    <text x="140" y="446" fill="#495057">PD 下的 rid 集合（transferred / retract / prealloc）· pyobj · 两遍：正向求交，环回广播</text>
+  </g>
+
+  <!-- note strip -->
+  <rect x="40" y="460" width="820" height="30" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="450" y="480" text-anchor="middle" font-size="12" fill="#495057">关键：所有 rank 运行同一个调度状态机；只要输入在同一个 mb 槽位、以同样顺序到达，各 rank 的调度决策就自然一致</text>
+</svg>

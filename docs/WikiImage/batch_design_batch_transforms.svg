@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 400" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="400" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">从调度语义下沉到 GPU 执行语义</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">ScheduleBatch 直接构建 ForwardBatch——调度器不碰 kernel，执行器不碰排队</text>
+
+  <!-- Box A: ScheduleBatch -->
+  <rect x="50" y="108" width="340" height="210" rx="10" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="50" y="108" width="340" height="32" rx="10" fill="#4c6ef5"/>
+  <text x="66" y="130" font-size="14" font-weight="700" fill="#ffffff">ScheduleBatch</text>
+  <text x="66" y="162" font-size="11.5" fill="#3b5bdb">scheduler 侧 · 调度语义</text>
+  <text x="66" y="188" font-size="12" fill="#495057">持有：请求列表 Req[]</text>
+  <text x="66" y="208" font-size="12" fill="#495057">内存池引用 · 前缀缓存指针</text>
+  <text x="66" y="228" font-size="12" fill="#495057">forward_mode · 调度元信息</text>
+  <text x="66" y="256" font-size="12" fill="#3b5bdb" font-weight="700">能力（生命周期方法）</text>
+  <text x="66" y="276" font-size="11.5" fill="#495057" font-family="monospace">merge / filter / retract_decode</text>
+  <text x="66" y="296" font-size="11.5" fill="#495057" font-family="monospace">prepare_for_extend / _decode</text>
+
+  <!-- Box B: ForwardBatch -->
+  <rect x="510" y="108" width="340" height="210" rx="10" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="510" y="108" width="340" height="32" rx="10" fill="#0ca678"/>
+  <text x="526" y="130" font-size="14" font-weight="700" fill="#ffffff">ForwardBatch</text>
+  <text x="526" y="162" font-size="11.5" fill="#0b7285">model_runner 侧 · 执行语义</text>
+  <text x="526" y="188" font-size="12" fill="#495057">底层注意力输入张量</text>
+  <text x="526" y="208" font-size="12" fill="#495057">分页 KV 索引（page table）</text>
+  <text x="526" y="228" font-size="12" fill="#495057">attention backend 元数据</text>
+  <text x="526" y="248" font-size="12" fill="#495057">CUDA kernel 参数</text>
+  <text x="526" y="276" font-size="12" fill="#868e96">无请求生命周期方法</text>
+  <text x="526" y="296" font-size="11.5" fill="#868e96">——纯粹喂给 GPU 的数据</text>
+
+  <!-- arrow -->
+  <path d="M390 205 L508 205" stroke="#868e96" stroke-width="2.5" marker-end="url(#arGc)"/>
+  <text x="449" y="194" text-anchor="middle" font-size="11" font-weight="700" fill="#495057" font-family="monospace">init_new()</text>
+  <text x="449" y="226" text-anchor="middle" font-size="10" fill="#868e96">每次 forward</text>
+  <text x="449" y="240" text-anchor="middle" font-size="10" fill="#868e96">现场构建</text>
+
+  <!-- note -->
+  <rect x="50" y="334" width="800" height="48" rx="10" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="68" y="356" font-size="12" fill="#495057">这层解耦让两侧可以各自演化。注：早期 SGLang 在中间还有一层 <tspan font-family="monospace" fill="#868e96">ModelWorkerBatch</tspan>（纯 GPU 张量包），</text>
+  <text x="68" y="374" font-size="12" fill="#495057">本 fork 已将其折叠——ScheduleBatch 经 <tspan font-family="monospace" fill="#495057">ForwardBatch.init_new(batch, model_runner)</tspan> 一步到位。</text>
+
+  <defs>
+    <marker id="arGc" markerWidth="10" markerHeight="10" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#868e96"/></marker>
+  </defs>
+</svg>

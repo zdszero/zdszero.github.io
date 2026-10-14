@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 530" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <defs>
+    <pattern id="gridLight" x="120" y="130" width="24" height="24" patternUnits="userSpaceOnUse">
+      <path d="M24 0 L0 0 L0 24" fill="none" stroke="#e9ecef" stroke-width="1"/>
+    </pattern>
+    <pattern id="gridWhite" x="120" y="130" width="24" height="24" patternUnits="userSpaceOnUse">
+      <path d="M24 0 L0 0 L0 24" fill="none" stroke="#ffffff" stroke-width="2"/>
+    </pattern>
+  </defs>
+  <rect x="0" y="0" width="900" height="530" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">第 t 轮 chunk 的 attention：一个矩形 + 一个三角形</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">12 个 token、chunk 大小 4；高亮的是第 2 轮——它的 Q 只有 4 行，K/V 却覆盖前 8 个位置</text>
+
+  <!-- axes titles -->
+  <text x="264" y="98" text-anchor="middle" font-size="12" fill="#495057">K / V 位置 →</text>
+  <text x="168" y="122" text-anchor="middle" font-size="11" fill="#868e96">chunk 1</text>
+  <text x="264" y="122" text-anchor="middle" font-size="11" fill="#868e96">chunk 2</text>
+  <text x="360" y="122" text-anchor="middle" font-size="11" fill="#868e96">chunk 3</text>
+  <text x="112" y="182" text-anchor="end" font-size="11" fill="#868e96">chunk 1</text>
+  <text x="112" y="270" text-anchor="end" font-size="11.5" font-weight="700" fill="#e8590c">chunk 2</text>
+  <text x="112" y="286" text-anchor="end" font-size="10.5" fill="#e8590c">本轮 Q</text>
+  <text x="112" y="374" text-anchor="end" font-size="11" fill="#868e96">chunk 3</text>
+  <text x="40" y="274" text-anchor="middle" font-size="12" fill="#495057" transform="rotate(-90 40 274)">Q 位置 ↓</text>
+
+  <!-- matrix background (masked future positions stay white) -->
+  <rect x="120" y="130" width="288" height="288" fill="url(#gridLight)" stroke="#dee2e6"/>
+  <!-- chunk 1 rows: other round -->
+  <path d="M120 130 L144 130 L144 154 L168 154 L168 178 L192 178 L192 202 L216 202 L216 226 L120 226 Z" fill="#f1f3f5" stroke="#ced4da"/>
+  <!-- chunk 2 rows: prefix rectangle -->
+  <rect x="120" y="226" width="96" height="96" fill="#e6fcf5" stroke="#0ca678" stroke-width="1.2"/>
+  <!-- chunk 2 rows: extend causal triangle -->
+  <path d="M216 226 L240 226 L240 250 L264 250 L264 274 L288 274 L288 298 L312 298 L312 322 L216 322 Z" fill="#edf2ff" stroke="#4c6ef5" stroke-width="1.2"/>
+  <!-- chunk 3 rows: other round -->
+  <path d="M120 322 L336 322 L336 346 L360 346 L360 370 L384 370 L384 394 L408 394 L408 418 L120 418 Z" fill="#f1f3f5" stroke="#ced4da"/>
+  <!-- cell separators over filled blocks -->
+  <rect x="120" y="130" width="288" height="288" fill="url(#gridWhite)"/>
+  <!-- current round band -->
+  <rect x="117" y="223" width="294" height="102" rx="4" fill="none" stroke="#f08c00" stroke-width="2"/>
+  <text x="168" y="279" text-anchor="middle" font-size="11.5" font-weight="700" fill="#0b7285">prefix</text>
+  <text x="246" y="314" text-anchor="middle" font-size="11.5" font-weight="700" fill="#3b5bdb">extend</text>
+  <text x="362" y="266" text-anchor="middle" font-size="10.5" fill="#adb5bd">未来位置</text>
+  <text x="362" y="281" text-anchor="middle" font-size="10.5" fill="#adb5bd">被 mask</text>
+
+  <!-- legend -->
+  <rect x="120" y="438" width="14" height="10" rx="2" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="140" y="447" font-size="11" fill="#495057">读 KV cache</text>
+  <rect x="222" y="438" width="14" height="10" rx="2" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="242" y="447" font-size="11" fill="#495057">本轮新算 KV</text>
+  <rect x="326" y="438" width="14" height="10" rx="2" fill="#f1f3f5" stroke="#ced4da"/>
+  <text x="346" y="447" font-size="11" fill="#495057">其他轮</text>
+
+  <!-- right: stage 1 -->
+  <rect x="470" y="110" width="380" height="92" rx="10" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="488" y="135" font-size="13.5" font-weight="700" fill="#0b7285">Stage 1 · prefix 段（矩形）</text>
+  <text x="488" y="157" font-size="11.5" fill="#495057">K/V：前几轮写入 KV cache 的 token，位置 [0, P<tspan font-size="9" baseline-shift="sub">t</tspan>)</text>
+  <text x="488" y="176" font-size="11.5" fill="#495057">它们全部在本轮 Q 之前 → 全可见，无需 mask</text>
+  <text x="488" y="194" font-size="11" fill="#868e96">得到部分结果 o₁ 及其统计量 (m₁, l₁)</text>
+
+  <!-- right: stage 2 -->
+  <rect x="470" y="214" width="380" height="92" rx="10" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="488" y="239" font-size="13.5" font-weight="700" fill="#3b5bdb">Stage 2 · extend 段（三角形）</text>
+  <text x="488" y="261" font-size="11.5" fill="#495057">K/V：本轮刚算出的 token，位置 [P<tspan font-size="9" baseline-shift="sub">t</tspan>, P<tspan font-size="9" baseline-shift="sub">t</tspan>+E<tspan font-size="9" baseline-shift="sub">t</tspan>)</text>
+  <text x="488" y="280" font-size="11.5" fill="#495057">与普通 prefill 相同 → causal mask</text>
+  <text x="488" y="298" font-size="11" fill="#868e96">得到部分结果 o₂ 及其统计量 (m₂, l₂)</text>
+
+  <!-- right: merge -->
+  <rect x="470" y="318" width="380" height="100" rx="10" fill="#fff4e6" stroke="#f08c00"/>
+  <text x="488" y="343" font-size="13.5" font-weight="700" fill="#e8590c">合并 · online softmax</text>
+  <text x="488" y="365" font-size="11" font-family="monospace" fill="#495057">m = max(m₁, m₂)</text>
+  <text x="488" y="384" font-size="11" font-family="monospace" fill="#495057">o = (e^(m₁−m)·l₁·o₁ + e^(m₂−m)·l₂·o₂)</text>
+  <text x="488" y="402" font-size="11" font-family="monospace" fill="#495057">    / (e^(m₁−m)·l₁ + e^(m₂−m)·l₂)</text>
+
+  <!-- note -->
+  <rect x="60" y="462" width="780" height="52" rx="10" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="78" y="484" font-size="12" fill="#495057">这正是「命中 prefix cache 的 extend」的形状：前缀从哪来（自己上一轮 / 别的请求）对 kernel 无关紧要。</text>
+  <text x="78" y="503" font-size="12" fill="#495057">因为 causal 下早期 token 的 KV 与后续无关，分块结果与一次算完在数学上等价，只差浮点累加顺序。</text>
+</svg>

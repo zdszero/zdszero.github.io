@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 420" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="420" rx="12" fill="#ffffff"/>
+  <text x="30" y="34" font-size="20" font-weight="700" fill="#212529">多张图共用一个 graph pool：为什么要从大到小捕获</text>
+  <text x="30" y="56" font-size="13" fill="#868e96">输出常驻；临时张量在 capture 结束后归还给池，可被下一张图复用（示意，不按比例）</text>
+
+  <!-- lane A -->
+  <text x="30" y="90" font-size="13.5" font-weight="700" fill="#3b5bdb">从大到小（SGLang：reversed(capture_bs)）</text>
+  <text x="40" y="115" font-size="12" fill="#495057">捕获 bs=64 后</text>
+  <rect x="170" y="101" width="40" height="20" rx="3" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="210" y="101" width="320" height="20" rx="3" fill="#f1f3f5" stroke="#adb5bd" stroke-dasharray="4 3"/>
+  <text x="370" y="115" font-size="11" fill="#868e96" text-anchor="middle">bs=64 的临时张量，已归还</text>
+  <text x="40" y="145" font-size="12" fill="#495057">捕获 bs=32 后</text>
+  <rect x="170" y="131" width="40" height="20" rx="3" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="210" y="131" width="20" height="20" rx="3" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="230" y="131" width="160" height="20" rx="3" fill="#fff9db" stroke="#f08c00" stroke-dasharray="4 3"/>
+  <text x="310" y="145" font-size="11" fill="#e8590c" text-anchor="middle">临时量落进旧空洞</text>
+  <rect x="390" y="131" width="140" height="20" rx="3" fill="#f1f3f5" stroke="#adb5bd" stroke-dasharray="4 3"/>
+  <text x="40" y="175" font-size="12" fill="#495057">捕获 bs=16 后</text>
+  <rect x="170" y="161" width="40" height="20" rx="3" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="210" y="161" width="20" height="20" rx="3" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="230" y="161" width="10" height="20" rx="2" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="240" y="161" width="290" height="20" rx="3" fill="#f1f3f5" stroke="#adb5bd" stroke-dasharray="4 3"/>
+  <path d="M530 96 L530 186" stroke="#4c6ef5" stroke-width="1.5" stroke-dasharray="3 3"/>
+  <text x="545" y="138" font-size="12" font-weight="700" fill="#3b5bdb">池大小不再增长</text>
+  <text x="545" y="156" font-size="11.5" fill="#495057">≈ 最大一张图的临时量 + Σ 各图输出</text>
+
+  <!-- lane B -->
+  <text x="30" y="214" font-size="13.5" font-weight="700" fill="#c92a2a">从小到大（反例）</text>
+  <text x="40" y="239" font-size="12" fill="#495057">捕获 bs=16 后</text>
+  <rect x="170" y="225" width="10" height="20" rx="2" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="180" y="225" width="80" height="20" rx="3" fill="#f1f3f5" stroke="#adb5bd" stroke-dasharray="4 3"/>
+  <text x="40" y="269" font-size="12" fill="#495057">捕获 bs=32 后</text>
+  <rect x="170" y="255" width="10" height="20" rx="2" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="180" y="255" width="80" height="20" rx="3" fill="#f1f3f5" stroke="#adb5bd" stroke-dasharray="4 3"/>
+  <rect x="260" y="255" width="20" height="20" rx="3" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="280" y="255" width="160" height="20" rx="3" fill="#fff5f5" stroke="#fa5252"/>
+  <text x="360" y="269" font-size="11" fill="#c92a2a" text-anchor="middle">旧空洞放不下 → 新申请</text>
+  <text x="40" y="299" font-size="12" fill="#495057">捕获 bs=64 后</text>
+  <rect x="170" y="285" width="10" height="20" rx="2" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="180" y="285" width="80" height="20" rx="3" fill="#f1f3f5" stroke="#adb5bd" stroke-dasharray="4 3"/>
+  <rect x="260" y="285" width="20" height="20" rx="3" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="280" y="285" width="160" height="20" rx="3" fill="#f1f3f5" stroke="#adb5bd" stroke-dasharray="4 3"/>
+  <rect x="440" y="285" width="40" height="20" rx="3" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="480" y="285" width="320" height="20" rx="3" fill="#fff5f5" stroke="#fa5252"/>
+  <text x="640" y="299" font-size="11" fill="#c92a2a" text-anchor="middle">再次新申请</text>
+  <text x="560" y="250" font-size="12" font-weight="700" fill="#c92a2a">池随每张图增长</text>
+  <text x="560" y="268" font-size="11.5" fill="#495057">≈ 接近 Σ 临时量 + Σ 输出</text>
+  <!-- legend -->
+  <rect x="170" y="324" width="16" height="12" rx="2" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="192" y="334" font-size="11.5" fill="#495057">图的输出（被图对象持有，常驻）</text>
+  <rect x="400" y="324" width="16" height="12" rx="2" fill="#f1f3f5" stroke="#adb5bd" stroke-dasharray="3 2"/>
+  <text x="422" y="334" font-size="11.5" fill="#495057">已归还的空闲块</text>
+  <rect x="540" y="324" width="16" height="12" rx="2" fill="#fff5f5" stroke="#fa5252"/>
+  <text x="562" y="334" font-size="11.5" fill="#495057">池为本次 capture 新增的显存</text>
+
+  <rect x="30" y="350" width="840" height="54" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="46" y="373" font-size="12" fill="#495057">共用一个池的前提：这些图不会并发 replay；只读刚 replay 那张图的输出（别的图的输出可能落在它的临时区，已被覆盖）。</text>
+  <text x="46" y="393" font-size="12" fill="#495057">静态输入放在池外预先分配。满足这些条件时，先捕获最大的那张，后面的图基本都能落进它留下的空洞里。</text>
+</svg>

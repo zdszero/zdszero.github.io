@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 400" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#868e96"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="900" height="400" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">单次 forward 不需要「越大越好」</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">示意图（非实测）：token 数越过算力饱和点后，吞吐不再增长，单步时长却线性增长</text>
+
+  <!-- Left panel: throughput -->
+  <text x="100" y="88" font-size="13.5" font-weight="700" fill="#343a40">吞吐 vs 单次 token 数</text>
+  <rect x="250" y="100" width="180" height="190" fill="#fff9db"/>
+  <text x="340" y="276" text-anchor="middle" font-size="11" fill="#e8590c">计算受限：吞吐见顶</text>
+  <text x="182" y="260" text-anchor="middle" font-size="11" fill="#868e96">访存受限</text>
+  <text x="182" y="276" text-anchor="middle" font-size="11" fill="#868e96">加 token 近乎免费</text>
+  <path d="M100 290 L100 96" fill="none" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <path d="M100 290 L436 290" fill="none" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <path d="M100 286 C 150 170, 200 128, 260 120 S 380 114, 426 113" fill="none" stroke="#4c6ef5" stroke-width="2.5"/>
+  <path d="M265 104 L265 290" fill="none" stroke="#f08c00" stroke-width="1.5" stroke-dasharray="5 4"/>
+  <text x="270" y="140" font-size="11" font-family="monospace" fill="#e8590c">chunked_prefill_size</text>
+  <text x="270" y="155" font-size="10.5" fill="#868e96">取在饱和点附近</text>
+  <text x="268" y="308" text-anchor="middle" font-size="11.5" fill="#495057">单次 forward 的 token 数</text>
+  <text x="86" y="195" text-anchor="middle" font-size="11.5" fill="#495057" transform="rotate(-90 86 195)">吞吐 tokens/s</text>
+
+  <!-- Right panel: step latency -->
+  <text x="520" y="88" font-size="13.5" font-weight="700" fill="#343a40">单步时长 vs 单次 token 数</text>
+  <rect x="670" y="100" width="180" height="190" fill="#fff9db"/>
+  <path d="M520 290 L520 96" fill="none" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <path d="M520 290 L856 290" fill="none" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <path d="M520 262 C 580 258, 640 252, 685 240 L846 118" fill="none" stroke="#0ca678" stroke-width="2.5"/>
+  <path d="M685 104 L685 290" fill="none" stroke="#f08c00" stroke-width="1.5" stroke-dasharray="5 4"/>
+  <text x="600" y="232" text-anchor="middle" font-size="11" fill="#868e96">时长几乎不变</text>
+  <text x="694" y="130" font-size="11" fill="#e8590c">多出的 token 只换来</text>
+  <text x="694" y="146" font-size="11" fill="#e8590c">更长的单步阻塞</text>
+  <text x="688" y="308" text-anchor="middle" font-size="11.5" fill="#495057">单次 forward 的 token 数</text>
+  <text x="506" y="195" text-anchor="middle" font-size="11.5" fill="#495057" transform="rotate(-90 506 195)">单步时长</text>
+
+  <!-- note -->
+  <rect x="60" y="328" width="780" height="56" rx="10" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="78" y="351" font-size="12" fill="#495057">prefill 和 decode 都有这个拐点。只要 chunk 落在拐点之后，切分几乎不损失吞吐；</text>
+  <text x="78" y="371" font-size="12" fill="#495057">再往上加只会拉长每一步、推高 activation 峰值，并把同一 forward 里的 decode 一起拖慢。</text>
+</svg>

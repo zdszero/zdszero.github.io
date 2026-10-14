@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 440" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="440" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">连续 vs 非连续：逻辑顺序和物理顺序对不上</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">转置只改 stride、不搬数据；想按行顺序读，就得 .contiguous() 把数据重新打包</text>
+
+  <!-- Panel A: contiguous original -->
+  <text x="40" y="88" font-size="12.5" font-weight="700" fill="#3b5bdb">① a　shape (2,3)　stride (3,1)</text>
+  <text x="40" y="104" font-size="11" fill="#868e96">连续</text>
+  <rect x="40" y="114" width="40" height="32" rx="5" fill="#edf2ff" stroke="#4c6ef5"/><text x="60" y="135" text-anchor="middle" font-size="13" fill="#3b5bdb">1</text>
+  <rect x="82" y="114" width="40" height="32" rx="5" fill="#edf2ff" stroke="#4c6ef5"/><text x="102" y="135" text-anchor="middle" font-size="13" fill="#3b5bdb">2</text>
+  <rect x="124" y="114" width="40" height="32" rx="5" fill="#edf2ff" stroke="#4c6ef5"/><text x="144" y="135" text-anchor="middle" font-size="13" fill="#3b5bdb">3</text>
+  <rect x="40" y="148" width="40" height="32" rx="5" fill="#edf2ff" stroke="#4c6ef5"/><text x="60" y="169" text-anchor="middle" font-size="13" fill="#3b5bdb">4</text>
+  <rect x="82" y="148" width="40" height="32" rx="5" fill="#edf2ff" stroke="#4c6ef5"/><text x="102" y="169" text-anchor="middle" font-size="13" fill="#3b5bdb">5</text>
+  <rect x="124" y="148" width="40" height="32" rx="5" fill="#edf2ff" stroke="#4c6ef5"/><text x="144" y="169" text-anchor="middle" font-size="13" fill="#3b5bdb">6</text>
+
+  <text x="40" y="240" font-size="11" fill="#495057">storage（物理顺序）</text>
+  <g>
+    <rect x="40" y="248" width="38" height="30" rx="4" fill="#e6fcf5" stroke="#0ca678"/><text x="59" y="268" text-anchor="middle" font-size="12" fill="#0b7285">1</text>
+    <rect x="80" y="248" width="38" height="30" rx="4" fill="#e6fcf5" stroke="#0ca678"/><text x="99" y="268" text-anchor="middle" font-size="12" fill="#0b7285">2</text>
+    <rect x="120" y="248" width="38" height="30" rx="4" fill="#e6fcf5" stroke="#0ca678"/><text x="139" y="268" text-anchor="middle" font-size="12" fill="#0b7285">3</text>
+    <rect x="160" y="248" width="38" height="30" rx="4" fill="#e6fcf5" stroke="#0ca678"/><text x="179" y="268" text-anchor="middle" font-size="12" fill="#0b7285">4</text>
+    <rect x="200" y="248" width="38" height="30" rx="4" fill="#e6fcf5" stroke="#0ca678"/><text x="219" y="268" text-anchor="middle" font-size="12" fill="#0b7285">5</text>
+    <rect x="240" y="248" width="38" height="30" rx="4" fill="#e6fcf5" stroke="#0ca678"/><text x="259" y="268" text-anchor="middle" font-size="12" fill="#0b7285">6</text>
+  </g>
+  <path d="M48 294 L270 294" stroke="#0ca678" stroke-width="2" marker-end="url(#arTc)"/>
+  <text x="40" y="314" font-size="11" fill="#0b7285">按行遍历 = 顺序扫内存 ✓</text>
+
+  <!-- A -> B transpose arrow -->
+  <path d="M200 150 L350 150" stroke="#868e96" stroke-width="2" marker-end="url(#arGcn)"/>
+  <text x="275" y="140" text-anchor="middle" font-size="11" font-weight="700" fill="#495057">a.T</text>
+  <text x="275" y="166" text-anchor="middle" font-size="10" fill="#868e96">只改 stride</text>
+
+  <!-- Panel B: transpose, non-contiguous -->
+  <text x="360" y="88" font-size="12.5" font-weight="700" fill="#5f3dc4">② a.T　shape (3,2)　stride (1,3)</text>
+  <text x="360" y="104" font-size="11" fill="#868e96">非连续 · storage 不变</text>
+  <rect x="360" y="114" width="40" height="32" rx="5" fill="#f3f0ff" stroke="#7048e8"/><text x="380" y="135" text-anchor="middle" font-size="13" fill="#5f3dc4">1</text>
+  <rect x="402" y="114" width="40" height="32" rx="5" fill="#f3f0ff" stroke="#7048e8"/><text x="422" y="135" text-anchor="middle" font-size="13" fill="#5f3dc4">4</text>
+  <rect x="360" y="148" width="40" height="32" rx="5" fill="#f3f0ff" stroke="#7048e8"/><text x="380" y="169" text-anchor="middle" font-size="13" fill="#5f3dc4">2</text>
+  <rect x="402" y="148" width="40" height="32" rx="5" fill="#f3f0ff" stroke="#7048e8"/><text x="422" y="169" text-anchor="middle" font-size="13" fill="#5f3dc4">5</text>
+  <rect x="360" y="182" width="40" height="32" rx="5" fill="#f3f0ff" stroke="#7048e8"/><text x="380" y="203" text-anchor="middle" font-size="13" fill="#5f3dc4">3</text>
+  <rect x="402" y="182" width="40" height="32" rx="5" fill="#f3f0ff" stroke="#7048e8"/><text x="422" y="203" text-anchor="middle" font-size="13" fill="#5f3dc4">6</text>
+
+  <text x="360" y="240" font-size="11" fill="#495057">storage（与①同一块）</text>
+  <g>
+    <rect x="355" y="248" width="32" height="30" rx="4" fill="#e6fcf5" stroke="#0ca678"/><text x="371" y="268" text-anchor="middle" font-size="12" fill="#0b7285">1</text>
+    <rect x="389" y="248" width="32" height="30" rx="4" fill="#e6fcf5" stroke="#0ca678"/><text x="405" y="268" text-anchor="middle" font-size="12" fill="#0b7285">2</text>
+    <rect x="423" y="248" width="32" height="30" rx="4" fill="#e6fcf5" stroke="#0ca678"/><text x="439" y="268" text-anchor="middle" font-size="12" fill="#0b7285">3</text>
+    <rect x="457" y="248" width="32" height="30" rx="4" fill="#e6fcf5" stroke="#0ca678"/><text x="473" y="268" text-anchor="middle" font-size="12" fill="#0b7285">4</text>
+    <rect x="491" y="248" width="32" height="30" rx="4" fill="#e6fcf5" stroke="#0ca678"/><text x="507" y="268" text-anchor="middle" font-size="12" fill="#0b7285">5</text>
+    <rect x="525" y="248" width="32" height="30" rx="4" fill="#e6fcf5" stroke="#0ca678"/><text x="541" y="268" text-anchor="middle" font-size="12" fill="#0b7285">6</text>
+  </g>
+  <path d="M371 242 L473 242 L405 242 L507 242 L439 242 L541 242" fill="none" stroke="#f08c00" stroke-width="1.8" stroke-dasharray="4 3" marker-end="url(#arAcn)"/>
+  <text x="360" y="300" font-size="11" font-weight="700" fill="#e8590c">按行遍历 = 内存里跳着走 ✗</text>
+  <text x="360" y="316" font-size="10.5" fill="#868e96" font-family="monospace">is_contiguous() == False</text>
+
+  <!-- B -> C contiguous arrow -->
+  <path d="M470 150 L636 150" stroke="#868e96" stroke-width="2" marker-end="url(#arGcn)"/>
+  <text x="553" y="140" text-anchor="middle" font-size="11" font-weight="700" fill="#495057">.contiguous()</text>
+  <text x="553" y="166" text-anchor="middle" font-size="10" fill="#868e96">新开内存重排</text>
+
+  <!-- Panel C: contiguous copy -->
+  <text x="640" y="88" font-size="12.5" font-weight="700" fill="#0b7285">③ 新 shape (3,2)　stride (2,1)</text>
+  <text x="640" y="104" font-size="11" fill="#868e96">连续 · 新 storage</text>
+  <rect x="640" y="114" width="40" height="32" rx="5" fill="#e6fcf5" stroke="#0ca678"/><text x="660" y="135" text-anchor="middle" font-size="13" fill="#0b7285">1</text>
+  <rect x="682" y="114" width="40" height="32" rx="5" fill="#e6fcf5" stroke="#0ca678"/><text x="702" y="135" text-anchor="middle" font-size="13" fill="#0b7285">4</text>
+  <rect x="640" y="148" width="40" height="32" rx="5" fill="#e6fcf5" stroke="#0ca678"/><text x="660" y="169" text-anchor="middle" font-size="13" fill="#0b7285">2</text>
+  <rect x="682" y="148" width="40" height="32" rx="5" fill="#e6fcf5" stroke="#0ca678"/><text x="702" y="169" text-anchor="middle" font-size="13" fill="#0b7285">5</text>
+  <rect x="640" y="182" width="40" height="32" rx="5" fill="#e6fcf5" stroke="#0ca678"/><text x="660" y="203" text-anchor="middle" font-size="13" fill="#0b7285">3</text>
+  <rect x="682" y="182" width="40" height="32" rx="5" fill="#e6fcf5" stroke="#0ca678"/><text x="702" y="203" text-anchor="middle" font-size="13" fill="#0b7285">6</text>
+
+  <text x="630" y="240" font-size="11" fill="#495057">新 storage（已重排）</text>
+  <g>
+    <rect x="630" y="248" width="32" height="30" rx="4" fill="#fff9db" stroke="#f08c00"/><text x="646" y="268" text-anchor="middle" font-size="12" fill="#e8590c">1</text>
+    <rect x="664" y="248" width="32" height="30" rx="4" fill="#fff9db" stroke="#f08c00"/><text x="680" y="268" text-anchor="middle" font-size="12" fill="#e8590c">4</text>
+    <rect x="698" y="248" width="32" height="30" rx="4" fill="#fff9db" stroke="#f08c00"/><text x="714" y="268" text-anchor="middle" font-size="12" fill="#e8590c">2</text>
+    <rect x="732" y="248" width="32" height="30" rx="4" fill="#fff9db" stroke="#f08c00"/><text x="748" y="268" text-anchor="middle" font-size="12" fill="#e8590c">5</text>
+    <rect x="766" y="248" width="32" height="30" rx="4" fill="#fff9db" stroke="#f08c00"/><text x="782" y="268" text-anchor="middle" font-size="12" fill="#e8590c">3</text>
+    <rect x="800" y="248" width="32" height="30" rx="4" fill="#fff9db" stroke="#f08c00"/><text x="816" y="268" text-anchor="middle" font-size="12" fill="#e8590c">6</text>
+  </g>
+  <path d="M638 294 L832 294" stroke="#0ca678" stroke-width="2" marker-end="url(#arTc)"/>
+  <text x="640" y="314" font-size="11" fill="#0b7285">又能顺序扫 ✓</text>
+
+  <!-- note -->
+  <rect x="40" y="360" width="820" height="56" rx="10" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="58" y="382" font-size="12" fill="#495057">很多 CUDA kernel 假定输入在内存里顺序排列，拿到非连续张量要么报错、要么偷偷插一次 .contiguous() 拷贝。所以见到 .contiguous() 不是多此一举，</text>
+  <text x="58" y="402" font-size="12" fill="#495057">而是在为下游 kernel 把物理布局摆正——SGLang 甚至会专门论证某处 stride 已满足要求，从而「跳过保护性拷贝」省下一次全量搬运。</text>
+
+  <defs>
+    <marker id="arTc" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#0ca678"/></marker>
+    <marker id="arGcn" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#868e96"/></marker>
+    <marker id="arAcn" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#f08c00"/></marker>
+  </defs>
+</svg>

@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 500" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="500" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">指数位管范围，尾数位管精度</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">同为 2 字节，FP16 把位数给了尾数，BF16 把位数给了指数；每格 = 1 bit</text>
+
+  <!-- legend -->
+  <rect x="560" y="72" width="14" height="14" rx="3" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="580" y="84" font-size="11.5" fill="#495057">符号</text>
+  <rect x="624" y="72" width="14" height="14" rx="3" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="644" y="84" font-size="11.5" fill="#3b5bdb">指数 → 范围</text>
+  <rect x="726" y="72" width="14" height="14" rx="3" fill="#fff4e6" stroke="#f08c00"/>
+  <text x="746" y="84" font-size="11.5" fill="#e8590c">尾数 → 精度</text>
+
+  <!-- FP32 -->
+  <text x="40" y="119" font-size="14" font-weight="700" fill="#212529">FP32</text>
+  <text x="40" y="136" font-size="11" fill="#868e96">4 字节</text>
+  <rect x="140" y="98" width="20" height="30" rx="3" fill="#f1f3f5" stroke="#adb5bd"/>
+  <rect x="160" y="98" width="160" height="30" rx="3" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="240" y="118" text-anchor="middle" font-size="12" font-weight="700" fill="#3b5bdb">指数 8</text>
+  <rect x="320" y="98" width="460" height="30" rx="3" fill="#fff4e6" stroke="#f08c00"/>
+  <text x="550" y="118" text-anchor="middle" font-size="12" font-weight="700" fill="#e8590c">尾数 23</text>
+  <text x="140" y="150" font-size="11.5" font-family="monospace" fill="#495057">max ≈ 3.4e38     eps ≈ 1.2e-7</text>
+
+  <!-- FP16 -->
+  <text x="40" y="199" font-size="14" font-weight="700" fill="#212529">FP16</text>
+  <text x="40" y="216" font-size="11" fill="#868e96">2 字节</text>
+  <rect x="140" y="178" width="20" height="30" rx="3" fill="#f1f3f5" stroke="#adb5bd"/>
+  <rect x="160" y="178" width="100" height="30" rx="3" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="210" y="198" text-anchor="middle" font-size="12" font-weight="700" fill="#3b5bdb">指数 5</text>
+  <rect x="260" y="178" width="200" height="30" rx="3" fill="#fff4e6" stroke="#f08c00"/>
+  <text x="360" y="198" text-anchor="middle" font-size="12" font-weight="700" fill="#e8590c">尾数 10</text>
+  <text x="480" y="191" font-size="11.5" font-family="monospace" fill="#c92a2a">max = 65504（范围窄，易溢出）</text>
+  <text x="480" y="207" font-size="11.5" font-family="monospace" fill="#495057">eps ≈ 9.8e-4</text>
+
+  <!-- BF16 -->
+  <text x="40" y="279" font-size="14" font-weight="700" fill="#212529">BF16</text>
+  <text x="40" y="296" font-size="11" fill="#868e96">2 字节</text>
+  <rect x="140" y="258" width="20" height="30" rx="3" fill="#f1f3f5" stroke="#adb5bd"/>
+  <rect x="160" y="258" width="160" height="30" rx="3" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="240" y="278" text-anchor="middle" font-size="12" font-weight="700" fill="#3b5bdb">指数 8</text>
+  <rect x="320" y="258" width="140" height="30" rx="3" fill="#fff4e6" stroke="#f08c00"/>
+  <text x="390" y="278" text-anchor="middle" font-size="12" font-weight="700" fill="#e8590c">尾数 7</text>
+  <text x="480" y="271" font-size="11.5" font-family="monospace" fill="#495057">max ≈ 3.4e38（与 FP32 同范围）</text>
+  <text x="480" y="287" font-size="11.5" font-family="monospace" fill="#c92a2a">eps = 7.8e-3（间隔粗）</text>
+
+  <!-- truncation guide -->
+  <path d="M460 92 L460 294" fill="none" stroke="#7048e8" stroke-width="1.5" stroke-dasharray="5 4"/>
+  <text x="470" y="240" font-size="11.5" fill="#5f3dc4">BF16 ≈ FP32 截掉低 16 位尾数：指数对齐，转换直接</text>
+
+  <!-- worked examples -->
+  <rect x="40" y="318" width="400" height="98" rx="10" fill="#fff5f5" stroke="#fa5252"/>
+  <text x="58" y="342" font-size="13" font-weight="700" fill="#c92a2a">FP16 的短板：范围</text>
+  <text x="58" y="366" font-size="11.5" font-family="monospace" fill="#495057">torch.tensor(70000., dtype=float16)</text>
+  <text x="58" y="384" font-size="11.5" font-family="monospace" fill="#c92a2a">→ inf</text>
+  <text x="58" y="404" font-size="11.5" fill="#868e96">大幅值激活、未缩放的中间量更容易溢出</text>
+
+  <rect x="460" y="318" width="400" height="98" rx="10" fill="#fff4e6" stroke="#f08c00"/>
+  <text x="478" y="342" font-size="13" font-weight="700" fill="#e8590c">BF16 的短板：精度</text>
+  <text x="478" y="366" font-size="11.5" font-family="monospace" fill="#495057">256 附近可表示：256, 258, 260 …</text>
+  <text x="478" y="384" font-size="11.5" font-family="monospace" fill="#e8590c">bf16(256) + bf16(1) → 256</text>
+  <text x="478" y="404" font-size="11.5" fill="#868e96">大部分和上加小量会被舍掉 → 累加需要更高精度</text>
+
+  <!-- note -->
+  <rect x="40" y="436" width="820" height="44" rx="9" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="58" y="456" font-size="12" fill="#495057">没有哪个 2 字节格式全面更好：FP16 精度更细但范围窄，BF16 范围宽但精度粗。</text>
+  <text x="58" y="473" font-size="12" fill="#495057">选择取决于模型数值范围、算子与硬件；数值可用 torch.finfo(dtype) 查看。</text>
+</svg>

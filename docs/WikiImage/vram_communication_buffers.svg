@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 560" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="ar" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#868e96"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="880" height="560" rx="12" fill="#ffffff"/>
+  <text x="440" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">每张 GPU 上的通信显存：通信组 × 机制</text>
+  <text x="440" y="56" text-anchor="middle" font-size="13" fill="#868e96">每个格子都是一块常驻、地址固定、对端可见的区域；多数不在 PyTorch caching allocator 中</text>
+
+  <!-- column headers -->
+  <text x="110" y="100" text-anchor="middle" font-size="13" font-weight="700" fill="#495057">通信组</text>
+  <rect x="200" y="80" width="150" height="32" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="275" y="101" text-anchor="middle" font-size="13" font-weight="600" fill="#3b5bdb">NCCL communicator</text>
+  <rect x="362" y="80" width="150" height="32" rx="6" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="437" y="101" text-anchor="middle" font-size="13" font-weight="600" fill="#0b7285">Custom all-reduce</text>
+  <rect x="524" y="80" width="150" height="32" rx="6" fill="#fff4e6" stroke="#f08c00"/>
+  <text x="599" y="101" text-anchor="middle" font-size="13" font-weight="600" fill="#e8590c">DeepEP Buffer</text>
+  <rect x="686" y="80" width="170" height="32" rx="6" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="771" y="101" text-anchor="middle" font-size="13" font-weight="600" fill="#5f3dc4">PD 传输注册区</text>
+
+  <!-- row: TP -->
+  <rect x="24" y="124" width="172" height="62" rx="6" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="110" y="150" text-anchor="middle" font-size="13" font-weight="600" fill="#495057">TP / attention TP</text>
+  <text x="110" y="170" text-anchor="middle" font-size="11" fill="#868e96">GroupCoordinator</text>
+  <rect x="200" y="124" width="150" height="62" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="275" y="149" text-anchor="middle" font-size="12" fill="#3b5bdb">torch PG + pynccl</text>
+  <text x="275" y="168" text-anchor="middle" font-size="11" fill="#495057">两份 ncclComm</text>
+  <rect x="362" y="124" width="150" height="62" rx="6" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="437" y="149" text-anchor="middle" font-size="12" fill="#0b7285">IPC buffer / symm</text>
+  <text x="437" y="168" text-anchor="middle" font-size="11" fill="#495057">workspace，几十 MB</text>
+  <rect x="524" y="124" width="150" height="62" rx="6" fill="#f8f9fa" stroke="#e9ecef" stroke-dasharray="4 3"/>
+  <text x="599" y="160" text-anchor="middle" font-size="12" fill="#adb5bd">—</text>
+  <rect x="686" y="124" width="170" height="62" rx="6" fill="#f8f9fa" stroke="#e9ecef" stroke-dasharray="4 3"/>
+  <text x="771" y="160" text-anchor="middle" font-size="12" fill="#adb5bd">—</text>
+
+  <!-- row: MoE EP -->
+  <rect x="24" y="196" width="172" height="62" rx="6" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="110" y="222" text-anchor="middle" font-size="13" font-weight="600" fill="#495057">MoE EP</text>
+  <text x="110" y="242" text-anchor="middle" font-size="11" fill="#868e96">ep == tp 时复用 TP 组</text>
+  <rect x="200" y="196" width="150" height="62" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="275" y="221" text-anchor="middle" font-size="12" fill="#3b5bdb">独立组时 1 份</text>
+  <text x="275" y="240" text-anchor="middle" font-size="11" fill="#495057">torch PG（无 pynccl）</text>
+  <rect x="362" y="196" width="150" height="62" rx="6" fill="#f8f9fa" stroke="#e9ecef" stroke-dasharray="4 3"/>
+  <text x="437" y="232" text-anchor="middle" font-size="12" fill="#adb5bd">—</text>
+  <rect x="524" y="196" width="150" height="62" rx="6" fill="#fff4e6" stroke="#f08c00"/>
+  <text x="599" y="221" text-anchor="middle" font-size="12" fill="#e8590c">NVL + RDMA bytes</text>
+  <text x="599" y="240" text-anchor="middle" font-size="11" fill="#495057">首次 dispatch 懒分配</text>
+  <rect x="686" y="196" width="170" height="62" rx="6" fill="#f8f9fa" stroke="#e9ecef" stroke-dasharray="4 3"/>
+  <text x="771" y="232" text-anchor="middle" font-size="12" fill="#adb5bd">—</text>
+
+  <!-- row: PP / DP / others -->
+  <rect x="24" y="268" width="172" height="62" rx="6" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="110" y="294" text-anchor="middle" font-size="13" font-weight="600" fill="#495057">PP / moe_dp / dcp …</text>
+  <text x="110" y="314" text-anchor="middle" font-size="11" fill="#868e96">按并行配置存在</text>
+  <rect x="200" y="268" width="150" height="62" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="275" y="293" text-anchor="middle" font-size="12" fill="#3b5bdb">每组 1–2 份</text>
+  <text x="275" y="312" text-anchor="middle" font-size="11" fill="#495057">随组数线性增长</text>
+  <rect x="362" y="268" width="150" height="62" rx="6" fill="#f8f9fa" stroke="#e9ecef" stroke-dasharray="4 3"/>
+  <text x="437" y="304" text-anchor="middle" font-size="12" fill="#adb5bd">PP 不启用</text>
+  <rect x="524" y="268" width="150" height="62" rx="6" fill="#f8f9fa" stroke="#e9ecef" stroke-dasharray="4 3"/>
+  <text x="599" y="304" text-anchor="middle" font-size="12" fill="#adb5bd">—</text>
+  <rect x="686" y="268" width="170" height="62" rx="6" fill="#f8f9fa" stroke="#e9ecef" stroke-dasharray="4 3"/>
+  <text x="771" y="304" text-anchor="middle" font-size="12" fill="#adb5bd">—</text>
+
+  <!-- row: PD -->
+  <rect x="24" y="340" width="172" height="62" rx="6" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="110" y="366" text-anchor="middle" font-size="13" font-weight="600" fill="#495057">PD 跨节点</text>
+  <text x="110" y="386" text-anchor="middle" font-size="11" fill="#868e96">Mooncake / NIXL</text>
+  <rect x="200" y="340" width="474" height="62" rx="6" fill="#f8f9fa" stroke="#e9ecef" stroke-dasharray="4 3"/>
+  <text x="437" y="376" text-anchor="middle" font-size="12" fill="#adb5bd">由传输引擎自管，不走 NCCL</text>
+  <rect x="686" y="340" width="170" height="62" rx="6" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="771" y="365" text-anchor="middle" font-size="12" fill="#5f3dc4">注册已有 KV pool</text>
+  <text x="771" y="384" text-anchor="middle" font-size="11" fill="#495057">staging 需显式开启</text>
+  <!-- timing strip -->
+  <text x="24" y="432" font-size="13" font-weight="700" fill="#495057">分配时机决定从哪里扣</text>
+  <rect x="24" y="442" width="400" height="44" rx="6" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="224" y="461" text-anchor="middle" font-size="12" font-weight="600" fill="#0b7285">早于 pre_model_load_memory 测量</text>
+  <text x="224" y="478" text-anchor="middle" font-size="11" fill="#495057">建组、NCCL prewarm、custom AR → 自动从 KV 容量中扣除</text>
+  <line x1="430" y1="464" x2="450" y2="464" stroke="#868e96" stroke-width="1.5" marker-end="url(#ar)"/>
+  <rect x="456" y="442" width="400" height="44" rx="6" fill="#fff5f5" stroke="#fa5252"/>
+  <text x="656" y="461" text-anchor="middle" font-size="12" font-weight="600" fill="#c92a2a">晚于 KV pool 分配（懒分配）</text>
+  <text x="656" y="478" text-anchor="middle" font-size="11" fill="#495057">DeepEP、staging buffer → 只能靠 mem_fraction_static 外的预留</text>
+
+  <rect x="24" y="502" width="832" height="40" rx="6" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="440" y="527" text-anchor="middle" font-size="12" fill="#495057">memory_allocated() 看不到 cudaMalloc 的 IPC buffer、NCCL 内部 buffer 与 DeepEP；用 mem_get_info / NVML 阶段差分统计</text>
+</svg>

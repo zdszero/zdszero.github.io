@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 470" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="470" rx="12" fill="#ffffff"/>
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#868e96"/>
+    </marker>
+  </defs>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">DSA 每 token 每层的 KV 布局</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">长度按字节数等比例画出；DSA 的 788 B 比 dense bf16 的 1152 B 小，靠的是 fp8 而不是稀疏</text>
+  <text x="30" y="102" font-size="12.5" fill="#212529" font-weight="700">dense MLA（bf16）</text>
+  <text x="30" y="119" font-size="11" fill="#868e96">kv_buffer，576 维</text>
+  <rect x="210" y="84" width="532.48" height="40" rx="4" fill="#e6fcf5" stroke="#0ca678" stroke-width="1"/>
+  <text x="476.24" y="101" font-size="11" fill="#0b7285" font-weight="700" text-anchor="middle">k_nope latent 512 × bf16</text>
+  <text x="476.24" y="116" font-size="10.5" fill="#0b7285" text-anchor="middle" font-family="monospace">1024 B</text>
+  <rect x="742.48" y="84" width="66.56" height="40" rx="4" fill="#fff4e6" stroke="#f08c00" stroke-width="1"/>
+  <text x="775.76" y="101" font-size="11" fill="#e8590c" font-weight="700" text-anchor="middle">rope</text>
+  <text x="775.76" y="116" font-size="10.5" fill="#e8590c" text-anchor="middle" font-family="monospace">128 B</text>
+  <text x="817.04" y="110" font-size="12" fill="#212529" font-weight="700" font-family="monospace">= 1152 B</text>
+  <text x="30" y="168" font-size="12.5" fill="#212529" font-weight="700">DSA：MLA 主 cache（fp8）</text>
+  <text x="30" y="185" font-size="11" fill="#868e96">kv_buffer，656 B</text>
+  <rect x="210" y="150" width="266.24" height="40" rx="4" fill="#e6fcf5" stroke="#0ca678" stroke-width="1"/>
+  <text x="343.12" y="167" font-size="11" fill="#0b7285" font-weight="700" text-anchor="middle">k_nope 512 × fp8</text>
+  <text x="343.12" y="182" font-size="10.5" fill="#0b7285" text-anchor="middle" font-family="monospace">512 B</text>
+  <rect x="476.24" y="150" width="8.32" height="40" rx="4" fill="#fff5f5" stroke="#fa5252" stroke-width="1"/>
+  <rect x="484.56" y="150" width="66.56" height="40" rx="4" fill="#fff4e6" stroke="#f08c00" stroke-width="1"/>
+  <text x="517.84" y="167" font-size="11" fill="#e8590c" font-weight="700" text-anchor="middle">rope bf16</text>
+  <text x="517.84" y="182" font-size="10.5" fill="#e8590c" text-anchor="middle" font-family="monospace">128 B</text>
+  <text x="559.12" y="176" font-size="12" fill="#212529" font-weight="700" font-family="monospace">= 656 B</text>
+  <text x="484.24" y="145" font-size="10.5" fill="#c92a2a">4 × fp32 scale（每 128 维一个）</text>
+  <text x="30" y="234" font-size="12.5" fill="#212529" font-weight="700">DSA：indexer cache</text>
+  <text x="30" y="251" font-size="11" fill="#868e96">IndexKeyCache，132 B</text>
+  <rect x="210" y="216" width="66.56" height="40" rx="4" fill="#edf2ff" stroke="#4c6ef5" stroke-width="1"/>
+  <text x="243.28" y="233" font-size="11" fill="#3b5bdb" font-weight="700" text-anchor="middle">key fp8</text>
+  <text x="243.28" y="248" font-size="10.5" fill="#3b5bdb" text-anchor="middle" font-family="monospace">128 B</text>
+  <rect x="276.56" y="216" width="2.08" height="40" rx="4" fill="#fff5f5" stroke="#fa5252" stroke-width="1"/>
+  <text x="286.64" y="242" font-size="12" fill="#212529" font-weight="700" font-family="monospace">= 132 B</text>
+  <text x="276.56" y="210" font-size="10.5" fill="#c92a2a">1 × fp32 scale</text>
+  <path d="M210 274 L210 268 L551.12 268 L551.12 274" fill="none" stroke="#495057" stroke-width="1.5"/>
+  <text x="380.56" y="286" font-size="11.5" fill="#495057" text-anchor="middle">DSA 合计 656 + 132 = 788 B/token/layer；×61 层 ≈ 48 KB（dense bf16 ≈ 70 KB）</text>
+  <text x="30" y="324" font-size="12.5" fill="#212529" font-weight="700">indexer cache 的一页（page_size = 64，共 64 × 132 = 8448 B）</text>
+  <rect x="30" y="336" width="814.5454545454545" height="44" rx="4" fill="#edf2ff" stroke="#4c6ef5" stroke-width="1"/>
+  <line x1="80.9090909090909" y1="336" x2="80.9090909090909" y2="380" stroke="#dbe4ff" stroke-width="1"/>
+  <line x1="131.8181818181818" y1="336" x2="131.8181818181818" y2="380" stroke="#dbe4ff" stroke-width="1"/>
+  <line x1="182.72727272727272" y1="336" x2="182.72727272727272" y2="380" stroke="#dbe4ff" stroke-width="1"/>
+  <line x1="233.63636363636363" y1="336" x2="233.63636363636363" y2="380" stroke="#dbe4ff" stroke-width="1"/>
+  <line x1="284.5454545454545" y1="336" x2="284.5454545454545" y2="380" stroke="#dbe4ff" stroke-width="1"/>
+  <line x1="335.45454545454544" y1="336" x2="335.45454545454544" y2="380" stroke="#dbe4ff" stroke-width="1"/>
+  <line x1="386.3636363636364" y1="336" x2="386.3636363636364" y2="380" stroke="#dbe4ff" stroke-width="1"/>
+  <line x1="437.27272727272725" y1="336" x2="437.27272727272725" y2="380" stroke="#dbe4ff" stroke-width="1"/>
+  <line x1="488.18181818181813" y1="336" x2="488.18181818181813" y2="380" stroke="#dbe4ff" stroke-width="1"/>
+  <line x1="539.090909090909" y1="336" x2="539.090909090909" y2="380" stroke="#dbe4ff" stroke-width="1"/>
+  <line x1="590.0" y1="336" x2="590.0" y2="380" stroke="#dbe4ff" stroke-width="1"/>
+  <line x1="640.9090909090909" y1="336" x2="640.9090909090909" y2="380" stroke="#dbe4ff" stroke-width="1"/>
+  <line x1="691.8181818181818" y1="336" x2="691.8181818181818" y2="380" stroke="#dbe4ff" stroke-width="1"/>
+  <line x1="742.7272727272727" y1="336" x2="742.7272727272727" y2="380" stroke="#dbe4ff" stroke-width="1"/>
+  <line x1="793.6363636363636" y1="336" x2="793.6363636363636" y2="380" stroke="#dbe4ff" stroke-width="1"/>
+  <text x="437.27272727272725" y="356" font-size="12" fill="#3b5bdb" font-weight="700" text-anchor="middle">64 个 token 的 fp8 key，连续存放：64 × 128 B</text>
+  <text x="437.27272727272725" y="372" font-size="10.5" fill="#3b5bdb" text-anchor="middle" font-family="monospace">tok0 | tok1 | … | tok63</text>
+  <rect x="844.5454545454545" y="336" width="25.454545454545496" height="44" rx="4" fill="#fff5f5" stroke="#fa5252" stroke-width="1"/>
+  <text x="857.2727272727273" y="362" font-size="9.5" fill="#c92a2a" text-anchor="middle">scale</text>
+  <text x="870" y="396" font-size="10.5" fill="#c92a2a" text-anchor="end">末尾 64 × 4 B 的 fp32 scale</text>
+  <rect x="30" y="410" width="840" height="54" rx="8" fill="#f8f9fa" stroke="#e9ecef" stroke-width="1"/>
+  <text x="46" y="432" font-size="12" fill="#495057">key 和 scale 分开存：一页的 key 部分就是一块连续的 64 × 128 fp8 矩阵，paged logits kernel 可以按页整块读进来做 GEMM。</text>
+  <text x="46" y="450" font-size="12" fill="#495057">主 cache 的 rope 部分保留 bf16（位置信息对精度敏感）；nope 部分按 128 维一组量化，512 维正好 4 个 scale。</text>
+</svg>

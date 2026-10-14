@@ -1,0 +1,496 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    Torch 算子调度
+  </title>
+    <link rel="stylesheet" href="./WikiTheme/theme/bootstrap.css"  />
+        <style type="text/css">
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+      <!-- wiki three-column layout styles/behavior, kept external so the ~5KB
+       block isn't duplicated into every generated page -->
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/wiki-layout.css" />
+  <script defer src="./WikiTheme/wiki-layout.js"></script>
+</head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">Torch 算子调度</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="wiki-layout">
+    <nav class="wiki-sidebar" id="wiki-sidebar" hidden></nav>
+    <main class="wiki-main">
+            <ul>
+            <li>profiler 里一行 <code>torch.add(x, b)</code> 先出现 CPU
+            侧的 <code>aten::add</code>，GPU 侧却是一个叫
+            <code>vectorized_elementwise_kernel&lt;...&gt;</code>
+            的东西，这中间发生了什么？</li>
+            <li>同一个 <code>x + b</code>，在 autocast
+            里、<code>inference_mode</code>
+            里、<code>torch.compile</code>
+            追踪时，各自走的是同一段代码吗？</li>
+            <li>一个自己写的 CUDA kernel，为什么不能直接从 Python
+            调用了事，而要“注册成 torch 算子”，还要额外写一个不碰数据的
+            fake 实现？</li>
+            </ul>
+            <p>这些问题都落在同一个位置：<strong>Python 调用与 GPU
+            kernel 之间的那层调度。</strong>
+            本篇只讲这一层——一次调用如何被识别成哪个算子、经过哪些处理、最终选中哪个实现。融合、<code>torch.compile</code>
+            的 guard、SDPA 后端选择等“kernel 层”话题见 <a
+            href="./torch_kernel_compile.html">kernel
+            与编译执行</a>。</p>
+            <h3
+            id="问题一个算子要同时服务很多执行者">问题：一个算子要同时服务很多“执行者”</h3>
+            <p><code>add</code>
+            这个数学运算只有一个，但对它的调用可能来自完全不同的上下文：</p>
+            <ul>
+            <li>训练时需要记录反向图（autograd）；推理时希望这部分开销为零；</li>
+            <li>autocast 区域内，输入要先按算子策略转换 dtype；</li>
+            <li>张量可能在
+            CPU、CUDA、其他加速器上，各自需要不同实现；</li>
+            <li><code>torch.compile</code>
+            追踪时根本不想算真实数据，只想知道输出的 shape 和
+            dtype；</li>
+            <li>vmap、functionalization、tensor
+            子类等机制也想“插一脚”。</li>
+            </ul>
+            <p>朴素做法是在每个算子实现里写一串
+            <code>if requires_grad ... if autocast ... if device == cuda ...</code>。PyTorch
+            有两千多个算子，这样做既无法维护，也让每加一种机制都要改遍所有算子。需要的是一种办法：<strong>让这些横切关注点（cross-cutting
+            concerns）与算子本身的计算解耦，各自独立地挂进去。</strong></p>
+            <h3
+            id="抽象算子是一张按-dispatch-key-索引的表">抽象：算子是一张按
+            dispatch key 索引的表</h3>
+            <p>PyTorch 的解法分两步。</p>
+            <p>第一步，<strong>把算子从实现中剥离出来，变成一个有名字、有签名的对象。</strong>
+            每个 ATen 算子由 schema 描述，例如：</p>
+            <pre class="text"><code>aten::add.Tensor(Tensor self, Tensor other, *, Scalar alpha=1) -&gt; Tensor</code></pre>
+            <p><code>aten</code> 是命名空间，<code>add</code>
+            是算子名，<code>.Tensor</code> 是 overload
+            名——同名算子按参数类型区分，<code>add.Scalar</code>、<code>add.out</code>
+            都是别的 overload。schema 还用 <code>Tensor(a!)</code>
+            一类标注说明哪个参数被原地修改、输出是否与输入别名。Python
+            的
+            <code>torch.add</code>、<code>Tensor.__add__</code>、<code>torch.ops.aten.add.Tensor</code>
+            最终都落到同一个算子对象上。</p>
+            <p>第二步，<strong>每个算子不是一个函数，而是一张“dispatch
+            key → kernel”的表。</strong>
+            autograd、autocast、CUDA、CPU、Meta 等各是一个 dispatch
+            key，有固定的优先级。每次调用时，Dispatcher 计算本次的 key
+            集合：</p>
+            <pre class="text"><code>key set = 所有输入张量自带的 key 的并集  ∪  线程局部 include  −  线程局部 exclude</code></pre>
+            <p>张量自带的 key 来自它的 device 和属性（CUDA 张量带
+            <code>CUDA</code>、<code>AutogradCUDA</code>
+            等）；线程局部状态（TLS）则由
+            autocast、<code>inference_mode</code>、FakeTensor mode
+            这类上下文管理器修改。Dispatcher
+            取集合中<strong>优先级最高</strong>的 key 去查表、调用对应
+            kernel。</p>
+            <p>关键在于后半句：被调用的那层 kernel
+            做完自己的事，通常会<strong>把自己的 key 排除掉，再
+            redispatch</strong>，于是调用落到下一个
+            key。整个过程像剥洋葱：</p>
+            <figure>
+            <img src="./WikiImage/torch_dispatcher_path.svg"
+            alt="一次 torch.add 的调度路径" />
+            <figcaption aria-hidden="true">一次 torch.add
+            的调度路径</figcaption>
+            </figure>
+            <p>几个直接推论：</p>
+            <ul>
+            <li><strong>autograd
+            不是算子内部的逻辑，而是一层包装。</strong>
+            <code>AutogradCUDA</code> 层的 kernel 负责记录
+            <code>grad_fn</code>，然后 redispatch；真正的加法在下面的
+            <code>CUDA</code> 层。</li>
+            <li><strong>某层不关心某个算子，就注册
+            fallthrough。</strong> autocast 只为 matmul、conv
+            等列表内的算子提供 kernel，<code>add</code>
+            在这一层直接穿过。</li>
+            <li><strong>backend 只是众多 key 中的一个。</strong>
+            设备选择与 autograd、autocast
+            用的是同一套机制，只是优先级最低、离数据最近。</li>
+            <li><strong>新机制可以只加一个 key。</strong> FakeTensor
+            通过 <code>Python</code> key 截获调用，它的优先级低于
+            autograd、高于 backend，所以在追踪时仍会经过 autograd
+            层，但不会进入真实 CUDA kernel。</li>
+            </ul>
+            <h3 id="inference_mode-省掉的就是两层洋葱">inference_mode
+            省掉的就是两层洋葱</h3>
+            <p>有了 key 的视角，<code>no_grad</code> 与
+            <code>inference_mode</code>
+            的差别就很具体了（语义层面的区别见 <a
+            href="./torch_inference_mode.html">推理模式与状态</a>）：</p>
+            <table>
+            <colgroup>
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>上下文</th>
+            <th>Autograd 层</th>
+            <th>ADInplaceOrView 层</th>
+            <th>产生的张量</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>默认</td>
+            <td>进入，可能记录 <code>grad_fn</code></td>
+            <td>进入，in-place/view 时维护 version counter 与 view
+            关系</td>
+            <td>普通张量</td>
+            </tr>
+            <tr>
+            <td><code>no_grad</code></td>
+            <td>仍进入，检查 grad mode 后不记录</td>
+            <td>仍进入</td>
+            <td>普通张量</td>
+            </tr>
+            <tr>
+            <td><code>inference_mode</code></td>
+            <td>通过 TLS exclude 整体跳过</td>
+            <td>同样跳过</td>
+            <td>inference tensor，不带 version counter</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>所以 <code>inference_mode</code>
+            的收益来自每次调用少走两层
+            kernel、少维护一些元数据；它不改变 backend kernel，GPU
+            上执行的计算完全相同。在 batch 很小、算子很多的 decode
+            中，这类 CPU 侧开销才有可能显著；在 GPU 已经满载的 prefill
+            中通常不明显。</p>
+            <h3 id="backend-层一个-op-不等于一个-kernel">backend
+            层：一个 op 不等于一个 kernel</h3>
+            <p>调度到 <code>CUDA</code> key
+            之后，事情还没有结束。backend kernel 内部又分几种情况：</p>
+            <ul>
+            <li><strong>逐元素与归约算子走 TensorIterator。</strong>
+            它统一处理广播出输出 shape、按类型提升规则确定计算
+            dtype、分配输出、合并可以合并的维度，再根据 stride
+            和对齐情况选择向量化路径或通用的按索引计算路径。所以输入非连续、dtype
+            混合，并不一定报错，但可能走慢一点的路径或多一次类型转换。广播语义见
+            <a
+            href="./torch_broadcast_indexing.md">广播与索引</a>，类型提升见
+            <a href="./torch_numerical_precision.html">dtype
+            与数值精度</a>。</li>
+            <li><strong>矩阵乘法调用厂商库。</strong>
+            <code>aten::mm</code>、<code>aten::addmm</code> 的 CUDA
+            实现通常转给 cuBLAS / cuBLASLt，profiler 里看到的是
+            <code>sm90_xmma_gemm_...</code>、<code>cutlass_...</code>
+            一类名字，而不是 <code>mm</code>。</li>
+            <li><strong>组合算子（composite）由其他算子拼成。</strong>
+            有些 ATen 算子没有自己的 backend
+            kernel，而是调用其他算子实现，例如 <code>linear</code>
+            会分解为转置与 <code>addmm</code>/<code>matmul</code>
+            等。一次 Python 调用于是展开成若干 <code>aten::</code>
+            子调用，每个可能各对应零个或多个 kernel。</li>
+            <li><strong>元数据算子没有 kernel。</strong>
+            <code>view</code>、<code>transpose</code>、<code>expand</code>
+            只改 shape/stride（见 <a
+            href="./torch_tensor_memory.html">张量内存</a>），在 GPU
+            上什么都不跑；反之
+            <code>.contiguous()</code>、<code>.to()</code>
+            在需要时会悄悄插入 <code>aten::copy_</code>。</li>
+            </ul>
+            <p>结论是：<strong>Python 一行代码 → 一个或多个 ATen 算子 →
+            零个、一个或多个 GPU kernel。</strong> 估计 GPU 工作量要看
+            profiler，不能看代码行数。</p>
+            <h3 id="在-profiler-里认出这条路径">在 profiler
+            里认出这条路径</h3>
+            <p><code>torch.profiler</code> 在 Dispatcher 处埋点，因此
+            CPU 一侧按算子名嵌套显示，CUDA 一侧是真正的 kernel
+            名，两者通过 launch 关联。读 trace
+            时可以把名字当作调度路径的“化石”：</p>
+            <table>
+            <colgroup>
+            <col style="width: 50%" />
+            <col style="width: 50%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>看到的名字</th>
+            <th>说明</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td><code>aten::linear</code> 下嵌套
+            <code>aten::t</code>、<code>aten::addmm</code></td>
+            <td>组合算子在分解；外层的 CPU 时间包含内层</td>
+            </tr>
+            <tr>
+            <td><code>aten::to</code> / <code>aten::_to_copy</code> /
+            <code>aten::copy_</code></td>
+            <td>发生了 dtype 或设备转换、或为满足布局要求的复制</td>
+            </tr>
+            <tr>
+            <td><code>aten::empty</code> /
+            <code>aten::empty_strided</code></td>
+            <td>分配输出；频繁出现说明中间张量多</td>
+            </tr>
+            <tr>
+            <td><code>aten::item</code> /
+            <code>aten::_local_scalar_dense</code></td>
+            <td>读取设备值到主机，通常意味着同步（见 <a
+            href="./torch_cuda_execution.html">CUDA 异步执行</a>）</td>
+            </tr>
+            <tr>
+            <td><code>sgl_kernel::rmsnorm</code>、<code>sglang::...</code></td>
+            <td>自定义算子，和 <code>aten::</code> 一样经过
+            Dispatcher</td>
+            </tr>
+            <tr>
+            <td>CPU 侧有算子、CUDA 侧没有 kernel</td>
+            <td>元数据算子，或 kernel 由下层其他算子发出</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>判断 dispatch 开销是否是瓶颈，看的是 GPU kernel
+            之间的空隙，而不是 <code>aten::</code> 行的 CPU
+            耗时本身。CUDA Graph 在 replay 时完全不经过 Python 和
+            Dispatcher——整条洋葱路径只在 capture
+            时走一遍，这正是它能消除这部分开销的原因（见 <a
+            href="./cuda_graph.html">Cuda Graph</a>）。</p>
+            <h3
+            id="自定义算子把黑盒接入调度表">自定义算子：把黑盒接入调度表</h3>
+            <p>写了一个 CUDA/Triton kernel，用 pybind11 暴露成普通
+            Python 函数，eager
+            下当然能跑。问题出在其他“执行者”身上：<code>torch.compile</code>
+            追踪时会尝试钻进这个函数，遇到 Triton JIT、文件 I/O
+            或主机端逻辑就断图或失败；就算它不钻进去，也无法知道这个函数的输出
+            shape、改写了哪个参数，因而无法把它安全地放进图里。</p>
+            <p>注册成 torch
+            算子就是给这个黑盒补上一张“调度表条目”，由三部分组成：</p>
+            <figure>
+            <img src="./WikiImage/torch_dispatcher_custom_op.svg"
+            alt="自定义算子的三个组成部分" />
+            <figcaption
+            aria-hidden="true">自定义算子的三个组成部分</figcaption>
+            </figure>
+            <ol type="1">
+            <li><strong>schema</strong>：名字和签名。<code>Tensor!</code>（或
+            Python 侧的
+            <code>mutates_args</code>）声明哪个参数会被原地写——编译器做
+            functionalization、判断依赖关系都靠它，写错会导致结果被错误重排或复用。</li>
+            <li><strong>真实实现</strong>：挂在 <code>CUDA</code> 等
+            backend key 上，eager 执行和 CUDA Graph 捕获时调用。</li>
+            <li><strong>fake 实现</strong>：挂在 Meta/Fake
+            路径上，只根据输入元数据构造输出（通常是
+            <code>new_empty</code>/<code>empty_like</code>），不读写真实数据。<code>torch.compile</code>
+            用 FakeTensor 追踪时调用它推导
+            shape，算子本身作为不透明节点留在图里。</li>
+            </ol>
+            <p>接口有三档：C++ 的
+            <code>TORCH_LIBRARY</code>/<code>TORCH_LIBRARY_FRAGMENT</code>
+            加 <code>m.def</code>/<code>m.impl</code>；Python 的底层
+            <code>torch.library.Library</code> 加
+            <code>define</code>/<code>impl</code>/<code>_register_fake</code>；以及高层的
+            <code>torch.library.custom_op</code>
+            装饰器。高层接口会自动处理 autograd、functionalization
+            等更多 key，便利但每次调用的 Python 侧开销更大。见 <a
+            href="https://docs.pytorch.org/tutorials/advanced/custom_ops_landing_page.html">Custom
+            Operators</a>。</p>
+            <h3 id="在-sglang-中两套注册路径">在 SGLang
+            中：两套注册路径</h3>
+            <p>SGLang 同时用了 C++ 和 Python 两种方式（基于当前
+            <code>python/sglang/</code> 代码）。</p>
+            <p><strong>C++ kernel：<code>sgl_kernel</code>
+            命名空间。</strong>
+            <code>kernels/aot/csrc/common_extension.cc</code> 中的
+            <code>TORCH_LIBRARY_FRAGMENT(sgl_kernel, m)</code> 逐个注册
+            kernel，例如：</p>
+            <div class="sourceCode" id="cb3"><pre
+            class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>m<span class="op">.</span>def<span class="op">(</span><span class="st">&quot;rmsnorm(Tensor! output, Tensor input, Tensor weight, float eps, bool enable_pdl) -&gt; ()&quot;</span><span class="op">);</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>m<span class="op">.</span>impl<span class="op">(</span><span class="st">&quot;rmsnorm&quot;</span><span class="op">,</span> torch<span class="op">::</span>kCUDA<span class="op">,</span> <span class="op">&amp;</span>rmsnorm<span class="op">);</span></span></code></pre></div>
+            <p>schema 用 <code>Tensor! output</code> 和
+            <code>-&gt; ()</code>
+            声明这是写入调用方提供的输出缓冲区的算子，只注册了
+            <code>kCUDA</code> 实现，没有 autograd
+            公式——它只为推理服务。Python 包装
+            <code>kernels/aot/python/sgl_kernel/elementwise.py</code> 先
+            <code>torch.empty_like(input)</code> 分配输出，再调用
+            <code>torch.ops.sgl_kernel.rmsnorm.default(...)</code>：直接取
+            <code>.default</code> overload，省去按参数匹配 overload
+            的步骤。这些 C++ 算子的 fake 实现在 Python 侧按需补上，例如
+            <code>srt/layers/quantization/fp8_utils.py</code> 用
+            <code>register_fake_if_exists("sgl_kernel::fp8_scaled_mm")</code>
+            注册一个只返回
+            <code>mat_a.new_empty((M, N), dtype=out_dtype)</code>
+            的函数；<code>register_fake_if_exists</code>（<code>srt/utils/patch_torch.py</code>）在算子不存在时跳过，以适配不同的
+            kernel 构建。</p>
+            <p><strong>Python 函数：<code>sglang</code>
+            命名空间。</strong> <code>srt/utils/common.py</code> 定义了
+            <code>sglang_lib = Library("sglang", "FRAGMENT")</code> 和
+            <code>direct_register_custom_op()</code>：用
+            <code>torch.library.infer_schema</code> 从类型注解推出
+            schema，<code>define</code> 后把函数直接 <code>impl</code>
+            到 <code>CUDA</code> key（NPU、XPU、MUSA 上换成对应
+            key），有 fake 实现时再
+            <code>_register_fake</code>。源码注释说明了为什么不用
+            <code>torch.library.custom_op</code>——后者要处理复杂的调度逻辑，开销明显，而直接注册到
+            backend key 只多一次 Dispatcher 查表。日常使用的是
+            <code>srt/utils/custom_op.py</code> 里的
+            <code>@register_custom_op</code> 装饰器，它在内部调用
+            <code>direct_register_custom_op</code>，并可以根据
+            <code>out_shape</code> 自动生成 fake（对指定参数
+            <code>empty_like</code>），原地算子则不需要输出。装饰后返回的是
+            <code>torch.ops.sglang.&lt;op_name&gt;</code>
+            本身，所以之后的调用都经过 Dispatcher。</p>
+            <p>这条路径最重要的用户是
+            attention。<code>srt/layers/radix_attention.py</code>
+            中：</p>
+            <div class="sourceCode" id="cb4"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="at">@register_custom_op</span>(mutates_args<span class="op">=</span>[<span class="st">&quot;output&quot;</span>])</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="at">@register_split_op</span>()</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> unified_attention_with_output(query, key, value, output, save_kv_cache, layer_id, ...) <span class="op">-&gt;</span> <span class="va">None</span>:</span></code></pre></div>
+            <p>attention 的实现依赖运行时的
+            <code>ForwardBatch</code>、KV cache 索引和后端选择，不适合被
+            Dynamo 追踪展开。注册成算子后，它在 FX 图里只是一个写入
+            <code>output</code> 的节点；<code>register_split_op()</code>
+            再把 <code>sglang.unified_attention_with_output</code> 加入
+            <code>SPLIT_OPS</code>，<code>compilation/backend.py</code>
+            的 <code>split_graph()</code>
+            在这些节点处把图切开，attention
+            之间的部分分别编译、捕获，形成 piecewise CUDA Graph。对
+            flashinfer 这类在内部做 JIT
+            编译或动态加载的外部函数，<code>register_custom_op_from_extern()</code>（同在
+            <code>custom_op.py</code>）做的是同样的事：把它包成不透明算子，用
+            fake 实现传播 shape/dtype。</p>
+            <h3 id="小结">小结</h3>
+            <p>Dispatcher 把“一个算子”变成“一张按 dispatch key
+            索引的表”：autograd、autocast、追踪、backend
+            各占一层，每次调用按 key 优先级剥洋葱、逐层
+            redispatch，最后才落到真正的 kernel，而 backend kernel
+            本身又可能拆成多个 GPU kernel 或零个。理解了这张表，就能解释
+            <code>inference_mode</code> 省下了什么、profiler 里的
+            <code>aten::</code> 名字意味着什么，以及为什么自定义 kernel
+            要以“schema + 真实实现 + fake
+            实现”的形式注册——只有进了这张表，它才能和
+            <code>torch.compile</code>、CUDA Graph
+            等其他执行者协作，SGLang 的 <code>sgl_kernel</code> 与
+            <code>sglang</code> 两个算子命名空间正是这样接入的。</p>
+          </main>
+        <aside class="wiki-toc">
+      <ul>
+      <li><a href="#问题一个算子要同时服务很多执行者"
+      id="toc-问题一个算子要同时服务很多执行者">问题：一个算子要同时服务很多“执行者”</a></li>
+      <li><a href="#抽象算子是一张按-dispatch-key-索引的表"
+      id="toc-抽象算子是一张按-dispatch-key-索引的表">抽象：算子是一张按
+      dispatch key 索引的表</a></li>
+      <li><a href="#inference_mode-省掉的就是两层洋葱"
+      id="toc-inference_mode-省掉的就是两层洋葱">inference_mode
+      省掉的就是两层洋葱</a></li>
+      <li><a href="#backend-层一个-op-不等于一个-kernel"
+      id="toc-backend-层一个-op-不等于一个-kernel">backend 层：一个 op
+      不等于一个 kernel</a></li>
+      <li><a href="#在-profiler-里认出这条路径"
+      id="toc-在-profiler-里认出这条路径">在 profiler
+      里认出这条路径</a></li>
+      <li><a href="#自定义算子把黑盒接入调度表"
+      id="toc-自定义算子把黑盒接入调度表">自定义算子：把黑盒接入调度表</a></li>
+      <li><a href="#在-sglang-中两套注册路径"
+      id="toc-在-sglang-中两套注册路径">在 SGLang
+      中：两套注册路径</a></li>
+      <li><a href="#小结" id="toc-小结">小结</a></li>
+      </ul>
+    </aside>
+      </div>
+</body>
+
+</html>

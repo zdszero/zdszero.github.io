@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 440" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#868e96"/>
+    </marker>
+    <marker id="arT" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#0ca678"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="900" height="440" rx="12" fill="#ffffff"/>
+  <text x="30" y="34" font-size="20" font-weight="700" fill="#212529">Capture 录下的是 GPU 命令和指针，不是 Python 函数</text>
+  <text x="30" y="56" font-size="13" fill="#868e96">CPU 逻辑只在 capture 那一次真正执行；replay 只把图里的 kernel 按原参数、原地址重放</text>
+
+  <!-- capture column -->
+  <rect x="30" y="78" width="270" height="262" rx="10" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="46" y="102" font-size="14" font-weight="700" fill="#3b5bdb">① capture：forward 真跑一遍</text>
+  <text x="46" y="122" font-size="11.5" fill="#868e96">在 capture stream 上，命令只记录不执行</text>
+  <rect x="46" y="136" width="238" height="40" rx="8" fill="#f8f9fa" stroke="#adb5bd"/>
+  <text x="56" y="153" font-size="11.5" font-family="monospace" fill="#495057">if bs &gt; 8: use_split()</text>
+  <text x="56" y="168" font-size="11" fill="#868e96">CPU 分支：此刻的取值被冻结</text>
+  <rect x="46" y="186" width="238" height="40" rx="8" fill="#ffffff" stroke="#4c6ef5"/>
+  <text x="56" y="203" font-size="11.5" font-family="monospace" fill="#3b5bdb">h = embed(static_in)</text>
+  <text x="56" y="218" font-size="11" fill="#495057">launch A(src=0x..a0, dst=0x..c0)</text>
+  <rect x="46" y="236" width="238" height="40" rx="8" fill="#ffffff" stroke="#4c6ef5"/>
+  <text x="56" y="253" font-size="11.5" font-family="monospace" fill="#3b5bdb">h = attn(h, kv, meta)</text>
+  <text x="56" y="268" font-size="11" fill="#495057">launch B(…, meta=0x..e0)</text>
+  <rect x="46" y="286" width="238" height="40" rx="8" fill="#ffffff" stroke="#4c6ef5"/>
+  <text x="56" y="303" font-size="11.5" font-family="monospace" fill="#3b5bdb">static_out = head(h)</text>
+  <text x="56" y="318" font-size="11" fill="#495057">launch C(dst=0x..f0)</text>
+  <path d="M302 210 L336 210" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+
+  <!-- graph column -->
+  <rect x="340" y="78" width="230" height="262" rx="10" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="356" y="102" font-size="14" font-weight="700" fill="#0b7285">② instantiate：CUDAGraph</text>
+  <text x="356" y="122" font-size="11.5" fill="#868e96">只剩 kernel 节点 + 固化的参数</text>
+  <rect x="380" y="140" width="150" height="38" rx="8" fill="#ffffff" stroke="#0ca678"/>
+  <text x="455" y="157" font-size="12.5" font-weight="700" fill="#0b7285" text-anchor="middle">A</text>
+  <text x="455" y="171" font-size="10.5" font-family="monospace" fill="#495057" text-anchor="middle">0x..a0 → 0x..c0</text>
+  <path d="M455 178 L455 196" stroke="#0ca678" stroke-width="2" marker-end="url(#arT)"/>
+  <rect x="380" y="200" width="150" height="38" rx="8" fill="#ffffff" stroke="#0ca678"/>
+  <text x="455" y="217" font-size="12.5" font-weight="700" fill="#0b7285" text-anchor="middle">B</text>
+  <text x="455" y="231" font-size="10.5" font-family="monospace" fill="#495057" text-anchor="middle">meta @ 0x..e0</text>
+  <path d="M455 238 L455 256" stroke="#0ca678" stroke-width="2" marker-end="url(#arT)"/>
+  <rect x="380" y="260" width="150" height="38" rx="8" fill="#ffffff" stroke="#0ca678"/>
+  <text x="455" y="277" font-size="12.5" font-weight="700" fill="#0b7285" text-anchor="middle">C</text>
+  <text x="455" y="291" font-size="10.5" font-family="monospace" fill="#495057" text-anchor="middle">→ 0x..f0</text>
+  <text x="455" y="324" font-size="11" fill="#868e96" text-anchor="middle">if 分支、Python 变量都不在图里</text>
+  <path d="M572 210 L606 210" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+
+  <!-- replay column -->
+  <rect x="610" y="78" width="260" height="262" rx="10" fill="#fff9db" stroke="#f08c00"/>
+  <text x="626" y="102" font-size="14" font-weight="700" fill="#e8590c">③ replay：每个 step</text>
+  <text x="626" y="122" font-size="11.5" fill="#868e96">一次提交，GPU 执行 A→B→C</text>
+  <rect x="626" y="136" width="228" height="40" rx="8" fill="#ffffff" stroke="#f08c00"/>
+  <text x="636" y="153" font-size="11.5" font-family="monospace" fill="#e8590c">static_in.copy_(new_ids)</text>
+  <text x="636" y="168" font-size="11" fill="#495057">新数据写进 0x..a0，而不是换张量</text>
+  <rect x="626" y="186" width="228" height="40" rx="8" fill="#ffffff" stroke="#f08c00"/>
+  <text x="636" y="203" font-size="11.5" font-family="monospace" fill="#e8590c">meta 缓冲区原地更新</text>
+  <text x="636" y="218" font-size="11" fill="#495057">seq_lens、页表写进 0x..e0</text>
+  <rect x="626" y="236" width="228" height="40" rx="8" fill="#ffffff" stroke="#f08c00"/>
+  <text x="636" y="253" font-size="11.5" font-family="monospace" fill="#e8590c">g.replay()</text>
+  <text x="636" y="268" font-size="11" fill="#495057">CPU 侧只有一次 graph launch</text>
+  <rect x="626" y="286" width="228" height="40" rx="8" fill="#fff5f5" stroke="#fa5252"/>
+  <text x="636" y="303" font-size="11.5" font-family="monospace" fill="#c92a2a">static_out 是同一块内存</text>
+  <text x="636" y="318" font-size="11" fill="#495057">下次 replay 会覆盖，需先消费或 clone</text>
+
+  <rect x="30" y="360" width="840" height="58" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="46" y="384" font-size="12" fill="#495057">关键：图把“哪块地址上跑哪个 kernel”固定下来。想让 replay 算新数据，只能改那些地址里的内容；</text>
+  <text x="46" y="404" font-size="12" fill="#495057">想换 shape、换分支、换指针，就只能换一张图（分档 / 多份图）或者在图外处理（piecewise）。</text>
+</svg>

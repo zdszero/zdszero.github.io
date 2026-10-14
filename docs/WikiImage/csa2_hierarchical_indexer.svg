@@ -1,0 +1,266 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="600" rx="12" fill="#ffffff"/>
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#868e96"/>
+    </marker>
+  </defs>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">Hierarchical Sparse Indexer：一次全量召回，之后只在池内精排</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">decoder 内：L21 扫一遍全部位置并圈出候选池，L25 / L29 / L33 / L37 只给池里的位置打分</text>
+  <rect x="24" y="74" width="852" height="170" rx="10" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="44" y="98" font-size="13.5" font-weight="700" fill="#3b5bdb">① 第一个 Full 层（L21）：给全部因果可见位置打分</text>
+  <text x="856" y="98" text-anchor="end" font-size="12" font-weight="700" fill="#e8590c">每 query 打分 N 次</text>
+  <rect x="60" y="118" width="7" height="20" rx="1.5" fill="#dee2e6"/>
+  <rect x="68" y="118" width="7" height="20" rx="1.5" fill="#f1f3f5"/>
+  <rect x="76" y="118" width="7" height="20" rx="1.5" fill="#dee2e6"/>
+  <rect x="84" y="118" width="7" height="20" rx="1.5" fill="#ced4da"/>
+  <rect x="92" y="118" width="7" height="20" rx="1.5" fill="#f1f3f5"/>
+  <rect x="100" y="118" width="7" height="20" rx="1.5" fill="#f1f3f5"/>
+  <rect x="108" y="118" width="7" height="20" rx="1.5" fill="#ced4da"/>
+  <rect x="116" y="118" width="7" height="20" rx="1.5" fill="#f1f3f5"/>
+  <rect x="84" y="152" width="16" height="14" rx="2" fill="#adb5bd"/>
+  <rect x="130" y="118" width="7" height="20" rx="1.5" fill="#dee2e6"/>
+  <rect x="138" y="118" width="7" height="20" rx="1.5" fill="#ced4da"/>
+  <rect x="146" y="118" width="7" height="20" rx="1.5" fill="#f1f3f5"/>
+  <rect x="154" y="118" width="7" height="20" rx="1.5" fill="#adb5bd"/>
+  <rect x="162" y="118" width="7" height="20" rx="1.5" fill="#f1f3f5"/>
+  <rect x="170" y="118" width="7" height="20" rx="1.5" fill="#f1f3f5"/>
+  <rect x="178" y="118" width="7" height="20" rx="1.5" fill="#868e96"/>
+  <rect x="186" y="118" width="7" height="20" rx="1.5" fill="#dee2e6"/>
+  <rect x="154" y="142" width="16" height="24" rx="2" fill="#f08c00"/>
+  <rect x="127" y="114" width="69" height="28" rx="4" fill="none" stroke="#f08c00" stroke-width="2"/>
+  <rect x="200" y="118" width="7" height="20" rx="1.5" fill="#adb5bd"/>
+  <rect x="208" y="118" width="7" height="20" rx="1.5" fill="#ced4da"/>
+  <rect x="216" y="118" width="7" height="20" rx="1.5" fill="#dee2e6"/>
+  <rect x="224" y="118" width="7" height="20" rx="1.5" fill="#f1f3f5"/>
+  <rect x="232" y="118" width="7" height="20" rx="1.5" fill="#ced4da"/>
+  <rect x="240" y="118" width="7" height="20" rx="1.5" fill="#f1f3f5"/>
+  <rect x="248" y="118" width="7" height="20" rx="1.5" fill="#f1f3f5"/>
+  <rect x="256" y="118" width="7" height="20" rx="1.5" fill="#ced4da"/>
+  <rect x="224" y="147" width="16" height="19" rx="2" fill="#adb5bd"/>
+  <rect x="270" y="118" width="7" height="20" rx="1.5" fill="#ced4da"/>
+  <rect x="278" y="118" width="7" height="20" rx="1.5" fill="#ced4da"/>
+  <rect x="286" y="118" width="7" height="20" rx="1.5" fill="#dee2e6"/>
+  <rect x="294" y="118" width="7" height="20" rx="1.5" fill="#f1f3f5"/>
+  <rect x="302" y="118" width="7" height="20" rx="1.5" fill="#f1f3f5"/>
+  <rect x="310" y="118" width="7" height="20" rx="1.5" fill="#f1f3f5"/>
+  <rect x="318" y="118" width="7" height="20" rx="1.5" fill="#ced4da"/>
+  <rect x="326" y="118" width="7" height="20" rx="1.5" fill="#f1f3f5"/>
+  <rect x="294" y="152" width="16" height="14" rx="2" fill="#adb5bd"/>
+  <rect x="340" y="118" width="7" height="20" rx="1.5" fill="#dee2e6"/>
+  <rect x="348" y="118" width="7" height="20" rx="1.5" fill="#dee2e6"/>
+  <rect x="356" y="118" width="7" height="20" rx="1.5" fill="#868e96"/>
+  <rect x="364" y="118" width="7" height="20" rx="1.5" fill="#adb5bd"/>
+  <rect x="372" y="118" width="7" height="20" rx="1.5" fill="#f1f3f5"/>
+  <rect x="380" y="118" width="7" height="20" rx="1.5" fill="#ced4da"/>
+  <rect x="388" y="118" width="7" height="20" rx="1.5" fill="#dee2e6"/>
+  <rect x="396" y="118" width="7" height="20" rx="1.5" fill="#ced4da"/>
+  <rect x="364" y="142" width="16" height="24" rx="2" fill="#f08c00"/>
+  <rect x="337" y="114" width="69" height="28" rx="4" fill="none" stroke="#f08c00" stroke-width="2"/>
+  <rect x="410" y="118" width="7" height="20" rx="1.5" fill="#dee2e6"/>
+  <rect x="418" y="118" width="7" height="20" rx="1.5" fill="#f1f3f5"/>
+  <rect x="426" y="118" width="7" height="20" rx="1.5" fill="#ced4da"/>
+  <rect x="434" y="118" width="7" height="20" rx="1.5" fill="#ced4da"/>
+  <rect x="442" y="118" width="7" height="20" rx="1.5" fill="#f1f3f5"/>
+  <rect x="450" y="118" width="7" height="20" rx="1.5" fill="#ced4da"/>
+  <rect x="458" y="118" width="7" height="20" rx="1.5" fill="#f1f3f5"/>
+  <rect x="466" y="118" width="7" height="20" rx="1.5" fill="#ced4da"/>
+  <rect x="434" y="152" width="16" height="14" rx="2" fill="#adb5bd"/>
+  <rect x="480" y="118" width="7" height="20" rx="1.5" fill="#f1f3f5"/>
+  <rect x="488" y="118" width="7" height="20" rx="1.5" fill="#dee2e6"/>
+  <rect x="496" y="118" width="7" height="20" rx="1.5" fill="#ced4da"/>
+  <rect x="504" y="118" width="7" height="20" rx="1.5" fill="#ced4da"/>
+  <rect x="512" y="118" width="7" height="20" rx="1.5" fill="#adb5bd"/>
+  <rect x="520" y="118" width="7" height="20" rx="1.5" fill="#dee2e6"/>
+  <rect x="528" y="118" width="7" height="20" rx="1.5" fill="#dee2e6"/>
+  <rect x="536" y="118" width="7" height="20" rx="1.5" fill="#868e96"/>
+  <rect x="504" y="142" width="16" height="24" rx="2" fill="#f08c00"/>
+  <rect x="477" y="114" width="69" height="28" rx="4" fill="none" stroke="#f08c00" stroke-width="2"/>
+  <rect x="550" y="118" width="7" height="20" rx="1.5" fill="#f1f3f5"/>
+  <rect x="558" y="118" width="7" height="20" rx="1.5" fill="#f1f3f5"/>
+  <rect x="566" y="118" width="7" height="20" rx="1.5" fill="#ced4da"/>
+  <rect x="574" y="118" width="7" height="20" rx="1.5" fill="#f1f3f5"/>
+  <rect x="582" y="118" width="7" height="20" rx="1.5" fill="#f1f3f5"/>
+  <rect x="590" y="118" width="7" height="20" rx="1.5" fill="#ced4da"/>
+  <rect x="598" y="118" width="7" height="20" rx="1.5" fill="#dee2e6"/>
+  <rect x="606" y="118" width="7" height="20" rx="1.5" fill="#ced4da"/>
+  <rect x="574" y="152" width="16" height="14" rx="2" fill="#adb5bd"/>
+  <rect x="620" y="118" width="7" height="20" rx="1.5" fill="#dee2e6"/>
+  <rect x="628" y="118" width="7" height="20" rx="1.5" fill="#dee2e6"/>
+  <rect x="636" y="118" width="7" height="20" rx="1.5" fill="#ced4da"/>
+  <rect x="644" y="118" width="7" height="20" rx="1.5" fill="#dee2e6"/>
+  <rect x="652" y="118" width="7" height="20" rx="1.5" fill="#dee2e6"/>
+  <rect x="660" y="118" width="7" height="20" rx="1.5" fill="#ced4da"/>
+  <rect x="668" y="118" width="7" height="20" rx="1.5" fill="#adb5bd"/>
+  <rect x="676" y="118" width="7" height="20" rx="1.5" fill="#f1f3f5"/>
+  <rect x="644" y="147" width="16" height="19" rx="2" fill="#adb5bd"/>
+  <rect x="690" y="118" width="7" height="20" rx="1.5" fill="#f1f3f5"/>
+  <rect x="698" y="118" width="7" height="20" rx="1.5" fill="#dee2e6"/>
+  <rect x="706" y="118" width="7" height="20" rx="1.5" fill="#f1f3f5"/>
+  <rect x="714" y="118" width="7" height="20" rx="1.5" fill="#dee2e6"/>
+  <rect x="722" y="118" width="7" height="20" rx="1.5" fill="#dee2e6"/>
+  <rect x="730" y="118" width="7" height="20" rx="1.5" fill="#868e96"/>
+  <rect x="738" y="118" width="7" height="20" rx="1.5" fill="#ced4da"/>
+  <rect x="746" y="118" width="7" height="20" rx="1.5" fill="#f1f3f5"/>
+  <rect x="714" y="142" width="16" height="24" rx="2" fill="#f08c00"/>
+  <rect x="687" y="114" width="69" height="28" rx="4" fill="none" stroke="#f08c00" stroke-width="2"/>
+  <rect x="760" y="118" width="7" height="20" rx="1.5" fill="#ced4da"/>
+  <rect x="768" y="118" width="7" height="20" rx="1.5" fill="#dee2e6"/>
+  <rect x="776" y="118" width="7" height="20" rx="1.5" fill="#ced4da"/>
+  <rect x="784" y="118" width="7" height="20" rx="1.5" fill="#dee2e6"/>
+  <rect x="792" y="118" width="7" height="20" rx="1.5" fill="#f1f3f5"/>
+  <rect x="800" y="118" width="7" height="20" rx="1.5" fill="#f1f3f5"/>
+  <rect x="808" y="118" width="7" height="20" rx="1.5" fill="#dee2e6"/>
+  <rect x="816" y="118" width="7" height="20" rx="1.5" fill="#dee2e6"/>
+  <rect x="784" y="152" width="16" height="14" rx="2" fill="#adb5bd"/>
+  <text x="836" y="133" font-size="14" fill="#868e96">…</text>
+  <text x="836" y="162" font-size="10.5" fill="#868e96">块分数</text>
+  <text x="44" y="190" font-size="11.5" fill="#495057">格子深浅 = index score；每 8 个位置一块，块分数取块内最大值（下方小柱），选出分数最高的块（橙框；实际 ≤ 2048 块）</text>
+  <text x="44" y="210" font-size="11.5" fill="#495057">同一次打分里，L21 还在全量上选出自己的 Top-512 —— 它既是 cache 的产出者，也是候选池的产出者</text>
+  <text x="44" y="230" font-size="11" fill="#868e96">图中 1 格 = 1 个 main KV 位置（decoder 的 m = 1，位置即 token）</text>
+  <path d="M450 246 L450 258" fill="none" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <rect x="150" y="262" width="600" height="80" rx="8" fill="#fff4e6" stroke="#f08c00"/>
+  <text x="450" y="282" text-anchor="middle" font-size="12.5" font-weight="700" fill="#e8590c">候选池：选中块覆盖的全部位置，≤ 2048 块 × 8 = 16384 个</text>
+  <rect x="176" y="292" width="14" height="18" rx="2" fill="#ffffff" stroke="#f08c00"/>
+  <rect x="192" y="292" width="14" height="18" rx="2" fill="#ffffff" stroke="#f08c00"/>
+  <rect x="208" y="292" width="14" height="18" rx="2" fill="#ffffff" stroke="#f08c00"/>
+  <rect x="224" y="292" width="14" height="18" rx="2" fill="#ffffff" stroke="#f08c00"/>
+  <rect x="240" y="292" width="14" height="18" rx="2" fill="#ffffff" stroke="#f08c00"/>
+  <rect x="256" y="292" width="14" height="18" rx="2" fill="#ffffff" stroke="#f08c00"/>
+  <rect x="272" y="292" width="14" height="18" rx="2" fill="#ffffff" stroke="#f08c00"/>
+  <rect x="288" y="292" width="14" height="18" rx="2" fill="#ffffff" stroke="#f08c00"/>
+  <rect x="316" y="292" width="14" height="18" rx="2" fill="#ffffff" stroke="#f08c00"/>
+  <rect x="332" y="292" width="14" height="18" rx="2" fill="#ffffff" stroke="#f08c00"/>
+  <rect x="348" y="292" width="14" height="18" rx="2" fill="#ffffff" stroke="#f08c00"/>
+  <rect x="364" y="292" width="14" height="18" rx="2" fill="#ffffff" stroke="#f08c00"/>
+  <rect x="380" y="292" width="14" height="18" rx="2" fill="#ffffff" stroke="#f08c00"/>
+  <rect x="396" y="292" width="14" height="18" rx="2" fill="#ffffff" stroke="#f08c00"/>
+  <rect x="412" y="292" width="14" height="18" rx="2" fill="#ffffff" stroke="#f08c00"/>
+  <rect x="428" y="292" width="14" height="18" rx="2" fill="#ffffff" stroke="#f08c00"/>
+  <rect x="456" y="292" width="14" height="18" rx="2" fill="#ffffff" stroke="#f08c00"/>
+  <rect x="472" y="292" width="14" height="18" rx="2" fill="#ffffff" stroke="#f08c00"/>
+  <rect x="488" y="292" width="14" height="18" rx="2" fill="#ffffff" stroke="#f08c00"/>
+  <rect x="504" y="292" width="14" height="18" rx="2" fill="#ffffff" stroke="#f08c00"/>
+  <rect x="520" y="292" width="14" height="18" rx="2" fill="#ffffff" stroke="#f08c00"/>
+  <rect x="536" y="292" width="14" height="18" rx="2" fill="#ffffff" stroke="#f08c00"/>
+  <rect x="552" y="292" width="14" height="18" rx="2" fill="#ffffff" stroke="#f08c00"/>
+  <rect x="568" y="292" width="14" height="18" rx="2" fill="#ffffff" stroke="#f08c00"/>
+  <rect x="596" y="292" width="14" height="18" rx="2" fill="#ffffff" stroke="#f08c00"/>
+  <rect x="612" y="292" width="14" height="18" rx="2" fill="#ffffff" stroke="#f08c00"/>
+  <rect x="628" y="292" width="14" height="18" rx="2" fill="#ffffff" stroke="#f08c00"/>
+  <rect x="644" y="292" width="14" height="18" rx="2" fill="#ffffff" stroke="#f08c00"/>
+  <rect x="660" y="292" width="14" height="18" rx="2" fill="#ffffff" stroke="#f08c00"/>
+  <rect x="676" y="292" width="14" height="18" rx="2" fill="#ffffff" stroke="#f08c00"/>
+  <rect x="692" y="292" width="14" height="18" rx="2" fill="#ffffff" stroke="#f08c00"/>
+  <rect x="708" y="292" width="14" height="18" rx="2" fill="#ffffff" stroke="#f08c00"/>
+  <text x="450" y="331" text-anchor="middle" font-size="11" fill="#495057">在 decoder 的各 Reindex 层之间共享；大小固定，与 context 长度无关</text>
+  <path d="M450 342 L450 356" fill="none" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <rect x="24" y="360" width="852" height="140" rx="10" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="44" y="384" font-size="13.5" font-weight="700" fill="#e8590c">② Reindex 层：只给池里的位置打分，各自选 Top-512</text>
+  <text x="856" y="384" text-anchor="end" font-size="12" font-weight="700" fill="#0b7285">每 query 打分 ≤ 16384 次</text>
+  <text x="160" y="412" text-anchor="end" font-size="11" font-family="monospace" fill="#495057">L25</text>
+  <rect x="176" y="398" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="192" y="398" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="208" y="398" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="224" y="398" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="240" y="398" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="256" y="398" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="272" y="398" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="288" y="398" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="316" y="398" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="332" y="398" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="348" y="398" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="364" y="398" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="380" y="398" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="396" y="398" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="412" y="398" width="14" height="18" rx="2" fill="#4c6ef5"/>
+  <rect x="428" y="398" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="456" y="398" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="472" y="398" width="14" height="18" rx="2" fill="#4c6ef5"/>
+  <rect x="488" y="398" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="504" y="398" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="520" y="398" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="536" y="398" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="552" y="398" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="568" y="398" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="596" y="398" width="14" height="18" rx="2" fill="#4c6ef5"/>
+  <rect x="612" y="398" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="628" y="398" width="14" height="18" rx="2" fill="#4c6ef5"/>
+  <rect x="644" y="398" width="14" height="18" rx="2" fill="#4c6ef5"/>
+  <rect x="660" y="398" width="14" height="18" rx="2" fill="#4c6ef5"/>
+  <rect x="676" y="398" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="692" y="398" width="14" height="18" rx="2" fill="#4c6ef5"/>
+  <rect x="708" y="398" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <text x="160" y="440" text-anchor="end" font-size="11" font-family="monospace" fill="#495057">L29</text>
+  <rect x="176" y="426" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="192" y="426" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="208" y="426" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="224" y="426" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="240" y="426" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="256" y="426" width="14" height="18" rx="2" fill="#4c6ef5"/>
+  <rect x="272" y="426" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="288" y="426" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="316" y="426" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="332" y="426" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="348" y="426" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="364" y="426" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="380" y="426" width="14" height="18" rx="2" fill="#4c6ef5"/>
+  <rect x="396" y="426" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="412" y="426" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="428" y="426" width="14" height="18" rx="2" fill="#4c6ef5"/>
+  <rect x="456" y="426" width="14" height="18" rx="2" fill="#4c6ef5"/>
+  <rect x="472" y="426" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="488" y="426" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="504" y="426" width="14" height="18" rx="2" fill="#4c6ef5"/>
+  <rect x="520" y="426" width="14" height="18" rx="2" fill="#4c6ef5"/>
+  <rect x="536" y="426" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="552" y="426" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="568" y="426" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="596" y="426" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="612" y="426" width="14" height="18" rx="2" fill="#4c6ef5"/>
+  <rect x="628" y="426" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="644" y="426" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="660" y="426" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="676" y="426" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="692" y="426" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="708" y="426" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <text x="160" y="468" text-anchor="end" font-size="11" font-family="monospace" fill="#495057">L33</text>
+  <rect x="176" y="454" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="192" y="454" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="208" y="454" width="14" height="18" rx="2" fill="#4c6ef5"/>
+  <rect x="224" y="454" width="14" height="18" rx="2" fill="#4c6ef5"/>
+  <rect x="240" y="454" width="14" height="18" rx="2" fill="#4c6ef5"/>
+  <rect x="256" y="454" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="272" y="454" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="288" y="454" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="316" y="454" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="332" y="454" width="14" height="18" rx="2" fill="#4c6ef5"/>
+  <rect x="348" y="454" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="364" y="454" width="14" height="18" rx="2" fill="#4c6ef5"/>
+  <rect x="380" y="454" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="396" y="454" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="412" y="454" width="14" height="18" rx="2" fill="#4c6ef5"/>
+  <rect x="428" y="454" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="456" y="454" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="472" y="454" width="14" height="18" rx="2" fill="#4c6ef5"/>
+  <rect x="488" y="454" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="504" y="454" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="520" y="454" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="536" y="454" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="552" y="454" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="568" y="454" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="596" y="454" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="612" y="454" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="628" y="454" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="644" y="454" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="660" y="454" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="676" y="454" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="692" y="454" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <rect x="708" y="454" width="14" height="18" rx="2" fill="#fff4e6"/>
+  <text x="736" y="430" font-size="11" fill="#3b5bdb">蓝 = 本层 Top-K</text>
+  <text x="736" y="448" font-size="11" fill="#868e96">L37 同理</text>
+  <text x="44" y="490" font-size="11.5" fill="#495057">同一个池、不同的选择：「哪些位置重要」仍可逐层特化。Reuse 层不打分，直接沿用本组 Reindex 的 Top-K。</text>
+  <rect x="24" y="514" width="852" height="70" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="44" y="540" font-size="12" fill="#495057">复杂度从「每个索引层都是 O(N)」变成「一次 O(N) + 若干次 O(|pool|)」，后者与 context 长度无关。</text>
+  <text x="44" y="562" font-size="12" fill="#495057">代价是召回决定上限：1M context 下池只覆盖约 1.6% 的位置，L21 漏掉的位置，后面的层再怎么精排也找不回来。</text>
+</svg>

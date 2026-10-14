@@ -25,82 +25,27 @@
   </title>
     <link rel="stylesheet" href="./WikiTheme/theme/bootstrap.css"  />
         <script defer=""
-        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
-        type="text/javascript"></script>
-        <style type="text/css">
-    /* ---- three column wiki layout (left: site directory, center: content, right: page TOC) ---- */
-    .wiki-layout {
-      display: flex;
-      align-items: flex-start;
-      gap: 24px;
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 0 20px;
-      box-sizing: border-box;
-    }
-    .wiki-sidebar {
-      flex: 0 0 240px;
-      width: 240px;
-      position: sticky;
-      top: 0;
-      max-height: 100vh;
-      overflow-y: auto;
-      padding: 10px 4px 20px 0;
-      border-right: 1px solid #eee;
-      font-size: 14px;
-    }
-    .wiki-sidebar[hidden] { display: none; }
-    .wiki-toc {
-      flex: 0 0 220px;
-      width: 220px;
-      position: sticky;
-      top: 0;
-      max-height: 100vh;
-      overflow-y: auto;
-      padding: 10px 0 20px 4px;
-      border-left: 1px solid #eee;
-      font-size: 14px;
-    }
-    .wiki-main {
-      flex: 1 1 auto;
-      min-width: 0;
-      max-width: 820px;
-      padding: 10px 0 40px;
-    }
-    /* site directory tree */
-    .wiki-sidebar .wiki-home {
-      display: block;
-      font-weight: bold;
-      margin-bottom: 10px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid #eee;
-      text-decoration: none;
-      color: #333;
-    }
-    .wiki-sidebar ul { list-style: none; margin: 0 0 0 12px; padding: 0; }
-    .wiki-sidebar > ul { margin-left: 0; }
-    .wiki-sidebar li { line-height: 1.7; }
-    .wiki-sidebar a { text-decoration: none; color: #555; }
-    .wiki-sidebar a:hover { color: #0088cc; text-decoration: underline; }
-    .wiki-sidebar a.active { color: #0088cc; font-weight: bold; }
-    /* page TOC */
-    .wiki-toc ul { list-style: none; margin: 0 0 0 12px; padding: 0; }
-    .wiki-toc > ul { margin-left: 0; }
-    .wiki-toc li { line-height: 1.6; }
-    .wiki-toc a { text-decoration: none; color: #555; }
-    .wiki-toc a:hover { color: #0088cc; }
-    @media (max-width: 980px) {
-      .wiki-layout { flex-direction: column; }
-      .wiki-sidebar, .wiki-toc {
-        position: static;
-        width: 100%;
-        flex-basis: auto;
-        max-height: none;
-        border: 0;
-      }
-      .wiki-main { max-width: none; }
-    }
-  </style>
+        src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+        <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+        </script>
+        <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+        <!-- wiki three-column layout styles/behavior, kept external so the ~5KB
+       block isn't duplicated into every generated page -->
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/wiki-layout.css" />
+  <script defer src="./WikiTheme/wiki-layout.js"></script>
 </head>
 
 <body>
@@ -125,19 +70,18 @@
             <h3 id="min-max">Min-Max</h3>
             <p>(最小-最大归一化)</p>
             <ul>
-            <li><strong>公式</strong>：<span
-            class="math inline">\(x&#39; = \frac{x - \min(x)}{\max(x) -
-            \min(x)}\)</span></li>
+            <li><strong>公式</strong>：<span class="math inline">x&#39;
+            = \frac{x - \min(x)}{\max(x) - \min(x)}</span></li>
             <li><strong>结果</strong>：数据被压缩到 <strong><span
-            class="math inline">\([0, 1]\)</span></strong> 区间。</li>
+            class="math inline">[0, 1]</span></strong> 区间。</li>
             <li><strong>用途</strong>：图像处理（像素值 0-255 转
             0-1）、某些对范围敏感的算法。</li>
             </ul>
             <h3 id="standardization">Standardization</h3>
             <ul>
-            <li><strong>公式</strong>：<span
-            class="math inline">\(x&#39; = \frac{x -
-            \mu}{\sigma}\)</span> （减去均值，除以标准差）</li>
+            <li><strong>公式</strong>：<span class="math inline">x&#39;
+            = \frac{x - \mu}{\sigma}</span>
+            （减去均值，除以标准差）</li>
             <li><strong>结果</strong>：数据变为<strong>均值为 0，方差为
             1</strong>的标准正态分布。<strong>注意：数值范围不再是
             0-1，可能是 -3 到 +3 甚至更大。</strong></li>
@@ -165,113 +109,112 @@
             中其他样本的数据</strong>，而是对<strong>单个样本的特征维度</strong>进行归一化，因此特别适合
             Transformer、RNN 等序列模型，也天然适用于变长序列。</p>
             <p>对于一个特征向量</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \mathbf{x}=(x_1,x_2,\cdots,x_d)
-            \]</span></p>
+            </span></p>
             <p>LayerNorm
             首先计算该向量在特征维度上的均值和方差，然后进行标准化：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             y_i=
             \frac{x_i-\mu}
             {\sqrt{\sigma^2+\epsilon}}
             \cdot\gamma_i+\beta_i
-            \]</span></p>
+            </span></p>
             <p>其中：</p>
             <ul>
-            <li><span class="math inline">\(y_i\)</span>：LayerNorm
-            输出的第 <span class="math inline">\(i\)</span>
-            个特征。</li>
-            <li><span class="math inline">\(x_i\)</span>：输入向量的第
-            <span class="math inline">\(i\)</span> 个特征。</li>
+            <li><span class="math inline">y_i</span>：LayerNorm 输出的第
+            <span class="math inline">i</span> 个特征。</li>
+            <li><span class="math inline">x_i</span>：输入向量的第 <span
+            class="math inline">i</span> 个特征。</li>
             <li><span
-            class="math inline">\(d\)</span>：进行归一化的特征维度大小。例如
+            class="math inline">d</span>：进行归一化的特征维度大小。例如
             Transformer 的 hidden size 为 <span
-            class="math inline">\(7168\)</span> 时，通常就是对这 <span
-            class="math inline">\(7168\)</span> 个特征进行归一化。</li>
+            class="math inline">7168</span> 时，通常就是对这 <span
+            class="math inline">7168</span> 个特征进行归一化。</li>
             <li><span
-            class="math inline">\(\mu\)</span>：输入特征的均值。</li>
+            class="math inline">\mu</span>：输入特征的均值。</li>
             <li><span
-            class="math inline">\(\sigma^2\)</span>：输入特征的方差。</li>
+            class="math inline">\sigma^2</span>：输入特征的方差。</li>
             <li><span
-            class="math inline">\(\epsilon\)</span>：一个很小的正数，用于提高数值稳定性，避免方差过小时出现除零问题。</li>
+            class="math inline">\epsilon</span>：一个很小的正数，用于提高数值稳定性，避免方差过小时出现除零问题。</li>
             <li><span
-            class="math inline">\(\gamma\)</span>：可学习的缩放参数（scale）。</li>
+            class="math inline">\gamma</span>：可学习的缩放参数（scale）。</li>
             <li><span
-            class="math inline">\(\beta\)</span>：可学习的偏移参数（bias）。</li>
+            class="math inline">\beta</span>：可学习的偏移参数（bias）。</li>
             </ul>
             <h4 id="计算均值">1. 计算均值</h4>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \mu=\frac{1}{d}\sum_{i=1}^{d}x_i
-            \]</span></p>
+            </span></p>
             <p>即计算当前样本在被归一化特征维度上的平均值。</p>
             <h4 id="计算方差">2. 计算方差</h4>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \sigma^2=
             \frac{1}{d}
             \sum_{i=1}^{d}(x_i-\mu)^2
-            \]</span></p>
+            </span></p>
             <p>方差描述各个特征相对于均值的离散程度。</p>
             <h4 id="标准化">3. 标准化</h4>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \hat{x}_i=
             \frac{x_i-\mu}
             {\sqrt{\sigma^2+\epsilon}}
-            \]</span></p>
+            </span></p>
             <p>经过这一步后，该组特征的均值接近 <span
-            class="math inline">\(0\)</span>，方差接近 <span
-            class="math inline">\(1\)</span>。</p>
+            class="math inline">0</span>，方差接近 <span
+            class="math inline">1</span>。</p>
             <h4 id="仿射变换">4. 仿射变换</h4>
-            <p><span class="math display">\[
+            <p><span class="math display">
             y_i=\gamma_i\hat{x}_i+\beta_i
-            \]</span></p>
-            <p>其中 <span class="math inline">\(\gamma_i\)</span> 和
-            <span class="math inline">\(\beta_i\)</span>
+            </span></p>
+            <p>其中 <span class="math inline">\gamma_i</span> 和 <span
+            class="math inline">\beta_i</span>
             都是模型训练过程中学习得到的参数。</p>
             <p>因此，LayerNorm 可以理解为：</p>
             <blockquote>
             <p>LayerNorm = Normalize + Scale + Bias</p>
             </blockquote>
             <p>归一化负责消除特征尺度和均值的影响，而 <span
-            class="math inline">\(\gamma\)</span> 和 <span
-            class="math inline">\(\beta\)</span>
+            class="math inline">\gamma</span> 和 <span
+            class="math inline">\beta</span>
             则允许模型在训练过程中重新调整归一化后的特征。</p>
             <hr />
             <p><strong>LayerNorm 到底对哪些数据进行归一化？</strong></p>
             <p>这是理解 LayerNorm 最重要的一点。</p>
             <p>假设输入张量为：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             X\in\mathbb{R}^{B\times S\times D}
-            \]</span></p>
+            </span></p>
             <p>其中：</p>
             <ul>
-            <li><span class="math inline">\(B\)</span>：batch size</li>
-            <li><span class="math inline">\(S\)</span>：序列长度</li>
-            <li><span class="math inline">\(D\)</span>：hidden size</li>
+            <li><span class="math inline">B</span>：batch size</li>
+            <li><span class="math inline">S</span>：序列长度</li>
+            <li><span class="math inline">D</span>：hidden size</li>
             </ul>
             <p>例如：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             X\in\mathbb{R}^{8\times2048\times7168}
-            \]</span></p>
+            </span></p>
             <p>对于每一个 token，LayerNorm <strong>只在最后的 hidden
-            dimension <span class="math inline">\(D=7168\)</span>
+            dimension <span class="math inline">D=7168</span>
             上计算均值和方差</strong>。</p>
             <p>也就是说，对于：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             X[b,s,:]\in\mathbb{R}^{7168}
-            \]</span></p>
+            </span></p>
             <p>单独计算：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \mu_{b,s} =
             \frac{1}{7168}
             \sum_{i=1}^{7168}X[b,s,i]
-            \]</span></p>
+            </span></p>
             <p>以及：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \sigma^2_{b,s} =
             \frac{1}{7168}
             \sum_{i=1}^{7168}
             (X[b,s,i]-\mu_{b,s})^2
-            \]</span></p>
+            </span></p>
             <p>然后对这个 token 的 7168 个特征进行归一化。</p>
             <p>因此：</p>
             <blockquote>
@@ -281,48 +224,47 @@
             </blockquote>
             <p>这也是 LayerNorm 与 BatchNorm 的一个重要区别。</p>
             <hr />
-            <p><strong><span class="math inline">\(\gamma\)</span> 和
-            <span class="math inline">\(\beta\)</span>
-            的作用</strong></p>
+            <p><strong><span class="math inline">\gamma</span> 和 <span
+            class="math inline">\beta</span> 的作用</strong></p>
             <p>归一化之后：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \hat{x}_i =
             \frac{x_i-\mu}
             {\sqrt{\sigma^2+\epsilon}}
-            \]</span></p>
+            </span></p>
             <p>特征的均值和尺度被统一了。</p>
             <p>但如果始终固定为这种标准化结果，模型的表达能力可能受到限制。因此
             LayerNorm 引入可学习参数：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             y_i=\gamma_i\hat{x}_i+\beta_i
-            \]</span></p>
+            </span></p>
             <p>其中：</p>
             <ul>
-            <li><span class="math inline">\(\gamma_i\)</span> 控制第
-            <span class="math inline">\(i\)</span>
+            <li><span class="math inline">\gamma_i</span> 控制第 <span
+            class="math inline">i</span>
             个特征的<strong>缩放幅度</strong>；</li>
-            <li><span class="math inline">\(\beta_i\)</span> 控制第
-            <span class="math inline">\(i\)</span>
+            <li><span class="math inline">\beta_i</span> 控制第 <span
+            class="math inline">i</span>
             个特征的<strong>偏移量</strong>。</li>
             </ul>
             <p>例如，如果某个特征经过归一化后：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \hat{x}_i=0.5
-            \]</span></p>
+            </span></p>
             <p>而模型学习到：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \gamma_i=2,\qquad\beta_i=-1
-            \]</span></p>
+            </span></p>
             <p>那么：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             y_i=2\times0.5-1=0
-            \]</span></p>
+            </span></p>
             <p>因此，LayerNorm
             并不是简单地把所有特征强行固定到某个分布，而是：</p>
             <blockquote>
             <p><strong>先进行标准化，再通过可学习的 <span
-            class="math inline">\(\gamma\)</span> 和 <span
-            class="math inline">\(\beta\)</span>
+            class="math inline">\gamma</span> 和 <span
+            class="math inline">\beta</span>
             恢复模型认为有用的尺度和偏移。</strong></p>
             </blockquote>
             <hr />
@@ -333,7 +275,7 @@
             的特征进行中心化和尺度归一化，从而改善深层网络训练过程中的数值尺度和优化稳定性。</p>
             <p>在 Transformer 中，hidden state
             会经过大量层的重复变换：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             X
             \rightarrow
             \text{Attention}
@@ -344,16 +286,16 @@
             \rightarrow
             X
             \rightarrow\cdots
-            \]</span></p>
+            </span></p>
             <p>如果不同层之间的特征尺度发生剧烈变化，可能使训练和优化变得更加困难。</p>
             <p>LayerNorm 通过：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             x
             \rightarrow
             \frac{x-\mu}{\sqrt{\sigma^2+\epsilon}}
-            \]</span></p>
+            </span></p>
             <p>将特征重新调整到相对稳定的尺度，再通过 <span
-            class="math inline">\(\gamma,\beta\)</span>
+            class="math inline">\gamma,\beta</span>
             保留模型所需要的可学习自由度。</p>
             <p>因此，它通常有助于：</p>
             <ul>
@@ -364,21 +306,21 @@
             </ul>
             <hr />
             <p><strong>注意：现代 LLM 不一定同时存在 <span
-            class="math inline">\(\gamma\)</span> 和 <span
-            class="math inline">\(\beta\)</span></strong></p>
+            class="math inline">\gamma</span> 和 <span
+            class="math inline">\beta</span></strong></p>
             <p>上述公式描述的是<strong>完整的 LayerNorm</strong>：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             y_i=\gamma_i\hat{x}_i+\beta_i
-            \]</span></p>
+            </span></p>
             <p>其参数通常为：</p>
             <pre class="text"><code>weight [D]   ← γ
 bias   [D]   ← β</code></pre>
             <p>但是在实际的大语言模型中，Normalization
             的实现可能有所不同。例如某些实现会使用 <strong>bias-free
             LayerNorm</strong>，此时只有：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             y_i=\gamma_i\hat{x}_i
-            \]</span></p>
+            </span></p>
             <p>对应参数只有：</p>
             <pre class="text"><code>weight [D]</code></pre>
             <p>而没有：</p>
@@ -386,12 +328,12 @@ bias   [D]   ← β</code></pre>
             <p>此外，现代 LLM 中还大量使用
             <strong>RMSNorm</strong>。RMSNorm
             不计算均值，而是只利用均方根对特征进行缩放，其核心形式为：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             y_i=
             \frac{x_i}
             {\sqrt{\frac{1}{d}\sum_{j=1}^{d}x_j^2+\epsilon}}
             \cdot\gamma_i
-            \]</span></p>
+            </span></p>
             <p>因此，在阅读具体模型的 checkpoint
             时，<strong>不能仅根据参数名 <code>xxx.weight</code>
             就假定它一定是标准的
@@ -407,45 +349,43 @@ bias   [D]   ← β</code></pre>
             <p>而没有：</p>
             <pre class="text"><code>input_layernorm.bias [7168]</code></pre>
             <p>那么这里至少可以确定它不是带有 <span
-            class="math inline">\(\gamma+\beta\)</span> 两组参数的标准
+            class="math inline">\gamma+\beta</span> 两组参数的标准
             LayerNorm，而更可能是 scale-only 的 normalization 实现。</p>
             <h3 id="rmsnorm">RMSNorm</h3>
             <p>RMSNorm 是 LayerNorm 的一个简化变体。它认为 LayerNorm
             的成功主要来自于其重新缩放不变性，而减去均值的操作不是必须的。因此，它只对输入的均方根进行归一化。</p>
-            <p><span class="math display">\[y =
+            <p><span class="math display">y =
             \frac{x}{\sqrt{\underbrace{\frac{1}{n} \sum_{i=1}^n
-            x_i^2}_{\text{均方值}} + \epsilon}} \cdot
-            \gamma\]</span></p>
+            x_i^2}_{\text{均方值}} + \epsilon}} \cdot \gamma</span></p>
             <ul>
             <li><span
-            class="math inline">\(x\)</span>：输入张量，表示模型中的某一层的输出或激活。</li>
-            <li><span class="math inline">\(x_i\)</span>：<span
-            class="math inline">\(x\)</span> 中的第 <span
-            class="math inline">\(i\)</span> 个元素。</li>
-            <li><span class="math inline">\(n\)</span>：<span
-            class="math inline">\(x\)</span>
-            的元素数量（即维度大小）。</li>
-            <li><span class="math inline">\(\sum_{i=1}^n
-            x_i^2\)</span>：对 <span class="math inline">\(x\)</span>
+            class="math inline">x</span>：输入张量，表示模型中的某一层的输出或激活。</li>
+            <li><span class="math inline">x_i</span>：<span
+            class="math inline">x</span> 中的第 <span
+            class="math inline">i</span> 个元素。</li>
+            <li><span class="math inline">n</span>：<span
+            class="math inline">x</span> 的元素数量（即维度大小）。</li>
+            <li><span class="math inline">\sum_{i=1}^n x_i^2</span>：对
+            <span class="math inline">x</span>
             中所有元素的平方求和。</li>
-            <li><span class="math inline">\(\frac{1}{n} \sum_{i=1}^n
-            x_i^2\)</span>：计算 <span class="math inline">\(x\)</span>
+            <li><span class="math inline">\frac{1}{n} \sum_{i=1}^n
+            x_i^2</span>：计算 <span class="math inline">x</span>
             中所有元素平方后的平均值，这被称为均方值。</li>
             <li><span
-            class="math inline">\(\epsilon\)</span>：一个小的正数（通常设置为
-            <span class="math inline">\(10^{-5}\)</span> 或 <span
-            class="math inline">\(10^{-6}\)</span>），用于防止分母为零的情况，确保数值稳定性。</li>
-            <li><span class="math inline">\(\sqrt{\frac{1}{n}
-            \sum_{i=1}^n x_i^2 + \epsilon}\)</span>：计算均方根（Root
-            Mean Square, RMS），这是归一化因子。</li>
+            class="math inline">\epsilon</span>：一个小的正数（通常设置为
+            <span class="math inline">10^{-5}</span> 或 <span
+            class="math inline">10^{-6}</span>），用于防止分母为零的情况，确保数值稳定性。</li>
+            <li><span class="math inline">\sqrt{\frac{1}{n} \sum_{i=1}^n
+            x_i^2 + \epsilon}</span>：计算均方根（Root Mean Square,
+            RMS），这是归一化因子。</li>
             <li><span
-            class="math inline">\(\gamma\)</span>：缩放因子，是学习得到的参数，允许模型调整归一化后数据的尺度。</li>
+            class="math inline">\gamma</span>：缩放因子，是学习得到的参数，允许模型调整归一化后数据的尺度。</li>
             </ul>
             <p>通过这种方式，RMSNorm 对输入张量 <span
-            class="math inline">\(x\)</span>
-            进行了归一化处理，而不需要像 LayerNorm
+            class="math inline">x</span> 进行了归一化处理，而不需要像
+            LayerNorm
             那样先减去均值，从而简化了运算过程并减少了需要训练的参数数量（因为它没有偏置项
-            <span class="math inline">\(\beta\)</span>）。这种设计使得
+            <span class="math inline">\beta</span>）。这种设计使得
             RMSNorm 在某些情况下比 LayerNorm 更高效。</p>
             <h2 id="归一语义">归一语义</h2>
             <p>很好，我们把三种“归一”的<strong>数学约束条件</strong>直接写出来，对比它们到底在“归一”什么。</p>
@@ -454,16 +394,16 @@ bias   [D]   ← β</code></pre>
             <h3 id="概率归一">概率归一</h3>
             <p>Softmax function</p>
             <p>定义：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             y_i = \frac{e^{x_i}}{\sum_j e^{x_j}}
-            \]</span></p>
+            </span></p>
             <p>它满足两个数学约束：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \sum_i y_i = 1
-            \]</span></p>
-            <p><span class="math display">\[
+            </span></p>
+            <p><span class="math display">
             y_i &gt; 0
-            \]</span></p>
+            </span></p>
             <p><strong>语义</strong></p>
             <ul>
             <li>把任意实数向量映射到 <strong>概率单纯形</strong></li>
@@ -474,27 +414,27 @@ bias   [D]   ← β</code></pre>
             <h3 id="方差归一">方差归一</h3>
             <p>Layer Normalization</p>
             <p>定义（忽略 γ、β）：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             y_i = \frac{x_i - \mu}{\sigma}
-            \]</span></p>
+            </span></p>
             <p>其中：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \mu = \frac{1}{d}\sum_i x_i
-            \]</span></p>
-            <p><span class="math display">\[
+            </span></p>
+            <p><span class="math display">
             \sigma^2 = \frac{1}{d}\sum_i (x_i - \mu)^2
-            \]</span></p>
+            </span></p>
             <p>它满足：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \frac{1}{d}\sum_i y_i = 0
-            \]</span></p>
-            <p><span class="math display">\[
+            </span></p>
+            <p><span class="math display">
             \frac{1}{d}\sum_i y_i^2 = 1
-            \]</span></p>
+            </span></p>
             <p>也就是说：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \mathrm{Var}(y) = 1
-            \]</span></p>
+            </span></p>
             <p><strong>语义</strong></p>
             <ul>
             <li>均值归零</li>
@@ -505,17 +445,17 @@ bias   [D]   ← β</code></pre>
             <h3 id="二阶矩归一">二阶矩归一</h3>
             <p>RMSNorm</p>
             <p>定义（忽略 γ）：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             y_i = \frac{x_i}{\sqrt{\frac{1}{d}\sum_j x_j^2}}
-            \]</span></p>
+            </span></p>
             <p>它满足：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \frac{1}{d}\sum_i y_i^2 = 1
-            \]</span></p>
+            </span></p>
             <p>注意：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \frac{1}{d}\sum_i y_i \neq 0
-            \]</span></p>
+            </span></p>
             <p><strong>语义</strong></p>
             <ul>
             <li>不减均值</li>
@@ -538,7 +478,7 @@ bias   [D]   ← β</code></pre>
             <tr>
             <td>Softmax</td>
             <td>L1 和</td>
-            <td><span class="math inline">\(\sum y_i =1\)</span></td>
+            <td><span class="math inline">\sum y_i =1</span></td>
             <td>投影到概率单纯形</td>
             </tr>
             <tr>
@@ -550,16 +490,16 @@ bias   [D]   ← β</code></pre>
             <tr>
             <td>RMSNorm</td>
             <td>二阶矩</td>
-            <td><span class="math inline">\(E[y^2]=1\)</span></td>
+            <td><span class="math inline">E[y^2]=1</span></td>
             <td>投影到固定半径球面</td>
             </tr>
             </tbody>
             </table>
             <h4 id="统一表达">统一表达</h4>
             <p>可以写成：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \text{Normalize}(x) = \frac{x}{|x|_p}
-            \]</span></p>
+            </span></p>
             <p>不同方法只是：</p>
             <ul>
             <li>Softmax：本质类似 L1 归一（但带指数）</li>
@@ -608,39 +548,6 @@ bias   [D]   ← β</code></pre>
       </ul>
     </aside>
       </div>
-  <script type="text/javascript">
-    (function () {
-      function markActive() {
-        var here = location.href.split('#')[0];
-        var links = document.querySelectorAll('.wiki-sidebar a');
-        for (var i = 0; i < links.length; i++) {
-          if (links[i].href.split('#')[0] === here) {
-            links[i].classList.add('active');
-          }
-        }
-      }
-      // load the shared site directory once (served from the wiki root);
-      // kept in a standalone file so adding a page needn't rebuild every page.
-      var nav = document.getElementById('wiki-sidebar');
-      if (nav) {
-        fetch('/wiki_sidebar.html')
-          .then(function (r) { return r.ok ? r.text() : ''; })
-          .then(function (html) {
-            if (html) {
-              nav.innerHTML = html;
-              nav.hidden = false;
-              markActive();
-            }
-          })
-          .catch(function () {});
-      }
-      // keep bootstrap table styling (previously done by sticky_menu.js)
-      var tables = document.getElementsByTagName('table');
-      for (var j = 0; j < tables.length; j++) {
-        tables[j].classList.add('table');
-      }
-    })();
-  </script>
 </body>
 
 </html>

@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 460" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="460" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">Collective 是一份全员协议：按调用序号配对</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">同组 rank 不必同时到达，但第 k 次调用必须是同一种操作、同一个逻辑张量</text>
+
+  <!-- panel A -->
+  <rect x="30" y="78" width="270" height="302" rx="10" fill="#fff5f5" stroke="#fa5252"/>
+  <rect x="30" y="78" width="270" height="34" rx="10" fill="#fa5252"/>
+  <rect x="30" y="100" width="270" height="12" fill="#fa5252"/>
+  <text x="165" y="101" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">漏调用 → 卡死</text>
+  <g font-size="12" font-weight="700" fill="#495057" text-anchor="middle">
+    <text x="92" y="136">rank 0</text><text x="238" y="136">rank 1</text>
+  </g>
+  <g font-size="11.5" text-anchor="middle">
+    <rect x="42" y="150" width="100" height="34" rx="7" fill="#ffffff" stroke="#adb5bd"/>
+    <text x="92" y="171" font-family="monospace" fill="#495057">all_reduce #1</text>
+    <rect x="188" y="150" width="100" height="34" rx="7" fill="#ffffff" stroke="#adb5bd"/>
+    <text x="238" y="171" font-family="monospace" fill="#495057">all_reduce #1</text>
+    <rect x="42" y="210" width="100" height="34" rx="7" fill="#ffffff" stroke="#fa5252" stroke-width="1.5"/>
+    <text x="92" y="231" font-family="monospace" fill="#c92a2a">all_reduce #2</text>
+    <rect x="188" y="210" width="100" height="34" rx="7" fill="#f8f9fa" stroke="#adb5bd" stroke-dasharray="4 3"/>
+    <text x="238" y="231" fill="#868e96" font-size="10.5">if rank==0 才调用</text>
+  </g>
+  <path d="M142 167 L188 167" stroke="#0ca678" stroke-width="2" stroke-dasharray="4 3"/>
+  <path d="M142 227 L188 227" stroke="#fa5252" stroke-width="2" stroke-dasharray="2 4"/>
+  <text x="165" y="222" text-anchor="middle" font-size="13" font-weight="700" fill="#c92a2a">?</text>
+  <text x="165" y="276" text-anchor="middle" font-size="12" fill="#c92a2a">rank 0 在 #2 一直等对端</text>
+  <text x="165" y="298" text-anchor="middle" font-size="12" font-weight="700" fill="#c92a2a">→ NCCL timeout</text>
+  <text x="165" y="342" text-anchor="middle" font-size="11.5" fill="#868e96">常见诱因：空 batch 跳过通信、</text>
+  <text x="165" y="362" text-anchor="middle" font-size="11.5" fill="#868e96">只在部分 rank 上走的分支</text>
+  <!-- panel B -->
+  <rect x="315" y="78" width="270" height="302" rx="10" fill="#fff4e6" stroke="#f08c00"/>
+  <rect x="315" y="78" width="270" height="34" rx="10" fill="#f08c00"/>
+  <rect x="315" y="100" width="270" height="12" fill="#f08c00"/>
+  <text x="450" y="101" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">顺序错配 → 静默算错</text>
+  <g font-size="12" font-weight="700" fill="#495057" text-anchor="middle">
+    <text x="377" y="136">rank 0</text><text x="523" y="136">rank 1</text>
+  </g>
+  <g font-size="11.5" text-anchor="middle" font-family="monospace">
+    <rect x="327" y="150" width="100" height="34" rx="7" fill="#ffffff" stroke="#4c6ef5"/>
+    <text x="377" y="171" fill="#3b5bdb">all_reduce(A)</text>
+    <rect x="473" y="150" width="100" height="34" rx="7" fill="#ffffff" stroke="#7048e8"/>
+    <text x="523" y="171" fill="#5f3dc4">all_reduce(B)</text>
+    <rect x="327" y="210" width="100" height="34" rx="7" fill="#ffffff" stroke="#7048e8"/>
+    <text x="377" y="231" fill="#5f3dc4">all_reduce(B)</text>
+    <rect x="473" y="210" width="100" height="34" rx="7" fill="#ffffff" stroke="#4c6ef5"/>
+    <text x="523" y="231" fill="#3b5bdb">all_reduce(A)</text>
+  </g>
+  <path d="M427 167 L473 167" stroke="#e8590c" stroke-width="2"/>
+  <path d="M427 227 L473 227" stroke="#e8590c" stroke-width="2"/>
+  <text x="450" y="161" text-anchor="middle" font-size="11" font-weight="700" fill="#e8590c">A+B</text>
+  <text x="450" y="221" text-anchor="middle" font-size="11" font-weight="700" fill="#e8590c">B+A</text>
+  <text x="450" y="276" text-anchor="middle" font-size="12" fill="#e8590c">shape、dtype 相同，后端无从察觉</text>
+  <text x="450" y="298" text-anchor="middle" font-size="12" font-weight="700" fill="#e8590c">→ 不报错，结果是错的</text>
+  <text x="450" y="342" text-anchor="middle" font-size="11.5" fill="#868e96">配对依据是第几次调用，</text>
+  <text x="450" y="362" text-anchor="middle" font-size="11.5" fill="#868e96">而不是张量的含义</text>
+
+  <!-- panel C -->
+  <rect x="600" y="78" width="270" height="302" rx="10" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="600" y="78" width="270" height="34" rx="10" fill="#0ca678"/>
+  <rect x="600" y="100" width="270" height="12" fill="#0ca678"/>
+  <text x="735" y="101" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">空 rank 也参加（SGLang IDLE）</text>
+  <g font-size="12" font-weight="700" fill="#495057" text-anchor="middle">
+    <text x="662" y="136">DP rank 0</text><text x="808" y="136">DP rank 1</text>
+  </g>
+  <g font-size="11.5" text-anchor="middle">
+    <rect x="612" y="150" width="100" height="34" rx="7" fill="#edf2ff" stroke="#4c6ef5"/>
+    <text x="662" y="171" fill="#3b5bdb">decode 8 token</text>
+    <rect x="758" y="150" width="100" height="34" rx="7" fill="#f3f0ff" stroke="#7048e8" stroke-dasharray="4 3"/>
+    <text x="808" y="171" fill="#5f3dc4">无请求 → IDLE</text>
+    <rect x="612" y="210" width="100" height="34" rx="7" fill="#ffffff" stroke="#0ca678"/>
+    <text x="662" y="231" fill="#0b7285">MLP 同步通信</text>
+    <rect x="758" y="210" width="100" height="34" rx="7" fill="#ffffff" stroke="#0ca678"/>
+    <text x="808" y="231" fill="#0b7285">MLP 同步通信</text>
+  </g>
+  <path d="M712 227 L758 227" stroke="#0ca678" stroke-width="2"/>
+  <text x="735" y="276" text-anchor="middle" font-size="12" fill="#0b7285">先 all_gather 各 rank 的 token 数</text>
+  <text x="735" y="298" text-anchor="middle" font-size="12" font-weight="700" fill="#0b7285">有 rank 有活，空 rank 就跑 IDLE</text>
+  <text x="735" y="342" text-anchor="middle" font-size="11.5" fill="#868e96">0 个 token 也按同样顺序</text>
+  <text x="735" y="362" text-anchor="middle" font-size="11.5" fill="#868e96">进入每一次 collective</text>
+
+  <!-- note -->
+  <rect x="30" y="398" width="840" height="40" rx="9" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="48" y="423" font-size="12" fill="#495057">各 rank 必须按同一顺序提交同一种 collective，并匹配 shape、dtype 与 split sizes；torch.cuda.synchronize() 和 barrier() 都补不上漏掉或错配的调用。</text>
+</svg>

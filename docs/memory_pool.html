@@ -90,80 +90,10 @@
     code span.vs { color: #4070a0; } /* VerbatimString */
     code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
   </style>
-      <style type="text/css">
-    /* ---- three column wiki layout (left: site directory, center: content, right: page TOC) ---- */
-    .wiki-layout {
-      display: flex;
-      align-items: flex-start;
-      gap: 24px;
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 0 20px;
-      box-sizing: border-box;
-    }
-    .wiki-sidebar {
-      flex: 0 0 240px;
-      width: 240px;
-      position: sticky;
-      top: 0;
-      max-height: 100vh;
-      overflow-y: auto;
-      padding: 10px 4px 20px 0;
-      border-right: 1px solid #eee;
-      font-size: 14px;
-    }
-    .wiki-sidebar[hidden] { display: none; }
-    .wiki-toc {
-      flex: 0 0 220px;
-      width: 220px;
-      position: sticky;
-      top: 0;
-      max-height: 100vh;
-      overflow-y: auto;
-      padding: 10px 0 20px 4px;
-      border-left: 1px solid #eee;
-      font-size: 14px;
-    }
-    .wiki-main {
-      flex: 1 1 auto;
-      min-width: 0;
-      max-width: 820px;
-      padding: 10px 0 40px;
-    }
-    /* site directory tree */
-    .wiki-sidebar .wiki-home {
-      display: block;
-      font-weight: bold;
-      margin-bottom: 10px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid #eee;
-      text-decoration: none;
-      color: #333;
-    }
-    .wiki-sidebar ul { list-style: none; margin: 0 0 0 12px; padding: 0; }
-    .wiki-sidebar > ul { margin-left: 0; }
-    .wiki-sidebar li { line-height: 1.7; }
-    .wiki-sidebar a { text-decoration: none; color: #555; }
-    .wiki-sidebar a:hover { color: #0088cc; text-decoration: underline; }
-    .wiki-sidebar a.active { color: #0088cc; font-weight: bold; }
-    /* page TOC */
-    .wiki-toc ul { list-style: none; margin: 0 0 0 12px; padding: 0; }
-    .wiki-toc > ul { margin-left: 0; }
-    .wiki-toc li { line-height: 1.6; }
-    .wiki-toc a { text-decoration: none; color: #555; }
-    .wiki-toc a:hover { color: #0088cc; }
-    @media (max-width: 980px) {
-      .wiki-layout { flex-direction: column; }
-      .wiki-sidebar, .wiki-toc {
-        position: static;
-        width: 100%;
-        flex-basis: auto;
-        max-height: none;
-        border: 0;
-      }
-      .wiki-main { max-width: none; }
-    }
-  </style>
+      <!-- wiki three-column layout styles/behavior, kept external so the ~5KB
+       block isn't duplicated into every generated page -->
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/wiki-layout.css" />
+  <script defer src="./WikiTheme/wiki-layout.js"></script>
 </head>
 
 <body>
@@ -216,60 +146,19 @@
             <p>三者分离、各司其职，仅靠 <code>kv_index</code>
             这一个整数相互关联。这个「薄索引」正是后面所有灵活性（内存整理、prefix
             共享、CPU offload）的来源。</p>
-            <hr />
-            <h3 id="page-机制的深层含义">Page 机制的深层含义</h3>
-            <p>Page 的概念来自操作系统虚拟内存管理。在 KV Cache
-            场景中，Page 的引入解决了两个关键问题：</p>
-            <p><strong>问题一：内存碎片</strong></p>
-            <p>假设不使用 Page，每次为一个 token 分配一个槽位。当请求 A
-            需要扩展，但紧邻的槽位已被请求 B
-            占用时，只能分配到其他位置。这导致：</p>
-            <ul>
-            <li>请求 A 的 KV 数据分散在各处</li>
-            <li>需要额外的索引结构记录每个 token 的位置</li>
-            <li>访问模式变得不规则，影响性能</li>
-            </ul>
-            <p><strong>Page 的解决方案</strong>：以 Page（如 64 个
-            token）为单位分配。同一请求的数据倾向于聚集在相同的 Page
-            中，减少了索引开销。</p>
-            <p><strong>问题二：共享效率</strong></p>
-            <p>多个请求共享 prefix 时，如果不使用 Page，需要逐个 token
-            复制或引用。Page 级别的共享只需引用 Page
-            编号，效率更高。</p>
-            <p><strong>Page Size 的权衡</strong></p>
-            <pre><code>Page Size 小（如 1）：
-  优点：精确分配，无浪费
-  缺点：索引开销大，碎片化严重
-
-Page Size 大（如 64）：
-  优点：索引开销小，便于共享
-  缺点：内部碎片，分配延迟</code></pre>
-            <p>SGLang 用两个独立的分配器类来落地这两种模式，由
-            <code>page_size</code>
-            决定实例化哪一个（<code>allocator/token.py</code>、<code>allocator/paged.py</code>）：</p>
-            <ul>
-            <li><strong>Page Size =
-            1</strong>：<code>TokenToKVPoolAllocator</code>，连续分配模式，适合短序列或内存紧张场景</li>
-            <li><strong>Page Size &gt;
-            1</strong>：<code>PagedTokenToKVPoolAllocator</code>，页式分配模式，适合长序列和
-            prefix 共享场景</li>
-            </ul>
-            <p>两者继承同一个抽象基类
-            <code>BaseTokenToKVPoolAllocator</code>，对外接口一致，上层调度器无需关心用的是哪种。</p>
-            <hr />
             <h3 id="req_to_token-与-token_to_kv-的深层关联">req_to_token
             与 token_to_kv 的深层关联</h3>
             <h4
             id="reqtotokenpool请求维度的二维表">ReqToTokenPool：请求维度的二维表</h4>
             <p><code>ReqToTokenPool</code>（<code>memory_pool.py:256</code>）的核心就是一张二维表加一个空闲链表：</p>
-            <div class="sourceCode" id="cb2"><pre
-            class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">## 一行对应一个请求槽位，一列对应一个 token 位置</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="va">self</span>.req_to_token <span class="op">=</span> torch.zeros(</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    (size <span class="op">+</span> <span class="dv">1</span>, max_context_len), dtype<span class="op">=</span>torch.int32, device<span class="op">=</span>device</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">## 注意是 range(1, size+1)：index 0 被刻意保留</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="va">self</span>.free_slots <span class="op">=</span> <span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">1</span>, <span class="va">self</span>._alloc_size))</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="va">self</span>.req_generation <span class="op">=</span> torch.zeros(<span class="va">self</span>._alloc_size, dtype<span class="op">=</span>torch.int64)</span></code></pre></div>
+            <div class="sourceCode" id="cb1"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">## 一行对应一个请求槽位，一列对应一个 token 位置</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="va">self</span>.req_to_token <span class="op">=</span> torch.zeros(</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    (size <span class="op">+</span> <span class="dv">1</span>, max_context_len), dtype<span class="op">=</span>torch.int32, device<span class="op">=</span>device</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co">## 注意是 range(1, size+1)：index 0 被刻意保留</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="va">self</span>.free_slots <span class="op">=</span> <span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">1</span>, <span class="va">self</span>._alloc_size))</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="va">self</span>.req_generation <span class="op">=</span> torch.zeros(<span class="va">self</span>._alloc_size, dtype<span class="op">=</span>torch.int64)</span></code></pre></div>
             <p>这里有几个容易忽略但很关键的工程细节：</p>
             <ul>
             <li><strong>padding row at index 0</strong>：第 0
@@ -356,11 +245,11 @@ Page Size 大（如 64）：
             <h3
             id="分配器内部空闲页是怎么管理的">分配器内部：空闲页是怎么管理的</h3>
             <p><code>BaseTokenToKVPoolAllocator</code>（<code>allocator/base.py</code>）用两个张量管理空闲资源，这个设计比「一个空闲链表」要讲究：</p>
-            <div class="sourceCode" id="cb4"><pre
-            class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="va">self</span>.free_pages <span class="op">=</span> <span class="va">None</span>      <span class="co"># 当前可直接分配的页</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="va">self</span>.release_pages <span class="op">=</span> <span class="va">None</span>   <span class="co"># 刚释放、尚未并回 free_pages 的页</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="va">self</span>.need_sort <span class="op">=</span> need_sort  <span class="co"># 是否需要保持页有序</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="va">self</span>.free_group <span class="op">=</span> []        <span class="co"># 批量释放缓冲</span></span></code></pre></div>
+            <div class="sourceCode" id="cb3"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="va">self</span>.free_pages <span class="op">=</span> <span class="va">None</span>      <span class="co"># 当前可直接分配的页</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="va">self</span>.release_pages <span class="op">=</span> <span class="va">None</span>   <span class="co"># 刚释放、尚未并回 free_pages 的页</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="va">self</span>.need_sort <span class="op">=</span> need_sort  <span class="co"># 是否需要保持页有序</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="va">self</span>.free_group <span class="op">=</span> []        <span class="co"># 批量释放缓冲</span></span></code></pre></div>
             <ul>
             <li><strong><code>free_pages</code> /
             <code>release_pages</code>
@@ -384,11 +273,11 @@ Page Size 大（如 64）：
             <p>连续分配器（<code>page_size=1</code>）的
             <code>alloc</code> 就是从 <code>free_pages</code>
             头部切一段；页式分配器把页号展开成 token 索引：</p>
-            <div class="sourceCode" id="cb5"><pre
-            class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">## PagedTokenToKVPoolAllocator.alloc：取 num_pages 个页，展开成连续 token 索引</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>out_pages <span class="op">=</span> <span class="va">self</span>.free_pages[:num_pages]</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>out_indices <span class="op">=</span> (out_pages[:, <span class="va">None</span>] <span class="op">*</span> <span class="va">self</span>.page_size</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>               <span class="op">+</span> torch.arange(<span class="va">self</span>.page_size, device<span class="op">=</span><span class="va">self</span>.device)).reshape(<span class="op">-</span><span class="dv">1</span>)</span></code></pre></div>
+            <div class="sourceCode" id="cb4"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">## PagedTokenToKVPoolAllocator.alloc：取 num_pages 个页，展开成连续 token 索引</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>out_pages <span class="op">=</span> <span class="va">self</span>.free_pages[:num_pages]</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>out_indices <span class="op">=</span> (out_pages[:, <span class="va">None</span>] <span class="op">*</span> <span class="va">self</span>.page_size</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>               <span class="op">+</span> torch.arange(<span class="va">self</span>.page_size, device<span class="op">=</span><span class="va">self</span>.device)).reshape(<span class="op">-</span><span class="dv">1</span>)</span></code></pre></div>
             <p>释放时则反向：<code>torch.unique(free_index // self.page_size)</code>
             把 token 索引折回页号再回收。</p>
             <hr />
@@ -404,18 +293,18 @@ Page Size 大（如 64）：
             <figcaption aria-hidden="true">alloc_extend
             三段式分配</figcaption>
             </figure>
-            <div class="sourceCode" id="cb6"><pre
-            class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">## PagedTokenToKVPoolAllocator.alloc_extend(...)</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co">## 调用 Triton kernel 在 GPU 上并行完成三段切分</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>alloc_extend_kernel[(bs,)](</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    prefix_lens,   <span class="co"># 已缓存的 prefix 长度（prefix 停在某个未满页中间）</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    seq_lens,      <span class="co"># 扩展后的总长度</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    last_loc,      <span class="co"># prefix 最后一个 token 的物理位置</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.free_pages,</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    out_indices,</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    next_power_of_2(bs),</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.page_size,</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+            <div class="sourceCode" id="cb5"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">## PagedTokenToKVPoolAllocator.alloc_extend(...)</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co">## 调用 Triton kernel 在 GPU 上并行完成三段切分</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>alloc_extend_kernel[(bs,)](</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    prefix_lens,   <span class="co"># 已缓存的 prefix 长度（prefix 停在某个未满页中间）</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    seq_lens,      <span class="co"># 扩展后的总长度</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    last_loc,      <span class="co"># prefix 最后一个 token 的物理位置</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.free_pages,</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    out_indices,</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    next_power_of_2(bs),</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.page_size,</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
             <p>三段的含义（对应 <code>alloc_extend_naive</code>
             的参考实现）：</p>
             <ul>
@@ -462,21 +351,21 @@ Q4: 最后一个 Page 有多少有效？  → kv_last_page_len</code></pre>
             Memory Pool 和 Attention Backend 的桥梁。它为 batch
             里每个请求启动一个 program，各自把自己那一行的有效索引搬到
             <code>kv_indices</code> 的对应区间：</p>
-            <div class="sourceCode" id="cb8"><pre
-            class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="at">@triton.jit</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> create_flashinfer_kv_indices_triton(</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    req_to_token_ptr,       <span class="co"># [max_batch, max_context_len]</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    req_pool_indices_ptr,   <span class="co"># 本 batch 各请求的 pool index</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    page_kernel_lens_ptr,   <span class="co"># 各请求的序列长度</span></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    kv_indptr,              <span class="co"># CSR 指针数组 = cumsum(seq_lens)</span></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    kv_start_idx,</span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    kv_indices_ptr,         <span class="co"># 输出：展平后的一维 KV 索引</span></span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    req_to_token_ptr_stride: tl.constexpr,</span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>):</span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    pid <span class="op">=</span> tl.program_id(axis<span class="op">=</span><span class="dv">0</span>)                       <span class="co"># 每个请求一个 program</span></span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    req_pool_index <span class="op">=</span> tl.load(req_pool_indices_ptr <span class="op">+</span> pid)</span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    kv_indices_offset <span class="op">=</span> tl.load(kv_indptr <span class="op">+</span> pid)      <span class="co"># 该请求在输出中的起点</span></span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>    <span class="co">## 分块把 req_to_token[req_pool_index, kv_start:kv_end] 搬到 kv_indices</span></span></code></pre></div>
+            <div class="sourceCode" id="cb7"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="at">@triton.jit</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> create_flashinfer_kv_indices_triton(</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    req_to_token_ptr,       <span class="co"># [max_batch, max_context_len]</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    req_pool_indices_ptr,   <span class="co"># 本 batch 各请求的 pool index</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    page_kernel_lens_ptr,   <span class="co"># 各请求的序列长度</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    kv_indptr,              <span class="co"># CSR 指针数组 = cumsum(seq_lens)</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    kv_start_idx,</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    kv_indices_ptr,         <span class="co"># 输出：展平后的一维 KV 索引</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    req_to_token_ptr_stride: tl.constexpr,</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    pid <span class="op">=</span> tl.program_id(axis<span class="op">=</span><span class="dv">0</span>)                       <span class="co"># 每个请求一个 program</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    req_pool_index <span class="op">=</span> tl.load(req_pool_indices_ptr <span class="op">+</span> pid)</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    kv_indices_offset <span class="op">=</span> tl.load(kv_indptr <span class="op">+</span> pid)      <span class="co"># 该请求在输出中的起点</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    <span class="co">## 分块把 req_to_token[req_pool_index, kv_start:kv_end] 搬到 kv_indices</span></span></code></pre></div>
             <p>调用方（<code>triton_backend.py</code>）先用一行
             <code>kv_indptr[1:] = torch.cumsum(seq_lens, dim=0)</code>
             建好 CSR 指针，再启动 kernel 填充索引。这个 kernel
@@ -544,13 +433,13 @@ MLATokenToKVPool:  kv_buffer[layer]（单个融合 buffer）     ← 压缩的 l
             latent，所以只有<strong>一个</strong>
             <code>kv_buffer</code>，其最后一维为
             <code>kv_lora_rank + qk_rope_head_dim</code>：</p>
-            <div class="sourceCode" id="cb11"><pre
-            class="sourceCode python"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co">## MLATokenToKVPool._create_buffers</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="va">self</span>.kv_buffer <span class="op">=</span> [</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    torch.zeros((size <span class="op">+</span> page_size, <span class="dv">1</span>, <span class="va">self</span>.kv_cache_dim),  <span class="co"># kv_cache_dim = kv_lora_rank + qk_rope_head_dim</span></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>                dtype<span class="op">=</span><span class="va">self</span>.store_dtype, device<span class="op">=</span><span class="va">self</span>.device)</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.layer_num)</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>]</span></code></pre></div>
+            <div class="sourceCode" id="cb10"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">## MLATokenToKVPool._create_buffers</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="va">self</span>.kv_buffer <span class="op">=</span> [</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    torch.zeros((size <span class="op">+</span> page_size, <span class="dv">1</span>, <span class="va">self</span>.kv_cache_dim),  <span class="co"># kv_cache_dim = kv_lora_rank + qk_rope_head_dim</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>                dtype<span class="op">=</span><span class="va">self</span>.store_dtype, device<span class="op">=</span><span class="va">self</span>.device)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.layer_num)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>]</span></code></pre></div>
             <p>这正是「抽象带来可扩展性」的体现：无论 K/V
             分离还是融合，上层只通过
             <code>get_kv_buffer(layer_id)</code>
@@ -640,8 +529,6 @@ Attention Kernel 按 index gather K/V</code></pre>
       <ul>
       <li><a href="#核心抽象三层映射关系"
       id="toc-核心抽象三层映射关系">核心抽象：三层映射关系</a></li>
-      <li><a href="#page-机制的深层含义"
-      id="toc-page-机制的深层含义">Page 机制的深层含义</a></li>
       <li><a href="#req_to_token-与-token_to_kv-的深层关联"
       id="toc-req_to_token-与-token_to_kv-的深层关联">req_to_token 与
       token_to_kv 的深层关联</a></li>
@@ -659,39 +546,6 @@ Attention Kernel 按 index gather K/V</code></pre>
       </ul>
     </aside>
       </div>
-  <script type="text/javascript">
-    (function () {
-      function markActive() {
-        var here = location.href.split('#')[0];
-        var links = document.querySelectorAll('.wiki-sidebar a');
-        for (var i = 0; i < links.length; i++) {
-          if (links[i].href.split('#')[0] === here) {
-            links[i].classList.add('active');
-          }
-        }
-      }
-      // load the shared site directory once (served from the wiki root);
-      // kept in a standalone file so adding a page needn't rebuild every page.
-      var nav = document.getElementById('wiki-sidebar');
-      if (nav) {
-        fetch('/wiki_sidebar.html')
-          .then(function (r) { return r.ok ? r.text() : ''; })
-          .then(function (html) {
-            if (html) {
-              nav.innerHTML = html;
-              nav.hidden = false;
-              markActive();
-            }
-          })
-          .catch(function () {});
-      }
-      // keep bootstrap table styling (previously done by sticky_menu.js)
-      var tables = document.getElementsByTagName('table');
-      for (var j = 0; j < tables.length; j++) {
-        tables[j].classList.add('table');
-      }
-    })();
-  </script>
 </body>
 
 </html>

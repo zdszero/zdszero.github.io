@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 486" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="486" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">同一个 buffer[idx]：在等号右边是读出副本，在左边是写回原处</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">KV cache 是按 slot 编号的大 buffer：attention 读历史时 gather 出新张量，写入新 token 时 scatter 回原 buffer</text>
+
+  <!-- shared KV buffer -->
+  <text x="450" y="96" text-anchor="middle" font-size="13" font-weight="700" fill="#0b7285">k_buffer[layer]：一行 = 一个 token slot（下方数字为 slot 编号）</text>
+  <g stroke="#0ca678">
+    <rect x="186" y="108" width="58" height="34" rx="6" fill="#e6fcf5"/><rect x="384" y="108" width="58" height="34" rx="6" fill="#e6fcf5"/>
+    <rect x="516" y="108" width="58" height="34" rx="6" fill="#e6fcf5"/><rect x="648" y="108" width="58" height="34" rx="6" fill="#e6fcf5"/>
+  </g>
+  <g fill="#edf2ff" stroke="#4c6ef5" stroke-width="2">
+    <rect x="252" y="108" width="58" height="34" rx="6"/><rect x="318" y="108" width="58" height="34" rx="6"/>
+  </g>
+  <g fill="#fff9db" stroke="#f08c00" stroke-width="2">
+    <rect x="582" y="108" width="58" height="34" rx="6"/><rect x="450" y="108" width="58" height="34" rx="6"/>
+  </g>
+  <g font-family="monospace" font-size="12" font-weight="700" text-anchor="middle">
+    <text x="215" y="130" fill="#0b7285">k0</text><text x="281" y="130" fill="#3b5bdb">k1</text>
+    <text x="347" y="130" fill="#3b5bdb">k2</text><text x="413" y="130" fill="#0b7285">k3</text>
+    <text x="479" y="130" fill="#e8590c">kA</text><text x="545" y="130" fill="#0b7285">k5</text>
+    <text x="611" y="130" fill="#e8590c">kB</text><text x="677" y="130" fill="#0b7285">k7</text>
+  </g>
+  <g font-family="monospace" font-size="10.5" fill="#868e96" text-anchor="middle">
+    <text x="215" y="156">0</text><text x="281" y="156">1</text><text x="347" y="156">2</text><text x="413" y="156">3</text>
+    <text x="479" y="156">4</text><text x="545" y="156">5</text><text x="611" y="156">6</text><text x="677" y="156">7</text>
+  </g>
+
+  <line x1="450" y1="170" x2="450" y2="420" stroke="#dee2e6" stroke-width="1.5"/>
+
+  <!-- LEFT: read / gather -->
+  <text x="50" y="194" font-size="14" font-weight="700" fill="#3b5bdb">读 · K = k_buffer[kv_indices]</text>
+  <text x="50" y="214" font-size="12" fill="#868e96" font-family="monospace">kv_indices = [2, 1]</text>
+  <path d="M347 160 C347 200 190 200 181 234" fill="none" stroke="#4c6ef5" stroke-width="2" marker-end="url(#arB)"/>
+  <path d="M281 160 C281 196 250 200 246 234" fill="none" stroke="#4c6ef5" stroke-width="2" marker-end="url(#arB)"/>
+  <g fill="#fff9db" stroke="#f08c00"><rect x="150" y="238" width="58" height="34" rx="6"/><rect x="216" y="238" width="58" height="34" rx="6"/></g>
+  <g font-family="monospace" font-size="12" font-weight="700" text-anchor="middle" fill="#e8590c"><text x="179" y="260">k2</text><text x="245" y="260">k1</text></g>
+  <text x="290" y="252" font-size="12" font-weight="700" fill="#e8590c">新 storage</text>
+  <text x="290" y="268" font-size="11" fill="#868e96">按下标顺序打包</text>
+
+  <!-- RIGHT: write / scatter -->
+  <text x="480" y="194" font-size="14" font-weight="700" fill="#e8590c">写 · k_buffer[loc] = cache_k</text>
+  <text x="480" y="214" font-size="12" fill="#868e96" font-family="monospace">loc = out_cache_loc = [4, 6]</text>
+  <g fill="#fff9db" stroke="#f08c00"><rect x="620" y="238" width="58" height="34" rx="6"/><rect x="686" y="238" width="58" height="34" rx="6"/></g>
+  <g font-family="monospace" font-size="12" font-weight="700" text-anchor="middle" fill="#e8590c"><text x="649" y="260">kA</text><text x="715" y="260">kB</text></g>
+  <text x="480" y="252" font-size="12" font-weight="700" fill="#e8590c">cache_k</text>
+  <text x="480" y="268" font-size="11" fill="#868e96">本步新 token 的 K</text>
+  <path d="M649 236 C649 200 485 200 480 164" fill="none" stroke="#f08c00" stroke-width="2" marker-end="url(#arA)"/>
+  <path d="M715 236 C715 200 615 200 611 164" fill="none" stroke="#f08c00" stroke-width="2" marker-end="url(#arA)"/>
+
+  <!-- bottom panels -->
+  <rect x="40" y="292" width="390" height="120" rx="9" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="58" y="314" font-size="12" font-weight="700" fill="#495057">读取（gather）的性质</text>
+  <g font-size="11.5" fill="#495057">
+    <text x="58" y="338">· 下标可乱序、可重复，无法用 stride 表达 → 复制</text>
+    <text x="58" y="360">· 结果与 cache 不共享：K.fill_(7) 不会改 cache</text>
+    <text x="58" y="382">· 整数下标：输出长度由下标 shape 决定</text>
+    <text x="58" y="402">· 布尔 mask：长度取决于数据 → 可能同步</text>
+  </g>
+  <rect x="470" y="292" width="390" height="120" rx="9" fill="#fff5f5" stroke="#fa5252"/>
+  <text x="488" y="314" font-size="12" font-weight="700" fill="#c92a2a">写入（scatter）的两个陷阱</text>
+  <g font-size="11.5" fill="#495057">
+    <text x="488" y="338" font-family="monospace" fill="#c92a2a">✗ k_buffer[loc].copy_(cache_k)</text>
+    <text x="488" y="358">  先 gather 出临时副本再写它 → cache 不变</text>
+    <text x="488" y="382" fill="#c92a2a">✗ loc 含重复 slot</text>
+    <text x="488" y="402">  accumulate=False 时谁胜出未定义</text>
+  </g>
+
+  <rect x="40" y="428" width="820" height="44" rx="9" fill="#f1f3f5" stroke="#dee2e6"/>
+  <text x="58" y="448" font-size="12" fill="#495057">关键：高级索引出现在赋值左侧时调用的是 index_put_，直接改原 storage；出现在右侧（包括被链式调用 .copy_ 时）</text>
+  <text x="58" y="465" font-size="12" fill="#495057">才是一次 gather 出新张量。同样的 buffer[idx] 写法，语义取决于它在表达式中的位置。</text>
+
+  <defs>
+    <marker id="arB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#4c6ef5"/></marker>
+    <marker id="arA" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#f08c00"/></marker>
+  </defs>
+</svg>

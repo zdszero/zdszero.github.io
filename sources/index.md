@@ -1,4 +1,4 @@
-% Chives Research
+% ZWiki
 
 - LLM 基础
     - [线性代数基础](./linear_algebra.md)
@@ -30,12 +30,13 @@
         - [两阶段专家](./fine_grained_expert.md)
     - [Norm](./normalization.md)
     - Residual
+        - [Attention Residuals](./attention_residuals.md)
         - [mHC](./mhc.md)
     - [Communication](./communication.md)
         - [Topology](./topology.md)
         - [SBO](./sbo.md)
         - [TBO](./tbo.md)
-    - Parallelism
+    - [Parallelism](./parallelism.md)
         - [EP](./expert_parallelism.md)
         - [SP](./sequence_parallelism.md)
         - [DP](./data_parallelism.md)
@@ -45,19 +46,42 @@
         - [Weight Sharding](./weight_sharding.md)
     - [Disaggregation](./disaggregation.md)
     - [Quantization](./quantization.md)
+    - [Torch](./torch.md)
+        - [Torch Ops](./torch_general_ops.md)
+        - [Tensor Memory](./torch_tensor_memory.md)
+        - [Data Types](./torch_dtype.md)
+        - [Broadcast & Indexing](./torch_broadcast_indexing.md)
+        - [CUDA Execution](./torch_cuda_execution.md)
+        - [Memory Management](./torch_memory_management.md)
+        - [Numerical Precision](./torch_numerical_precision.md)
+        - [Inference Mode](./torch_inference_mode.md)
+        - [Dispatcher](./torch_dispatcher.md)
+        - [Kernel & Compile](./torch_kernel_compile.md)
+        - [Multi-GPU Communication & Execution](./torch_multi_gpu.md)
     - Engine Abstraction
         - [Memory Pool](./memory_pool.md)
         - [Communicator](./communicator.md)
         - [PD Design](./disaggregation_design.md)
+        - [Batch](./batch_design.md)
+        - [VRAM Usage](./vram_usage.md)
+            - [Budget & Metrics](./vram_budget.md)
+            - [Weights & KV Cache](./vram_persistent.md)
+            - [Runtime Activation](./vram_runtime.md)
+            - [Communication Buffers](./vram_communication.md)
+    - Model Params
+        - [kimi k3 weight](./kimi_k3_weight.md)
 - 硬件基础
     - [GPU 架构演变史](./gpu_arch_history.md)
     - Hardware
+        - [GPU Arch](./gpu_arch.md)
         - [Cuda Graph](./cuda_graph.md)
         - [CPU & GPU](./cpu_gpu.md)
+        - [Stream](./cuda_stream.md)
     - Cuda Kernel
         - [Softmax](./softmax.md)
         - [LayerNorm](./layernorm.md)
         - [GELU](./gelu.md)
+    - [Triton](./triton.md)
 - 工作总结
     - [性能体系建设](./performance_system.md)
     - 稳定性建设

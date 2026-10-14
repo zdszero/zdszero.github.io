@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 500" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#868e96"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="900" height="500" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">token 交错切分：owner = slot mod N，本地行 = slot div N</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">例：N = 4，一个请求已有 S = 10 个 token（逻辑 slot 0…9）</text>
+
+  <!-- logical row -->
+  <text x="30" y="110" font-size="13.5" font-weight="700" fill="#495057">逻辑 slot</text>
+  <text x="30" y="128" font-size="11" fill="#868e96">调度器看到的完整上下文</text>
+  <g font-family="monospace" font-size="15" font-weight="700" text-anchor="middle">
+    <rect x="190" y="88" width="56" height="44" rx="8" fill="#edf2ff" stroke="#4c6ef5"/><text x="218" y="116" fill="#3b5bdb">0</text>
+    <rect x="252" y="88" width="56" height="44" rx="8" fill="#e6fcf5" stroke="#0ca678"/><text x="280" y="116" fill="#0b7285">1</text>
+    <rect x="314" y="88" width="56" height="44" rx="8" fill="#fff9db" stroke="#f08c00"/><text x="342" y="116" fill="#e8590c">2</text>
+    <rect x="376" y="88" width="56" height="44" rx="8" fill="#f3f0ff" stroke="#7048e8"/><text x="404" y="116" fill="#5f3dc4">3</text>
+    <rect x="438" y="88" width="56" height="44" rx="8" fill="#edf2ff" stroke="#4c6ef5"/><text x="466" y="116" fill="#3b5bdb">4</text>
+    <rect x="500" y="88" width="56" height="44" rx="8" fill="#e6fcf5" stroke="#0ca678"/><text x="528" y="116" fill="#0b7285">5</text>
+    <rect x="562" y="88" width="56" height="44" rx="8" fill="#fff9db" stroke="#f08c00"/><text x="590" y="116" fill="#e8590c">6</text>
+    <rect x="624" y="88" width="56" height="44" rx="8" fill="#f3f0ff" stroke="#7048e8"/><text x="652" y="116" fill="#5f3dc4">7</text>
+    <rect x="686" y="88" width="56" height="44" rx="8" fill="#edf2ff" stroke="#4c6ef5"/><text x="714" y="116" fill="#3b5bdb">8</text>
+    <rect x="748" y="88" width="56" height="44" rx="8" fill="#e6fcf5" stroke="#0ca678"/><text x="776" y="116" fill="#0b7285">9</text>
+  </g>
+  <!-- next token marker -->
+  <rect x="810" y="88" width="56" height="44" rx="8" fill="#ffffff" stroke="#f08c00" stroke-dasharray="4 3"/>
+  <text x="838" y="108" text-anchor="middle" font-family="monospace" font-size="13" font-weight="700" fill="#e8590c">10</text>
+  <text x="838" y="124" text-anchor="middle" font-size="10" fill="#868e96">下一个</text>
+
+  <path d="M528 142 L528 170" fill="none" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <text x="516" y="162" text-anchor="end" font-size="11.5" fill="#868e96">按 slot mod 4 分发；各 rank 把自己的 slot 紧凑地存成本地行</text>
+  <!-- column headers -->
+  <g font-size="11.5" fill="#868e96" text-anchor="middle">
+    <text x="230" y="194">本地行 0</text>
+    <text x="316" y="194">本地行 1</text>
+    <text x="402" y="194">本地行 2</text>
+    <text x="530" y="194">本地长度 S_r</text>
+  </g>
+
+  <!-- rank rows -->
+  <g font-size="13.5" font-weight="700">
+    <text x="30" y="228" fill="#3b5bdb">rank 0</text>
+    <text x="30" y="280" fill="#0b7285">rank 1</text>
+    <text x="30" y="332" fill="#e8590c">rank 2</text>
+    <text x="30" y="384" fill="#5f3dc4">rank 3</text>
+  </g>
+  <g font-size="11" fill="#868e96">
+    <text x="92" y="228">slot ≡ 0</text>
+    <text x="92" y="280">slot ≡ 1</text>
+    <text x="92" y="332">slot ≡ 2</text>
+    <text x="92" y="384">slot ≡ 3</text>
+  </g>
+  <g font-family="monospace" font-size="14" font-weight="700" text-anchor="middle">
+    <rect x="190" y="204" width="80" height="38" rx="8" fill="#edf2ff" stroke="#4c6ef5"/><text x="230" y="228" fill="#3b5bdb">0</text>
+    <rect x="276" y="204" width="80" height="38" rx="8" fill="#edf2ff" stroke="#4c6ef5"/><text x="316" y="228" fill="#3b5bdb">4</text>
+    <rect x="362" y="204" width="80" height="38" rx="8" fill="#edf2ff" stroke="#4c6ef5"/><text x="402" y="228" fill="#3b5bdb">8</text>
+    <rect x="190" y="256" width="80" height="38" rx="8" fill="#e6fcf5" stroke="#0ca678"/><text x="230" y="280" fill="#0b7285">1</text>
+    <rect x="276" y="256" width="80" height="38" rx="8" fill="#e6fcf5" stroke="#0ca678"/><text x="316" y="280" fill="#0b7285">5</text>
+    <rect x="362" y="256" width="80" height="38" rx="8" fill="#e6fcf5" stroke="#0ca678"/><text x="402" y="280" fill="#0b7285">9</text>
+    <rect x="190" y="308" width="80" height="38" rx="8" fill="#fff9db" stroke="#f08c00"/><text x="230" y="332" fill="#e8590c">2</text>
+    <rect x="276" y="308" width="80" height="38" rx="8" fill="#fff9db" stroke="#f08c00"/><text x="316" y="332" fill="#e8590c">6</text>
+    <rect x="362" y="308" width="80" height="38" rx="8" fill="#ffffff" stroke="#f08c00" stroke-dasharray="4 3"/><text x="402" y="332" fill="#e8590c">10</text>
+    <rect x="190" y="360" width="80" height="38" rx="8" fill="#f3f0ff" stroke="#7048e8"/><text x="230" y="384" fill="#5f3dc4">3</text>
+    <rect x="276" y="360" width="80" height="38" rx="8" fill="#f3f0ff" stroke="#7048e8"/><text x="316" y="384" fill="#5f3dc4">7</text>
+  </g>
+  <g font-family="monospace" font-size="14" fill="#495057" text-anchor="middle">
+    <text x="530" y="228">3</text>
+    <text x="530" y="280">3</text>
+    <text x="530" y="332">2 → 3</text>
+    <text x="530" y="384">2</text>
+  </g>
+
+  <!-- right explanation -->
+  <rect x="610" y="204" width="256" height="194" rx="10" fill="#fff4e6" stroke="#f08c00"/>
+  <text x="626" y="228" font-size="13.5" font-weight="700" fill="#e8590c">两条只看整数的规则</text>
+  <g font-family="monospace" font-size="12" fill="#495057">
+    <text x="626" y="256">owner(slot) = slot % N</text>
+    <text x="626" y="278">row(slot)   = slot // N</text>
+  </g>
+  <text x="626" y="306" font-size="11.5" fill="#495057">不需要任何查表就能回答：</text>
+  <text x="626" y="324" font-size="11.5" fill="#495057">“这个 token 在谁那儿、第几行”。</text>
+  <text x="626" y="352" font-size="11.5" fill="#495057">decode 新 token 10：只有 rank 2</text>
+  <text x="626" y="370" font-size="11.5" fill="#495057">写入它的 KV，其余 rank 跳过；</text>
+  <text x="626" y="388" font-size="11.5" fill="#495057">而它的 query 要让 4 个 rank 都用到。</text>
+
+  <!-- bottom note -->
+  <rect x="30" y="420" width="836" height="60" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="46" y="443" font-size="12.5" fill="#495057" font-weight="600">关键思想：</text>
+  <text x="130" y="443" font-size="12.5" fill="#495057">交错切分让任意长度的请求在各 rank 间最多只差 1 个 token，且归属关系是 slot 的纯函数。</text>
+  <text x="46" y="466" font-size="12" fill="#868e96">S_r = ⌊S/N⌋ + [r &lt; S mod N]；从 start 开始的片段则是 count(start+len) − count(start)，即 get_dcp_lens 的做法。</text>
+</svg>

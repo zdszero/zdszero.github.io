@@ -25,8 +25,23 @@
   </title>
     <link rel="stylesheet" href="./WikiTheme/theme/bootstrap.css"  />
         <script defer=""
-        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
-        type="text/javascript"></script>
+        src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+        <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+        </script>
+        <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
       <style type="text/css">
     html { -webkit-text-size-adjust: 100%; }
     pre > code.sourceCode { white-space: pre; position: relative; }
@@ -93,80 +108,10 @@
     code span.vs { color: #4070a0; } /* VerbatimString */
     code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
   </style>
-      <style type="text/css">
-    /* ---- three column wiki layout (left: site directory, center: content, right: page TOC) ---- */
-    .wiki-layout {
-      display: flex;
-      align-items: flex-start;
-      gap: 24px;
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 0 20px;
-      box-sizing: border-box;
-    }
-    .wiki-sidebar {
-      flex: 0 0 240px;
-      width: 240px;
-      position: sticky;
-      top: 0;
-      max-height: 100vh;
-      overflow-y: auto;
-      padding: 10px 4px 20px 0;
-      border-right: 1px solid #eee;
-      font-size: 14px;
-    }
-    .wiki-sidebar[hidden] { display: none; }
-    .wiki-toc {
-      flex: 0 0 220px;
-      width: 220px;
-      position: sticky;
-      top: 0;
-      max-height: 100vh;
-      overflow-y: auto;
-      padding: 10px 0 20px 4px;
-      border-left: 1px solid #eee;
-      font-size: 14px;
-    }
-    .wiki-main {
-      flex: 1 1 auto;
-      min-width: 0;
-      max-width: 820px;
-      padding: 10px 0 40px;
-    }
-    /* site directory tree */
-    .wiki-sidebar .wiki-home {
-      display: block;
-      font-weight: bold;
-      margin-bottom: 10px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid #eee;
-      text-decoration: none;
-      color: #333;
-    }
-    .wiki-sidebar ul { list-style: none; margin: 0 0 0 12px; padding: 0; }
-    .wiki-sidebar > ul { margin-left: 0; }
-    .wiki-sidebar li { line-height: 1.7; }
-    .wiki-sidebar a { text-decoration: none; color: #555; }
-    .wiki-sidebar a:hover { color: #0088cc; text-decoration: underline; }
-    .wiki-sidebar a.active { color: #0088cc; font-weight: bold; }
-    /* page TOC */
-    .wiki-toc ul { list-style: none; margin: 0 0 0 12px; padding: 0; }
-    .wiki-toc > ul { margin-left: 0; }
-    .wiki-toc li { line-height: 1.6; }
-    .wiki-toc a { text-decoration: none; color: #555; }
-    .wiki-toc a:hover { color: #0088cc; }
-    @media (max-width: 980px) {
-      .wiki-layout { flex-direction: column; }
-      .wiki-sidebar, .wiki-toc {
-        position: static;
-        width: 100%;
-        flex-basis: auto;
-        max-height: none;
-        border: 0;
-      }
-      .wiki-main { max-width: none; }
-    }
-  </style>
+      <!-- wiki three-column layout styles/behavior, kept external so the ~5KB
+       block isn't duplicated into every generated page -->
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/wiki-layout.css" />
+  <script defer src="./WikiTheme/wiki-layout.js"></script>
 </head>
 
 <body>
@@ -184,55 +129,92 @@
     <div class="wiki-layout">
     <nav class="wiki-sidebar" id="wiki-sidebar" hidden></nav>
     <main class="wiki-main">
-            <h2 id="gated-mla">Gated MLA</h2>
-            <p>MLA 和 Gated Attention 解决的是两个不同的问题：</p>
+            <h3
+            id="问题softmax-只能决定看谁不能决定说多少">问题：softmax
+            只能决定“看谁”，不能决定“说多少”</h3>
+            <p>标准注意力里，每个 head 的输出是 value 的加权平均：</p>
+            <p><span class="math display">
+            o_i=\sum_j p_{ij}\,v_j,\qquad \sum_j p_{ij}=1
+            </span></p>
+            <p>权重 <span class="math inline">p_{ij}</span> 来自
+            softmax，行和恒为 1，所以输出永远是历史 value
+            的<strong>凸组合</strong>。这带来几个结构性的问题：</p>
             <ul>
-            <li>MLA 改变的是<strong>状态</strong>：用共享 latent <span
-            class="math inline">\(c_{KV}\)</span> 压缩每个 token 的
-            K/V，让 KV cache 与读取成本大幅下降；</li>
-            <li>Gated Attention
-            改变的是<strong>输出</strong>：在注意力结果上乘一个由输入动态生成的门控，让每个
-            head（或每个 channel）有随 token 变化的输出强度。</li>
+            <li><strong>head 没法“不说话”</strong>。当某个 head 对当前
+            token 没什么有用信息时，它也必须把 1
+            的概率分出去。模型学到的办法是把概率堆到一个固定位置（通常是第一个
+            token），让那里的 value 接近无害——这就是 <strong>attention
+            sink</strong>。为了配合
+            sink，残差流里还会长出个别数值极大的通道（<strong>massive
+            activation</strong>），给量化和训练稳定性都添麻烦。</li>
+            <li><strong>value 到输出是一条纯线性路径</strong>。把 <span
+            class="math inline">v_j=x_jW_V^h</span> 代进去，单个 head
+            的贡献是 <span class="math inline">\big(\sum_j
+            p_{ij}x_j\big)W_V^hW_O^h</span>：softmax 之后，<span
+            class="math inline">W_V^h</span> 和 <span
+            class="math inline">W_O^h</span>
+            之间没有任何非线性，两者合起来只相当于一个秩不超过 <span
+            class="math inline">d_h</span> 的线性映射。</li>
+            <li><strong>输出强度不随当前 token 变化</strong>。softmax
+            决定了“从哪里读”，但“读出来的东西写回残差流时乘多大”只能交给固定的
+            <span class="math inline">W_O</span>，当前 token
+            无法调节。</li>
             </ul>
-            <p>Gated MLA
-            就是把后者的门控接到前者的输出上。<strong>压缩路径、KV cache
-            结构、MQA absorb 等 MLA
-            特性全部保持不变，只在注意力输出之后多一条门控支路。</strong>
-            所以它不是一种新的压缩方案，而是对 MLA
-            表达能力与训练稳定性的一次低成本补强。</p>
-            <h3 id="公式">公式</h3>
-            <p>把 MLA 的压缩写开，并用 <span
-            class="math inline">\(d_h\)</span> 表示 QK 的 head
-            维度：</p>
-            <p><span class="math display">\[
-            c_{KV}=XW^{DKV},\qquad
-            K=c_{KV}W^{UK},\qquad
-            V=c_{KV}W^{UV}
-            \]</span></p>
-            <p>在标准 MLA 输出之后加入门控：</p>
-            <p><span class="math display">\[
+            <h3
+            id="核心抽象一个由当前-token-决定的输出门">核心抽象：一个由当前
+            token 决定的输出门</h3>
+            <p>Gated Attention 的做法很直接：在注意力输出上乘一个由当前
+            hidden state 生成的 sigmoid 门。</p>
+            <p><span class="math display">
             \tilde{\boldsymbol{O}} =
             \Big(\operatorname{softmax}\!\Big(\frac{\boldsymbol{Q}\boldsymbol{K}^{\mathsf
             T}}{\sqrt{d_h}}+M\Big)\boldsymbol{V}\Big)
             \odot
             \sigma\!\left(\boldsymbol{X}\boldsymbol{W}_g\right)
-            \]</span></p>
-            <p>其中 <span
-            class="math inline">\(\boldsymbol{W}_g\)</span>
-            直接从当前层的 hidden state <span
-            class="math inline">\(\boldsymbol{X}\in\mathbb{R}^{T\times
-            d}\)</span> 生成，与 Q/K/V
-            的四条投影支路并列，因此它的输入永远是当前的 <span
-            class="math inline">\(X\)</span>，<strong>不依赖历史
-            token，也不进入 KV cache</strong>。</p>
-            <h3 id="门控的形状与粒度">门控的形状与粒度</h3>
-            <p>关键在 <span
-            class="math inline">\(\boldsymbol{W}_g\)</span>
-            的输出宽度：</p>
+            </span></p>
+            <p>可以把它想成一个“音量旋钮”：softmax
+            决定<strong>看谁</strong>，门控决定<strong>说多少</strong>。几个性质一起，正好对应上面的三个问题：</p>
+            <ol type="1">
+            <li><strong><span
+            class="math inline">\sigma\in(0,1)</span>，可以接近
+            0。</strong> head 没用时直接把门关小，不必再借 sink token
+            来“空转”。</li>
+            <li><strong>在 <span class="math inline">W_V</span> 与 <span
+            class="math inline">W_O</span> 之间插了一个非线性。</strong>
+            门本身是输入的函数，<span
+            class="math inline">O\odot\sigma(XW_g)</span>
+            已经不是一个固定的低秩线性映射能表达的。</li>
+            <li><strong>门只依赖当前 token 的 <span
+            class="math inline">x</span>。</strong> 它和 Q
+            一样属于“查询侧”，不读历史、不进 KV cache，decode
+            时不增加任何 cache 读写。</li>
+            </ol>
+            <figure>
+            <img src="./WikiImage/gated_attention_overview.svg"
+            alt="Gated Attention 数据流" />
+            <figcaption aria-hidden="true">Gated Attention
+            数据流</figcaption>
+            </figure>
+            <p>Qwen 团队的 <em>Gated Attention for Large Language
+            Models: Non-linearity, Sparsity, and
+            Attention-Sink-Free</em>（2025）系统比较了门控的位置与形式，结论是：<strong>加在
+            SDPA 输出之后、按 head 区分的 sigmoid
+            门效果最好</strong>。学到的门值大多很小（稀疏、随 query
+            变化），attention sink 与 massive activation
+            明显减弱，训练能承受更大的学习率，长上下文外推也更好。Qwen3-Next
+            的 full attention 层就采用了这种设计。</p>
+            <h4 id="门控的粒度">门控的粒度</h4>
+            <p>粒度由 <span class="math inline">\boldsymbol{W}_g</span>
+            的输出宽度决定：</p>
             <table>
+            <colgroup>
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            </colgroup>
             <thead>
             <tr>
-            <th><span class="math inline">\(\boldsymbol{W}_g\)</span>
+            <th><span class="math inline">\boldsymbol{W}_g</span>
             输出宽度</th>
             <th>门控形状</th>
             <th>粒度</th>
@@ -240,44 +222,28 @@
             </thead>
             <tbody>
             <tr>
-            <td><span class="math inline">\(H\)</span></td>
-            <td><span class="math inline">\([B,S,H]\)</span></td>
-            <td>每个 head 一个标量</td>
+            <td><span class="math inline">H</span></td>
+            <td><span class="math inline">[B,S,H]</span></td>
+            <td>head-wise：每个 head 一个标量</td>
             </tr>
             <tr>
-            <td><span class="math inline">\(H d_v\)</span></td>
-            <td><span class="math inline">\([B,S,H,d_v]\)</span></td>
-            <td>每个 head 的每个 value 通道一个门控</td>
+            <td><span class="math inline">H d_v</span></td>
+            <td><span class="math inline">[B,S,H,d_v]</span></td>
+            <td>element-wise：每个 head 的每个 value 通道一个门</td>
             </tr>
             <tr>
-            <td><span class="math inline">\(d\)</span></td>
-            <td><span class="math inline">\([B,S,d]\)</span></td>
-            <td>与 head 结构无关的通道级门控</td>
+            <td><span class="math inline">d</span></td>
+            <td><span class="math inline">[B,S,d]</span></td>
+            <td>与 head 结构无关的 hidden 通道门</td>
             </tr>
             </tbody>
             </table>
-            <p>现代 MLA 实现通常取 <span class="math inline">\(H
-            d_v\)</span>，也就是让门控宽度与 <code>o_proj</code>
-            的输入宽度一致。这样做有两个直接好处：</p>
-            <ol type="1">
-            <li>门控可以 reshape 成 <span
-            class="math inline">\([H,d_v]\)</span>
-            后与注意力输出逐元素相乘，<strong>不需要广播</strong>，kernel
-            融合最简单；</li>
-            <li>粒度为 (head, value channel)，比 head
-            级标量更细，同时保留了 head 之间的区分度。</li>
-            </ol>
-            <p>以 Kimi K3 的 MLA 层为例，<code>g_proj.weight</code>
-            的形状是 <span class="math inline">\(12288\times
-            7168\)</span>，而 <code>o_proj.weight</code> 是 <span
-            class="math inline">\(7168\times
-            12288\)</span>，两者恰好互为转置。<span
-            class="math inline">\(12288=H d_v\)</span> 正是全部 head
-            拼起来的注意力输出宽度，这说明 <code>g_proj</code>
-            产生的门控作用在 <code>o_proj</code> 之前、带 head 结构的
-            value 空间上，而不是 hidden 通道上。</p>
-            <h3 id="门控加在哪里">门控加在哪里</h3>
-            <p>同一个门控放在不同位置，语义和成本都不一样：</p>
+            <p>主流实现取 <span class="math inline">H
+            d_v</span>，让门控宽度与 <code>o_proj</code>
+            的输入宽度一致：门可以直接与注意力输出逐元素相乘、不需要广播，kernel
+            融合最简单；粒度也比 head 级标量更细，同时保留了 head
+            之间的区分。</p>
+            <h4 id="门控加在哪里">门控加在哪里</h4>
             <table>
             <colgroup>
             <col style="width: 33%" />
@@ -293,59 +259,103 @@
             </thead>
             <tbody>
             <tr>
-            <td><span class="math inline">\(W^{UV}\)</span>
-            展开之后、<code>o_proj</code> 之前</td>
-            <td><span class="math inline">\([B,S,H,d_v]\)</span></td>
+            <td>SDPA 之后、<code>o_proj</code> 之前</td>
+            <td><span class="math inline">[B,S,H,d_v]</span></td>
             <td>最常见，能区分 head，与 <code>o_proj</code>
             输入对齐</td>
             </tr>
             <tr>
             <td><code>o_proj</code> 之后</td>
-            <td><span class="math inline">\([B,S,d]\)</span></td>
-            <td>退化为 hidden 通道级，失去了 head 维度</td>
+            <td><span class="math inline">[B,S,d]</span></td>
+            <td>退化为 hidden 通道级，失去 head 维度，也不再位于 <span
+            class="math inline">W_V</span> 与 <span
+            class="math inline">W_O</span> 之间</td>
             </tr>
             <tr>
-            <td>直接乘在 latent <span
-            class="math inline">\(c_{KV}\)</span> 上</td>
-            <td><span class="math inline">\([B,S,d_c]\)</span></td>
-            <td>同时改动所有 head 的 K 与
-            V，语义完全不同，属于另一类设计</td>
+            <td>乘在 value（或 MLA 的 latent <span
+            class="math inline">c_{KV}</span>）上</td>
+            <td><span class="math inline">[B,S,\cdot]</span></td>
+            <td>门进入了被缓存的历史状态，语义变成“写入时的强度”，属于另一类设计</td>
             </tr>
             </tbody>
             </table>
-            <p>需要特别强调的是 decode 阶段。MLA 在 decode 时走
-            <strong>MQA absorb 路径</strong>，先把 <span
-            class="math inline">\(W^{UK}\)</span> 吸收进 Q、把输出的
-            <span class="math inline">\(W^{UV}\)</span>
-            展开推迟到最后：</p>
-            <p><span class="math display">\[
-            \Big(\operatorname{softmax}\!\Big(\frac{(c_qW^{UQ}W^{UK\,\mathsf
-            T})c_{KV}^{\mathsf T}}{\sqrt{d_h}}\Big)c_{KV}\Big)W^{UV}
-            \]</span></p>
+            <h3 id="gated-mla">Gated MLA</h3>
+            <p>MLA 和 Gated Attention 解决的是两个不同的问题：</p>
+            <ul>
+            <li>MLA 改变的是<strong>状态</strong>：用共享 latent <span
+            class="math inline">c_{KV}</span> 压缩每个 token 的 K/V，让
+            KV cache 与读取成本大幅下降；</li>
+            <li>Gated Attention
+            改变的是<strong>输出</strong>：在注意力结果上乘一个随 token
+            变化的门。</li>
+            </ul>
+            <p>Gated MLA
+            就是把后者接到前者的输出上。<strong>压缩路径、KV cache
+            结构、MQA absorb
+            全部不变，只在注意力输出之后多一条门控支路。</strong>
+            它不是新的压缩方案，而是对 MLA
+            表达能力与训练稳定性的一次低成本补强。</p>
+            <p>把 MLA 的压缩写开：</p>
+            <p><span class="math display">
+            c_{KV}=XW^{DKV},\qquad
+            K=c_{KV}W^{UK},\qquad
+            V=c_{KV}W^{UV}
+            </span></p>
+            <p>门控的输入是当前层的 <span
+            class="math inline">X\in\mathbb{R}^{T\times d}</span>，与
+            Q、KV 的投影并列；宽度取 <span
+            class="math inline">Hd_v</span>，作用在 <span
+            class="math inline">W^{UV}</span>
+            展开之后、<code>o_proj</code> 之前。以 Kimi K3 的 MLA
+            层为例，checkpoint 里 <code>g_proj.weight</code> 的形状是
+            <span class="math inline">12288\times
+            7168</span>，<code>o_proj.weight</code> 是 <span
+            class="math inline">7168\times
+            12288</span>，两者恰好互为转置：<span
+            class="math inline">12288=Hd_v</span> 是全部 head
+            拼起来的注意力输出宽度，说明门控作用在带 head 结构的 value
+            空间上，而不是 hidden 通道上。</p>
+            <h4 id="decode门控不碰-absorb">decode：门控不碰 absorb</h4>
+            <p>MLA 在 decode 时走 <strong>MQA absorb 路径</strong>：把
+            <span class="math inline">W^{UK}</span> 吸收进 Q，直接在
+            latent 空间对 <span class="math inline">c_{KV}</span>
+            做注意力，最后再用 <span class="math inline">W^{UV}</span>
+            展开：</p>
+            <p><span class="math display">
+            \Big(\operatorname{softmax}\!\Big(\frac{(q_{\text{nope}}W^{UK\,\mathsf
+            T})\,c_{KV}^{\mathsf T}}{\sqrt{d_h}}\Big)c_{KV}\Big)W^{UV}
+            </span></p>
             <p>门控乘在这一步<strong>之后</strong>。它只依赖 <span
-            class="math inline">\(X\)</span>，既不影响权重吸收的数学形式，也不影响
-            latent 的缓存方式，所以 MLA 的 decode 优化可以原样保留。</p>
-            <h3 id="为什么-mla-特别需要门控">为什么 MLA
-            特别需要门控</h3>
-            <p>除了 Gated Attention 的通用收益（缓解 softmax
-            凸组合带来的输出幅度约束、attention sink 与 massive
-            activation），MLA 还有两个自身原因：</p>
+            class="math inline">X</span>，既不参与 <span
+            class="math inline">W^{UK}</span>、<span
+            class="math inline">W^{UV}</span> 的吸收变换，也不改变
+            latent 的缓存内容，MLA 的 decode
+            优化可以原样保留。反过来，如果把门乘在 <span
+            class="math inline">c_{KV}</span> 上，它就进入了
+            cache，absorb
+            也要跟着改——这正是“门控加在哪里”表格里第三行属于另一类设计的原因。</p>
+            <figure>
+            <img src="./WikiImage/gated_attention_mla_absorb.svg"
+            alt="Gated MLA 的 absorb decode 路径" />
+            <figcaption aria-hidden="true">Gated MLA 的 absorb decode
+            路径</figcaption>
+            </figure>
+            <h4 id="为什么-mla-特别需要门控">为什么 MLA
+            特别需要门控</h4>
+            <p>除了上面的通用收益，MLA 还有两个自身原因：</p>
             <ul>
             <li><strong>value 方向的自由度本来就被压缩过</strong>：所有
-            head 的 <span class="math inline">\(V\)</span> 都由同一个
-            <span class="math inline">\(d_c\)</span> 维 latent 经 <span
-            class="math inline">\(W^{UV}\)</span> 展开，<span
-            class="math inline">\(d_c\ll H
-            d_v\)</span>。门控虽然不能改变 <span
-            class="math inline">\(W^{UV}\)</span> 的秩，但它提供了随
-            token
-            变化的乘性调制，这种形式不是一个固定的低秩线性映射能表达的，相当于在不增加
-            cache 的前提下补回一部分区分度。</li>
+            head 的 <span class="math inline">V</span> 都由同一个 <span
+            class="math inline">d_c</span> 维 latent 经 <span
+            class="math inline">W^{UV}</span> 展开，<span
+            class="math inline">d_c\ll Hd_v</span>。门控不能改变 <span
+            class="math inline">W^{UV}</span> 的秩，但它提供了随 token
+            变化的乘性调制，相当于在不增加 cache
+            的前提下补回一部分区分度。</li>
             <li><strong>MLA 常与线性注意力层混用</strong>：在 KDA + MLA
-            这类混合架构里，线性/循环层自带衰减门控，而 full attention
-            层原本没有任何门控，两层的写入强度控制能力不对等。给 MLA
-            加输出门控后，两类层都能决定自己往 residual stream
-            里写多少，层间分工更容易平衡。</li>
+            这类混合架构里，KDA 层本来就有一个输出门（门控 RMSNorm），而
+            MLA 层没有，两类层控制“往残差流写多少”的能力不对等。给 MLA
+            补上输出门后，两类层对称了，层间分工更容易平衡（见下文）。</li>
             </ul>
             <h3 id="代价">代价</h3>
             <p>门控不是“零成本的一行乘法”，它的开销与一张独立投影矩阵相当：</p>
@@ -363,78 +373,165 @@
             <tbody>
             <tr>
             <td>参数量</td>
-            <td><span class="math inline">\(d\times Hd_v\)</span>。K3
-            中为 <span class="math inline">\(12288\times 7168\approx
-            88\text{M}\)</span>，BF16 约 168 MB</td>
+            <td><span class="math inline">d\times Hd_v</span>。K3 中为
+            <span class="math inline">7168\times 12288\approx
+            88\text{M}</span>，BF16 约 176 MB（168 MiB）/ 层</td>
             </tr>
             <tr>
             <td>Prefill 计算</td>
-            <td>每 token <span class="math inline">\(d\cdot
-            Hd_v\)</span> 次乘加，与一次 <code>o_proj</code> 的 GEMM
-            同量级</td>
+            <td>每 token <span class="math inline">d\cdot Hd_v</span>
+            次乘加，与一次 <code>o_proj</code> 的 GEMM 同量级</td>
             </tr>
             <tr>
             <td>Decode 成本</td>
-            <td>每个 step 要完整读取这张权重，约 168
-            MB/层，是<strong>显存带宽</strong>开销而非 cache 开销</td>
+            <td>每个 step
+            都要完整读一遍这张权重，是<strong>显存带宽</strong>开销而非
+            cache 开销</td>
             </tr>
             <tr>
             <td>KV cache</td>
             <td>完全不受影响，门控只依赖当前 hidden state</td>
             </tr>
             <tr>
-            <td>精度</td>
-            <td>sigmoid 需要在较高精度下计算，否则饱和区梯度会消失</td>
+            <td>数值</td>
+            <td>训练时 sigmoid
+            饱和区梯度很小；推理侧不同模型做法不同，见实现部分</td>
             </tr>
             </tbody>
             </table>
             <p>因此在显存与通信预算里，<code>g_proj</code> 必须和
             <code>q_proj</code>、<code>o_proj</code>
-            一样被当作主矩阵统计，不能因为它是“门控”就按小参数处理。推理实现上，门控通常被融合进
-            attention kernel 的 epilogue 或 <code>o_proj</code>
-            的前置步骤，避免额外的 HBM 往返。</p>
-            <h3 id="与-kda-的-g_proj-的区别">与 KDA 的
-            <code>g_proj</code> 的区别</h3>
-            <p>K3 的 KDA 层里同样有一张 <span
-            class="math inline">\(12288\times7168\)</span> 的
-            <code>g_proj</code>，名字和形状都一样，但含义完全不同：</p>
-            <table>
-            <colgroup>
-            <col style="width: 25%" />
-            <col style="width: 25%" />
-            <col style="width: 25%" />
-            <col style="width: 25%" />
-            </colgroup>
-            <thead>
-            <tr>
-            <th>归属</th>
-            <th>门控位置</th>
-            <th>门控作用对象</th>
-            <th>数学形式</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-            <td>MLA 层</td>
-            <td>注意力输出之后</td>
-            <td>单次 attention 的输出</td>
-            <td><span
-            class="math inline">\(\boldsymbol{O}\odot\sigma(XW_g)\)</span></td>
-            </tr>
-            <tr>
-            <td>KDA 层</td>
-            <td>递归状态更新中</td>
-            <td>历史状态 <span
-            class="math inline">\(\boldsymbol{S}\)</span>
-            的遗忘与新值写入</td>
-            <td><span class="math inline">\(\alpha_t,\beta_t\)</span>
-            作用在 <span
-            class="math inline">\(\boldsymbol{S}_t=\alpha_t\boldsymbol{S}_{t-1}+\dots\)</span></td>
-            </tr>
-            </tbody>
-            </table>
-            <p>读权重表或做显存分析时，这两者不能互相印证，也不能用 KDA
-            的 gate 语义去解释 MLA 的 <code>g_proj</code>。</p>
+            一样被当作主矩阵统计，不能因为它是“门控”就按小参数处理。</p>
+            <h3 id="kda-层里的门别把-g_proj-认错">KDA 层里的门：别把
+            g_proj 认错</h3>
+            <p>K3 的 KDA 层里也有一张
+            <code>g_proj</code>，名字和形状（<span
+            class="math inline">Hd_v\times d</span>）都和 MLA
+            层的一样。容易误以为它是 KDA
+            的“遗忘门”，但读代码可以确认：<strong>KDA 的
+            <code>g_proj</code> 同样是输出门</strong>，作用在
+            <code>o_proj</code> 之前；真正作用在递归状态 <span
+            class="math inline">S</span> 上的是另外两组投影：</p>
+            <ul>
+            <li><code>f_a_proj → f_b_proj</code> 产生逐通道的遗忘门
+            <span
+            class="math inline">\alpha_t</span>，衰减历史状态；</li>
+            <li><code>b_proj</code> 产生每个 head 的写入强度 <span
+            class="math inline">\beta_t</span>，控制 delta rule 写入新
+            k/v 的步长。</li>
+            </ul>
+            <p>两类层的输出门只有一处差别：KDA 先对每个 head 的输出做
+            RMSNorm
+            再乘门（<code>o_norm = FusedRMSNormGated(head_dim, activation="sigmoid")</code>，即
+            <span class="math inline">\mathrm{RMSNorm}(o)\cdot
+            w\odot\sigma(g)</span>），MLA 直接乘 <span
+            class="math inline">o\odot\sigma(g)</span>。K3 的 KDA 用满秩
+            <code>g_proj</code>（<code>use_full_rank_gate</code>），Kimi
+            Linear 用的是低秩 <code>g_a_proj → g_b_proj</code>。</p>
+            <figure>
+            <img src="./WikiImage/gated_attention_kda_vs_mla.svg"
+            alt="Kimi K3 两类注意力层里的门" />
+            <figcaption aria-hidden="true">Kimi K3
+            两类注意力层里的门</figcaption>
+            </figure>
+            <p>所以读权重表或做显存分析时，两张 <code>g_proj</code>
+            可以按同一类矩阵（输出门）统计；KDA 的状态门要去看
+            <code>f_*</code> 和 <code>b_proj</code>。遗忘门的细节见 <a
+            href="./linear_attention.html">Linear Attention</a>。</p>
+            <h3 id="在-sglang-中的实现">在 SGLang 中的实现</h3>
+            <p>各模型的门控公式几乎一样，差别在于<strong>门从哪个投影里来、在哪里乘、怎么融合</strong>。</p>
+            <h4 id="qwen3-next门是-q-投影的另一半">Qwen3-Next：门是 Q
+            投影的另一半</h4>
+            <p><code>python/sglang/srt/models/qwen3_next.py</code> 的
+            full attention
+            层（<code>Qwen3HybridAttentionDecoderLayer</code>，config 中
+            <code>attn_output_gate</code>）不单独建
+            <code>g_proj</code>，而是把 <code>qkv_proj</code> 的 Q
+            头数翻倍：<code>total_num_heads * (1 + attn_output_gate)</code>。前向时按
+            head 把这段输出 view 成 <span
+            class="math inline">[T,H,2d_h]</span> 再 <code>chunk</code>
+            成 <code>q</code> 和 <code>gate</code>，所以门和 Q
+            来自同一次 GEMM，宽度为 <span
+            class="math inline">Hd_h</span>（element-wise）。注意力算完后
+            <code>attn_output * sigmoid(gate)</code> 再进
+            <code>o_proj</code>；ROCm 上走融合的
+            <code>sigmoid_gate_mul</code> Triton kernel。</p>
+            <p>这种写法把“门属于查询侧”体现得很直白：它就是 Q
+            投影多出来的一半通道。</p>
+            <h4 id="mla-的通用挂点">MLA 的通用挂点</h4>
+            <p>DeepSeek 系 MLA 的公共前向在
+            <code>python/sglang/srt/models/deepseek_common/attention_forward_methods/forward_mla.py</code>。absorb
+            路径里留了两个可选 hook：</p>
+            <ul>
+            <li><code>forward_absorb_prepare</code> 开头调用模型的
+            <code>prepare_attention_output_gate(hidden_states)</code>
+            准备门；</li>
+            <li>注意力核输出经 <code>torch.bmm(·, w_vc)</code> 展开成
+            <span class="math inline">[T, H\cdot d_v]</span>
+            后、<code>o_proj</code> 之前，调用
+            <code>_apply_attention_output_gate</code>，它再分派给模型的
+            <code>apply_attention_output_gate</code> 或
+            <code>_apply_gated</code>。</li>
+            </ul>
+            <p>这正好对应图里“门控只能乘在 W_UV
+            展开之后”的位置。复用这套 hook 的模型各有取舍：</p>
+            <ul>
+            <li>Hunyuan V4（<code>HYV4Attention.linear_gate</code>，宽度
+            <span class="math inline">H\cdot d_v</span>）：在 hpc 后端下
+            prepare 阶段直接把 hidden state 交出去，由
+            <code>gated_mla_gemm</code> 把门控投影的 GEMM
+            和门控乘法放进同一个 kernel；其他后端仍是先投影、再 sigmoid
+            相乘。</li>
+            <li>Bailing（<code>DsV3MLA</code>）：用
+            <code>gated_attention_proj_granularity_type</code> 在
+            <code>head_wise</code>（宽度 <span
+            class="math inline">H</span>，乘法时广播到 <span
+            class="math inline">d_v</span>）和
+            <code>element_wise</code>（宽度 <span
+            class="math inline">H\cdot d_v</span>）之间切换，sigmoid
+            先升到 fp32 再算。</li>
+            </ul>
+            <h4 id="kimi-k3包住-o_proj">Kimi K3：包住 o_proj</h4>
+            <p><code>python/sglang/srt/models/kimi_k3.py</code> 的
+            <code>KimiK3MLAAttention</code> 继承
+            <code>DeepseekV2AttentionMLA</code>，由
+            <code>mla_use_output_gate</code>
+            打开门控。几个值得知道的工程细节：</p>
+            <ul>
+            <li><strong>按 attn-TP 切列</strong>。<code>g_proj</code> 是
+            <code>ColumnParallelLinear(hidden_size, num_attention_heads * v_head_dim, parallel_group="attn_tp")</code>。MLA
+            的 head 本来就在 attention-TP
+            组内切分，门按同样的方式切列，本地门的列与本地 head
+            的输出一一对齐，乘法不需要任何通信。</li>
+            <li><strong>在实例上包
+            <code>o_proj.forward</code></strong>。<code>o_proj</code>
+            在父类各条前向路径的深处被调用，K3 没有改这些路径，而是在
+            <code>__init__</code> 里把 <code>self.o_proj.forward</code>
+            换成
+            <code>_gated_o_proj_forward</code>：<code>forward</code>
+            先把 hidden state 存进 <code>_gate_hidden_states</code>，等
+            <code>o_proj</code> 被调用时再算门、乘门、调用原始
+            forward。权重加载、<code>reduce_results</code>
+            都不受影响。</li>
+            <li><strong>门控 GEMM 与 attention 并行</strong>。CUDA graph
+            capture 时，若 token 数不超过
+            <code>_gate_bs_limit</code>（Blackwell 128，其他
+            64），<code>_fork_output_gate</code> 在前向开头就把
+            <code>gate_alt_stream</code> fork
+            出来，<code>_compute_output_gate</code> 在旁路 stream 上跑
+            <code>g_proj</code>，再由主 stream 等待。小 batch 时
+            attention 核占不满 SM，这张 <span
+            class="math inline">Hd_v\times d</span> 的 GEMM
+            可以藏进去；batch 更大时 overlap
+            只剩同步开销，就退回串行。</li>
+            <li><strong>sigmoid
+            与乘法融合</strong>。<code>mla_output_gate.kimi_k3_mla_output_gate</code>
+            在
+            bf16、同形状、连续的条件下（<code>covered()</code>）用一个
+            kernel 完成 <code>x * sigmoid(gate)</code>，并刻意保留两次
+            bf16 舍入，与未融合的 <code>torch.sigmoid</code> +
+            乘法逐位一致；条件不满足时回退到 PyTorch 写法。</li>
+            </ul>
             <h3 id="最小实现">最小实现</h3>
             <p>下面省略 RoPE、KV cache 与 MQA absorb，只保留 latent
             压缩与输出门控的位置：</p>
@@ -474,93 +571,69 @@
 <span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.o_proj(out.reshape(B, S, <span class="op">-</span><span class="dv">1</span>))</span></code></pre></div>
             <h3 id="常见面试问题">常见面试问题</h3>
             <ul>
-            <li>Gated MLA 与 Gated Attention 的区别是什么？门控的粒度从
-            head 级标量扩展到 (head, value channel)，并且要与 MLA 的
-            latent 压缩、absorb 路径对齐。</li>
+            <li>Gated Attention 解决什么问题？softmax 输出是 value
+            的凸组合，head 无法“静音”，于是出现 attention sink 和
+            massive activation；门控提供了随 token 变化的输出强度和
+            <span class="math inline">W_V</span>、<span
+            class="math inline">W_O</span> 之间的非线性。</li>
             <li>门控能不能提高 MLA 的压缩率、减少 KV
             cache？不能。压缩发生在 token
-            状态维度，门控作用在输出维度，两者互不影响。</li>
-            <li>为什么门控要加在 <code>o_proj</code>
-            之前？因为那里还保留 head 与 value channel 的结构，能按 head
-            区分；过了 <code>o_proj</code> 就只剩 hidden 通道。</li>
-            <li>为什么 decode 阶段的门控不破坏权重吸收？门控只依赖当前
-            hidden state，不参与 <span
-            class="math inline">\(W^{UK}\)</span>、<span
-            class="math inline">\(W^{UV}\)</span> 的吸收变换。</li>
+            状态维度，门控作用在输出维度，且门只依赖当前 hidden
+            state，不进 cache。</li>
+            <li>为什么门控要加在 <code>o_proj</code> 之前？那里还保留
+            head 与 value channel 的结构，能按 head 区分，也恰好位于
+            <span class="math inline">W_V</span> 与 <span
+            class="math inline">W_O</span> 之间；过了
+            <code>o_proj</code> 就只剩 hidden 通道。</li>
+            <li>为什么 decode 阶段的门控不破坏权重吸收？门乘在 <span
+            class="math inline">W^{UV}</span> 展开之后，不参与 <span
+            class="math inline">W^{UK}</span>、<span
+            class="math inline">W^{UV}</span> 的吸收变换。</li>
             <li>Gated MLA 的代价是什么？一张与 <code>o_proj</code>
-            同量级的 <span class="math inline">\(d\times Hd_v\)</span>
-            矩阵，prefill 多一次 GEMM，decode
-            多一份权重读取带宽；收益在表达能力和稳定性上。</li>
-            <li>如何和 KDA 的 <code>g_proj</code> 区分？前者门控
-            attention 输出，后者门控递归状态的遗忘与写入。</li>
+            同量级的 <span class="math inline">d\times Hd_v</span>
+            矩阵，prefill 多一次 GEMM，decode 多一份权重读取带宽。</li>
+            <li>K3 的 KDA 层也有
+            <code>g_proj</code>，它是遗忘门吗？不是，它同样是
+            <code>o_proj</code> 前的输出门（带 RMSNorm）；KDA
+            的遗忘门来自 <code>f_a_proj → f_b_proj</code>，写入强度来自
+            <code>b_proj</code>。</li>
             </ul>
             <h3 id="小结">小结</h3>
-            <p>Gated MLA 是在 MLA 的注意力输出上乘一个由 hidden state
-            动态生成的门控，门控宽度通常取 <span class="math inline">\(H
-            d_v\)</span>，与 <code>o_proj</code> 的输入对齐，作用位置在
-            <span class="math inline">\(W^{UV}\)</span>
-            展开之后、<code>o_proj</code> 之前。它不改变 MLA
-            的压缩语义、不影响 KV cache 与权重吸收，代价是一张与
-            <code>o_proj</code> 同量级的主矩阵及其 decode
-            带宽，换来的是更细粒度的输出控制、对低秩 value
-            的补偿，以及与线性注意力层更对等的门控能力。</p>
+            <p>Gated Attention 把“看谁”和“说多少”拆开：softmax
+            继续负责从历史里读什么，一个由当前 token 生成的 sigmoid
+            门负责读出来的东西写回残差流时乘多大。门只依赖当前 hidden
+            state，因此不进 KV cache；放在 SDPA
+            之后、<code>o_proj</code> 之前，既能按 head 区分，又给 <span
+            class="math inline">W_V</span>、<span
+            class="math inline">W_O</span> 之间补上了非线性，从而缓解
+            attention sink、massive activation 与训练不稳定。接到 MLA
+            上时，门乘在 <span class="math inline">W^{UV}</span>
+            展开之后，latent cache 和 absorb
+            路径都原样保留，代价是一张与 <code>o_proj</code>
+            同量级的主矩阵及其 decode 带宽。</p>
           </main>
         <aside class="wiki-toc">
       <ul>
-      <li><a href="#gated-mla" id="toc-gated-mla">Gated MLA</a>
-      <ul>
-      <li><a href="#公式" id="toc-公式">公式</a></li>
-      <li><a href="#门控的形状与粒度"
-      id="toc-门控的形状与粒度">门控的形状与粒度</a></li>
-      <li><a href="#门控加在哪里"
-      id="toc-门控加在哪里">门控加在哪里</a></li>
-      <li><a href="#为什么-mla-特别需要门控"
-      id="toc-为什么-mla-特别需要门控">为什么 MLA 特别需要门控</a></li>
+      <li><a href="#问题softmax-只能决定看谁不能决定说多少"
+      id="toc-问题softmax-只能决定看谁不能决定说多少">问题：softmax
+      只能决定“看谁”，不能决定“说多少”</a></li>
+      <li><a href="#核心抽象一个由当前-token-决定的输出门"
+      id="toc-核心抽象一个由当前-token-决定的输出门">核心抽象：一个由当前
+      token 决定的输出门</a></li>
+      <li><a href="#gated-mla" id="toc-gated-mla">Gated MLA</a></li>
       <li><a href="#代价" id="toc-代价">代价</a></li>
-      <li><a href="#与-kda-的-g_proj-的区别"
-      id="toc-与-kda-的-g_proj-的区别">与 KDA 的 <code>g_proj</code>
-      的区别</a></li>
+      <li><a href="#kda-层里的门别把-g_proj-认错"
+      id="toc-kda-层里的门别把-g_proj-认错">KDA 层里的门：别把 g_proj
+      认错</a></li>
+      <li><a href="#在-sglang-中的实现" id="toc-在-sglang-中的实现">在
+      SGLang 中的实现</a></li>
       <li><a href="#最小实现" id="toc-最小实现">最小实现</a></li>
       <li><a href="#常见面试问题"
       id="toc-常见面试问题">常见面试问题</a></li>
       <li><a href="#小结" id="toc-小结">小结</a></li>
-      </ul></li>
       </ul>
     </aside>
       </div>
-  <script type="text/javascript">
-    (function () {
-      function markActive() {
-        var here = location.href.split('#')[0];
-        var links = document.querySelectorAll('.wiki-sidebar a');
-        for (var i = 0; i < links.length; i++) {
-          if (links[i].href.split('#')[0] === here) {
-            links[i].classList.add('active');
-          }
-        }
-      }
-      // load the shared site directory once (served from the wiki root);
-      // kept in a standalone file so adding a page needn't rebuild every page.
-      var nav = document.getElementById('wiki-sidebar');
-      if (nav) {
-        fetch('/wiki_sidebar.html')
-          .then(function (r) { return r.ok ? r.text() : ''; })
-          .then(function (html) {
-            if (html) {
-              nav.innerHTML = html;
-              nav.hidden = false;
-              markActive();
-            }
-          })
-          .catch(function () {});
-      }
-      // keep bootstrap table styling (previously done by sticky_menu.js)
-      var tables = document.getElementsByTagName('table');
-      for (var j = 0; j < tables.length; j++) {
-        tables[j].classList.add('table');
-      }
-    })();
-  </script>
 </body>
 
 </html>

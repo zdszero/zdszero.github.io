@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 510" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="510" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">Collective = 张量在各 rank 上的状态转换</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">两 rank、SUM 归约；先说清“现在是什么状态、下游要什么状态”，collective 就选出来了</text>
+
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#868e96"/></marker>
+    <marker id="arA" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#e8590c"/></marker>
+  </defs>
+
+  <!-- Partial sum -->
+  <rect x="60" y="170" width="250" height="160" rx="10" fill="#fff9db" stroke="#f08c00"/>
+  <text x="80" y="196" font-size="14" font-weight="700" fill="#e8590c">部分和 partial sum</text>
+  <text x="80" y="216" font-size="11.5" fill="#868e96">各 rank 贡献同一输出的一部分</text>
+  <g font-family="monospace" font-size="13">
+    <text x="80" y="250" fill="#495057">rank 0</text><text x="160" y="250" fill="#e8590c">[1, 2]</text>
+    <text x="80" y="276" fill="#495057">rank 1</text><text x="160" y="276" fill="#e8590c">[10, 20]</text>
+  </g>
+  <text x="80" y="310" font-size="11.5" fill="#495057">例：TP 行并行 matmul 的输出</text>
+
+  <!-- Replica -->
+  <rect x="590" y="84" width="250" height="140" rx="10" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="610" y="110" font-size="14" font-weight="700" fill="#0b7285">副本 replica</text>
+  <text x="610" y="130" font-size="11.5" fill="#868e96">各 rank 持有相同的完整数据</text>
+  <g font-family="monospace" font-size="13">
+    <text x="610" y="162" fill="#495057">rank 0</text><text x="690" y="162" fill="#0b7285">[11, 22]</text>
+    <text x="610" y="188" fill="#495057">rank 1</text><text x="690" y="188" fill="#0b7285">[11, 22]</text>
+  </g>
+  <text x="610" y="212" font-size="11.5" fill="#c92a2a">再做 SUM AllReduce 会变成 ×2</text>
+
+  <!-- Shard -->
+  <rect x="590" y="290" width="250" height="140" rx="10" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="610" y="316" font-size="14" font-weight="700" fill="#3b5bdb">分片 shard</text>
+  <text x="610" y="336" font-size="11.5" fill="#868e96">各 rank 持有完整数据的不同部分</text>
+  <g font-family="monospace" font-size="13">
+    <text x="610" y="368" fill="#495057">rank 0</text><text x="690" y="368" fill="#3b5bdb">[11]</text>
+    <text x="610" y="394" fill="#495057">rank 1</text><text x="690" y="394" fill="#3b5bdb">[22]</text>
+  </g>
+  <text x="610" y="418" font-size="11.5" fill="#495057">按组内 rank 顺序排列</text>
+  <!-- transitions -->
+  <path d="M312 212 L584 152" stroke="#e8590c" stroke-width="2" fill="none" marker-end="url(#arA)"/>
+  <text x="440" y="168" text-anchor="middle" font-size="13" font-weight="700" fill="#e8590c">AllReduce</text>
+  <path d="M312 290 L584 352" stroke="#e8590c" stroke-width="2" fill="none" marker-end="url(#arA)"/>
+  <text x="456" y="344" text-anchor="middle" font-size="13" font-weight="700" fill="#e8590c">ReduceScatter</text>
+  <path d="M680 288 L680 230" stroke="#868e96" stroke-width="2" fill="none" marker-end="url(#ar)"/>
+  <text x="670" y="264" text-anchor="end" font-size="13" font-weight="700" fill="#3b5bdb">AllGather</text>
+  <path d="M790 228 L790 284" stroke="#adb5bd" stroke-width="1.5" stroke-dasharray="4 3" fill="none" marker-end="url(#ar)"/>
+  <text x="800" y="252" font-size="11.5" fill="#868e96">本地切片</text>
+  <text x="800" y="268" font-size="11.5" fill="#868e96">无需通信</text>
+
+  <!-- all-to-all -->
+  <rect x="60" y="348" width="250" height="92" rx="10" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="80" y="372" font-size="13.5" font-weight="700" fill="#5f3dc4">All-to-All：分片 → 另一种分片</text>
+  <g font-family="monospace" font-size="12">
+    <text x="80" y="395" fill="#495057">r0 [a→0, a→1] → [a→0, b→0]</text>
+    <text x="80" y="414" fill="#495057">r1 [b→0, b→1] → [a→1, b→1]</text>
+  </g>
+  <text x="80" y="432" font-size="11.5" fill="#868e96">只按目的 rank 搬运，不做归约（EP）</text>
+
+  <!-- note -->
+  <rect x="60" y="456" width="780" height="40" rx="9" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="80" y="481" font-size="12" fill="#495057">ReduceScatter → AllGather（下路）与 AllReduce（上路）数学语义等价；浮点归约顺序可能不同，不保证逐位相同。</text>
+</svg>

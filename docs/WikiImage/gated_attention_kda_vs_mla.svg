@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 432" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="432" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">Kimi K3 两类注意力层里的门</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">同名的 g_proj 在两类层里都是输出门；作用在递归状态上的是 f_a/f_b 与 b_proj</text>
+
+  <!-- column headers -->
+  <rect x="270" y="76" width="300" height="30" rx="8" fill="#7048e8"/>
+  <text x="420" y="96" text-anchor="middle" font-size="13.5" font-weight="700" fill="#ffffff">KDA 层（KimiK3DeltaAttention）</text>
+  <rect x="590" y="76" width="280" height="30" rx="8" fill="#4c6ef5"/>
+  <text x="730" y="96" text-anchor="middle" font-size="13.5" font-weight="700" fill="#ffffff">MLA 层（KimiK3MLAAttention）</text>
+
+  <!-- row labels -->
+  <text x="44" y="144" font-size="13" font-weight="700" fill="#212529">遗忘门 α_t</text>
+  <text x="44" y="164" font-size="11.5" fill="#868e96">每个通道保留多少旧记忆</text>
+  <text x="44" y="224" font-size="13" font-weight="700" fill="#212529">写入强度 β_t</text>
+  <text x="44" y="244" font-size="11.5" fill="#868e96">新 k/v 以多大步长写入</text>
+  <text x="44" y="308" font-size="13" font-weight="700" fill="#e8590c">输出门</text>
+  <text x="44" y="328" font-size="11.5" fill="#868e96">往残差流写回多少</text>
+
+  <!-- brackets -->
+  <path d="M30 120 H24 V266 H30" fill="none" stroke="#7048e8" stroke-width="1.5"/>
+  <text x="16" y="193" text-anchor="middle" font-size="11" font-weight="700" fill="#5f3dc4" transform="rotate(-90 16 193)">状态门</text>
+  <path d="M30 282 H24 V354 H30" fill="none" stroke="#f08c00" stroke-width="1.5"/>
+  <text x="16" y="318" text-anchor="middle" font-size="11" font-weight="700" fill="#e8590c" transform="rotate(-90 16 318)">输出门</text>
+
+  <!-- row 1 -->
+  <rect x="270" y="120" width="300" height="66" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="284" y="142" font-size="12.5" font-weight="700" fill="#5f3dc4" font-family="monospace">f_a_proj → f_b_proj</text>
+  <text x="284" y="161" font-size="11.5" fill="#495057" font-family="monospace">[T, H·d_k]，S ← Diag(α_t)·S</text>
+  <text x="284" y="178" font-size="11" fill="#868e96">作用对象：历史状态 S</text>
+  <rect x="590" y="120" width="280" height="66" rx="8" fill="#f8f9fa" stroke="#adb5bd" stroke-dasharray="4 3"/>
+  <text x="730" y="150" text-anchor="middle" font-size="12.5" fill="#868e96">—</text>
+  <text x="730" y="170" text-anchor="middle" font-size="11.5" fill="#868e96">没有递归状态，KV cache 只追加</text>
+
+  <!-- row 2 -->
+  <rect x="270" y="200" width="300" height="66" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="284" y="222" font-size="12.5" font-weight="700" fill="#5f3dc4" font-family="monospace">b_proj</text>
+  <text x="284" y="241" font-size="11.5" fill="#495057" font-family="monospace">[T, H]，每个 head 一个 β_t</text>
+  <text x="284" y="258" font-size="11" fill="#868e96">作用对象：delta rule 的写入</text>
+  <rect x="590" y="200" width="280" height="66" rx="8" fill="#f8f9fa" stroke="#adb5bd" stroke-dasharray="4 3"/>
+  <text x="730" y="230" text-anchor="middle" font-size="12.5" fill="#868e96">—</text>
+  <text x="730" y="250" text-anchor="middle" font-size="11.5" fill="#868e96">softmax 权重即“读多少”，无需 β</text>
+
+  <!-- row 3 -->
+  <rect x="270" y="282" width="300" height="72" rx="8" fill="#fff4e6" stroke="#f08c00"/>
+  <text x="284" y="304" font-size="12.5" font-weight="700" fill="#e8590c" font-family="monospace">g_proj（K3 满秩）</text>
+  <text x="284" y="323" font-size="11.5" fill="#495057" font-family="monospace">o_norm: RMSNorm(o)·w ⊙ σ(g)</text>
+  <text x="284" y="342" font-size="11" fill="#868e96">Kimi Linear 用低秩 g_a_proj → g_b_proj</text>
+  <rect x="590" y="282" width="280" height="72" rx="8" fill="#fff4e6" stroke="#f08c00"/>
+  <text x="604" y="304" font-size="12.5" font-weight="700" fill="#e8590c" font-family="monospace">g_proj（mla_use_output_gate）</text>
+  <text x="604" y="323" font-size="11.5" fill="#495057" font-family="monospace">o ⊙ σ(g)，不带 norm</text>
+  <text x="604" y="342" font-size="11" fill="#868e96">形状同为 [T, H·d_v]，位置同在 o_proj 前</text>
+
+  <!-- note -->
+  <rect x="30" y="372" width="840" height="44" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="450" y="390" text-anchor="middle" font-size="12" fill="#495057">KDA 层原本就有输出门，MLA 层原本没有；K3 给 MLA 补上之后，</text>
+  <text x="450" y="407" text-anchor="middle" font-size="12" fill="#495057">两类层都能按 token 决定自己往残差流里写多少</text>
+</svg>

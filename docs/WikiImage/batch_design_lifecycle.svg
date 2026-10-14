@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 400" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="400" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">请求的生命周期：prefill 一次，decode 循环，retract 兜底</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">调度器为每个活跃请求维护一个状态机——唯一的反向边是显存不足时的回退</text>
+
+  <!-- self loop on decode -->
+  <path d="M520 130 C520 96 612 96 612 130" fill="none" stroke="#0ca678" stroke-width="2" marker-end="url(#arT)"/>
+  <text x="566" y="90" text-anchor="middle" font-size="10.5" fill="#0b7285">每步生成 1 token · kv_committed_len++</text>
+
+  <!-- states -->
+  <rect x="30" y="130" width="150" height="76" rx="10" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="105" y="162" text-anchor="middle" font-size="13.5" font-weight="700" fill="#495057">Waiting</text>
+  <text x="105" y="182" text-anchor="middle" font-size="10.5" fill="#868e96">waiting_queue 中排队</text>
+  <text x="105" y="197" text-anchor="middle" font-size="10.5" fill="#868e96">尚未分配 KV</text>
+
+  <rect x="248" y="130" width="160" height="76" rx="10" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="328" y="162" text-anchor="middle" font-size="13.5" font-weight="700" fill="#3b5bdb">Prefill</text>
+  <text x="328" y="182" text-anchor="middle" font-size="10.5" fill="#495057">一次性算完全部 KV</text>
+  <text x="328" y="197" text-anchor="middle" font-size="10.5" fill="#868e96">计算密集</text>
+
+  <rect x="476" y="130" width="176" height="76" rx="10" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="564" y="162" text-anchor="middle" font-size="13.5" font-weight="700" fill="#0b7285">Decode (Running)</text>
+  <text x="564" y="182" text-anchor="middle" font-size="10.5" fill="#495057">读历史 KV 逐 token 自回归</text>
+  <text x="564" y="197" text-anchor="middle" font-size="10.5" fill="#868e96">访存密集</text>
+
+  <rect x="720" y="130" width="150" height="76" rx="10" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="795" y="162" text-anchor="middle" font-size="13.5" font-weight="700" fill="#495057">Finished</text>
+  <text x="795" y="182" text-anchor="middle" font-size="10.5" fill="#868e96">命中 EOS / stop</text>
+  <text x="795" y="197" text-anchor="middle" font-size="10.5" fill="#868e96">释放 KV · 流式返回</text>
+
+  <!-- forward arrows -->
+  <path d="M180 168 L246 168" stroke="#868e96" stroke-width="2" marker-end="url(#arG)"/>
+  <text x="213" y="160" text-anchor="middle" font-size="10.5" fill="#868e96">出队 · 分配 KV</text>
+  <path d="M408 168 L474 168" stroke="#868e96" stroke-width="2" marker-end="url(#arG)"/>
+  <text x="441" y="160" text-anchor="middle" font-size="10.5" fill="#868e96">首 token 产出</text>
+  <path d="M652 168 L718 168" stroke="#868e96" stroke-width="2" marker-end="url(#arG)"/>
+  <text x="685" y="160" text-anchor="middle" font-size="10.5" fill="#868e96">结束</text>
+
+  <!-- retract arc -->
+  <path d="M564 206 L564 268 L105 268 L105 208" fill="none" stroke="#fa5252" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#arR)"/>
+  <text x="334" y="288" text-anchor="middle" font-size="11.5" font-weight="700" fill="#c92a2a">retract：显存不足 → 释放 KV → 退回 waiting_queue → 下次重做 prefill</text>
+
+  <!-- note -->
+  <rect x="30" y="312" width="840" height="60" rx="10" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="48" y="336" font-size="12" fill="#495057">关键观察：请求不会在 prefill 与 decode 之间来回切换——prefill 只做一次（长输入时分几个 chunk 做），随后进入 decode 循环。</text>
+  <text x="48" y="357" font-size="12" fill="#495057">retract 是唯一的反向边，也是显存的安全阀：代价是被驱逐的请求要重算 prefill，所以调度器尽量少触发它。</text>
+
+  <defs>
+    <marker id="arG" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#868e96"/></marker>
+    <marker id="arT" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#0ca678"/></marker>
+    <marker id="arR" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#fa5252"/></marker>
+  </defs>
+</svg>

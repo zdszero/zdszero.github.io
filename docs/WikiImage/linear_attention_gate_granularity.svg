@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 470" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="470" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">遗忘门的粒度：Gated DeltaNet vs KDA</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">同一个状态 S ∈ ℝ^(d_k×d_v)，颜色深浅 = 衰减后保留的比例</text>
+
+  <!-- GDN panel -->
+  <rect x="30" y="78" width="410" height="300" rx="10" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="30" y="78" width="410" height="28" rx="10" fill="#4c6ef5"/>
+  <text x="44" y="97" font-size="14" font-weight="700" fill="#ffffff">Gated DeltaNet（Qwen3-Next）：标量门</text>
+  <text x="96" y="186" text-anchor="middle" font-size="22" font-weight="700" fill="#3b5bdb" font-family="monospace">× α_t</text>
+  <text x="96" y="208" text-anchor="middle" font-size="11" fill="#868e96">一个数，如 0.9</text>
+  <text x="216" y="128" text-anchor="middle" font-size="10.5" fill="#0b7285" font-family="monospace">d_v →</text>
+  <text x="166" y="196" text-anchor="end" font-size="10.5" fill="#0b7285" font-family="monospace">d_k ↓</text>
+  <g fill="#0ca678" fill-opacity="0.55" stroke="#ffffff" stroke-width="1.5">
+    <rect x="172" y="134" width="132" height="132" rx="3"/>
+  </g>
+  <g stroke="#ffffff" stroke-width="1.5">
+    <path d="M194 134 V266 M216 134 V266 M238 134 V266 M260 134 V266 M282 134 V266"/>
+    <path d="M172 156 H304 M172 178 H304 M172 200 H304 M172 222 H304 M172 244 H304"/>
+  </g>
+  <text x="316" y="204" font-size="11" fill="#868e96">整块</text>
+  <text x="316" y="220" font-size="11" fill="#868e96">均匀变淡</text>
+  <text x="48" y="292" font-size="12.5" fill="#343a40" font-family="monospace">S' = α_t · S_(t-1)</text>
+  <text x="48" y="313" font-size="12" fill="#495057" font-family="monospace">g = −exp(A_log)·softplus(a + dt_bias)</text>
+  <text x="48" y="333" font-size="12" fill="#495057">a ∈ ℝ^[HV]：in_proj_ba 给每个 v-head 一个数</text>
+  <text x="48" y="353" font-size="12" fill="#495057" font-family="monospace">A_log, dt_bias: [HV]</text>
+  <text x="48" y="371" font-size="11.5" fill="#868e96">整块记忆共享同一个 “半衰期”</text>
+  <!-- KDA panel -->
+  <rect x="460" y="78" width="410" height="300" rx="10" fill="#fff4e6" stroke="#f08c00"/>
+  <rect x="460" y="78" width="410" height="28" rx="10" fill="#f08c00"/>
+  <text x="474" y="97" font-size="14" font-weight="700" fill="#ffffff">KDA（Kimi-Linear）：逐通道向量门</text>
+  <text x="544" y="128" text-anchor="middle" font-size="10.5" fill="#e8590c" font-family="monospace">α_t[k]</text>
+  <g font-family="monospace" font-size="11" fill="#e8590c" text-anchor="middle">
+    <rect x="520" y="134" width="48" height="22" fill="#fff9db" stroke="#f08c00"/><text x="544" y="149">0.99</text>
+    <rect x="520" y="156" width="48" height="22" fill="#fff9db" stroke="#f08c00"/><text x="544" y="171">0.95</text>
+    <rect x="520" y="178" width="48" height="22" fill="#fff9db" stroke="#f08c00"/><text x="544" y="193">0.50</text>
+    <rect x="520" y="200" width="48" height="22" fill="#fff9db" stroke="#f08c00"/><text x="544" y="215">0.90</text>
+    <rect x="520" y="222" width="48" height="22" fill="#fff9db" stroke="#f08c00"/><text x="544" y="237">0.20</text>
+    <rect x="520" y="244" width="48" height="22" fill="#fff9db" stroke="#f08c00"/><text x="544" y="259">0.99</text>
+  </g>
+  <text x="594" y="206" text-anchor="middle" font-size="18" font-weight="700" fill="#e8590c">×</text>
+  <text x="686" y="128" text-anchor="middle" font-size="10.5" fill="#0b7285" font-family="monospace">d_v →</text>
+  <g fill="#0ca678" stroke="none">
+    <rect x="620" y="134" width="132" height="22" fill-opacity="0.60"/>
+    <rect x="620" y="156" width="132" height="22" fill-opacity="0.57"/>
+    <rect x="620" y="178" width="132" height="22" fill-opacity="0.30"/>
+    <rect x="620" y="200" width="132" height="22" fill-opacity="0.54"/>
+    <rect x="620" y="222" width="132" height="22" fill-opacity="0.12"/>
+    <rect x="620" y="244" width="132" height="22" fill-opacity="0.60"/>
+  </g>
+  <g stroke="#ffffff" stroke-width="1.5">
+    <path d="M642 134 V266 M664 134 V266 M686 134 V266 M708 134 V266 M730 134 V266"/>
+    <path d="M620 156 H752 M620 178 H752 M620 200 H752 M620 222 H752 M620 244 H752"/>
+  </g>
+  <text x="764" y="193" font-size="11" fill="#868e96">← 快忘</text>
+  <text x="764" y="237" font-size="11" fill="#868e96">← 几乎清空</text>
+  <text x="764" y="149" font-size="11" fill="#868e96">← 长期记忆</text>
+  <text x="478" y="292" font-size="12.5" fill="#343a40" font-family="monospace">S' = Diag(α_t) · S_(t-1)</text>
+  <text x="478" y="313" font-size="12" fill="#495057" font-family="monospace">g = −exp(A_log[h])·softplus(f + dt_bias)</text>
+  <text x="478" y="333" font-size="12" fill="#495057">f = f_b(f_a(x))：低秩 hidden → d_k → H·d_k</text>
+  <text x="478" y="353" font-size="12" fill="#495057" font-family="monospace">A_log: [H]    dt_bias: [H·d_k]</text>
+  <text x="478" y="371" font-size="11.5" fill="#868e96">每个 key 通道各有自己的 “半衰期”</text>
+
+  <rect x="30" y="394" width="840" height="60" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="48" y="418" font-size="12" fill="#495057">为什么沿 d_k 衰减：S 的第 i 行只被 key 的第 i 个通道写入、读出，按行衰减 = 不同特征通道使用不同时间尺度（多尺度记忆）。</text>
+  <text x="48" y="440" font-size="12" fill="#495057">逐行衰减仍能在 chunk 内写成 log 空间的 cumsum，所以 KDA 复用了 GDN 的 chunk 状态递推 kernel，只是把标量 g 换成向量 gk。</text>
+</svg>

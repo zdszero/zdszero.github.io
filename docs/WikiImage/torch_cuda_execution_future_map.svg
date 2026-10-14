@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 490" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="490" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">下一批的输入还在 GPU 上：用 future 缓冲区接力 token</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">overlap 模式下，CPU 调度第 N+1 批时还不知道第 N 批采样出的 token；SGLang 让这条数据依赖留在 forward_stream 上</text>
+
+  <!-- lane labels -->
+  <text x="40" y="108" font-size="12" font-weight="700" fill="#495057">CPU 线程</text>
+  <text x="40" y="172" font-size="12" font-weight="700" font-family="monospace" fill="#0b7285">forward_stream</text>
+  <rect x="170" y="86" width="690" height="34" rx="6" fill="#f8f9fa" stroke="#e9ecef"/>
+  <rect x="170" y="150" width="690" height="34" rx="6" fill="#f8f9fa" stroke="#e9ecef"/>
+
+  <!-- CPU lane -->
+  <g font-size="11" font-weight="700" text-anchor="middle">
+    <rect x="178" y="91" width="72" height="24" rx="5" fill="#edf2ff" stroke="#4c6ef5"/><text x="214" y="107" fill="#3b5bdb">提交 N</text>
+    <rect x="255" y="91" width="300" height="24" rx="5" fill="#f1f3f5" stroke="#adb5bd"/><text x="405" y="107" fill="#495057">调度 N+1：只知道槽位 [2, 5, 6]</text>
+    <rect x="560" y="91" width="80" height="24" rx="5" fill="#edf2ff" stroke="#4c6ef5"/><text x="600" y="107" fill="#3b5bdb">提交 N+1</text>
+    <rect x="645" y="91" width="207" height="24" rx="5" fill="#fff5f5" stroke="#fa5252"/><text x="748" y="107" fill="#c92a2a">处理 N 结果（等 copy_done）</text>
+  </g>
+
+  <!-- forward_stream lane -->
+  <g font-size="11" font-weight="700" text-anchor="middle">
+    <rect x="255" y="155" width="250" height="24" rx="5" fill="#e6fcf5" stroke="#0ca678"/><text x="380" y="171" fill="#0b7285">forward N + sample → next_token_ids</text>
+    <rect x="510" y="155" width="70" height="24" rx="5" fill="#fff9db" stroke="#f08c00"/><text x="545" y="171" fill="#e8590c">stash</text>
+    <rect x="585" y="155" width="70" height="24" rx="5" fill="#fff9db" stroke="#f08c00"/><text x="620" y="171" fill="#e8590c">resolve</text>
+    <rect x="660" y="155" width="192" height="24" rx="5" fill="#e6fcf5" stroke="#0ca678"/><text x="756" y="171" fill="#0b7285">forward N+1</text>
+  </g>
+  <!-- scatter / gather arrows -->
+  <path d="M535 181 L535 230" stroke="#f08c00" stroke-width="2" fill="none" marker-end="url(#arA)"/>
+  <path d="M620 232 L620 184" stroke="#f08c00" stroke-width="2" fill="none" marker-end="url(#arA)"/>
+  <text x="525" y="203" text-anchor="end" font-size="11.5" font-weight="700" fill="#e8590c">① scatter 写入</text>
+  <text x="525" y="221" text-anchor="end" font-size="11" font-family="monospace" fill="#495057">buf[idx] = next_token_ids</text>
+  <text x="630" y="203" font-size="11.5" font-weight="700" fill="#e8590c">② gather 读取</text>
+  <text x="630" y="221" font-size="11" font-family="monospace" fill="#495057">input_ids = buf[idx]</text>
+  <path d="M300 240 L300 234 L790 234 L790 240" stroke="#868e96" stroke-width="1.5" fill="none"/>
+
+  <!-- output_tokens_buf -->
+  <text x="40" y="262" font-size="12" font-weight="700" font-family="monospace" fill="#e8590c">output_tokens_buf</text>
+  <text x="40" y="280" font-size="11" fill="#868e96">按 req_pool_idx 索引，常驻 GPU</text>
+  <g font-size="12" font-family="monospace" text-anchor="middle">
+    <rect x="300" y="244" width="56" height="38" rx="6" fill="#f1f3f5" stroke="#adb5bd"/><text x="328" y="268" fill="#adb5bd">·</text>
+    <rect x="362" y="244" width="56" height="38" rx="6" fill="#f1f3f5" stroke="#adb5bd"/><text x="390" y="268" fill="#adb5bd">·</text>
+    <rect x="424" y="244" width="56" height="38" rx="6" fill="#fff9db" stroke="#f08c00"/><text x="452" y="268" fill="#e8590c" font-weight="700">812</text>
+    <rect x="486" y="244" width="56" height="38" rx="6" fill="#f1f3f5" stroke="#adb5bd"/><text x="514" y="268" fill="#adb5bd">·</text>
+    <rect x="548" y="244" width="56" height="38" rx="6" fill="#f1f3f5" stroke="#adb5bd"/><text x="576" y="268" fill="#adb5bd">·</text>
+    <rect x="610" y="244" width="56" height="38" rx="6" fill="#fff9db" stroke="#f08c00"/><text x="638" y="268" fill="#e8590c" font-weight="700">37</text>
+    <rect x="672" y="244" width="56" height="38" rx="6" fill="#fff9db" stroke="#f08c00"/><text x="700" y="268" fill="#e8590c" font-weight="700">4091</text>
+    <rect x="734" y="244" width="56" height="38" rx="6" fill="#f1f3f5" stroke="#adb5bd"/><text x="762" y="268" fill="#adb5bd">·</text>
+  </g>
+  <g font-size="10.5" font-family="monospace" text-anchor="middle" fill="#868e96">
+    <text x="328" y="298">0</text><text x="390" y="298">1</text><text x="452" y="298">2</text><text x="514" y="298">3</text>
+    <text x="576" y="298">4</text><text x="638" y="298">5</text><text x="700" y="298">6</text><text x="762" y="298">7</text>
+  </g>
+
+  <!-- explanation boxes -->
+  <rect x="40" y="318" width="400" height="96" rx="10" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="58" y="342" font-size="13.5" font-weight="700" fill="#0b7285">为什么两批之间 CPU 不必等待</text>
+  <g font-size="11.5" fill="#495057">
+    <text x="58" y="364">stash 与 resolve 都排在 forward_stream 上，同 stream</text>
+    <text x="58" y="383">按序执行，gather 必然读到第 N 批写入的新 token；</text>
+    <text x="58" y="402">CPU 只需知道槽位号，不需要知道 token 的值。</text>
+  </g>
+  <rect x="460" y="318" width="400" height="96" rx="10" fill="#fff5f5" stroke="#fa5252"/>
+  <text x="478" y="342" font-size="13.5" font-weight="700" fill="#c92a2a">CPU 真正读值的位置</text>
+  <g font-size="11.5" fill="#495057">
+    <text x="478" y="364">next_token_ids 另在 copy_stream 上异步 D2H；</text>
+    <text x="478" y="383">处理第 N 批结果时才 copy_done.synchronize()，</text>
+    <text x="478" y="402">停止判断、流式输出用的是这份 CPU 副本。</text>
+  </g>
+
+  <rect x="40" y="430" width="820" height="40" rx="9" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="58" y="455" font-size="12" fill="#495057">关键：“下一批依赖上一批的值”不走 CPU 往返，而是同一 stream 上的 scatter → gather——只需“排序”，不需“完成”。</text>
+
+  <defs>
+    <marker id="arA" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#f08c00"/></marker>
+  </defs>
+</svg>

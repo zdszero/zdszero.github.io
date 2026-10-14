@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 470" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="470" rx="12" fill="#ffffff"/>
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#868e96"/></marker>
+    <marker id="arg" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#7048e8"/></marker>
+  </defs>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">两遍环式 consensus：正向求交，环回广播</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">例：PD prefill，inflight 队列里有 a / b / c 三个请求在传 KV，各 rank 的本地 poll 进度不同</text>
+
+  <!-- column headers -->
+  <g font-size="12.5" font-weight="600" fill="#495057" text-anchor="middle">
+    <text x="300" y="88">PP0</text><text x="450" y="88">PP1</text><text x="600" y="88">PP2</text><text x="750" y="88">PP3</text>
+  </g>
+
+  <!-- row: local observation -->
+  <text x="30" y="122" font-size="13.5" font-weight="700" fill="#495057">本地观测</text>
+  <text x="30" y="140" font-size="11" fill="#868e96">本 rank 已 Success/Failed</text>
+  <g font-family="monospace" font-size="17" font-weight="700" text-anchor="middle" fill="#495057">
+    <rect x="240" y="100" width="120" height="44" rx="8" fill="#f1f3f5" stroke="#adb5bd"/><text x="300" y="128">{a,b,c}</text>
+    <rect x="390" y="100" width="120" height="44" rx="8" fill="#f1f3f5" stroke="#adb5bd"/><text x="450" y="128">{a,b}</text>
+    <rect x="540" y="100" width="120" height="44" rx="8" fill="#f1f3f5" stroke="#adb5bd"/><text x="600" y="128">{a,b,c}</text>
+    <rect x="690" y="100" width="120" height="44" rx="8" fill="#f1f3f5" stroke="#adb5bd"/><text x="750" y="128">{a,c}</text>
+  </g>
+
+  <!-- row: pass 1 -->
+  <text x="30" y="198" font-size="13.5" font-weight="700" fill="#3b5bdb">第一遍 · 正向</text>
+  <text x="30" y="216" font-size="11" fill="#868e96">prev 结果 ∩ 本地观测</text>
+  <g stroke="#868e96" stroke-width="1.5" fill="none">
+    <path d="M300 144 L300 172" marker-end="url(#ar)"/><path d="M450 144 L450 172" marker-end="url(#ar)"/>
+    <path d="M600 144 L600 172" marker-end="url(#ar)"/><path d="M750 144 L750 172" marker-end="url(#ar)"/>
+  </g>
+  <g font-family="monospace" font-size="17" font-weight="700" text-anchor="middle" fill="#3b5bdb">
+    <rect x="240" y="176" width="120" height="44" rx="8" fill="#edf2ff" stroke="#4c6ef5"/><text x="300" y="204">{a,b,c}</text>
+    <rect x="390" y="176" width="120" height="44" rx="8" fill="#edf2ff" stroke="#4c6ef5"/><text x="450" y="204">{a,b}</text>
+    <rect x="540" y="176" width="120" height="44" rx="8" fill="#edf2ff" stroke="#4c6ef5"/><text x="600" y="204">{a,b}</text>
+    <rect x="690" y="176" width="120" height="44" rx="8" fill="#edf2ff" stroke="#4c6ef5"/><text x="750" y="204">{a}</text>
+  </g>
+  <g stroke="#4c6ef5" stroke-width="2" fill="none">
+    <path d="M360 198 L386 198" marker-end="url(#ar)"/><path d="M510 198 L536 198" marker-end="url(#ar)"/><path d="M660 198 L686 198" marker-end="url(#ar)"/>
+  </g>
+  <text x="840" y="203" font-size="11" fill="#868e96" text-anchor="middle">全员都</text>
+  <text x="840" y="218" font-size="11" fill="#868e96" text-anchor="middle">完成的</text>
+  <!-- row: pass 2 -->
+  <path d="M750 220 L750 244 L300 244 L300 270" fill="none" stroke="#7048e8" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#arg)"/>
+  <text x="525" y="238" text-anchor="middle" font-size="11.5" font-weight="600" fill="#5f3dc4">last rank 把共识发回 PP0（环的闭合边）</text>
+  <text x="30" y="296" font-size="13.5" font-weight="700" fill="#5f3dc4">第二遍 · 环回</text>
+  <text x="30" y="314" font-size="11" fill="#868e96">原样转发，不再修改</text>
+  <g font-family="monospace" font-size="17" font-weight="700" text-anchor="middle" fill="#5f3dc4">
+    <rect x="240" y="274" width="120" height="44" rx="8" fill="#f3f0ff" stroke="#7048e8"/><text x="300" y="302">{a}</text>
+    <rect x="390" y="274" width="120" height="44" rx="8" fill="#f3f0ff" stroke="#7048e8"/><text x="450" y="302">{a}</text>
+    <rect x="540" y="274" width="120" height="44" rx="8" fill="#f3f0ff" stroke="#7048e8"/><text x="600" y="302">{a}</text>
+    <rect x="690" y="274" width="120" height="44" rx="8" fill="#f3f0ff" stroke="#7048e8"/><text x="750" y="302">{a}</text>
+  </g>
+  <g stroke="#7048e8" stroke-width="2" fill="none">
+    <path d="M360 296 L386 296" marker-end="url(#arg)"/><path d="M510 296 L536 296" marker-end="url(#arg)"/><path d="M660 296 L686 296" marker-end="url(#arg)"/>
+  </g>
+
+  <!-- row: apply -->
+  <text x="30" y="362" font-size="13.5" font-weight="700" fill="#e8590c">应用</text>
+  <text x="30" y="380" font-size="11" fill="#868e96">同一个 mb 槽位</text>
+  <rect x="240" y="340" width="570" height="50" rx="8" fill="#fff4e6" stroke="#f08c00"/>
+  <text x="525" y="361" text-anchor="middle" font-size="12.5" fill="#495057">每个 rank 在处理 mb 槽位 j 的结果时调用 process_disagg_prefill_inflight_queue({a})</text>
+  <text x="525" y="380" text-anchor="middle" font-size="12" fill="#868e96">→ 所有 rank 在同一逻辑时刻释放 a；b、c 留在 inflight 队列，等后续轮次再投票</text>
+
+  <!-- note -->
+  <rect x="30" y="408" width="840" height="46" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="450" y="427" text-anchor="middle" font-size="12" fill="#495057">"好"集合取交集：只推进所有 rank 都已完成的请求；"坏"集合（prealloc Failed、abort）取并集：任一 rank 失败即全员失败</text>
+  <text x="450" y="445" text-anchor="middle" font-size="12" fill="#495057">共识只在 rank 本地观测会分歧的地方才需要——确定性的调度输入靠复制即可</text>
+</svg>

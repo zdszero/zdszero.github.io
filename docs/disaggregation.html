@@ -25,8 +25,23 @@
   </title>
     <link rel="stylesheet" href="./WikiTheme/theme/bootstrap.css"  />
         <script defer=""
-        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
-        type="text/javascript"></script>
+        src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+        <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+        </script>
+        <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
       <style type="text/css">
     html { -webkit-text-size-adjust: 100%; }
     pre > code.sourceCode { white-space: pre; position: relative; }
@@ -93,80 +108,10 @@
     code span.vs { color: #4070a0; } /* VerbatimString */
     code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
   </style>
-      <style type="text/css">
-    /* ---- three column wiki layout (left: site directory, center: content, right: page TOC) ---- */
-    .wiki-layout {
-      display: flex;
-      align-items: flex-start;
-      gap: 24px;
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 0 20px;
-      box-sizing: border-box;
-    }
-    .wiki-sidebar {
-      flex: 0 0 240px;
-      width: 240px;
-      position: sticky;
-      top: 0;
-      max-height: 100vh;
-      overflow-y: auto;
-      padding: 10px 4px 20px 0;
-      border-right: 1px solid #eee;
-      font-size: 14px;
-    }
-    .wiki-sidebar[hidden] { display: none; }
-    .wiki-toc {
-      flex: 0 0 220px;
-      width: 220px;
-      position: sticky;
-      top: 0;
-      max-height: 100vh;
-      overflow-y: auto;
-      padding: 10px 0 20px 4px;
-      border-left: 1px solid #eee;
-      font-size: 14px;
-    }
-    .wiki-main {
-      flex: 1 1 auto;
-      min-width: 0;
-      max-width: 820px;
-      padding: 10px 0 40px;
-    }
-    /* site directory tree */
-    .wiki-sidebar .wiki-home {
-      display: block;
-      font-weight: bold;
-      margin-bottom: 10px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid #eee;
-      text-decoration: none;
-      color: #333;
-    }
-    .wiki-sidebar ul { list-style: none; margin: 0 0 0 12px; padding: 0; }
-    .wiki-sidebar > ul { margin-left: 0; }
-    .wiki-sidebar li { line-height: 1.7; }
-    .wiki-sidebar a { text-decoration: none; color: #555; }
-    .wiki-sidebar a:hover { color: #0088cc; text-decoration: underline; }
-    .wiki-sidebar a.active { color: #0088cc; font-weight: bold; }
-    /* page TOC */
-    .wiki-toc ul { list-style: none; margin: 0 0 0 12px; padding: 0; }
-    .wiki-toc > ul { margin-left: 0; }
-    .wiki-toc li { line-height: 1.6; }
-    .wiki-toc a { text-decoration: none; color: #555; }
-    .wiki-toc a:hover { color: #0088cc; }
-    @media (max-width: 980px) {
-      .wiki-layout { flex-direction: column; }
-      .wiki-sidebar, .wiki-toc {
-        position: static;
-        width: 100%;
-        flex-basis: auto;
-        max-height: none;
-        border: 0;
-      }
-      .wiki-main { max-width: none; }
-    }
-  </style>
+      <!-- wiki three-column layout styles/behavior, kept external so the ~5KB
+       block isn't duplicated into every generated page -->
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/wiki-layout.css" />
+  <script defer src="./WikiTheme/wiki-layout.js"></script>
 </head>
 
 <body>
@@ -202,26 +147,26 @@
             必须把 Decode 继续推理所需的状态交给 Decode。</p>
             <h3 id="首-token-的归属">首 token 的归属</h3>
             <p>设 prompt 为</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             X = (x_0, x_1, \ldots, x_{L-1})
-            \]</span></p>
+            </span></p>
             <p>Target 模型对 prompt 做一次并行 forward，得到各位置
             hidden state：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             H_0, H_1, \ldots, H_{L-1}
-            \]</span></p>
+            </span></p>
             <p>最后一个位置经过 LM Head 得到 logits：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \operatorname{logits}_{L-1} =
             H_{L-1}W_{\mathrm{lm}}^{\mathsf T}
-            \]</span></p>
+            </span></p>
             <p>再依据 temperature、top-<span
-            class="math inline">\(p\)</span>、top-<span
-            class="math inline">\(k\)</span> 等 sampling
-            参数采样出首个生成 token：</p>
-            <p><span class="math display">\[
+            class="math inline">p</span>、top-<span
+            class="math inline">k</span> 等 sampling 参数采样出首个生成
+            token：</p>
+            <p><span class="math display">
             y_0 \sim p_\theta(\cdot \mid x_0,\ldots,x_{L-1})
-            \]</span></p>
+            </span></p>
             <p>因此，在 SGLang 典型的 PD 路径中，需要区分两个层次：</p>
             <table>
             <thead>
@@ -277,15 +222,15 @@ Decode 下一次新生成：E</code></pre>
             <h3 id="p-到-d-需要传输什么">P 到 D 需要传输什么</h3>
             <h4 id="target-kv-cache">Target KV Cache</h4>
             <p>最核心的数据是 prompt 对应的 Target KV Cache：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \mathcal{K}_{\mathrm{P}} =
             \{K_\ell(X),V_\ell(X)\}_{\ell=0}^{N-1}
-            \]</span></p>
+            </span></p>
             <p>Decode 后续每一步需要访问：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \mathcal{K}_{t} = [\mathcal{K}_{\mathrm{prompt}},
             \mathcal{K}_{y_0},\ldots,\mathcal{K}_{y_{t-1}}]
-            \]</span></p>
+            </span></p>
             <p>SGLang 实际传输的通常是 paged KV Cache 的 page 或
             block，而不是抽象意义上的一个连续
             tensor。除数据本身外，还需要处理：</p>
@@ -347,19 +292,19 @@ Decode 下一次新生成：E</code></pre>
             的目标不是直接生成并提交多个最终 token，而是让 draft
             模型提出候选，再由 Target 一次性验证。</p>
             <p>设一次 speculative iteration 最多提出四个候选：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             (d_1,d_2,d_3,d_4)
-            \]</span></p>
+            </span></p>
             <p>它们来自 draft 分布：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             d_i \sim q_\phi(\cdot \mid X,y_0,d_1,\ldots,d_{i-1})
-            \]</span></p>
+            </span></p>
             <p>Target 随后计算验证 logits，并决定接受长度 <span
-            class="math inline">\(a\)</span>：</p>
-            <p><span class="math display">\[
+            class="math inline">a</span>：</p>
+            <p><span class="math display">
             0 \leq a \leq 4
-            \]</span></p>
-            <p>最终可能提交前 <span class="math inline">\(a\)</span> 个
+            </span></p>
+            <p>最终可能提交前 <span class="math inline">a</span> 个
             draft token 和一个 bonus token，而不是固定提交四个
             token。</p>
             <p>因此，<code>draft_tokens = 4</code>
@@ -417,10 +362,10 @@ Decode 下一次新生成：E</code></pre>
             <h4 id="prompt-部分的-draft-kv">Prompt 部分的 draft KV</h4>
             <p>如果 MTP/draft 模型拥有独立的 draft KV Cache，那么
             Prefill 可以建立 prompt 对应的 draft context：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \mathcal{K}_{\mathrm{D,prompt}}
             = \{K^{\mathrm{draft}}_\ell(X),V^{\mathrm{draft}}_\ell(X)\}
-            \]</span></p>
+            </span></p>
             <p>这部分对应已经确定的 prompt token，因此可以在 Prefill
             阶段计算并缓存。</p>
             <h4 id="候选-token-部分的-draft-kv">候选 token 部分的 draft
@@ -428,11 +373,11 @@ Decode 下一次新生成：E</code></pre>
             <p>对于未来的候选 token，Prefill 只能在 draft loop
             中逐步提出。候选是否被 Target 接受尚未确定，因此它们对应的
             draft KV 通常随着 Decode 阶段的 draft forward 动态追加：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \mathcal{K}_{\mathrm{draft},t}
             = [\mathcal{K}_{\mathrm{draft,prompt}},
             \mathcal{K}_{d_1},\ldots,\mathcal{K}_{d_t}]
-            \]</span></p>
+            </span></p>
             <p>验证后只保留 accepted prefix，并回收 rejected
             suffix。这是 speculative decoding 能够回滚的基础。</p>
             <p>因此，对“<code>draft_tokens = 4</code> 时，Prefill
@@ -496,39 +441,39 @@ Decode:
             是否兼容，不能仅根据“开启了 MTP”这一条件判断。</p>
             <h3 id="一次完整的-pd-加-mtp-流程">一次完整的 PD 加 MTP
             流程</h3>
-            <p>设 prompt 为 <span
-            class="math inline">\(X\)</span>，Target 首 token 为 <span
-            class="math inline">\(y_0\)</span>，一轮最多四个 draft
+            <p>设 prompt 为 <span class="math inline">X</span>，Target
+            首 token 为 <span
+            class="math inline">y_0</span>，一轮最多四个 draft
             token。</p>
             <h4 id="prefill-侧">Prefill 侧</h4>
-            <p><span class="math display">\[
+            <p><span class="math display">
             H^T(X),\quad
             \mathcal{K}_{T}(X),\quad
             y_0 \sim p_\theta(\cdot\mid X)
-            \]</span></p>
+            </span></p>
             <p>随后执行 draft extend：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             (d_1,d_2,d_3,d_4),
             \quad \text{top-}k\text{ scores},
             \quad \text{draft hidden states}
-            \]</span></p>
+            </span></p>
             <p>如果启用 draft KV，则还建立：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \mathcal{K}_{D}(X)
-            \]</span></p>
+            </span></p>
             <h4 id="pd-传输">PD 传输</h4>
             <p>最小逻辑 payload 可以表示为：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \mathcal{P}_{P\rightarrow D} =
             \left(
             \mathcal{K}_{T}(X),
             y_0,
             \text{transfer metadata}
             \right)
-            \]</span></p>
+            </span></p>
             <p>MTP bootstrap 或两侧都启用 draft 时，payload
             还可能扩展为：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \mathcal{P}_{P\rightarrow D} =
             \left(
             \mathcal{K}_{T}(X),
@@ -538,21 +483,21 @@ Decode:
             \text{hidden states},
             \text{sampling/logprob metadata}
             \right)
-            \]</span></p>
+            </span></p>
             <h4 id="decode-侧">Decode 侧</h4>
             <p>Decode 首先提交
             <code>y0</code>，然后用它作为输入继续运行：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \mathcal{K}_{T}(X) + y_0
             \xrightarrow{\text{Target decode}}
             y_1
-            \]</span></p>
+            </span></p>
             <p>同时，MTP draft 产生候选并由 Target 验证：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             (d_1,d_2,d_3,d_4)
             \xrightarrow{\text{Target verify}}
             (a,\text{bonus token})
-            \]</span></p>
+            </span></p>
             <p>最终只提交验证通过的 token 序列。</p>
             <h3 id="常见误区">常见误区</h3>
             <h4 id="把首-token-和-draft-token-混为一谈">把首 token 和
@@ -570,9 +515,9 @@ Decode:
             token 都会被提交</h4>
             <p><code>draft_tokens = 4</code>
             只是候选窗口上限。实际接受长度由 Target verify 决定：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             0 \leq a \leq 4
-            \]</span></p>
+            </span></p>
             <p>被拒绝的后缀需要回滚其 cache/state。</p>
             <h4 id="认为-mtp-必然需要传-draft-kv">认为 MTP 必然需要传
             draft KV</h4>
@@ -624,39 +569,6 @@ Decode  = 继续 draft
       </ul>
     </aside>
       </div>
-  <script type="text/javascript">
-    (function () {
-      function markActive() {
-        var here = location.href.split('#')[0];
-        var links = document.querySelectorAll('.wiki-sidebar a');
-        for (var i = 0; i < links.length; i++) {
-          if (links[i].href.split('#')[0] === here) {
-            links[i].classList.add('active');
-          }
-        }
-      }
-      // load the shared site directory once (served from the wiki root);
-      // kept in a standalone file so adding a page needn't rebuild every page.
-      var nav = document.getElementById('wiki-sidebar');
-      if (nav) {
-        fetch('/wiki_sidebar.html')
-          .then(function (r) { return r.ok ? r.text() : ''; })
-          .then(function (html) {
-            if (html) {
-              nav.innerHTML = html;
-              nav.hidden = false;
-              markActive();
-            }
-          })
-          .catch(function () {});
-      }
-      // keep bootstrap table styling (previously done by sticky_menu.js)
-      var tables = document.getElementsByTagName('table');
-      for (var j = 0; j < tables.length; j++) {
-        tables[j].classList.add('table');
-      }
-    })();
-  </script>
 </body>
 
 </html>

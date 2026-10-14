@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 520" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="520" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">x += y 改的是 storage，x = x + y 改的是名字</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">两段代码数值上相同；区别在于另一个持有同一 storage 的名字（别名）能不能看到修改</text>
+
+  <line x1="450" y1="76" x2="450" y2="268" stroke="#dee2e6" stroke-width="1.5"/>
+
+  <!-- LEFT: in-place -->
+  <text x="50" y="98" font-size="14" font-weight="700" fill="#e8590c">原地 · a = x;  a += 1</text>
+  <text x="50" y="118" font-size="12" fill="#868e96">调用 a.add_(1)：结果写回 a 当前指向的 storage</text>
+  <g font-family="monospace" font-size="13" font-weight="700">
+    <rect x="70" y="140" width="56" height="30" rx="6" fill="#f8f9fa" stroke="#adb5bd"/><text x="98" y="160" text-anchor="middle" fill="#495057">x</text>
+    <rect x="70" y="190" width="56" height="30" rx="6" fill="#f8f9fa" stroke="#adb5bd"/><text x="98" y="210" text-anchor="middle" fill="#495057">a</text>
+  </g>
+  <path d="M128 155 C170 155 190 180 226 180" fill="none" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <path d="M128 205 C170 205 190 182 226 182" fill="none" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <g fill="#fff9db" stroke="#f08c00" stroke-width="2">
+    <rect x="232" y="164" width="46" height="34" rx="6"/><rect x="284" y="164" width="46" height="34" rx="6"/><rect x="336" y="164" width="46" height="34" rx="6"/>
+  </g>
+  <g font-family="monospace" font-size="13" font-weight="700" fill="#e8590c" text-anchor="middle">
+    <text x="255" y="186">1</text><text x="307" y="186">1</text><text x="359" y="186">1</text>
+  </g>
+  <text x="307" y="220" text-anchor="middle" font-size="11.5" fill="#868e96">storage S0（被改写）</text>
+  <text x="50" y="252" font-size="12" fill="#c92a2a">x 也变成 [1, 1, 1]：别名看得到修改</text>
+
+  <!-- RIGHT: out-of-place -->
+  <text x="480" y="98" font-size="14" font-weight="700" fill="#3b5bdb">非原地 · a = x;  a = a + 1</text>
+  <text x="480" y="118" font-size="12" fill="#868e96">a + 1 分配新输出，再把名字 a 换绑过去</text>
+  <g font-family="monospace" font-size="13" font-weight="700">
+    <rect x="500" y="140" width="56" height="30" rx="6" fill="#f8f9fa" stroke="#adb5bd"/><text x="528" y="160" text-anchor="middle" fill="#495057">x</text>
+    <rect x="500" y="200" width="56" height="30" rx="6" fill="#f8f9fa" stroke="#adb5bd"/><text x="528" y="220" text-anchor="middle" fill="#495057">a</text>
+  </g>
+  <path d="M558 155 L656 155" fill="none" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <path d="M558 215 L656 215" fill="none" stroke="#4c6ef5" stroke-width="2" marker-end="url(#arB)"/>
+  <g fill="#e6fcf5" stroke="#0ca678">
+    <rect x="662" y="138" width="46" height="34" rx="6"/><rect x="714" y="138" width="46" height="34" rx="6"/><rect x="766" y="138" width="46" height="34" rx="6"/>
+  </g>
+  <g fill="#edf2ff" stroke="#4c6ef5" stroke-width="2">
+    <rect x="662" y="198" width="46" height="34" rx="6"/><rect x="714" y="198" width="46" height="34" rx="6"/><rect x="766" y="198" width="46" height="34" rx="6"/>
+  </g>
+  <g font-family="monospace" font-size="13" font-weight="700" text-anchor="middle">
+    <text x="685" y="160" fill="#0b7285">0</text><text x="737" y="160" fill="#0b7285">0</text><text x="789" y="160" fill="#0b7285">0</text>
+    <text x="685" y="220" fill="#3b5bdb">1</text><text x="737" y="220" fill="#3b5bdb">1</text><text x="789" y="220" fill="#3b5bdb">1</text>
+  </g>
+  <text x="822" y="160" font-size="11.5" fill="#868e96">S0</text>
+  <text x="822" y="220" font-size="11.5" fill="#868e96">S1 新</text>
+  <text x="480" y="252" font-size="12" fill="#0b7285">x 仍是 [0, 0, 0]：原 storage 未被触碰</text>
+  <!-- constraints -->
+  <text x="40" y="298" font-size="14" font-weight="700" fill="#212529">原地写入的三条约束：self 的 shape、dtype、storage 都不能变</text>
+  <g>
+    <rect x="40" y="312" width="266" height="124" rx="9" fill="#f3f0ff" stroke="#7048e8"/>
+    <text x="56" y="334" font-size="12.5" font-weight="700" fill="#5f3dc4">① shape：只能广播 other</text>
+    <text x="56" y="358" font-size="11.5" font-family="monospace" fill="#0b7285">✓ [3,4] += [1,4]</text>
+    <text x="56" y="378" font-size="11.5" font-family="monospace" fill="#c92a2a">✗ [3,1] += [1,4]</text>
+    <text x="56" y="402" font-size="11" fill="#495057">广播结果 [3,4] 放不进 [3,1]</text>
+    <text x="56" y="420" font-size="11" fill="#495057">非原地写法则会得到 [3,4]</text>
+
+    <rect x="317" y="312" width="266" height="124" rx="9" fill="#fff4e6" stroke="#f08c00"/>
+    <text x="333" y="334" font-size="12.5" font-weight="700" fill="#e8590c">② dtype：结果 cast 回 self</text>
+    <text x="333" y="358" font-size="11.5" font-family="monospace" fill="#0b7285">✓ bf16 += fp32 → 仍是 bf16</text>
+    <text x="333" y="378" font-size="11.5" font-family="monospace" fill="#c92a2a">✗ int64 += fp32</text>
+    <text x="333" y="402" font-size="11" fill="#495057">不提升 self；按提升后类型算，</text>
+    <text x="333" y="420" font-size="11" fill="#495057">再按 can_cast 规则写回</text>
+
+    <rect x="594" y="312" width="266" height="124" rx="9" fill="#fff5f5" stroke="#fa5252"/>
+    <text x="610" y="334" font-size="12.5" font-weight="700" fill="#c92a2a">③ storage：每个元素独占地址</text>
+    <text x="610" y="358" font-size="11.5" font-family="monospace" fill="#c92a2a">✗ x.expand(2,3).add_(1)</text>
+    <text x="610" y="378" font-size="11.5" font-family="monospace" fill="#0b7285">✓ q[..., :rot].mul_(c)</text>
+    <text x="610" y="402" font-size="11" fill="#495057">零 stride 拒绝写；普通切片</text>
+    <text x="610" y="420" font-size="11" fill="#495057">view 可写，且改的是原张量</text>
+  </g>
+
+  <rect x="40" y="452" width="820" height="52" rx="9" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="58" y="474" font-size="12" fill="#495057">关键：in-place 与 out= 都是“写进一块已存在的 storage”，所以结果必须适配它的 shape 和 dtype。它省掉的是一次分配，</text>
+  <text x="58" y="492" font-size="12" fill="#495057">换来的是别名可见的副作用——这正是 CUDA Graph 静态缓冲区、RoPE 原地写回 q/k 所依赖的语义，也是隐蔽 bug 的来源。</text>
+
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#868e96"/></marker>
+    <marker id="arB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#4c6ef5"/></marker>
+  </defs>
+</svg>

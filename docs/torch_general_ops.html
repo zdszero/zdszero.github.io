@@ -1,0 +1,837 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    Torch Ops
+  </title>
+    <link rel="stylesheet" href="./WikiTheme/theme/bootstrap.css"  />
+        <style type="text/css">
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+      <!-- wiki three-column layout styles/behavior, kept external so the ~5KB
+       block isn't duplicated into every generated page -->
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/wiki-layout.css" />
+  <script defer src="./WikiTheme/wiki-layout.js"></script>
+</head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">Torch Ops</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="wiki-layout">
+    <nav class="wiki-sidebar" id="wiki-sidebar" hidden></nav>
+    <main class="wiki-main">
+            <ul>
+            <li>同样是一行 PyTorch，<code>x.view(...)</code>
+            几乎不花时间，<code>x + bias</code>
+            要扫一遍显存，<code>x @ w</code> 却能占满整块
+            GPU——差别从哪来？</li>
+            <li><code>x.sum(-1)</code> 之后再和 <code>x</code>
+            相除为什么报 shape 错误，加上 <code>keepdim=True</code>
+            就好了？</li>
+            <li><code>torch.gather(x, 1, idx)</code> 的输出 shape
+            到底由谁决定？top-p 采样里排完序抽到的 index，为什么不是
+            token id？</li>
+            <li><code>einsum("ti,taoi-&gt;tao", ...)</code>
+            这种下标串怎么读？哪些维度被求和了？</li>
+            <li><code>g[:, :, i].exp()[..., None, None]</code>、<code>beta[:, :, i, None]</code>
+            这类写法，到底在做什么？</li>
+            </ul>
+            <p>PyTorch 有上千个算子，逐个记 API
+            不现实。更有效的方式是先问一句：<strong>一个输出元素依赖哪些输入元素？</strong>
+            这个依赖模式几乎决定了一个算子的全部工程属性——输出 shape
+            怎么推、读写多少字节、是访存受限还是算力受限、能不能和相邻算子融合。本篇先建立这套分类，再用
+            SGLang 里的 RMSNorm、采样、MoE 路由和 MLA
+            把它们落到真实代码。</p>
+            <p>张量的 storage/stride 模型见 <a
+            href="./torch_tensor_memory.md">Tensor
+            Memory</a>，广播与读写方向的细节见 <a
+            href="./torch_broadcast_indexing.html">Broadcast &amp;
+            Indexing</a>。本篇关注的是更上一层：<strong>算子做了什么计算，以及这类计算的代价。</strong></p>
+            <h3
+            id="抽象按依赖模式把算子分成五类">抽象：按依赖模式把算子分成五类</h3>
+            <figure>
+            <img src="./WikiImage/torch_general_ops_taxonomy.svg"
+            alt="按依赖模式给算子分类" />
+            <figcaption
+            aria-hidden="true">按依赖模式给算子分类</figcaption>
+            </figure>
+            <table>
+            <colgroup>
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>类别</th>
+            <th>一个输出依赖</th>
+            <th>输出 shape</th>
+            <th>典型代价</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>① 元数据</td>
+            <td>不计算，复用原元素</td>
+            <td>重新解释</td>
+            <td>近乎为零，只改 shape/stride</td>
+            </tr>
+            <tr>
+            <td>② 逐元素</td>
+            <td>对应位置的 1 个元素（广播后）</td>
+            <td>广播后的形状</td>
+            <td>读一遍、写一遍，访存受限</td>
+            </tr>
+            <tr>
+            <td>③ 归约 / 扫描</td>
+            <td>某一维上的一整行</td>
+            <td>该维被消去、保留为 1 或不变</td>
+            <td>访存受限，且行内有依赖</td>
+            </tr>
+            <tr>
+            <td>④ 按下标搬运</td>
+            <td>由下标张量指定的位置</td>
+            <td>由下标的 shape 决定</td>
+            <td>不规则访存，常伴随复制</td>
+            </tr>
+            <tr>
+            <td>⑤ 收缩</td>
+            <td>一行与一列逐对相乘再求和</td>
+            <td>收缩维消失</td>
+            <td><code>2·M·N·K</code> FLOPs，常算力受限</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>这套分类的用处在于：真实算子大多是它们的组合。<code>softmax</code>
+            是“归约（max、sum）+
+            逐元素（减、exp、除）”；<code>F.linear</code> 是“收缩 +
+            逐元素（bias）”；top-p 采样是“排序 + 扫描 + 逐元素 +
+            按下标写回 + gather”。拆开以后，每一步的 shape
+            和成本都能单独推。</p>
+            <p>它也解释了为什么推理优化总在谈“融合”：①不产生
+            kernel，⑤本身就算得很满，<strong>真正浪费带宽的是②③串成的长链</strong>——每一步都要把整个中间张量写回显存再读出来。RMSNorm、SiLU×Mul、RoPE
+            都是这种链，也都有对应的融合 kernel。</p>
+            <h3 id="元数据算子只换透镜">① 元数据算子：只换透镜</h3>
+            <p>这一类不碰数据，只产生一组新的
+            shape/stride/offset。原理见 <a
+            href="./torch_tensor_memory.html">Tensor
+            Memory</a>，这里只整理常用的几组：</p>
+            <table>
+            <colgroup>
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>API</th>
+            <th>作用</th>
+            <th>是否复制</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td><code>view(*shape)</code></td>
+            <td>重新解释维度</td>
+            <td>从不；stride 不兼容时直接报错</td>
+            </tr>
+            <tr>
+            <td><code>reshape(*shape)</code></td>
+            <td>同上</td>
+            <td>能 view 就 view，否则复制</td>
+            </tr>
+            <tr>
+            <td><code>flatten(s, e)</code></td>
+            <td>合并 <code>[s, e]</code> 维</td>
+            <td>同 <code>reshape</code></td>
+            </tr>
+            <tr>
+            <td><code>permute</code> / <code>transpose</code> /
+            <code>.T</code></td>
+            <td>交换维度</td>
+            <td>不复制，但结果通常非连续</td>
+            </tr>
+            <tr>
+            <td><code>unsqueeze</code> / <code>squeeze</code> /
+            <code>x[:, None]</code></td>
+            <td>插入或去掉大小为 1 的维</td>
+            <td>不复制</td>
+            </tr>
+            <tr>
+            <td><code>expand</code></td>
+            <td>把大小为 1 的维扩展</td>
+            <td>不复制，stride 为 0</td>
+            </tr>
+            <tr>
+            <td><code>split</code> / <code>chunk</code> /
+            <code>x[a:b]</code></td>
+            <td>切出子区间</td>
+            <td>不复制</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>注意 <code>view()</code> 的条件不是“必须
+            contiguous”，而是“新 shape 能用现有 stride 表达”：fused QKV
+            <code>split</code> 出的 <code>k</code> 不连续，但
+            <code>k.view(-1, KV, D)</code>
+            依然成功。<code>x[..., None]</code> 与
+            <code>x.unsqueeze(-1)</code> 等价，<code>...</code>
+            代表其余所有维度。</p>
+            <p>元数据算子本身免费，代价会推迟到下游：一个
+            <code>transpose</code> 后的张量交给只接受连续输入的
+            kernel，那个 kernel 前面就会多出一次
+            <code>contiguous()</code> 复制。</p>
+            <h3 id="逐元素算子广播与类型提升">②
+            逐元素算子：广播与类型提升</h3>
+            <p><code>add</code>、<code>mul</code>、<code>exp</code>、<code>silu</code>、<code>where</code>、<code>masked_fill</code>、<code>.to(dtype)</code>
+            都属于这一类：输出的第 <code>i</code> 个元素只依赖输入的第
+            <code>i</code> 个元素。两个输入 shape
+            不同时先<strong>广播</strong>——从最右一维开始对齐，每对维度相等或其中一个为
+            1，缺失的前导维视为 1：</p>
+            <div class="sourceCode" id="cb1"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>x: (bs, seq, hidden)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>bias: (hidden,)          <span class="co"># 视为 (1, 1, hidden)</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>x <span class="op">+</span> bias <span class="op">-&gt;</span> (bs, seq, hidden)</span></code></pre></div>
+            <p>逐元素算子的计算量很小，一次 <code>x + bias</code>
+            读两个输入、写一个输出，时间几乎完全花在访存上，因此<strong>多个逐元素算子连在一起，耗时约等于中间张量的读写次数之和</strong>。另外两个隐式行为需要留意：广播只做数字对齐、不检查语义（mask
+            的 batch 维可能对到 query 维）；混入一个 fp32
+            张量会把输出提升成 fp32。这两点详见 <a
+            href="./torch_broadcast_indexing.html">Broadcast &amp;
+            Indexing</a>。</p>
+            <h3 id="归约与扫描dim-和-keepdim">③ 归约与扫描：dim 和
+            keepdim</h3>
+            <p>归约沿某一维把一整行压成一个数：<code>sum</code>、<code>mean</code>、<code>max</code>、<code>argmax</code>、<code>norm</code>。参数
+            <code>dim</code> 指定被压掉的维度，<code>keepdim=True</code>
+            则把它保留为大小 1。以
+            <code>x = torch.arange(12).view(3, 4)</code> 为例：</p>
+            <table>
+            <thead>
+            <tr>
+            <th>表达式</th>
+            <th>输出 shape</th>
+            <th>值</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td><code>x.sum(0)</code></td>
+            <td><code>(4,)</code></td>
+            <td><code>[12, 15, 18, 21]</code></td>
+            </tr>
+            <tr>
+            <td><code>x.sum(-1)</code></td>
+            <td><code>(3,)</code></td>
+            <td><code>[6, 22, 38]</code></td>
+            </tr>
+            <tr>
+            <td><code>x.sum(-1, keepdim=True)</code></td>
+            <td><code>(3, 1)</code></td>
+            <td><code>[[6], [22], [38]]</code></td>
+            </tr>
+            <tr>
+            <td><code>x.cumsum(-1)</code></td>
+            <td><code>(3, 4)</code></td>
+            <td><code>[[0, 1, 3, 6], [4, 9, 15, 22], ...]</code></td>
+            </tr>
+            </tbody>
+            </table>
+            <p><code>keepdim</code>
+            的意义在于<strong>归约结果通常还要广播回原张量</strong>。<code>x / x.sum(-1)</code>
+            中，<code>(3, 4)</code> 与 <code>(3,)</code> 按右对齐会把 3
+            对到 4 上，报错；<code>x / x.sum(-1, keepdim=True)</code> 中
+            <code>(3, 1)</code>
+            沿最后一维广播，才是“每行除以自己的和”。归一化、softmax、RMSNorm
+            都是这个“归约 → keepdim → 广播回去”的模式。</p>
+            <p><strong>扫描</strong>（<code>cumsum</code>、<code>cumprod</code>）不压缩维度，但第
+            <code>j</code> 个输出依赖同一行的前 <code>j</code>
+            个输入，因此同样有行内依赖。<strong><code>sort</code>、<code>topk</code></strong>
+            也归在这一类：它们需要看完一整行才能决定顺序，并且同时返回两份输出——值，以及<strong>这些值在原张量中的下标</strong>。下标是后面
+            gather 回原坐标的钥匙，采样一节会看到它的用法。</p>
+            <p>归约的另一个工程属性是精度：累加顺序会影响结果，低精度累加会丢失信息。<code>sum(..., dtype=torch.float32)</code>
+            可以只在累加时升精度，不必先把整个输入转成 fp32，见 <a
+            href="./torch_numerical_precision.html">Numerical
+            Precision</a>。</p>
+            <h3 id="按下标搬运gatherscatter-与-index">④
+            按下标搬运：gather、scatter 与 index</h3>
+            <p>这一类的输出位置由<strong>数据</strong>决定：<code>out[j] = x[idx[j]]</code>。下标可以乱序、重复，无法用
+            stride 表达，所以读取总会复制。</p>
+            <ul>
+            <li><code>index_select(x, dim, idx)</code> /
+            <code>x[idx]</code>：沿某一维按一维下标取整片，输出在该维的长度等于
+            <code>len(idx)</code>。</li>
+            <li><code>torch.gather(x, dim, idx)</code>：逐元素取，<strong>输出
+            shape 等于 <code>idx</code> 的
+            shape</strong>。<code>dim=1</code> 时
+            <code>out[i][j] = x[i][idx[i][j]]</code>，即每一行各取各的。上例
+            <code>torch.gather(x, 1, [[3, 0], [1, 1], [2, 0]])</code>
+            得到 <code>[[3, 0], [5, 5], [10, 8]]</code>。</li>
+            <li><code>scatter_(dim, idx, src)</code>：gather
+            的逆，<code>self[i][idx[i][j]] = src[i][j]</code>，原地写回；<code>scatter_add_</code>
+            对重复下标累加。</li>
+            <li><code>x[idx] = v</code> /
+            <code>x[mask] = v</code>：等号左侧的索引是
+            <code>index_put_</code>，原地写回；右侧才是 gather
+            出副本。</li>
+            <li><code>torch.cat</code> /
+            <code>torch.stack</code>：每个输入被搬到新输出的不同区段，也属于“搬运”，总要分配新存储。</li>
+            </ul>
+            <p>gather/scatter
+            的成本主要是不规则访存：相邻输出可能来自相距很远的输入地址，难以合并访问。高性能
+            kernel 的常见做法是把下标表直接交给计算
+            kernel、在内部寻址，而不是先 gather 出完整张量。</p>
+            <h3 id="收缩matmulbmm-与-einsum">⑤ 收缩：matmul、bmm 与
+            einsum</h3>
+            <p>收缩是“两个张量沿某一维逐对相乘再求和”，这一维在输出中消失。它是推理里绝大部分
+            FLOPs 的来源，形状规则也最需要记清：</p>
+            <table>
+            <colgroup>
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>API</th>
+            <th>输入 shape</th>
+            <th>规则</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td><code>torch.mm(a, b)</code></td>
+            <td><code>[M, K] × [K, N]</code></td>
+            <td>严格二维</td>
+            </tr>
+            <tr>
+            <td><code>torch.bmm(a, b)</code></td>
+            <td><code>[B, M, K] × [B, K, N]</code></td>
+            <td>严格三维，batch 维必须相等</td>
+            </tr>
+            <tr>
+            <td><code>a @ b</code> / <code>torch.matmul</code></td>
+            <td>任意维</td>
+            <td>最后两维做矩阵乘，前面的 batch
+            维<strong>按广播规则</strong>对齐；一维输入会被临时补维</td>
+            </tr>
+            <tr>
+            <td><code>F.linear(x, w, b)</code></td>
+            <td><code>[..., K]</code>、<code>w: [N, K]</code></td>
+            <td>计算 <code>x @ w.T + b</code>，权重按
+            <code>[out, in]</code> 存</td>
+            </tr>
+            <tr>
+            <td><code>torch.einsum(eq, ...)</code></td>
+            <td>任意</td>
+            <td>用下标串描述，见下</td>
+            </tr>
+            </tbody>
+            </table>
+            <p><code>einsum</code>
+            的读法只有一条规则：<strong>出现在箭头右边的下标保留，只出现在左边的下标被求和</strong>。例如
+            <code>"bshd,bthd-&gt;bhst"</code> 中
+            <code>b</code>、<code>h</code> 两侧都有，是 batch
+            维；<code>s</code>、<code>t</code> 分别来自 q 和
+            k，保留下来成为 score 矩阵；<code>d</code>
+            只在左边，被收缩——这正是 <code>q @ k.T</code> 按 head
+            分组的写法。</p>
+            <p>收缩的计算量是 <code>2·M·N·K</code>，数据量是
+            <code>M·K + K·N + M·N</code>，当 <code>M</code> 很小（decode
+            时 token 数少）时它会从算力受限退化为访存受限，见 <a
+            href="./gemm_computation.md">Gemm 计算量</a> 和 <a
+            href="./roofline.html">Roofline</a>。另外，转置一般不需要物化：<code>w.T</code>
+            只是 stride 互换的 view，cuBLAS
+            通过“转置”标志直接读取，这也是 <code>F.linear</code>
+            能把权重按 <code>[out, in]</code>
+            存放而不付复制代价的原因。</p>
+            <h3 id="语法糖只改-shape-的那些写法">语法糖：只改 shape
+            的那些写法</h3>
+            <p>参考实现和模型代码里最让人“一头雾水”的，往往不是算子本身，而是夹在算子之间、只为了让
+            shape 对齐的写法。它们几乎都属于 ①
+            元数据类，不搬数据，目的只有一个：<strong>让下一步的广播或收缩按意图对齐维度</strong>。设
+            <code>x: [b, h, t, d]</code>：</p>
+            <table>
+            <colgroup>
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>写法</th>
+            <th>结果 shape</th>
+            <th>含义</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td><code>x[:, :, i]</code></td>
+            <td><code>[b, h, d]</code></td>
+            <td>整数下标：取第 <code>i</code>
+            个，并<strong>删掉</strong>这一维</td>
+            </tr>
+            <tr>
+            <td><code>x[:, :, i:i+1]</code></td>
+            <td><code>[b, h, 1, d]</code></td>
+            <td>切片：取一段，<strong>保留</strong>这一维（长度 1）</td>
+            </tr>
+            <tr>
+            <td><code>x[:, :, -1]</code></td>
+            <td><code>[b, h, d]</code></td>
+            <td>负下标从末尾数，<code>-1</code> 是最后一个</td>
+            </tr>
+            <tr>
+            <td><code>x[..., 0]</code></td>
+            <td><code>[b, h, t]</code></td>
+            <td><code>...</code> 占住前面所有维，等价于
+            <code>x[:, :, :, 0]</code></td>
+            </tr>
+            <tr>
+            <td><code>x[..., None]</code></td>
+            <td><code>[b, h, t, d, 1]</code></td>
+            <td><code>None</code> 在该位置插入一个长度 1 的维，等价
+            <code>unsqueeze(-1)</code></td>
+            </tr>
+            <tr>
+            <td><code>x[:, :, i, None]</code></td>
+            <td><code>[b, h, 1]</code></td>
+            <td>同一个 <code>[]</code> 里从左到右处理：<code>i</code>
+            删掉 t 维，<code>None</code> 在末尾补 1</td>
+            </tr>
+            <tr>
+            <td><code>x[..., ::2]</code></td>
+            <td><code>[b, h, t, d/2]</code></td>
+            <td>步长切片，stride 翻倍，仍是 view</td>
+            </tr>
+            <tr>
+            <td><code>x[:, :, [0, 2]]</code></td>
+            <td><code>[b, h, 2, d]</code></td>
+            <td>列表/张量下标是高级索引，<strong>会复制</strong>（④
+            类）</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>几条容易混的规则：</p>
+            <ul>
+            <li><strong>整数删维，切片留维。</strong>
+            <code>x[:, :, i]</code> 与 <code>x[:, :, i:i+1]</code>
+            取的是同一批数据，但前者少一维。后续要和保留了 t
+            维的张量广播时，用错一种就会错位。</li>
+            <li><strong><code>...</code>
+            只能出现一次</strong>，它替代“足够多的
+            <code>:</code>”，让同一行代码对任意前导维都成立。<code>x[..., :d]</code>、<code>x[..., d:]</code>（SiLU×Mul
+            的切半）就是靠它不关心前面有几维。</li>
+            <li><strong><code>None</code> 是为了广播而补的 1。</strong>
+            一个 <code>[b, h]</code> 的标量门要乘到
+            <code>[b, h, dk, dv]</code> 的矩阵上，必须先变成
+            <code>[b, h, 1, 1]</code>——广播从右对齐，不补的话
+            <code>[b, h]</code> 会对到 <code>[dk, dv]</code> 上。</li>
+            <li><strong>einsum 不求和时就是带广播的逐元素乘。</strong>
+            <code>"bhk,bhv-&gt;bhkv"</code>
+            右边一个下标都没少，所以没有收缩，等价于
+            <code>k[..., :, None] * v[..., None, :]</code>，即外积。</li>
+            <li><strong><code>stack</code> 新建维，<code>cat</code>
+            拼已有维。</strong> t 个 <code>[b, h, dv]</code> 用
+            <code>stack(dim=2)</code> 得到
+            <code>[b, h, t, dv]</code>；用 <code>cat(dim=2)</code> 得到
+            <code>[b, h, t·dv]</code>。</li>
+            </ul>
+            <p>另有几处与 shape
+            无关、但读代码常遇到的小写法：<code>b, h, t, dk = k.shape</code>
+            是把 <code>torch.Size</code>（一个
+            tuple）解包成整数；<code>x.shape[:-1] + (d,)</code> 是 tuple
+            拼接，构造“除最后一维外不变”的新
+            shape；<code>k.new_zeros(...)</code> /
+            <code>x.new_empty(...)</code> 创建与 <code>k</code>
+            <strong>同 dtype、同 device</strong> 的新张量，省去手写
+            <code>dtype=, device=</code>；<code>F.normalize(x, dim=-1)</code>
+            是沿最后一维做 L2
+            归一化（<code>x / ‖x‖₂</code>）；<code>dk ** -0.5</code> 是
+            Python 标量运算
+            <code>1/√dk</code>，与张量相乘时不会改变张量的 dtype。</p>
+            <h3 id="例子逐行读-gated-delta-rule-参考实现">例子：逐行读
+            gated delta rule 参考实现</h3>
+            <p><a href="./linear_attention.html">Linear Attention</a>
+            里的 <code>gated_delta_rule_ref</code>
+            是上面这些语法糖的集中体现。先把数学写在旁边——每个
+            <code>(b, h)</code> 有一个 <code>dk × dv</code> 的状态矩阵
+            <code>S</code>，每一步：</p>
+            <pre><code>S ← α·S                       α = exp(g)，标量衰减
+v̂ = kᵀS                       用当前记忆“预测” k 对应的 v
+Δ = β·(v − v̂)                 预测误差
+S ← S + k ⊗ Δ                 沿 k 方向写回误差（外积）
+o = qᵀS                       用 q 读出</code></pre>
+            <p>代码里所有的下标、<code>None</code>、einsum，都只是在给这几行公式补上
+            <code>[b, h]</code> 两个 batch 维：</p>
+            <div class="sourceCode" id="cb3"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(t):</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    q_i, k_i, v_i <span class="op">=</span> q[:, :, i], k[:, :, i], v[:, :, i]        <span class="co"># [b,h,dk] / [b,h,dv]，删掉 t 维</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    S <span class="op">=</span> S <span class="op">*</span> g[:, :, i].exp()[..., <span class="va">None</span>, <span class="va">None</span>]                 <span class="co"># [b,h] -&gt; [b,h,1,1]，广播到 [b,h,dk,dv]</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    v_hat <span class="op">=</span> torch.einsum(<span class="st">&quot;bhk,bhkv-&gt;bhv&quot;</span>, k_i, S)             <span class="co"># 收缩 k：向量 × 矩阵 -&gt; [b,h,dv]</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    delta <span class="op">=</span> beta[:, :, i, <span class="va">None</span>] <span class="op">*</span> (v_i <span class="op">-</span> v_hat)               <span class="co"># [b,h,1] × [b,h,dv] -&gt; [b,h,dv]</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    S <span class="op">=</span> S <span class="op">+</span> torch.einsum(<span class="st">&quot;bhk,bhv-&gt;bhkv&quot;</span>, k_i, delta)         <span class="co"># 不收缩：外积 -&gt; [b,h,dk,dv]</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    outs.append(torch.einsum(<span class="st">&quot;bhk,bhkv-&gt;bhv&quot;</span>, q_i, S))        <span class="co"># 同 ②，-&gt; [b,h,dv]</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="cf">return</span> torch.stack(outs, dim<span class="op">=</span><span class="dv">2</span>), S                            <span class="co"># t 个 [b,h,dv] -&gt; [b,h,t,dv]</span></span></code></pre></div>
+            <figure>
+            <img
+            src="./WikiImage/torch_general_ops_delta_rule_trace.svg"
+            alt="逐行追踪 gated delta rule 的 shape" />
+            <figcaption aria-hidden="true">逐行追踪 gated delta rule 的
+            shape</figcaption>
+            </figure>
+            <p>逐行看：</p>
+            <ul>
+            <li><strong>取第 i 步</strong>：<code>q[:, :, i]</code>
+            用整数下标删掉 t 维，于是 <code>q_i</code>、<code>k_i</code>
+            是 <code>[b, h, dk]</code>，<code>v_i</code> 是
+            <code>[b, h, dv]</code>——每个 <code>(b, h)</code>
+            一个向量。</li>
+            <li><strong>① 衰减</strong>：<code>g[:, :, i]</code> 是
+            <code>[b, h]</code>，<code>.exp()</code>
+            是逐元素；<code>[..., None, None]</code> 在末尾补两个 1 变成
+            <code>[b, h, 1, 1]</code>，右对齐广播到 <code>S</code> 的
+            <code>[b, h, dk, dv]</code>，即“每个 head
+            的整个矩阵乘同一个标量”。KDA 的门是逐通道向量
+            <code>[b, h, dk]</code>，只需补一个 <code>None</code> 变成
+            <code>[b, h, dk, 1]</code>，就变成按行衰减。</li>
+            <li><strong>② 预测</strong>：<code>"bhk,bhkv-&gt;bhv"</code>
+            中 <code>k</code> 只出现在左边，被求和；等价写法是
+            <code>(k_i[..., None] * S).sum(-2)</code> 或
+            <code>(k_i.unsqueeze(-2) @ S).squeeze(-2)</code>。</li>
+            <li><strong>③
+            误差</strong>：<code>beta[:, :, i, None]</code> 先删 t
+            维再补 1，得到 <code>[b, h, 1]</code>，与
+            <code>[b, h, dv]</code> 广播；漏掉 <code>None</code> 的话
+            <code>[b, h]</code> 会去对齐
+            <code>[h, dv]</code>，不是报错就是悄悄错位。</li>
+            <li><strong>④ 写回</strong>：<code>"bhk,bhv-&gt;bhkv"</code>
+            右边一个下标都没少，没有求和，是外积
+            <code>k_i[..., :, None] * delta[..., None, :]</code>，得到一个秩
+            1 的 <code>[dk, dv]</code> 矩阵加到 <code>S</code> 上。</li>
+            <li><strong>⑤ 读出与收集</strong>：和 ② 同一个公式，用
+            <code>q_i</code> 读更新后的 <code>S</code>；循环结束后
+            <code>stack(dim=2)</code> 在第 2 维新建 t 维，与输入
+            <code>v: [b, h, t, dv]</code> 对齐。</li>
+            </ul>
+            <p>两点工程细节也藏在这几行里。第一，<code>S = S * ...</code>、<code>S = S + ...</code>
+            都是<strong>换绑名字</strong>，不是原地写：调用方传进来的初始
+            <code>S</code> 不会被修改，函数返回新的终态。SGLang 的
+            decode kernel 则相反，直接原地改写 state pool
+            里的状态。第二，这个 <code>for</code>
+            循环无法向量化掉，因为第 <code>i</code> 步的 <code>S</code>
+            依赖第 <code>i-1</code> 步；eager 下每一步要发射七八个小
+            kernel，并且每步都把整个 <code>[b, h, dk, dv]</code>
+            状态读写好几遍。这正是 prefill 用 chunkwise 算法、decode 用
+            fused recurrent kernel 的原因，见 <a
+            href="./linear_attention.html">Linear
+            Attention</a>。参考实现的价值在于语义清楚，适合做 kernel
+            的对照，而不是用来跑。</p>
+            <p>遇到类似的代码，可以先在小 shape 上把每一行的
+            <code>.shape</code> 打印出来，再对照公式确认：哪一维是
+            batch、哪一维被求和、哪一处 <code>None</code>
+            是为了广播。</p>
+            <h3 id="rmsnorm-与-silumul">RMSNorm 与 SiLU×Mul</h3>
+            <p><code>layers/layernorm.py</code> 的
+            <code>RMSNorm.forward_native()</code> 是“归约 → keepdim →
+            广播回去”的标准写法（省略 residual 等分支）：</p>
+            <div class="sourceCode" id="cb4"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> x.to(torch.float32)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>variance <span class="op">=</span> x.<span class="bu">pow</span>(<span class="dv">2</span>).mean(dim<span class="op">=-</span><span class="dv">1</span>, keepdim<span class="op">=</span><span class="va">True</span>)    <span class="co"># ② + ③，[T, 1]</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> x <span class="op">*</span> torch.rsqrt(variance <span class="op">+</span> <span class="va">self</span>.variance_epsilon)  <span class="co"># ②，[T, 1] 广播到 [T, H]</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> (x <span class="op">*</span> <span class="va">self</span>.weight).to(orig_dtype)              <span class="co"># ②，weight [H] 广播</span></span></code></pre></div>
+            <p>按分类拆开，它只有一次归约，其余全是逐元素；但在 eager
+            模式下每一步都会把一个 <code>[T, H]</code>
+            的中间张量写回显存——fp32
+            转换、平方、相乘、乘权重、转回，加上 residual
+            分支还有两次加法。<code>forward_cuda()</code> 在 CUDA 上调用
+            <code>rmsnorm</code> / <code>fused_add_rmsnorm</code>
+            kernel，把整条链放进一个 kernel：每行读一次
+            <code>x</code>（和
+            residual），在寄存器里完成归约和缩放，写一次输出。计算量没变，访存从近十遍降到一两遍。</p>
+            <p><code>layers/activation.py</code> 的
+            <code>SiluAndMul</code>
+            是另一条短链：<code>forward_native()</code> 写成
+            <code>F.silu(x[..., :d]) * x[..., d:]</code>——两次切片是
+            ①，<code>silu</code> 和乘法是 ②，中间产生一个
+            <code>silu</code> 结果张量；<code>forward_cuda()</code> 先
+            <code>torch.empty</code> 出 <code>[..., d]</code>
+            的输出，再由 <code>silu_and_mul(x, out)</code>
+            一次完成。两者的区别不在于算法，而在于中间张量有没有落到显存。</p>
+            <h3 id="top-k-top-p-采样排序换坐标">top-k / top-p
+            采样——排序换坐标</h3>
+            <p>采样把几乎所有类别都用了一遍。<code>layers/sampler.py</code>
+            中 <code>Sampler.forward()</code> 的前半段：</p>
+            <ul>
+            <li><code>logits.div_(sampling_info.temperatures)</code>：<code>temperatures</code>
+            在 <code>SamplingBatchInfo</code> 里被
+            <code>.view(-1, 1)</code> 成 <code>[B, 1]</code>，沿 vocab
+            维广播，每个请求除以自己的温度；原地写，不分配新的
+            <code>[B, V]</code>。</li>
+            <li><code>logits[:] = torch.softmax(logits, dim=-1)</code>：softmax
+            本身要分配输出，但结果被拷回 <code>logits</code>
+            的原存储并复用为 <code>probs</code>（源码注释 “In-place op
+            to save memory”），避免同时持有两份
+            <code>[B, V]</code>。</li>
+            </ul>
+            <p>默认的 <code>flashinfer</code> 后端把 top-k/top-p
+            交给融合 kernel；<code>pytorch</code> 后端走
+            <code>top_k_top_p_min_p_sampling_from_probs_torch()</code>，正好可以逐步看清每一类算子在做什么：</p>
+            <figure>
+            <img src="./WikiImage/torch_general_ops_sampling.svg"
+            alt="top-k / top-p 采样的算子拆解" />
+            <figcaption aria-hidden="true">top-k / top-p
+            采样的算子拆解</figcaption>
+            </figure>
+            <div class="sourceCode" id="cb5"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>probs_sort, probs_idx <span class="op">=</span> probs.sort(dim<span class="op">=-</span><span class="dv">1</span>, descending<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>probs_sum <span class="op">=</span> torch.cumsum(probs_sort, dim<span class="op">=-</span><span class="dv">1</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>probs_sort[torch.arange(V).view(<span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>) <span class="op">&gt;=</span> top_ks.view(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)] <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>probs_sort[(probs_sum <span class="op">-</span> probs_sort) <span class="op">&gt;</span> top_ps.view(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)] <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>sampled_index <span class="op">=</span> torch.multinomial(probs_sort, num_samples<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>batch_next_token_ids <span class="op">=</span> torch.gather(probs_idx, dim<span class="op">=</span><span class="dv">1</span>, index<span class="op">=</span>sampled_index)</span></code></pre></div>
+            <p>关键一步是 <code>sort</code>：它把“按 token id
+            排列”换成“按概率降序排列”的坐标系，在新坐标系里 top-k
+            变成“位置 ≥ k”，top-p 变成“不含自身的前缀和 &gt;
+            p”，都只是一次 <code>[1, V]</code> 或 <code>[B, V]</code> 与
+            <code>[B, 1]</code> 的广播比较，每个请求可以有不同的 k 和
+            p。用 <code>probs_sum - probs_sort</code> 而不是
+            <code>probs_sum</code> 判断，保证第一个越过阈值的 token
+            仍被保留。<code>multinomial</code> 不要求概率归一化，所以置
+            0 之后不必重新除和。</p>
+            <p>最后 <code>multinomial</code>
+            返回的是<strong>排序坐标里的位置</strong>，必须用
+            <code>sort</code> 返回的 <code>probs_idx</code> 做一次
+            gather 才能得到 token id——忘掉这一步就会采到“第 1
+            名”而不是“token 5”。同文件的
+            <code>top_p_normalize_probs_torch()</code>
+            走的是反方向：在排序坐标里处理完，再
+            <code>scatter_(-1, probs_idx, probs_sort)</code> 把概率写回
+            token id 坐标。sort/gather 与 scatter
+            互为逆操作，这是“换坐标 → 处理 →
+            换回”模式的两种收尾方式。</p>
+            <p>这条路径的代价也一目了然：对 <code>[B, V]</code>
+            做一次完整排序（V
+            常为十几万），再加数个同规模的中间张量和布尔掩码，这正是它被标为
+            “slower fallback” 的原因。</p>
+            <h3 id="moe-路由topkscatter-与-masked_fill">MoE
+            路由——topk、scatter 与 masked_fill</h3>
+            <p><code>layers/moe/topk.py</code> 的
+            <code>grouped_topk_gpu()</code>（DeepSeek
+            风格的分组路由）先选专家组、再在组内选专家，全程用的是归约和按下标写入：</p>
+            <div class="sourceCode" id="cb6"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>group_scores <span class="op">=</span> scores.view(num_token, num_expert_group, <span class="op">-</span><span class="dv">1</span>).<span class="bu">max</span>(dim<span class="op">=-</span><span class="dv">1</span>).values  <span class="co"># ① + ③</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>group_idx <span class="op">=</span> torch.topk(group_scores, k<span class="op">=</span>topk_group, dim<span class="op">=-</span><span class="dv">1</span>, <span class="bu">sorted</span><span class="op">=</span><span class="va">False</span>)[<span class="dv">1</span>]    <span class="co"># ③</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>group_mask <span class="op">=</span> torch.zeros_like(group_scores)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>group_mask.scatter_(<span class="dv">1</span>, group_idx, <span class="dv">1</span>)                                            <span class="co"># ④</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>score_mask <span class="op">=</span> group_mask.unsqueeze(<span class="op">-</span><span class="dv">1</span>).expand(...).reshape(num_token, <span class="op">-</span><span class="dv">1</span>)        <span class="co"># ①</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>tmp_scores <span class="op">=</span> scores.masked_fill(<span class="op">~</span>score_mask.<span class="bu">bool</span>(), <span class="fl">0.0</span>)                        <span class="co"># ②</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>topk_weights, topk_ids <span class="op">=</span> torch.topk(tmp_scores, k<span class="op">=</span>topk, dim<span class="op">=-</span><span class="dv">1</span>, ...)            <span class="co"># ③</span></span></code></pre></div>
+            <p>几个值得注意的写法：<code>view</code> 把
+            <code>[n, e]</code> 拆成
+            <code>[n, group, e/group]</code>，使“每组的最高分”变成最后一维上的普通
+            <code>max</code>；<code>scatter_</code>
+            把“选中了哪几组”的下标表转成 0/1
+            掩码，下标形式和掩码形式之间的转换在路由、采样里反复出现；<code>expand(...).reshape(...)</code>
+            把组级掩码展开回专家级——<code>expand</code> 是零 stride
+            view，但随后的 <code>reshape</code> 无法合并零 stride
+            维度，会在这里物化一份
+            <code>[n, e]</code>。<code>renormalize</code> 分支里的
+            <code>topk_weights.sum(dim=-1, keepdim=True, dtype=torch.float32)</code>
+            则是归约时只升累加精度、再广播回去相除。</p>
+            <h3 id="收缩的两种写法">收缩的两种写法</h3>
+            <p><code>layers/moe/fused_moe_native.py</code> 的
+            <code>fused_moe_forward_native()</code>（<code>unquant.py</code>
+            只在 torch.compile 且 batch size 为 1 时启用它）用 einsum
+            表达专家计算：</p>
+            <div class="sourceCode" id="cb7"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>w13_weights <span class="op">=</span> layer.w13_weight[topk_ids]                      <span class="co"># ④ gather：[t, a, 2·o, i]</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>x1 <span class="op">=</span> torch.einsum(<span class="st">&quot;ti,taoi -&gt; tao&quot;</span>, x, w1_weights)            <span class="co"># ⑤ 收缩 i</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>expert_outs <span class="op">=</span> torch.einsum(<span class="st">&quot;tao, taio -&gt; tai&quot;</span>, (x1 <span class="op">*</span> x3), w2_weights)  <span class="co"># ⑤ 收缩 o</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>expert_outs <span class="op">=</span> torch.einsum(<span class="st">&quot;tai,ta -&gt; ti&quot;</span>, expert_outs, topk_weights)  <span class="co"># ⑤ 收缩 a（加权求和）</span></span></code></pre></div>
+            <p>下标 <code>t</code> 是 token、<code>a</code>
+            是被选中的第几个专家、<code>i</code>/<code>o</code> 是
+            hidden 与中间维。读法按“右边没有的下标被求和”：第一式收缩
+            <code>i</code>，第三式收缩
+            <code>a</code>，后者正是“按路由权重把 top-k
+            个专家的输出加起来”。这种写法简洁，但第一行按
+            <code>topk_ids</code> gather 出了每个 token
+            专属的一份专家权重，只在 token 数为 1
+            时才划算——这也是它只用于 bs=1 的原因。</p>
+            <p><code>models/deepseek_common/attention_forward_methods/forward_mla.py</code>
+            中 MLA 的权重吸收则是 <code>bmm</code> 的典型用法：</p>
+            <div class="sourceCode" id="cb8"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>q_nope_out <span class="op">=</span> torch.bmm(q_nope.transpose(<span class="dv">0</span>, <span class="dv">1</span>), <span class="va">self</span>.w_kc)   <span class="co"># [H, T, d] × [H, d, r] -&gt; [H, T, r]</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>q_nope_out <span class="op">=</span> q_nope_out.transpose(<span class="dv">0</span>, <span class="dv">1</span>)                     <span class="co"># 回到 [T, H, r]</span></span></code></pre></div>
+            <p><code>bmm</code> 要求 batch 维在最前，所以先用
+            <code>transpose</code> 把 head 维挪到第 0 维——这是 ① 类的
+            view，不复制，<code>bmm</code> 直接按 stride 读取。每个 head
+            一个独立的矩阵乘，正好对应“每个 head 有自己的
+            <code>W_UK</code>”。加载权重时
+            <code>deepseek_weight_loader.py</code> 里的
+            <code>w_kc.transpose(1, 2).contiguous().transpose(1, 2)</code>
+            则是反过来的技巧：shape 仍是
+            <code>[H, d, r]</code>，但后两维的 stride 从
+            <code>(r, 1)</code> 变成
+            <code>(1, d)</code>，即改成列优先存放（源码未注释具体原因，通常是为了匹配下游
+            bmm kernel 偏好的布局）。shape 相同的两个张量，stride
+            不同，对 kernel 而言就是两种不同的输入。</p>
+            <h3 id="读代码时的检查顺序">读代码时的检查顺序</h3>
+            <ol type="1">
+            <li>把每一行算子归到五类之一，组合算子拆成几步。</li>
+            <li>对归约，确认 <code>dim</code> 和
+            <code>keepdim</code>，以及结果要不要广播回去。</li>
+            <li>对
+            gather/scatter/topk/sort，确认当前处于哪个坐标系（原始 id
+            还是排序后位置），最后有没有映射回去。</li>
+            <li>对
+            einsum/matmul，写出每个下标的含义，找出被求和的维度；箭头右边一个不少就是外积/逐元素乘。</li>
+            <li>对整数下标、<code>None</code>、<code>...</code>，写出每一行之后的
+            shape，确认广播对齐的是想要的维度。</li>
+            <li>数一数②③链上有多少个落到显存的中间张量——这就是融合能省下的部分。</li>
+            </ol>
+            <h3 id="小结">小结</h3>
+            <p>算子的本质区别在于“一个输出元素依赖哪些输入元素”：不依赖（元数据）、依赖一个（逐元素）、依赖一整行（归约/扫描）、依赖数据指定的位置（按下标搬运）、依赖一行与一列（收缩）。这五种模式分别对应零成本、访存受限、带行内依赖的访存受限、不规则访存和算力受限，也分别对应
+            shape 的五种推导方式。RMSNorm
+            是②③串成的链，所以要融合；采样用 sort
+            换坐标、在新坐标里做广播比较、再 gather 回 token id；MoE
+            路由在下标和掩码之间来回转换；MLA 用 transpose + bmm 把“每个
+            head 一个矩阵”表达成一次批量收缩；gated delta rule
+            里的整数下标、<code>None</code> 和 einsum 则都只是给公式补上
+            batch
+            维、让广播按意图对齐。读懂依赖模式，就能在不查文档的情况下推出
+            shape、估出成本，并看出哪里值得写一个融合 kernel。</p>
+          </main>
+        <aside class="wiki-toc">
+      <ul>
+      <li><a href="#抽象按依赖模式把算子分成五类"
+      id="toc-抽象按依赖模式把算子分成五类">抽象：按依赖模式把算子分成五类</a></li>
+      <li><a href="#元数据算子只换透镜" id="toc-元数据算子只换透镜">①
+      元数据算子：只换透镜</a></li>
+      <li><a href="#逐元素算子广播与类型提升"
+      id="toc-逐元素算子广播与类型提升">②
+      逐元素算子：广播与类型提升</a></li>
+      <li><a href="#归约与扫描dim-和-keepdim"
+      id="toc-归约与扫描dim-和-keepdim">③ 归约与扫描：dim 和
+      keepdim</a></li>
+      <li><a href="#按下标搬运gatherscatter-与-index"
+      id="toc-按下标搬运gatherscatter-与-index">④
+      按下标搬运：gather、scatter 与 index</a></li>
+      <li><a href="#收缩matmulbmm-与-einsum"
+      id="toc-收缩matmulbmm-与-einsum">⑤ 收缩：matmul、bmm 与
+      einsum</a></li>
+      <li><a href="#语法糖只改-shape-的那些写法"
+      id="toc-语法糖只改-shape-的那些写法">语法糖：只改 shape
+      的那些写法</a></li>
+      <li><a href="#例子逐行读-gated-delta-rule-参考实现"
+      id="toc-例子逐行读-gated-delta-rule-参考实现">例子：逐行读 gated
+      delta rule 参考实现</a></li>
+      <li><a href="#rmsnorm-与-silumul"
+      id="toc-rmsnorm-与-silumul">RMSNorm 与 SiLU×Mul</a></li>
+      <li><a href="#top-k-top-p-采样排序换坐标"
+      id="toc-top-k-top-p-采样排序换坐标">top-k / top-p
+      采样——排序换坐标</a></li>
+      <li><a href="#moe-路由topkscatter-与-masked_fill"
+      id="toc-moe-路由topkscatter-与-masked_fill">MoE
+      路由——topk、scatter 与 masked_fill</a></li>
+      <li><a href="#收缩的两种写法"
+      id="toc-收缩的两种写法">收缩的两种写法</a></li>
+      <li><a href="#读代码时的检查顺序"
+      id="toc-读代码时的检查顺序">读代码时的检查顺序</a></li>
+      <li><a href="#小结" id="toc-小结">小结</a></li>
+      </ul>
+    </aside>
+      </div>
+</body>
+
+</html>

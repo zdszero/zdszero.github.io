@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 440" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="440" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">长输入：chunked prefill 与 mixed batch</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">把长 prefill 切片，片与片之间穿插 decode，避免一次长 prefill 独占算力、阻塞自回归</text>
+
+  <!-- Section 1 -->
+  <text x="60" y="92" font-size="13.5" font-weight="700" fill="#343a40">① 切片：一次长 prefill 拆成多次 forward</text>
+  <text x="60" y="110" font-size="11" fill="#868e96">输入 10000 tokens</text>
+
+  <!-- long bar -->
+  <rect x="60" y="118" width="312" height="46" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="216" y="146" text-anchor="middle" font-size="12.5" font-weight="700" fill="#3b5bdb">chunk 1</text>
+  <rect x="376" y="118" width="312" height="46" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="532" y="146" text-anchor="middle" font-size="12.5" font-weight="700" fill="#3b5bdb">chunk 2</text>
+  <rect x="692" y="118" width="148" height="46" rx="8" fill="#dbe4ff" stroke="#4c6ef5"/>
+  <text x="766" y="146" text-anchor="middle" font-size="12.5" font-weight="700" fill="#3b5bdb">chunk 3</text>
+
+  <text x="216" y="182" text-anchor="middle" font-size="10.5" fill="#495057">4096 tok · 一次 prefill forward</text>
+  <text x="532" y="182" text-anchor="middle" font-size="10.5" fill="#495057">4096 tok · 一次 prefill forward</text>
+  <text x="766" y="182" text-anchor="middle" font-size="10.5" fill="#e8590c">1808 tok · 算完转入 decode</text>
+
+  <text x="60" y="212" font-size="11.5" fill="#495057">每片是一次独立的 prefill forward；<tspan font-family="monospace" fill="#3b5bdb">req.extend_range</tspan> 记录算到了哪，<tspan font-family="monospace" fill="#3b5bdb">chunked_req</tspan> 持有跨 tick 的半成品请求。</text>
+
+  <!-- Section 2 -->
+  <text x="60" y="256" font-size="13.5" font-weight="700" fill="#343a40">② 穿插：chunk 之间，decode 一起跑 —— 一次 forward 的 mixed batch</text>
+
+  <rect x="60" y="272" width="780" height="68" rx="10" fill="#ffffff" stroke="#dee2e6"/>
+  <rect x="66" y="278" width="330" height="56" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="231" y="302" text-anchor="middle" font-size="12" font-weight="700" fill="#3b5bdb">chunk-N 的 prefill tokens</text>
+  <text x="231" y="321" text-anchor="middle" font-size="10.5" fill="#868e96">多 token / 请求</text>
+  <rect x="404" y="278" width="430" height="56" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="619" y="302" text-anchor="middle" font-size="12" font-weight="700" fill="#0b7285">running_batch 的 decode tokens</text>
+  <text x="619" y="321" text-anchor="middle" font-size="10.5" fill="#868e96">每请求 1 token</text>
+
+  <text x="60" y="364" font-size="11.5" fill="#495057"><tspan font-family="monospace" fill="#495057">ScheduleBatch.mix_with_running()</tspan>：把半成品 prefill 片与正在 decode 的请求拼进同一次 GPU forward。</text>
+
+  <!-- note -->
+  <rect x="60" y="378" width="780" height="48" rx="10" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="78" y="400" font-size="12" fill="#495057">价值：长 prefill 不再是一堵「墙」。GPU 利用率高的 prefill 片填满算力，访存密集的 decode 搭顺风车，</text>
+  <text x="78" y="418" font-size="12" fill="#495057">两类负载在同一个 forward 里互补，既压住了 TTFT，又没饿着正在生成的请求。</text>
+</svg>

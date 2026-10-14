@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 490" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#868e96"/>
+    </marker>
+    <marker id="arA" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#f08c00"/>
+    </marker>
+    <marker id="arB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#4c6ef5"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="900" height="490" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">KV cache 上的三种访问：切片是 view，读取是 gather，赋值写回原处</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">以 MHATokenToKVPool 的 NHD 布局为例：每层一个 [size + page_size, head_num, head_dim] 张量</text>
+
+  <!-- k_buffer grid -->
+  <text x="70" y="88" font-size="12.5" font-weight="700" fill="#0b7285">k_buffer[layer]（常驻）</text>
+  <g font-family="monospace" font-size="10.5" fill="#868e96" text-anchor="end">
+    <text x="62" y="117">0</text><text x="62" y="143">1</text><text x="62" y="169">2</text>
+    <text x="62" y="195">3</text><text x="62" y="221">4</text><text x="62" y="247">5</text>
+    <text x="62" y="273">6</text><text x="62" y="299">7</text><text x="62" y="325">8</text>
+  </g>
+  <rect x="70" y="100" width="190" height="24" rx="4" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="165" y="116" text-anchor="middle" font-size="10.5" fill="#868e96">padding slot（吸收 dummy 写入）</text>
+  <rect x="70" y="126" width="190" height="24" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="70" y="152" width="190" height="24" rx="4" fill="#c3fae8" stroke="#0ca678" stroke-width="1.6"/>
+  <rect x="70" y="178" width="190" height="24" rx="4" fill="#c3fae8" stroke="#0ca678" stroke-width="1.6"/>
+  <rect x="70" y="204" width="190" height="24" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="70" y="230" width="190" height="24" rx="4" fill="#c3fae8" stroke="#0ca678" stroke-width="1.6"/>
+  <rect x="70" y="256" width="190" height="24" rx="4" fill="#edf2ff" stroke="#4c6ef5" stroke-dasharray="4 2"/>
+  <rect x="70" y="282" width="190" height="24" rx="4" fill="#edf2ff" stroke="#4c6ef5" stroke-dasharray="4 2"/>
+  <rect x="70" y="308" width="190" height="24" rx="4" fill="#c3fae8" stroke="#0ca678" stroke-width="1.6"/>
+  <g font-family="monospace" font-size="10.5" fill="#0b7285" text-anchor="middle">
+    <text x="165" y="142" fill="#868e96">head_num × head_dim</text><text x="165" y="168">请求 r 的 token</text><text x="165" y="194">请求 r 的 token</text>
+    <text x="165" y="246">请求 r 的 token</text><text x="165" y="324">请求 r 的 token</text>
+  </g>
+  <g font-family="monospace" font-size="10.5" fill="#3b5bdb" text-anchor="middle">
+    <text x="165" y="272">本步新 token 写入</text><text x="165" y="298">本步新 token 写入</text>
+  </g>
+  <text x="70" y="352" font-size="11" fill="#868e96">一行 = 一个 token slot；</text>
+  <text x="70" y="368" font-size="11" fill="#868e96">请求的 KV 散落在任意行</text>
+  <!-- (a) slicing the index table -->
+  <rect x="330" y="82" width="280" height="84" rx="10" fill="#f8f9fa" stroke="#adb5bd"/>
+  <text x="346" y="104" font-size="12.5" font-weight="700" fill="#495057">① 取下标：基础切片 → view</text>
+  <text x="346" y="124" font-size="11" fill="#495057" font-family="monospace">req_to_token[r, s:e]</text>
+  <g font-family="monospace" font-size="12" text-anchor="middle" fill="#495057">
+    <rect x="346" y="134" width="30" height="22" rx="4" fill="#ffffff" stroke="#adb5bd"/><text x="361" y="150">5</text>
+    <rect x="378" y="134" width="30" height="22" rx="4" fill="#ffffff" stroke="#adb5bd"/><text x="393" y="150">2</text>
+    <rect x="410" y="134" width="30" height="22" rx="4" fill="#ffffff" stroke="#adb5bd"/><text x="425" y="150">8</text>
+    <rect x="442" y="134" width="30" height="22" rx="4" fill="#ffffff" stroke="#adb5bd"/><text x="457" y="150">3</text>
+  </g>
+  <text x="482" y="146" font-size="10.5" fill="#868e96">与 req_to_token</text>
+  <text x="482" y="160" font-size="10.5" fill="#868e96">共享 storage</text>
+
+  <!-- (b) gather -->
+  <rect x="330" y="180" width="280" height="132" rx="10" fill="#fff9db" stroke="#f08c00"/>
+  <text x="346" y="202" font-size="12.5" font-weight="700" fill="#e8590c">② 读 KV：k_cache[idx] → gather</text>
+  <g font-family="monospace" font-size="10.5" fill="#e8590c">
+    <rect x="360" y="212" width="130" height="20" rx="4" fill="#fff4e6" stroke="#f08c00"/><text x="372" y="226">slot 5 的副本</text>
+    <rect x="360" y="234" width="130" height="20" rx="4" fill="#fff4e6" stroke="#f08c00"/><text x="372" y="248">slot 2 的副本</text>
+    <rect x="360" y="256" width="130" height="20" rx="4" fill="#fff4e6" stroke="#f08c00"/><text x="372" y="270">slot 8 的副本</text>
+    <rect x="360" y="278" width="130" height="20" rx="4" fill="#fff4e6" stroke="#f08c00"/><text x="372" y="292">slot 3 的副本</text>
+  </g>
+  <text x="500" y="234" font-size="10.5" fill="#b26a00">新 storage</text>
+  <text x="500" y="250" font-size="10.5" fill="#b26a00">[4, H, D] 连续</text>
+  <text x="500" y="266" font-size="10.5" fill="#b26a00">改它不影响</text>
+  <text x="500" y="282" font-size="10.5" fill="#b26a00">cache</text>
+  <g fill="none" stroke="#f08c00" stroke-width="1.6">
+    <path d="M262 242 C300 242 320 222 356 222" marker-end="url(#arA)"/>
+    <path d="M262 164 C300 164 320 244 356 244" marker-end="url(#arA)"/>
+    <path d="M262 320 C300 320 320 266 356 266" marker-end="url(#arA)"/>
+    <path d="M262 190 C300 190 320 288 356 288" marker-end="url(#arA)"/>
+  </g>
+
+  <!-- (c) index_put write -->
+  <rect x="330" y="326" width="280" height="76" rx="10" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="346" y="348" font-size="12.5" font-weight="700" fill="#3b5bdb">③ 写 KV：k_cache[loc] = cache_k</text>
+  <g font-family="monospace" font-size="10.5" fill="#3b5bdb">
+    <rect x="346" y="358" width="150" height="16" rx="4" fill="#ffffff" stroke="#4c6ef5"/><text x="354" y="370">cache_k[0] → loc 6</text>
+    <rect x="346" y="378" width="150" height="16" rx="4" fill="#ffffff" stroke="#4c6ef5"/><text x="354" y="390">cache_k[1] → loc 7</text>
+  </g>
+  <text x="508" y="374" font-size="10.5" fill="#495057">index_put_</text>
+  <text x="508" y="390" font-size="10.5" fill="#495057">原地写回 cache</text>
+  <g fill="none" stroke="#4c6ef5" stroke-width="1.6">
+    <path d="M344 366 C305 366 300 268 264 268" marker-end="url(#arB)"/>
+    <path d="M344 386 C295 386 300 294 264 294" marker-end="url(#arB)"/>
+  </g>
+  <!-- right column: other lenses on the same bytes -->
+  <text x="640" y="88" font-size="12.5" font-weight="700" fill="#5f3dc4">同一块字节的另两副透镜</text>
+  <rect x="640" y="98" width="232" height="120" rx="10" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="656" y="120" font-size="12.5" font-weight="700" fill="#5f3dc4">view(dtype)：FP8 KV</text>
+  <text x="656" y="142" font-size="11" fill="#495057">store_dtype = uint8 存储</text>
+  <text x="656" y="160" font-size="11" fill="#495057">读：<tspan font-family="monospace">buf.view(float8_e4m3fn)</tspan></text>
+  <text x="656" y="178" font-size="11" fill="#495057">写：<tspan font-family="monospace">cache_k.view(uint8)</tspan></text>
+  <text x="656" y="202" font-size="10.5" fill="#868e96">同为 1 字节，只换解读方式，零拷贝</text>
+
+  <rect x="640" y="232" width="232" height="170" rx="10" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="656" y="254" font-size="12.5" font-weight="700" fill="#5f3dc4">as_strided：page-major 布局</text>
+  <text x="656" y="276" font-size="11" fill="#495057">所有层共用一块 uint8 <tspan font-family="monospace">_raw</tspan></text>
+  <text x="656" y="294" font-size="11" fill="#495057">每层 K/V 是一个 4-D 视图：</text>
+  <g font-family="monospace" font-size="10.5" fill="#5f3dc4">
+    <text x="664" y="314">size  (pages, page, H, D)</text>
+    <text x="664" y="330">stride(page_bytes, row, D, 1)</text>
+    <text x="664" y="346">storage_offset = 层基址</text>
+  </g>
+  <text x="656" y="370" font-size="10.5" fill="#868e96">层与层错开 offset，互不重叠；</text>
+  <text x="656" y="386" font-size="10.5" fill="#868e96">假设 stride==行宽 的 kernel 不可用</text>
+
+  <!-- note -->
+  <rect x="30" y="420" width="842" height="54" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="48" y="442" font-size="12" fill="#495057">判据始终是那一句：<tspan font-weight="700" fill="#212529">能否只靠 shape / stride / offset / dtype 表达？</tspan>规则步长的切片、按字节重解释、错开 offset 的视图都能；</text>
+  <text x="48" y="462" font-size="12" fill="#495057">乱序下标不能，只好 gather 出新 storage。而 <tspan font-family="monospace">x[idx] = v</tspan> 是写操作，目标就是原 storage 本身。</text>
+</svg>

@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 530" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="530" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">同样三步计算，时间花在哪？三种优化各砍一类成本</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">示意时间轴（非实测比例）：上行 CPU 做什么，下行 GPU 做什么</text>
+
+  <!-- eager end marker -->
+  <text x="576" y="86" text-anchor="middle" font-size="10" fill="#868e96">eager 结束</text>
+  <path d="M576 92 L576 408" stroke="#adb5bd" stroke-width="1" stroke-dasharray="4 3"/>
+
+  <!-- ROW A: eager -->
+  <text x="36" y="128" font-size="13" font-weight="700" fill="#212529">① Eager</text>
+  <text x="36" y="146" font-size="11" fill="#868e96">逐算子提交</text>
+  <text x="192" y="124" text-anchor="end" font-size="11" fill="#868e96">CPU</text>
+  <text x="192" y="158" text-anchor="end" font-size="11" fill="#868e96">GPU</text>
+  <rect x="200" y="108" width="490" height="24" fill="#f8f9fa"/>
+  <rect x="200" y="142" width="490" height="24" fill="#f8f9fa"/>
+  <g font-size="10">
+    <rect x="200" y="110" width="56" height="20" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+    <text x="228" y="124" text-anchor="middle" fill="#3b5bdb">dispatch</text>
+    <rect x="258" y="110" width="12" height="20" rx="3" fill="#fff4e6" stroke="#f08c00"/>
+    <rect x="330" y="110" width="56" height="20" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+    <text x="358" y="124" text-anchor="middle" fill="#3b5bdb">dispatch</text>
+    <rect x="388" y="110" width="12" height="20" rx="3" fill="#fff4e6" stroke="#f08c00"/>
+    <rect x="460" y="110" width="56" height="20" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+    <text x="488" y="124" text-anchor="middle" fill="#3b5bdb">dispatch</text>
+    <rect x="518" y="110" width="12" height="20" rx="3" fill="#fff4e6" stroke="#f08c00"/>
+  </g>
+  <g font-size="11" font-family="monospace">
+    <rect x="272" y="144" width="56" height="20" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+    <text x="300" y="158" text-anchor="middle" fill="#0b7285">k1 mul</text>
+    <rect x="402" y="144" width="56" height="20" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+    <text x="430" y="158" text-anchor="middle" fill="#0b7285">k2 add</text>
+    <rect x="532" y="144" width="56" height="20" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+    <text x="560" y="158" text-anchor="middle" fill="#0b7285">k3 sig</text>
+  </g>
+  <rect x="330" y="146" width="70" height="16" rx="3" fill="none" stroke="#adb5bd" stroke-dasharray="3 2"/>
+  <text x="365" y="158" text-anchor="middle" font-size="10" fill="#adb5bd">空闲</text>
+  <rect x="460" y="146" width="70" height="16" rx="3" fill="none" stroke="#adb5bd" stroke-dasharray="3 2"/>
+  <text x="495" y="158" text-anchor="middle" font-size="10" fill="#adb5bd">空闲</text>
+  <g font-size="10" font-family="monospace" fill="#c92a2a">
+    <text x="300" y="180" text-anchor="middle">x → t1</text>
+    <text x="430" y="180" text-anchor="middle">t1 → t2</text>
+    <text x="560" y="180" text-anchor="middle">t2 → y</text>
+  </g>
+  <rect x="708" y="104" width="176" height="80" rx="9" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="720" y="122" font-size="12" font-weight="700" fill="#495057">成本基线</text>
+  <g font-size="11" fill="#495057">
+    <text x="720" y="140">每算子：Python + dispatch</text>
+    <text x="720" y="156">每 kernel：一次 launch</text>
+    <text x="720" y="172" fill="#c92a2a">t1、t2 写回显存再读出</text>
+  </g>
+
+  <!-- ROW B: fusion / compile -->
+  <text x="36" y="248" font-size="13" font-weight="700" fill="#212529">② 融合 / compile</text>
+  <text x="36" y="266" font-size="11" fill="#868e96">一个 fused kernel</text>
+  <text x="192" y="244" text-anchor="end" font-size="11" fill="#868e96">CPU</text>
+  <text x="192" y="278" text-anchor="end" font-size="11" fill="#868e96">GPU</text>
+  <rect x="200" y="228" width="490" height="24" fill="#f8f9fa"/>
+  <rect x="200" y="262" width="490" height="24" fill="#f8f9fa"/>
+  <rect x="200" y="230" width="56" height="20" rx="4" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="228" y="244" text-anchor="middle" font-size="10" fill="#5f3dc4">guard ✓</text>
+  <rect x="258" y="230" width="12" height="20" rx="3" fill="#fff4e6" stroke="#f08c00"/>
+  <rect x="272" y="264" width="130" height="20" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="337" y="278" text-anchor="middle" font-size="11" font-family="monospace" fill="#0b7285">fused k1+k2+k3</text>
+  <text x="337" y="300" text-anchor="middle" font-size="10" fill="#0b7285">x → y，中间值留在寄存器</text>
+  <rect x="708" y="224" width="176" height="80" rx="9" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="720" y="242" font-size="12" font-weight="700" fill="#0b7285">省：显存往返 + launch</text>
+  <g font-size="11" fill="#495057">
+    <text x="720" y="260">中间结果不落显存</text>
+    <text x="720" y="276">Python 侧只剩 guard 检查</text>
+    <text x="720" y="292" fill="#5f3dc4">guard 不命中 → 重编译</text>
+  </g>
+
+  <!-- ROW C: CUDA Graph -->
+  <text x="36" y="368" font-size="13" font-weight="700" fill="#212529">③ CUDA Graph</text>
+  <text x="36" y="386" font-size="11" fill="#868e96">整段重放</text>
+  <text x="192" y="364" text-anchor="end" font-size="11" fill="#868e96">CPU</text>
+  <text x="192" y="398" text-anchor="end" font-size="11" fill="#868e96">GPU</text>
+  <rect x="200" y="348" width="490" height="24" fill="#f8f9fa"/>
+  <rect x="200" y="382" width="490" height="24" fill="#f8f9fa"/>
+  <rect x="200" y="350" width="56" height="20" rx="4" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="228" y="364" text-anchor="middle" font-size="10" fill="#495057">copy_ 输入</text>
+  <rect x="258" y="350" width="40" height="20" rx="3" fill="#fff4e6" stroke="#f08c00"/>
+  <text x="278" y="364" text-anchor="middle" font-size="10" fill="#e8590c">replay</text>
+  <text x="310" y="364" font-size="10" fill="#868e96">CPU 空出来，可提前调度下一批</text>
+  <g font-size="11" font-family="monospace">
+    <rect x="300" y="384" width="56" height="20" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+    <text x="328" y="398" text-anchor="middle" fill="#0b7285">k1</text>
+    <rect x="358" y="384" width="56" height="20" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+    <text x="386" y="398" text-anchor="middle" fill="#0b7285">k2</text>
+    <rect x="416" y="384" width="56" height="20" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+    <text x="444" y="398" text-anchor="middle" fill="#0b7285">k3</text>
+  </g>
+  <text x="386" y="422" text-anchor="middle" font-size="10" fill="#868e96">kernel 仍是 3 个，只是背靠背执行</text>
+  <rect x="708" y="344" width="176" height="80" rx="9" fill="#fff9db" stroke="#f08c00"/>
+  <text x="720" y="362" font-size="12" font-weight="700" fill="#e8590c">省：CPU 提交开销</text>
+  <g font-size="11" fill="#495057">
+    <text x="720" y="380">一次 replay 提交整段</text>
+    <text x="720" y="396">不融合、不换算法</text>
+    <text x="720" y="412" fill="#e8590c">要求地址与 shape 固定</text>
+  </g>
+  <!-- legend -->
+  <g font-size="11" fill="#495057">
+    <rect x="200" y="438" width="14" height="12" rx="3" fill="#edf2ff" stroke="#4c6ef5"/>
+    <text x="220" y="448">Python / 逐算子 dispatch</text>
+    <rect x="370" y="438" width="14" height="12" rx="3" fill="#fff4e6" stroke="#f08c00"/>
+    <text x="390" y="448">kernel 提交</text>
+    <rect x="470" y="438" width="14" height="12" rx="3" fill="#f3f0ff" stroke="#7048e8"/>
+    <text x="490" y="448">guard 检查</text>
+    <rect x="570" y="438" width="14" height="12" rx="3" fill="#e6fcf5" stroke="#0ca678"/>
+    <text x="590" y="448">GPU kernel</text>
+    <rect x="670" y="438" width="14" height="12" rx="3" fill="none" stroke="#adb5bd" stroke-dasharray="3 2"/>
+    <text x="690" y="448">GPU 空闲</text>
+  </g>
+
+  <!-- note -->
+  <rect x="36" y="466" width="848" height="50" rx="9" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="54" y="486" font-size="12" fill="#495057">要点：融合减少中间数据的显存往返和 launch 次数；compile 让 Python 侧只剩 guard 检查；CUDA Graph 只消掉 CPU 提交。</text>
+  <text x="54" y="504" font-size="12" fill="#495057">三者可以叠加（SGLang 就是在 CUDA Graph 里捕获 torch.compile 的产物），而 SDPA 等后端选择改变的是 kernel 本身的算法。</text>
+</svg>

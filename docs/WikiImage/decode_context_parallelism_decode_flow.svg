@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 500" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#868e96"/>
+    </marker>
+    <marker id="ar-amber" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#f08c00"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="900" height="500" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">一层 MLA decode：head 先“摊开”到整个 DCP 组，再“收回”</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">以 DCP 组内一个 rank 为视角；N = dcp_size，H_loc = 本 rank 在 TP 下分到的 head 数，B = batch</text>
+
+  <!-- spine -->
+  <path d="M60 96 L60 400" fill="none" stroke="#dee2e6" stroke-width="2"/>
+
+  <!-- step 1 -->
+  <circle cx="60" cy="108" r="7" fill="#4c6ef5"/>
+  <rect x="84" y="86" width="430" height="46" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="100" y="106" font-size="13" font-weight="700" fill="#3b5bdb">① q 投影（与普通 TP 相同）</text>
+  <text x="100" y="124" font-size="11.5" fill="#495057">本 rank 只算自己那 H_loc 个 head 的 query</text>
+  <text x="540" y="114" font-family="monospace" font-size="13" fill="#3b5bdb">q: [B, H_loc, D]</text>
+
+  <!-- step 2 -->
+  <circle cx="60" cy="168" r="7" fill="#f08c00"/>
+  <rect x="84" y="146" width="430" height="46" rx="8" fill="#fff9db" stroke="#f08c00"/>
+  <text x="100" y="166" font-size="13" font-weight="700" fill="#e8590c">② AllGather q（DCP 组内）</text>
+  <text x="100" y="184" font-size="11.5" fill="#495057">all_gather_q_for_mla_decode；开 --dcp-replicate-q-proj 时可省掉</text>
+  <text x="540" y="174" font-family="monospace" font-size="13" fill="#e8590c">q: [B, N·H_loc, D]</text>
+
+  <!-- step 3 -->
+  <circle cx="60" cy="228" r="7" fill="#0ca678"/>
+  <rect x="84" y="206" width="430" height="46" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="100" y="226" font-size="13" font-weight="700" fill="#0b7285">③ 本地 attention，只看本卡 1/N 的 KV</text>
+  <text x="100" y="244" font-size="11.5" fill="#495057">kernel 必须同时返回 partial output 与 LSE（return_lse）</text>
+  <text x="540" y="226" font-family="monospace" font-size="13" fill="#0b7285">O_r: [B, N·H_loc, D]</text>
+  <text x="540" y="244" font-family="monospace" font-size="13" fill="#0b7285">L_r: [B, N·H_loc]</text>
+
+  <!-- step 4 -->
+  <circle cx="60" cy="300" r="7" fill="#f08c00"/>
+  <rect x="84" y="266" width="430" height="68" rx="8" fill="#fff9db" stroke="#f08c00"/>
+  <text x="100" y="286" font-size="13" font-weight="700" fill="#e8590c">④ LSE 合并，并把 head 收回本 rank</text>
+  <text x="100" y="305" font-size="11.5" fill="#495057">ag_rs：AllGather LSE → 本地按权重修正 O_r → ReduceScatter</text>
+  <text x="100" y="323" font-size="11.5" fill="#495057">a2a / fi_a2a：O_r 与 L_r 打包一次 All-to-All → 本地 LSE combine</text>
+  <text x="540" y="304" font-family="monospace" font-size="13" fill="#e8590c">O: [B, H_loc, D]</text>
+
+  <!-- step 5 -->
+  <circle cx="60" cy="370" r="7" fill="#4c6ef5"/>
+  <rect x="84" y="348" width="430" height="46" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="100" y="368" font-size="13" font-weight="700" fill="#3b5bdb">⑤ o_proj 与后续层（回到普通 TP）</text>
+  <text x="100" y="386" font-size="11.5" fill="#495057">此时形状与不开 DCP 时完全一样，下游无感知</text>
+  <text x="540" y="376" font-family="monospace" font-size="13" fill="#3b5bdb">同 TP-only</text>
+
+  <!-- side bracket over steps 2-4 -->
+  <path d="M736 152 L746 152 L746 326 L736 326" fill="none" stroke="#f08c00" stroke-width="1.5"/>
+  <text x="756" y="222" font-size="12" font-weight="700" fill="#e8590c">DCP 只改这三步</text>
+  <text x="756" y="242" font-size="11.5" fill="#868e96">通信量 ∝ B·H·(D+1)</text>
+  <text x="756" y="260" font-size="11.5" fill="#868e96">与上下文长度 S 无关</text>
+
+  <!-- bottom note -->
+  <rect x="30" y="414" width="840" height="66" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="46" y="437" font-size="12.5" fill="#495057" font-weight="600">关键思想：</text>
+  <text x="130" y="437" font-size="12.5" fill="#495057">每张卡只握着一部分 token，所以每张卡都要替组内所有 head 算一遍“自己这部分 token 的贡献”。</text>
+  <text x="46" y="460" font-size="12" fill="#868e96">②把 head 从 H_loc 摊开到 N·H_loc，④再用 LSE 合并并按 head 收回 H_loc；一进一出，attention 之外的计算完全不变。</text>
+</svg>

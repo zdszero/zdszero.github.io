@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 555" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="555" rx="12" fill="#ffffff"/>
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#868e96"/>
+    </marker>
+  </defs>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">top-k 选出的位置怎么变成 KV slot</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">示意：一个 query，S = 150，k = 4；page_size = 64</text>
+
+  <!-- row A: logical positions -->
+  <text x="30" y="113" font-size="12.5" font-weight="700" fill="#212529">逻辑位置</text>
+  <text x="30" y="130" font-size="11" fill="#868e96">logits 的一行</text>
+  <rect x="150" y="96" width="220" height="36" rx="4" fill="#edf2ff" stroke="#4c6ef5" stroke-width="1"/>
+  <rect x="370" y="96" width="220" height="36" rx="4" fill="#edf2ff" stroke="#4c6ef5" stroke-width="1"/>
+  <rect x="590" y="96" width="75.6" height="36" rx="4" fill="#edf2ff" stroke="#4c6ef5" stroke-width="1"/>
+  <rect x="665.6" y="96" width="144.4" height="36" rx="4" fill="#f8f9fa" stroke="#adb5bd" stroke-width="1" stroke-dasharray="4 3"/>
+  <text x="260" y="119" text-anchor="middle" font-size="11" fill="#3b5bdb">逻辑页 0：pos 0–63</text>
+  <text x="480" y="119" text-anchor="middle" font-size="11" fill="#3b5bdb">逻辑页 1：pos 64–127</text>
+  <text x="737.8" y="119" text-anchor="middle" font-size="11" fill="#868e96">页 2 剩余未用</text>
+  <rect x="159" y="96" width="5" height="36" fill="#f08c00"/>
+  <rect x="389" y="96" width="5" height="36" fill="#f08c00"/>
+  <rect x="395" y="96" width="5" height="36" fill="#f08c00"/>
+  <rect x="595" y="96" width="5" height="36" fill="#f08c00"/>
+  <g font-size="11" fill="#e8590c" font-family="monospace" font-weight="700">
+    <text x="156" y="90">p=3</text>
+    <text x="382" y="90">p=70,71</text>
+    <text x="590" y="90">p=130</text>
+  </g>
+  <text x="826" y="119" font-size="11" fill="#868e96">S=150</text>
+
+  <!-- row B: real_page_table -->
+  <text x="30" y="188" font-size="12.5" font-weight="700" fill="#212529">real_page_table</text>
+  <text x="30" y="205" font-size="11" fill="#868e96">逻辑页 → 物理页</text>
+  <path d="M260 134 L260 168" stroke="#868e96" stroke-width="1.5" fill="none" marker-end="url(#ar)"/>
+  <path d="M480 134 L480 168" stroke="#868e96" stroke-width="1.5" fill="none" marker-end="url(#ar)"/>
+  <path d="M628 134 L695 168" stroke="#868e96" stroke-width="1.5" fill="none" marker-end="url(#ar)"/>
+  <rect x="220" y="172" width="80" height="32" rx="6" fill="#f1f3f5" stroke="#495057" stroke-width="1"/>
+  <rect x="440" y="172" width="80" height="32" rx="6" fill="#f1f3f5" stroke="#495057" stroke-width="1"/>
+  <rect x="660" y="172" width="80" height="32" rx="6" fill="#f1f3f5" stroke="#495057" stroke-width="1"/>
+  <g font-size="12.5" text-anchor="middle" font-family="monospace" fill="#212529" font-weight="700">
+    <text x="260" y="193">[0] → 12</text>
+    <text x="480" y="193">[1] → 5</text>
+    <text x="700" y="193">[2] → 40</text>
+  </g>
+  <!-- row C: physical KV pool -->
+  <defs>
+    <pattern id="pg" x="150" y="250" width="13.75" height="30" patternUnits="userSpaceOnUse">
+      <rect x="0" y="0" width="13.75" height="30" fill="#f8f9fa" stroke="#ced4da" stroke-width="0.8"/>
+    </pattern>
+  </defs>
+  <text x="30" y="263" font-size="12.5" font-weight="700" fill="#212529">KV pool</text>
+  <text x="30" y="280" font-size="11" fill="#868e96">物理页，每页 64 slot</text>
+  <rect x="150" y="250" width="660" height="30" fill="url(#pg)" stroke="#adb5bd" stroke-width="1"/>
+  <rect x="218.75" y="250" width="13.75" height="30" fill="#c3fae8" stroke="#0ca678" stroke-width="1.5"/>
+  <rect x="315" y="250" width="13.75" height="30" fill="#c3fae8" stroke="#0ca678" stroke-width="1.5"/>
+  <rect x="700" y="250" width="13.75" height="30" fill="#c3fae8" stroke="#0ca678" stroke-width="1.5"/>
+  <path d="M260 206 L320 244" stroke="#868e96" stroke-width="1.5" fill="none" marker-end="url(#ar)"/>
+  <path d="M480 206 L228 244" stroke="#868e96" stroke-width="1.5" fill="none" marker-end="url(#ar)"/>
+  <path d="M700 206 L706 244" stroke="#868e96" stroke-width="1.5" fill="none" marker-end="url(#ar)"/>
+  <g font-size="11" text-anchor="middle" fill="#0b7285" font-weight="700">
+    <text x="225.6" y="297">页 5</text>
+    <text x="321.9" y="297">页 12</text>
+    <text x="706.9" y="297">页 40</text>
+  </g>
+  <text x="826" y="270" font-size="11" fill="#868e96">散落</text>
+
+  <!-- formula box -->
+  <rect x="30" y="320" width="420" height="150" rx="10" fill="#fff9db" stroke="#f08c00" stroke-width="1"/>
+  <text x="48" y="345" font-size="13" font-weight="700" fill="#e8590c">位置 → slot（和 top-k 在同一个 kernel 里做）</text>
+  <text x="48" y="371" font-size="12" fill="#212529" font-family="monospace" font-weight="700">slot = table[p // 64] × 64 + p % 64</text>
+  <g font-size="11.5" fill="#495057" font-family="monospace">
+    <text x="48" y="395">p = 3    → 12 × 64 + 3  = 771</text>
+    <text x="48" y="414">p = 70   →  5 × 64 + 6  = 326</text>
+    <text x="48" y="433">p = 71   →  5 × 64 + 7  = 327</text>
+    <text x="48" y="452">p = 130  → 40 × 64 + 2  = 2562</text>
+  </g>
+
+  <!-- output box -->
+  <rect x="470" y="320" width="400" height="150" rx="10" fill="#e6fcf5" stroke="#0ca678" stroke-width="1"/>
+  <text x="488" y="345" font-size="13" font-weight="700" fill="#0b7285">topk_result：(rows, k) int32</text>
+  <text x="488" y="383" font-size="11.5" fill="#495057">请求 A（S = 150）</text>
+  <text x="488" y="418" font-size="11.5" fill="#495057">请求 B（S = 2）</text>
+  <text x="488" y="433" font-size="10.5" fill="#868e96">页 0 → 物理页 33</text>
+  <g fill="#ffffff" stroke="#0ca678" stroke-width="1">
+    <rect x="600" y="364" width="62" height="28" rx="4"/><rect x="666" y="364" width="62" height="28" rx="4"/>
+    <rect x="732" y="364" width="62" height="28" rx="4"/><rect x="798" y="364" width="62" height="28" rx="4"/>
+    <rect x="600" y="404" width="62" height="28" rx="4"/><rect x="666" y="404" width="62" height="28" rx="4"/>
+  </g>
+  <g fill="#f8f9fa" stroke="#adb5bd" stroke-width="1" stroke-dasharray="3 2">
+    <rect x="732" y="404" width="62" height="28" rx="4"/><rect x="798" y="404" width="62" height="28" rx="4"/>
+  </g>
+  <g font-size="12" text-anchor="middle" font-family="monospace" fill="#0b7285" font-weight="700">
+    <text x="631" y="383">771</text><text x="697" y="383">326</text><text x="763" y="383">327</text><text x="829" y="383">2562</text>
+    <text x="631" y="423">2112</text><text x="697" y="423">2113</text>
+  </g>
+  <g font-size="12" text-anchor="middle" font-family="monospace" fill="#868e96">
+    <text x="763" y="423">-1</text><text x="829" y="423">-1</text>
+  </g>
+  <text x="488" y="455" font-size="11" fill="#868e96">S &lt; k 时全部选中，剩下的位置填 -1</text>
+
+  <rect x="30" y="485" width="840" height="52" rx="8" fill="#f8f9fa" stroke="#e9ecef" stroke-width="1"/>
+  <text x="50" y="507" font-size="12" fill="#495057">top-k 输出的不是序列下标，而是 page_size = 1 的物理 slot，等于一张“稀疏 page table”。</text>
+  <text x="50" y="526" font-size="12" fill="#495057">sparse MLA kernel 直接按它从 KV pool gather，不需要被选中的 token 在序列或显存里连续。</text>
+</svg>

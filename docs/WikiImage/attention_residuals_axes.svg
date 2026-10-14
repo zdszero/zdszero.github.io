@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 456" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="456" rx="12" fill="#ffffff"/>
+  <defs>
+    <marker id="arB" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#4c6ef5"/>
+    </marker>
+    <marker id="arT" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#0ca678"/>
+    </marker>
+  </defs>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">同一套 Attention，换一个轴</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">网格的行是子层（深度），列是 Token（序列）；Self-Attention 选一行，AttnRes 选一列</text>
+
+  <!-- Left panel: Self-Attention -->
+  <rect x="30" y="74" width="410" height="306" rx="10" fill="#f8f9fa" stroke="#4c6ef5"/>
+  <rect x="30" y="74" width="410" height="28" rx="10" fill="#4c6ef5"/>
+  <text x="44" y="93" font-size="14" font-weight="700" fill="#ffffff">Self-Attention：沿序列维度选择</text>
+  <g font-size="11" fill="#868e96" text-anchor="end">
+    <text x="100" y="180">第 l 层</text>
+    <text x="100" y="220">l − 1</text>
+    <text x="100" y="260">…</text>
+    <text x="100" y="300">Emb</text>
+  </g>
+  <g fill="#ffffff" stroke="#dee2e6">
+    <rect x="110" y="200" width="52" height="32" rx="5"/><rect x="170" y="200" width="52" height="32" rx="5"/><rect x="230" y="200" width="52" height="32" rx="5"/><rect x="290" y="200" width="52" height="32" rx="5"/><rect x="350" y="200" width="52" height="32" rx="5"/>
+    <rect x="110" y="240" width="52" height="32" rx="5"/><rect x="170" y="240" width="52" height="32" rx="5"/><rect x="230" y="240" width="52" height="32" rx="5"/><rect x="290" y="240" width="52" height="32" rx="5"/><rect x="350" y="240" width="52" height="32" rx="5"/>
+    <rect x="110" y="280" width="52" height="32" rx="5"/><rect x="170" y="280" width="52" height="32" rx="5"/><rect x="230" y="280" width="52" height="32" rx="5"/><rect x="290" y="280" width="52" height="32" rx="5"/><rect x="350" y="280" width="52" height="32" rx="5"/>
+  </g>
+  <g font-family="monospace" font-size="11" fill="#3b5bdb" text-anchor="middle">
+    <rect x="110" y="160" width="52" height="32" rx="5" fill="#edf2ff" stroke="#4c6ef5"/><text x="136" y="180">k₁v₁</text>
+    <rect x="170" y="160" width="52" height="32" rx="5" fill="#edf2ff" stroke="#4c6ef5"/><text x="196" y="180">k₂v₂</text>
+    <rect x="230" y="160" width="52" height="32" rx="5" fill="#edf2ff" stroke="#4c6ef5"/><text x="256" y="180">k₃v₃</text>
+    <rect x="290" y="160" width="52" height="32" rx="5" fill="#edf2ff" stroke="#4c6ef5"/><text x="316" y="180">k₄v₄</text>
+    <rect x="350" y="160" width="52" height="32" rx="5" fill="#fff4e6" stroke="#f08c00" stroke-width="1.5"/><text x="376" y="180" fill="#e8590c" font-weight="700">q₅</text>
+  </g>
+  <g fill="none" stroke="#4c6ef5" stroke-width="1.5">
+    <path d="M136 158 Q256 108 372 156" marker-end="url(#arB)"/>
+    <path d="M196 158 Q286 118 370 156" marker-end="url(#arB)"/>
+    <path d="M256 158 Q316 128 368 156" marker-end="url(#arB)"/>
+    <path d="M316 158 Q346 138 366 156" marker-end="url(#arB)"/>
+  </g>
+  <g font-size="11" fill="#868e96" text-anchor="middle">
+    <text x="136" y="330">t1</text><text x="196" y="330">t2</text><text x="256" y="330">t3</text><text x="316" y="330">t4</text><text x="376" y="330">t5</text>
+  </g>
+  <text x="235" y="354" text-anchor="middle" font-size="12" fill="#495057">同一层内，t5 从其他 Token 读取信息</text>
+  <text x="235" y="371" text-anchor="middle" font-size="11" fill="#868e96">MQA / GQA / MLA 改变的是这一步的实现</text>
+  <!-- Right panel: AttnRes -->
+  <rect x="460" y="74" width="410" height="306" rx="10" fill="#f8f9fa" stroke="#0ca678"/>
+  <rect x="460" y="74" width="410" height="28" rx="10" fill="#0ca678"/>
+  <text x="474" y="93" font-size="14" font-weight="700" fill="#ffffff">AttnRes：沿深度维度选择</text>
+  <g font-size="11" fill="#868e96" text-anchor="end">
+    <text x="502" y="180">子层 3</text>
+    <text x="502" y="220">子层 2</text>
+    <text x="502" y="260">子层 1</text>
+    <text x="502" y="300">Emb</text>
+  </g>
+  <g fill="#ffffff" stroke="#dee2e6">
+    <rect x="510" y="160" width="42" height="32" rx="5"/><rect x="560" y="160" width="42" height="32" rx="5"/><rect x="610" y="160" width="42" height="32" rx="5"/><rect x="660" y="160" width="42" height="32" rx="5"/>
+    <rect x="510" y="200" width="42" height="32" rx="5"/><rect x="560" y="200" width="42" height="32" rx="5"/><rect x="610" y="200" width="42" height="32" rx="5"/><rect x="660" y="200" width="42" height="32" rx="5"/>
+    <rect x="510" y="240" width="42" height="32" rx="5"/><rect x="560" y="240" width="42" height="32" rx="5"/><rect x="610" y="240" width="42" height="32" rx="5"/><rect x="660" y="240" width="42" height="32" rx="5"/>
+    <rect x="510" y="280" width="42" height="32" rx="5"/><rect x="560" y="280" width="42" height="32" rx="5"/><rect x="610" y="280" width="42" height="32" rx="5"/><rect x="660" y="280" width="42" height="32" rx="5"/>
+  </g>
+  <g font-family="monospace" font-size="12" fill="#0b7285" text-anchor="middle">
+    <rect x="710" y="160" width="42" height="32" rx="5" fill="#e6fcf5" stroke="#0ca678"/><text x="731" y="180">v₃</text>
+    <rect x="710" y="200" width="42" height="32" rx="5" fill="#e6fcf5" stroke="#0ca678"/><text x="731" y="220">v₂</text>
+    <rect x="710" y="240" width="42" height="32" rx="5" fill="#e6fcf5" stroke="#0ca678"/><text x="731" y="260">v₁</text>
+    <rect x="710" y="280" width="42" height="32" rx="5" fill="#e6fcf5" stroke="#0ca678"/><text x="731" y="300">v₀</text>
+  </g>
+  <g fill="none" stroke="#0ca678">
+    <path d="M754 176 L797 226" stroke-width="1.5" marker-end="url(#arT)"/>
+    <path d="M754 216 L797 230" stroke-width="3" marker-end="url(#arT)"/>
+    <path d="M754 256 L797 236" stroke-width="1.2" marker-end="url(#arT)"/>
+    <path d="M754 296 L797 240" stroke-width="1.2" marker-end="url(#arT)"/>
+  </g>
+  <g font-family="monospace" font-size="10" fill="#0b7285">
+    <text x="760" y="172">.2</text>
+    <text x="758" y="210" font-weight="700">.6</text>
+    <text x="760" y="268">.1</text>
+    <text x="760" y="306">.1</text>
+  </g>
+  <rect x="802" y="212" width="56" height="40" rx="6" fill="#fff4e6" stroke="#f08c00" stroke-width="1.5"/>
+  <text x="830" y="237" text-anchor="middle" font-family="monospace" font-size="13" font-weight="700" fill="#e8590c">h₄</text>
+  <text x="830" y="268" text-anchor="middle" font-size="10" fill="#868e96">子层 4 输入</text>
+  <g font-size="11" fill="#868e96" text-anchor="middle">
+    <text x="531" y="330">t1</text><text x="581" y="330">t2</text><text x="631" y="330">t3</text><text x="681" y="330">t4</text><text x="731" y="330">t5</text>
+  </g>
+  <text x="665" y="354" text-anchor="middle" font-size="12" fill="#495057">同一 Token，从自己的历史子层输出中加权读取</text>
+  <text x="665" y="371" text-anchor="middle" font-size="11" fill="#868e96">Query 是子层参数 w；不同 Token 之间不混合</text>
+
+  <!-- Note strip -->
+  <rect x="30" y="396" width="840" height="44" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="450" y="423" text-anchor="middle" font-size="12" fill="#495057">两者都是“保留候选 → 打分 → Softmax → 加权求和”，区别只在候选沿哪个轴排列；两者正交，可以同时使用</text>
+</svg>

@@ -25,82 +25,27 @@
   </title>
     <link rel="stylesheet" href="./WikiTheme/theme/bootstrap.css"  />
         <script defer=""
-        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
-        type="text/javascript"></script>
-        <style type="text/css">
-    /* ---- three column wiki layout (left: site directory, center: content, right: page TOC) ---- */
-    .wiki-layout {
-      display: flex;
-      align-items: flex-start;
-      gap: 24px;
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 0 20px;
-      box-sizing: border-box;
-    }
-    .wiki-sidebar {
-      flex: 0 0 240px;
-      width: 240px;
-      position: sticky;
-      top: 0;
-      max-height: 100vh;
-      overflow-y: auto;
-      padding: 10px 4px 20px 0;
-      border-right: 1px solid #eee;
-      font-size: 14px;
-    }
-    .wiki-sidebar[hidden] { display: none; }
-    .wiki-toc {
-      flex: 0 0 220px;
-      width: 220px;
-      position: sticky;
-      top: 0;
-      max-height: 100vh;
-      overflow-y: auto;
-      padding: 10px 0 20px 4px;
-      border-left: 1px solid #eee;
-      font-size: 14px;
-    }
-    .wiki-main {
-      flex: 1 1 auto;
-      min-width: 0;
-      max-width: 820px;
-      padding: 10px 0 40px;
-    }
-    /* site directory tree */
-    .wiki-sidebar .wiki-home {
-      display: block;
-      font-weight: bold;
-      margin-bottom: 10px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid #eee;
-      text-decoration: none;
-      color: #333;
-    }
-    .wiki-sidebar ul { list-style: none; margin: 0 0 0 12px; padding: 0; }
-    .wiki-sidebar > ul { margin-left: 0; }
-    .wiki-sidebar li { line-height: 1.7; }
-    .wiki-sidebar a { text-decoration: none; color: #555; }
-    .wiki-sidebar a:hover { color: #0088cc; text-decoration: underline; }
-    .wiki-sidebar a.active { color: #0088cc; font-weight: bold; }
-    /* page TOC */
-    .wiki-toc ul { list-style: none; margin: 0 0 0 12px; padding: 0; }
-    .wiki-toc > ul { margin-left: 0; }
-    .wiki-toc li { line-height: 1.6; }
-    .wiki-toc a { text-decoration: none; color: #555; }
-    .wiki-toc a:hover { color: #0088cc; }
-    @media (max-width: 980px) {
-      .wiki-layout { flex-direction: column; }
-      .wiki-sidebar, .wiki-toc {
-        position: static;
-        width: 100%;
-        flex-basis: auto;
-        max-height: none;
-        border: 0;
-      }
-      .wiki-main { max-width: none; }
-    }
-  </style>
+        src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+        <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+        </script>
+        <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+        <!-- wiki three-column layout styles/behavior, kept external so the ~5KB
+       block isn't duplicated into every generated page -->
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/wiki-layout.css" />
+  <script defer src="./WikiTheme/wiki-layout.js"></script>
 </head>
 
 <body>
@@ -207,28 +152,27 @@
             <h3 id="用两个维度区分-attention">用两个维度区分
             Attention</h3>
             <p>所有常见 Attention 都可以写成同一个读取过程。设 query
-            序列为 <span class="math inline">\(X_q\)</span>，key/value
-            序列为 <span class="math inline">\(X_{kv}\)</span>：</p>
-            <p><span class="math display">\[
+            序列为 <span class="math inline">X_q</span>，key/value
+            序列为 <span class="math inline">X_{kv}</span>：</p>
+            <p><span class="math display">
             Q=X_qW_Q,\qquad K=X_{kv}W_K,\qquad V=X_{kv}W_V.
-            \]</span></p>
+            </span></p>
             <p>对 query 位置 <span
-            class="math inline">\(i\)</span>，只在它的可见集合 <span
-            class="math inline">\(\mathcal V(i)\)</span>
-            内计算注意力：</p>
-            <p><span class="math display">\[
+            class="math inline">i</span>，只在它的可见集合 <span
+            class="math inline">\mathcal V(i)</span> 内计算注意力：</p>
+            <p><span class="math display">
             a_{ij} =
             \frac{\exp\!\left(q_i^{\mathsf T}k_j/\sqrt d\right)}
             {\sum_{r\in\mathcal V(i)}\exp\!\left(q_i^{\mathsf
             T}k_r/\sqrt d\right)},
             \qquad
             z_i=\sum_{j\in\mathcal V(i)}a_{ij}v_j.
-            \]</span></p>
+            </span></p>
             <p>分类时只需要回答两个问题：</p>
             <ol type="1">
-            <li><span class="math inline">\(Q\)</span> 与 <span
-            class="math inline">\(K,V\)</span> 是否来自同一条序列？</li>
-            <li>query 位置 <span class="math inline">\(i\)</span>
+            <li><span class="math inline">Q</span> 与 <span
+            class="math inline">K,V</span> 是否来自同一条序列？</li>
+            <li>query 位置 <span class="math inline">i</span>
             可以读取哪些 key/value 位置？</li>
             </ol>
             <table>
@@ -241,8 +185,8 @@
             <thead>
             <tr>
             <th>名称</th>
-            <th><span class="math inline">\(Q\)</span> 与 <span
-            class="math inline">\(K,V\)</span> 的来源</th>
+            <th><span class="math inline">Q</span> 与 <span
+            class="math inline">K,V</span> 的来源</th>
             <th>可见范围</th>
             <th>解决的问题</th>
             </tr>
@@ -277,13 +221,13 @@
             <h4 id="vanilla-self-attention">Vanilla self-attention</h4>
             <p>本文所说的 vanilla self-attention 使用同一条序列产生
             <span
-            class="math inline">\(Q,K,V\)</span>，并允许每个位置读取整段输入：</p>
-            <p><span class="math display">\[
+            class="math inline">Q,K,V</span>，并允许每个位置读取整段输入：</p>
+            <p><span class="math display">
             X_q=X_{kv}=X,
             \qquad
             \mathcal V(i)=\{1,2,\ldots,T\}.
-            \]</span></p>
-            <p>因此，位置 <span class="math inline">\(i\)</span>
+            </span></p>
+            <p>因此，位置 <span class="math inline">i</span>
             的表示既可以吸收左侧信息，也可以吸收右侧信息，常被称为
             <strong>双向 self-attention</strong> 或 <strong>full
             self-attention</strong>。</p>
@@ -295,45 +239,44 @@
             排除补齐位置；这里说的“全可见”只是指没有因果方向限制。</p>
             <h4 id="causal-self-attention">Causal self-attention</h4>
             <p>Causal self-attention 同样从一条序列产生 <span
-            class="math inline">\(Q,K,V\)</span>，但位置 <span
-            class="math inline">\(i\)</span> 只能读取前缀：</p>
-            <p><span class="math display">\[
+            class="math inline">Q,K,V</span>，但位置 <span
+            class="math inline">i</span> 只能读取前缀：</p>
+            <p><span class="math display">
             X_q=X_{kv}=X,
             \qquad
             \mathcal V(i)=\{1,2,\ldots,i\}.
-            \]</span></p>
+            </span></p>
             <p>实现时通常使用因果 mask：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             M_{ij}=
             \begin{cases}
             0, &amp; j\leq i,\\
             -\infty, &amp; j&gt;i.
             \end{cases}
-            \]</span></p>
-            <p>这样，位置 <span class="math inline">\(i\)</span>
+            </span></p>
+            <p>这样，位置 <span class="math inline">i</span>
             的表示不会依赖未来 token，模型才能学习自回归分解：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             P(x_1,\ldots,x_T) =
             \prod_{i=1}^{T}P(x_i\mid x_{&lt;i}).
-            \]</span></p>
+            </span></p>
             <p><code>causal</code>
             描述的是信息依赖，而不是执行方式。训练时整段序列仍然可以用一张带下三角
             mask 的矩阵并行计算；只有推理生成时，下一个 token
             必须等待前一个 token 产生。</p>
             <h4 id="cross-attention">Cross-attention</h4>
             <p>Cross-attention 的 query 与 key/value 来自不同序列。设
-            Encoder 输出为 <span
-            class="math inline">\(H\)</span>，Decoder 当前隐状态为 <span
-            class="math inline">\(Y\)</span>：</p>
-            <p><span class="math display">\[
+            Encoder 输出为 <span class="math inline">H</span>，Decoder
+            当前隐状态为 <span class="math inline">Y</span>：</p>
+            <p><span class="math display">
             Q=YW_Q,\qquad K=HW_K,\qquad V=HW_V.
-            \]</span></p>
+            </span></p>
             <p>这时每个目标位置都用自己的 query
             去读取源序列表示。若目标长度为 <span
-            class="math inline">\(T_y\)</span>，源长度为 <span
-            class="math inline">\(T_x\)</span>，注意力分数矩阵的形状是
-            <span class="math inline">\(T_y\times
-            T_x\)</span>，并不天然是方阵或下三角矩阵。</p>
+            class="math inline">T_y</span>，源长度为 <span
+            class="math inline">T_x</span>，注意力分数矩阵的形状是 <span
+            class="math inline">T_y\times
+            T_x</span>，并不天然是方阵或下三角矩阵。</p>
             <p>标准 Encoder–Decoder 中通常存在两种不同的注意力：</p>
             <ol type="1">
             <li>Decoder 的 <strong>causal self-attention</strong>
@@ -345,12 +288,12 @@
             本身不负责目标序列的因果性。目标因果约束由 Decoder 的
             self-attention 保证。</p>
             <p>还要注意参数归属：Encoder 产生的是源表示 <span
-            class="math inline">\(H\)</span>，而把 <span
-            class="math inline">\(H\)</span> 投影成 <span
-            class="math inline">\(K,V\)</span> 的 <span
-            class="math inline">\(W_K,W_V\)</span> 通常属于 Decoder 的
+            class="math inline">H</span>，而把 <span
+            class="math inline">H</span> 投影成 <span
+            class="math inline">K,V</span> 的 <span
+            class="math inline">W_K,W_V</span> 通常属于 Decoder 的
             cross-attention 子层。简写成“Encoder 提供 <span
-            class="math inline">\(K,V\)</span>”时，说的是数据来源，不是参数位于
+            class="math inline">K,V</span>”时，说的是数据来源，不是参数位于
             Encoder 中。</p>
             <h3 id="attention-类型如何组成三种架构">Attention
             类型如何组成三种架构</h3>
@@ -441,19 +384,18 @@
             描述它不能读取尚未到达的未来输入。两者分别回答“做什么”和“能看哪里”。</p>
             <p>CED
             常见于流式语音识别、实时翻译等在线场景。输入不是一次性全部到达，而是不断产生新帧或新
-            token。若 Encoder 位置 <span
-            class="math inline">\(i\)</span> 只能看到源前缀，Decoder
-            位置 <span class="math inline">\(u\)</span>
-            只能看到目标前缀，并且 cross-attention 只能读取已提交到位置
-            <span class="math inline">\(c\)</span> 的 Encoder
-            状态，则：</p>
-            <p><span class="math display">\[
+            token。若 Encoder 位置 <span class="math inline">i</span>
+            只能看到源前缀，Decoder 位置 <span
+            class="math inline">u</span> 只能看到目标前缀，并且
+            cross-attention 只能读取已提交到位置 <span
+            class="math inline">c</span> 的 Encoder 状态，则：</p>
+            <p><span class="math display">
             \mathcal V_{enc}(i)=\{1,\ldots,i\},
             \qquad
             \mathcal V_{dec}(u)=\{1,\ldots,u\},
             \qquad
             \mathcal V_{cross}(u)=\{1,\ldots,c\}.
-            \]</span></p>
+            </span></p>
             <p>其中前两个集合表达源流和目标流各自的因果性，最后一个集合表达当前有哪些源状态已经可供
             Decoder
             使用。这使编码和解码可以部分重叠，从而降低端到端延迟。</p>
@@ -579,8 +521,8 @@
             只是改变了实现这些角色的基本计算单元。</li>
             <li><strong>Attention 类型由两个维度决定。</strong>
             <code>self/cross</code> 看 <span
-            class="math inline">\(Q\)</span> 与 <span
-            class="math inline">\(K,V\)</span>
+            class="math inline">Q</span> 与 <span
+            class="math inline">K,V</span>
             是否同源，<code>vanilla/causal</code>
             看可见范围是否受到因果约束。</li>
             <li><strong>CED 是两条因果流加 cross-attention，Decoder-only
@@ -612,39 +554,6 @@
       </ul>
     </aside>
       </div>
-  <script type="text/javascript">
-    (function () {
-      function markActive() {
-        var here = location.href.split('#')[0];
-        var links = document.querySelectorAll('.wiki-sidebar a');
-        for (var i = 0; i < links.length; i++) {
-          if (links[i].href.split('#')[0] === here) {
-            links[i].classList.add('active');
-          }
-        }
-      }
-      // load the shared site directory once (served from the wiki root);
-      // kept in a standalone file so adding a page needn't rebuild every page.
-      var nav = document.getElementById('wiki-sidebar');
-      if (nav) {
-        fetch('/wiki_sidebar.html')
-          .then(function (r) { return r.ok ? r.text() : ''; })
-          .then(function (html) {
-            if (html) {
-              nav.innerHTML = html;
-              nav.hidden = false;
-              markActive();
-            }
-          })
-          .catch(function () {});
-      }
-      // keep bootstrap table styling (previously done by sticky_menu.js)
-      var tables = document.getElementsByTagName('table');
-      for (var j = 0; j < tables.length; j++) {
-        tables[j].classList.add('table');
-      }
-    })();
-  </script>
 </body>
 
 </html>

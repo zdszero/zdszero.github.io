@@ -1,0 +1,637 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    Torch 广播与索引
+  </title>
+    <link rel="stylesheet" href="./WikiTheme/theme/bootstrap.css"  />
+        <style type="text/css">
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+      <!-- wiki three-column layout styles/behavior, kept external so the ~5KB
+       block isn't duplicated into every generated page -->
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/wiki-layout.css" />
+  <script defer src="./WikiTheme/wiki-layout.js"></script>
+</head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">Torch 广播与索引</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="wiki-layout">
+    <nav class="wiki-sidebar" id="wiki-sidebar" hidden></nav>
+    <main class="wiki-main">
+            <ul>
+            <li><code>score + mask</code> 没有报错，为什么 decode 时
+            attention 结果整批都不对？</li>
+            <li>都是“把 KV head 扩展到 query head
+            数”，<code>expand()</code> 和 <code>repeat()</code>
+            为什么显存差了好几倍？</li>
+            <li><code>cache[slots].copy_(values)</code> 跑完了，为什么
+            KV cache 里什么都没写进去？</li>
+            <li>bf16 的 attention score 加上一个 mask 之后，怎么变成了
+            fp32、显存还翻了一倍？</li>
+            <li>同样是做
+            RoPE，为什么一条路径必须接住返回值，另一条路径“返回的还是原来的
+            query”？</li>
+            </ul>
+            <p>广播和索引代码通常只有一行，却可能隐藏三种完全不同的成本：只改变张量元数据、读取并复制数据、生成远大于输入的计算结果。它们还会悄悄改变语义——维度对错了不一定报错，写错了位置也不一定报错，dtype
+            变了更不会报错。在 LLM 推理里，attention mask、RoPE、GQA 的
+            head 扩展、beam 重排和 KV cache 更新都会遇到这些问题。</p>
+            <p>布局和共享存储的基础见 <a
+            href="./torch_tensor_memory.html">Tensor
+            Memory</a>。本篇关注：<strong>表达式的
+            shape、读写语义、结果类型和实际成本是否符合预期。</strong></p>
+            <h3
+            id="抽象每个表达式回答四个问题">抽象：每个表达式回答四个问题</h3>
+            <p>读一行广播、索引或逐元素计算代码，可以把它拆成四个彼此独立的问题：</p>
+            <ul>
+            <li><strong>形状从哪来</strong>：输出的每一维由哪个输入的哪一维决定？广播只做数字对齐，语义要靠代码自己保证。</li>
+            <li><strong>存储是谁的</strong>：结果是原张量的
+            view（共享存储、可能零
+            stride）、新分配的输出，还是被原地写入的已有张量？</li>
+            <li><strong>数据往哪流</strong>：<code>buffer[idx]</code>
+            出现在等号右边是读出（gather
+            成新张量），出现在左边是写回（scatter
+            到原存储）；<code>x += y</code> 写进 <code>x</code>
+            的存储，<code>x = x + y</code> 只是把名字换绑到新输出。</li>
+            <li><strong>类型由谁决定</strong>：输出 dtype
+            由参与运算的各输入按类型提升规则共同决定；原地写入时则必须能转换回目标张量的
+            dtype。</li>
+            </ul>
+            <p>四个问题分别对应四类错误：形状推错导致静默的语义错误或输出规模爆炸；存储判断错导致多余复制或非法原地写；读写方向判断错导致“写了个寂寞”或别名被意外修改；类型判断错导致精度损失或悄悄放大的显存与带宽。下面逐一展开。</p>
+            <h3
+            id="广播对齐的是维度不是语义">广播：对齐的是维度，不是语义</h3>
+            <p>广播从尾部对齐维度；每一对维度的大小必须相等，或者其中一侧为
+            <code>1</code>，缺失的前导维度按 <code>1</code>
+            处理。它不会判断某一维到底表示 batch、token 还是
+            head。规则见官方 <a
+            href="https://docs.pytorch.org/docs/stable/notes/broadcasting.html">Broadcasting
+            semantics</a>。</p>
+            <figure>
+            <img
+            src="./WikiImage/torch_broadcast_indexing_align.svg"
+            alt="广播从尾部对齐维度" />
+            <figcaption
+            aria-hidden="true">广播从尾部对齐维度</figcaption>
+            </figure>
+            <div class="sourceCode" id="cb1"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> torch.zeros(<span class="dv">4</span>, <span class="dv">1</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> torch.zeros(<span class="dv">4</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>z <span class="op">=</span> x <span class="op">+</span> y</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> z.shape <span class="op">==</span> (<span class="dv">4</span>, <span class="dv">4</span>)  <span class="co"># y 被视为 (1, 4)，不是 (4, 1)</span></span></code></pre></div>
+            <p>这里两个输入共八个元素，输出却有十六个。广播本身无需先复制输入，但消费广播结果的算子仍要完成相应规模的计算；普通
+            eager
+            加法也会分配输出。编译融合可能省去中间结果的存储，不能据此忽略计算规模。</p>
+            <p>图中第三部分是推理里最典型的陷阱：score 为
+            <code>[batch, head, query, key]</code>，每个请求的 key mask
+            为 <code>[batch, key]</code>。直接相加时，mask 的 batch
+            维对到了 query 维；decode 时 query 长度恰好为
+            1，于是不报错，输出却被广播成
+            <code>[B, H, B, K]</code>。应显式写成
+            <code>mask[:, None, None, :]</code> 变成
+            <code>[batch, 1, 1, key]</code>，不要依赖“恰好相等”或“恰好为
+            1”的维度大小。</p>
+            <h3 id="expand-与-repeat逻辑复用和物理复制">expand 与
+            repeat：逻辑复用和物理复制</h3>
+            <table>
+            <colgroup>
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>操作</th>
+            <th>如何扩展</th>
+            <th>存储与写入</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td><code>expand()</code></td>
+            <td>把大小为 <code>1</code> 的维度扩展，用零 stride
+            表达重复访问</td>
+            <td>共享原存储，多个逻辑元素可能指向同一地址</td>
+            </tr>
+            <tr>
+            <td><code>repeat()</code></td>
+            <td>把数据按指定次数复制</td>
+            <td>分配新存储，元素独立</td>
+            </tr>
+            <tr>
+            <td><code>expand(...).clone()</code></td>
+            <td>先逻辑扩展，再物化</td>
+            <td>得到可独立写入的副本</td>
+            </tr>
+            </tbody>
+            </table>
+            <figure>
+            <img
+            src="./WikiImage/torch_broadcast_indexing_expand_repeat.svg"
+            alt="expand 与 repeat 的存储差异" />
+            <figcaption aria-hidden="true">expand 与 repeat
+            的存储差异</figcaption>
+            </figure>
+            <div class="sourceCode" id="cb2"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> torch.arange(<span class="dv">3</span>).reshape(<span class="dv">1</span>, <span class="dv">3</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> x.expand(<span class="dv">4</span>, <span class="dv">3</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> x.repeat(<span class="dv">4</span>, <span class="dv">1</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> a.stride() <span class="op">==</span> (<span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> b.stride() <span class="op">==</span> (<span class="dv">3</span>, <span class="dv">1</span>)</span></code></pre></div>
+            <p>两者逻辑形状相同，区别全在 stride：<code>a</code>
+            的四行都读取同一行内存。对它执行需要逐元素独立写入的原地操作是不安全的，可能被
+            PyTorch 拒绝；应先 <code>clone()</code>。零 stride
+            和写入限制见 <a
+            href="https://docs.pytorch.org/docs/stable/generated/torch.Tensor.expand.html">Tensor.expand</a>，复制语义见
+            <a
+            href="https://docs.pytorch.org/docs/stable/generated/torch.Tensor.repeat.html">Tensor.repeat</a>。</p>
+            <p>在 GQA 中，把 KV head 扩展到 query head
+            数量时，<code>expand()</code> 可以省去某一步复制，但后续
+            <code>reshape()</code> 是否物化、kernel 是否支持零
+            stride，仍需检查。不能仅凭代码出现 <code>expand()</code>
+            就认定整个路径零拷贝。支持 GQA 的 attention kernel
+            可以直接处理 head 分组，避免显式扩展。</p>
+            <h3
+            id="索引读取与索引赋值需要分开理解">索引读取与索引赋值需要分开理解</h3>
+            <p>基础切片读取通常是 view，高级索引读取通常是
+            copy；但高级索引位于赋值左侧时，会写回原张量，不是先生成一个副本再修改副本。见
+            <a
+            href="https://docs.pytorch.org/docs/main/tensor_view.html">Tensor
+            Views</a>。</p>
+            <figure>
+            <img
+            src="./WikiImage/torch_broadcast_indexing_read_write.svg"
+            alt="同一个 buffer[idx] 的读与写" />
+            <figcaption aria-hidden="true">同一个 buffer[idx]
+            的读与写</figcaption>
+            </figure>
+            <div class="sourceCode" id="cb3"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>cache <span class="op">=</span> torch.zeros(<span class="dv">8</span>, <span class="dv">2</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>slots <span class="op">=</span> torch.tensor([<span class="dv">1</span>, <span class="dv">4</span>])</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>values <span class="op">=</span> torch.ones(<span class="dv">2</span>, <span class="dv">2</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>selected <span class="op">=</span> cache[slots]   <span class="co"># 高级索引读取：副本</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>selected.fill_(<span class="dv">7</span>)        <span class="co"># cache 不会跟着变</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>cache[slots] <span class="op">=</span> values    <span class="co"># 高级索引赋值：写回 cache</span></span></code></pre></div>
+            <p>原因在于 Python
+            的求值方式：<code>cache[slots] = values</code>
+            会被翻译成一次 <code>__setitem__</code>，PyTorch 据此调用
+            <code>index_put_</code> 直接修改原存储；而
+            <code>cache[slots].copy_(values)</code> 先执行
+            <code>__getitem__</code> 得到 gather 出的临时副本，再对副本
+            <code>copy_</code>，cache 不变。读写方向由
+            <code>buffer[idx]</code>
+            在表达式中的位置决定，而不是由后面跟着什么方法决定。这正对应
+            KV cache 中“gather 得到的 K/V”和“向 slot 写入新
+            K/V”的区别。</p>
+            <p>如果写入下标重复，不能把并发写入想象成 Python
+            循环里稳定的“最后一次覆盖”。<code>index_put_</code> 在
+            <code>accumulate=False</code>
+            时对重复下标的行为未定义；累加也需另行考虑浮点归约顺序。见
+            <a
+            href="https://docs.pytorch.org/docs/stable/generated/torch.Tensor.index_put_.html">Tensor.index_put_</a>。</p>
+            <h3 id="动态索引还可能带来同步">动态索引还可能带来同步</h3>
+            <p>整数下标张量的元素数量已由元数据给出；布尔 mask
+            的选中数量则取决于数据内容。因此不能把所有高级索引都理解成同样的固定成本操作。</p>
+            <p>CUDA 上的 <code>torch.nonzero()</code> 会引入 host-device
+            同步，布尔 mask
+            索引需要先知道选中数量，也会有类似效果。decode 热路径中的
+            <code>mask.nonzero()</code>，可能既生成动态长度结果，又让
+            CPU 等待 GPU，还会妨碍 CUDA Graph 捕获。见 <a
+            href="https://docs.pytorch.org/docs/stable/generated/torch.nonzero.html">torch.nonzero</a>
+            和 <a href="./torch_cuda_execution.html">CUDA
+            异步执行</a>。</p>
+            <h3 id="in-place-与-out写进一块已存在的存储">In-place 与
+            out=：写进一块已存在的存储</h3>
+            <p>非原地运算 <code>x = x + y</code>
+            做两件事：分配新输出，再把 Python 名字 <code>x</code>
+            换绑过去，原 storage 不受影响。原地运算
+            <code>x += y</code>（即 <code>x.add_(y)</code>）则把结果写回
+            <code>x</code> 当前指向的
+            storage。两者数值相同，差别只在<strong>别名</strong>：如果还有别的张量与
+            <code>x</code> 共享这块 storage——另一个名字、一个切片
+            view、一个被缓存起来的输入——原地写会让它们一起变。</p>
+            <figure>
+            <img
+            src="./WikiImage/torch_broadcast_indexing_inplace.svg"
+            alt="x += y 与 x = x + y" />
+            <figcaption aria-hidden="true">x += y 与 x = x +
+            y</figcaption>
+            </figure>
+            <p>“写进已存在的存储”决定了原地运算的三条约束，它们都在说：self
+            的 shape、dtype 和存储布局不能因为这次运算而改变。</p>
+            <ul>
+            <li><strong>shape</strong>：广播只能作用在另一侧。<code>[3, 4] += [1, 4]</code>
+            可以，<code>[3, 1] += [1, 4]</code> 会报错，因为广播结果
+            <code>[3, 4]</code> 放不进
+            <code>[3, 1]</code>；同样的表达式写成非原地形式则静默得到
+            <code>[3, 4]</code>。</li>
+            <li><strong>dtype</strong>：self
+            不会被提升。运算仍按提升后的公共类型进行，再转换回 self 的
+            dtype，且必须满足
+            <code>torch.can_cast</code>：<code>bf16_x += fp32_y</code>
+            合法，结果仍是 bf16；<code>int64_x += fp32_y</code>
+            报错，因为浮点不能隐式写回整数。见 <a
+            href="https://docs.pytorch.org/docs/stable/tensor_attributes.html#type-promotion-doc">Type
+            promotion</a>。</li>
+            <li><strong>存储</strong>：被写入的每个逻辑元素必须对应独立地址。<code>expand()</code>
+            出的零 stride view 会被拒绝（“more than one element of the
+            written-to tensor refers to a single memory
+            location”）；普通切片 view 可以写，且写的就是原张量。</li>
+            </ul>
+            <p><code>out=</code>
+            参数遵循同样的规则：输出写进调用方给定的张量，结果 dtype
+            必须能转换过去，shape
+            不符时会被调整大小（并给出警告）或报错。它和原地运算的共同价值在于<strong>地址不变</strong>——CUDA
+            Graph 的静态输入缓冲区依赖 <code>buf.copy_(new)</code>
+            而不是 <code>buf = new</code>，正是这个原因（见 <a
+            href="./torch_kernel_compile.html">Kernel
+            与编译执行</a>）。</p>
+            <p>原地运算省掉的是一次输出分配，不减少计算量，也不减少对输入的读取；它还可能迫使调用方额外
+            <code>clone()</code>
+            来保护仍要使用的旧值。判断是否该用原地写，应先回答“还有谁持有这块
+            storage”。</p>
+            <h3 id="隐式拷贝与隐式类型转换">隐式拷贝与隐式类型转换</h3>
+            <p>除了显式的
+            <code>clone()</code>、<code>contiguous()</code>，下面这些写法也会分配新存储，而代码上未必看得出来：</p>
+            <table>
+            <colgroup>
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>写法</th>
+            <th>为什么会复制</th>
+            <th>推理里常见的位置</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td><code>torch.cat</code> / <code>torch.stack</code></td>
+            <td>输出需要一块能同时容纳所有输入的新连续存储，无法用一组
+            stride 拼出</td>
+            <td>RoPE 的 <code>rotate_half</code>、拼接 <code>rot</code>
+            与 <code>pass</code> 部分</td>
+            </tr>
+            <tr>
+            <td>布尔 mask 读取 <code>x[mask]</code></td>
+            <td>gather 成新张量，长度依赖数据，还可能同步</td>
+            <td>过滤无效 token</td>
+            </tr>
+            <tr>
+            <td><code>.to(dtype)</code>、混合 dtype 运算</td>
+            <td>新 dtype 需要新存储；提升后的输出按更宽的类型分配</td>
+            <td>mask 与 score 相加、cos/sin 转换 dtype</td>
+            </tr>
+            <tr>
+            <td>非连续输入交给要求连续的 kernel</td>
+            <td>算子内部可能先物化一份连续副本</td>
+            <td><code>transpose</code> 后的 QKV 交给自定义 kernel</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>还有一个反向的隐式行为：逐元素算子的输出通常沿用输入的布局。对转置后的
+            <code>[8, 4]</code> 张量执行 <code>x + 1</code>，输出 stride
+            仍可能是 <code>(1, 8)</code>，即
+            <strong>算子输出不保证连续</strong>。</p>
+            <p>类型提升在表达式里的位置值得单独留意：Python 标量和 0
+            维张量通常不会把同类别的张量提升到更宽的类型（<code>bf16_tensor * 2.5</code>
+            仍是 bf16）；两个不同 dtype
+            的多维张量相遇时，结果取更宽的那个（<code>bf16 + fp32</code>
+            得到 fp32）；布尔张量与 Python
+            浮点数相乘，结果取默认浮点类型（通常是
+            fp32）。因此只要表达式中混入了一个 fp32
+            张量，后续所有中间结果都可能变成
+            fp32——数值更精确，但显存和带宽也随之翻倍。格式范围、累加精度和
+            <code>autocast</code> 的规则见 <a
+            href="./torch_numerical_precision.md">dtype 与数值精度</a>
+            和 <a href="./torch_dtype.html">Tensor 数据类型</a>。</p>
+            <h3 id="在-sglang-中attention-mask-的广播与类型">在 SGLang
+            中：Attention Mask 的广播与类型</h3>
+            <p>attention score 的形状是
+            <code>[B, H, Sq, Sk]</code>，mask
+            一般不按这个形状存：按样本区分、各 head 共享时是
+            <code>[B, 1, Sq, Sk]</code>，所有样本共用一张因果 mask 时是
+            <code>[1, 1, S, S]</code>，相加或交给 SDPA 时再广播到 head
+            和 batch 维。mask 有两种表示，语义相反、容易混用：</p>
+            <ul>
+            <li><strong>布尔 mask</strong>：交给 SDPA 的
+            <code>attn_mask</code> 时 <code>True</code> 表示允许参与
+            attention；</li>
+            <li><strong>加性 mask</strong>：一个浮点张量，允许的位置为
+            <code>0</code>，屏蔽的位置为一个很大的负数，直接加到 score
+            上。</li>
+            </ul>
+            <p>加性 mask 的“很大的负数”不宜随手写
+            <code>-inf</code>：如果某一行全部被屏蔽（例如 padding 出来的
+            query 行），softmax 会得到
+            <code>-inf - (-inf)</code>，整行变成 NaN；用
+            <code>torch.finfo(dtype).min</code>
+            则得到一行有限的均匀分布，padding
+            行的输出事后丢弃即可。此外加性 mask 本身有 dtype，和 score
+            的 dtype 不一致就会触发类型提升。</p>
+            <p><code>layers/attention/vision.py</code> 中的
+            <code>VisionSdpaAttention</code> 把这几点都用上了：</p>
+            <ul>
+            <li><strong>用广播构造 mask。</strong>
+            <code>_generate_mask_cache()</code> 把
+            <code>row_indices</code> 设为
+            <code>[1, 1, 1, s]</code>、<code>col_indices</code> 设为
+            <code>[1, 1, s, 1]</code>、每个样本的长度
+            <code>seq_lens</code> 设为 <code>[b, 1, 1, 1]</code>，一句
+            <code>(row_indices &lt; seq_lens) &amp; (col_indices &lt; seq_lens)</code>
+            就广播出 <code>[b, 1, s, s]</code> 的布尔 mask——第二维的
+            <code>1</code> 留给 head 维广播。<code>flatten_batch</code>
+            时则先建 <code>[1, s, s]</code> 全 False，再用切片赋值把每段
+            <code>[start:end, start:end]</code> 置 True。该函数带
+            <code>lru_cache</code>，以 <code>cu_seqlens</code> 的 tuple
+            为键；生成这个 tuple 需要
+            <code>cu_seqlens.cpu().tolist()</code>，若
+            <code>cu_seqlens</code> 在 GPU 上，这是一次同步。</li>
+            <li><strong>SDPA 路径直接传布尔
+            mask</strong>，<code>is_causal=False</code>，广播由 SDPA
+            内部处理。</li>
+            <li><strong>单精度 softmax 路径改成加性 mask。</strong>
+            <code>softmax_in_single_precision</code> 为真时执行
+            <code>attention_mask = (~attention_mask) * torch.finfo(q.dtype).min</code>，再
+            <code>attn_weights + attention_mask</code>。这里有两次隐式行为：布尔张量乘
+            Python 浮点数得到默认浮点类型（fp32）的
+            <code>[b, 1, s, s]</code>；它与 bf16 的
+            <code>attn_weights</code> 相加时既沿 head 维广播，又把整个
+            <code>[b, h, s, s]</code> 的结果提升为 fp32。随后
+            <code>softmax(..., dtype=torch.float32).to(q.dtype)</code>
+            再转回。对这条“单精度
+            softmax”路径来说提升符合意图，但它的代价是一个完整的 fp32
+            score 张量，这是把 mask 放进加法而不是交给融合 kernel
+            的成本。</li>
+            </ul>
+            <h3 id="在-sglang-中rope-的广播与写回">在 SGLang 中：RoPE
+            的广播与写回</h3>
+            <p>RoPE 把每个 token 位置对应的 cos/sin 作用到 q、k 的前
+            <code>rotary_dim</code>
+            维上。它同时用到了本篇的每一个概念：按位置 gather、沿 head
+            维广播、<code>cat</code> 的隐式分配，以及原地写回。实现在
+            <code>layers/rotary_embedding/</code>：<code>base.py</code>
+            的 <code>RotaryEmbedding</code>，以及 <code>utils.py</code>
+            中的基础函数。</p>
+            <figure>
+            <img
+            src="./WikiImage/torch_broadcast_indexing_rope.svg"
+            alt="RoPE 的 gather、广播、拼接与写回" />
+            <figcaption aria-hidden="true">RoPE 的
+            gather、广播、拼接与写回</figcaption>
+            </figure>
+            <ul>
+            <li><strong>cos/sin 表与 gather。</strong>
+            <code>_compute_cos_sin_cache()</code> 用 fp32 算出
+            <code>cat((cos, sin), dim=-1)</code>，形状
+            <code>[max_pos, rotary_dim]</code>，作为非持久 buffer 注册为
+            <code>cos_sin_cache</code>。<code>forward_native()</code> 用
+            <code>cos_sin_cache.index_select(0, positions)</code>
+            取出本批 token 的行，这是一次 gather 副本，形状
+            <code>[T, rotary_dim]</code>，随后
+            <code>chunk(2, dim=-1)</code> 切出 cos、sin 两个 view。</li>
+            <li><strong>沿 head 维广播。</strong> <code>utils.py</code>
+            的 <code>apply_rotary_emb()</code> 中，<code>x</code> 是
+            <code>[num_tokens, num_heads, head_size]</code>，cos/sin 是
+            <code>[num_tokens, head_size // 2]</code>；<code>cos.unsqueeze(-2)</code>
+            把它变成 <code>[T, 1, r/2]</code>，与
+            <code>[T, H, r/2]</code> 的 <code>x1</code>、<code>x2</code>
+            广播相乘——每个 token 的一行 cos 被所有 head 复用，不需要
+            <code>repeat</code>。同一行的 <code>.to(x.dtype)</code> 先把
+            cos/sin 转成 q 的 dtype，避免 fp32 表把整个旋转结果提升成
+            fp32。同文件的
+            <code>apply_rotary_pos_emb_native_eager()</code>
+            则相反，显式 <code>q.float()</code> 后在 fp32
+            中计算再转回：计算精度是代码选择的，不是自动发生的。</li>
+            <li><strong><code>cat</code> 的隐式分配。</strong> Neox
+            风格下 <code>torch.chunk(x, 2, dim=-1)</code> 得到两个
+            view，<code>o1 = x1 * cos - x2 * sin</code>
+            等是新输出，<code>torch.cat((o1, o2), dim=-1)</code>
+            再分配一次；<code>forward_native()</code> 又用
+            <code>torch.cat((query_rot, query_pass), dim=-1)</code>
+            拼回不旋转的部分。<code>rotate_neox()</code>、HF 风格的
+            <code>rotate_half()</code> 也都以 <code>cat</code>
+            结尾。所以 native
+            路径<strong>返回的是新张量</strong>，调用方必须使用返回值。</li>
+            <li><strong>CUDA 路径原地写回。</strong>
+            <code>forward_cuda()</code> 在不使用 fallback kernel 时，取
+            <code>query.view(batch_size, -1, self.head_size)</code>，若
+            <code>head_size != rotary_dim</code> 再切
+            <code>[..., : self.rotary_dim]</code>——都是 view；然后调用
+            <code>apply_rope_with_cos_sin_cache_inplace()</code>（来自
+            <code>sglang.kernels.ops.attention.rope</code>），在一个
+            kernel 内按 <code>positions</code> 读
+            <code>cos_sin_cache</code>、原地写回 q/k，没有 gather
+            副本也没有 <code>cat</code>。因为写的是 view，改动直接落在原
+            <code>query</code>/<code>key</code> 上，函数最后
+            <code>return query, key</code> 返回的仍是原对象。传入
+            <code>fused_set_kv_buffer_arg</code> 时，这个 kernel
+            还会顺带把 k/v 写进 KV cache。</li>
+            </ul>
+            <p>在 CUDA 上，<code>forward_native()</code>
+            只在特定条件下使用：设置了 deterministic 的
+            <code>rl_on_policy_target</code> 或运行在 MUSA
+            上时，<code>RotaryEmbedding</code> 把它选为 forward，并用
+            <code>torch.compile</code> 包装
+            <code>apply_rotary_emb</code>，让其中那串逐元素运算和
+            <code>cat</code> 有机会融合；CPU、NPU
+            等后端在部分条件下也会回落到它。</p>
+            <h3 id="在-sglang-中kv-cache-的一读一写">在 SGLang 中：KV
+            cache 的一读一写</h3>
+            <p>SGLang 的 KV cache 正是图中那个“按 slot 编号的大
+            buffer”，读写两侧分别落在不同模块（基于当前
+            <code>python/sglang/srt/</code>）：</p>
+            <ul>
+            <li><strong>写：索引赋值，必要时换成专用 kernel。</strong>
+            <code>mem_cache/memory_pool.py</code> 中
+            <code>MHATokenToKVPool.set_kv_buffer()</code> 从
+            <code>loc_info</code> 解出本步新 token 的 slot（即
+            <code>forward_batch.out_cache_loc</code>），交给
+            <code>_set_kv_buffer_impl()</code>。CUDA/HIP
+            上行宽满足条件时调用 <code>store_cache</code>
+            kernel；否则回落到最朴素的
+            <code>k_cache[indices] = k</code>、<code>v_cache[indices] = v</code>——赋值左侧的高级索引，直接写原存储。CUDA
+            Graph 捕获模式下还会把 V 的写入放到另一条 stream 上，与 K
+            的写入并行，再用 <code>wait_stream</code>
+            接回。同文件里还有一处细节：fp8 KV 以
+            <code>torch.uint8</code> 存储，注释说明原因是
+            <code>index_put</code> 不支持
+            <code>float8_e5m2</code>。</li>
+            <li><strong>读：先切片得到下标，再 gather。</strong>
+            <code>layers/attention/torch_native_backend.py</code>
+            逐请求执行
+            <code>per_req_tokens = req_to_token[req_pool_idx, start_kv:end_kv]</code>——这是普通切片，拿到的是
+            slot 编号的 view；随后 <code>k_cache[per_req_tokens]</code>
+            是高级索引读取，复制出该请求的 K/V，再用
+            <code>movedim</code>
+            调整维度顺序（view，不复制）。这一读一写的复制成本，是这个后端只适合做对照与兜底的原因之一（见
+            <a href="./torch_kernel_compile.html">Kernel
+            与编译执行</a>）。</li>
+            <li><strong>GQA 不显式扩展。</strong> 同一后端用
+            <code>use_gqa = layer.tp_q_head_num != layer.tp_k_head_num</code>
+            判断是否分组，并把它作为 <code>enable_gqa</code> 传给
+            SDPA，由 attention 实现处理 head 分组，而不是先
+            <code>expand</code>/<code>repeat</code> KV head。</li>
+            </ul>
+            <p>高性能后端（FlashInfer、FlashAttention 等）则把
+            <code>kv_indices</code> 或 page table 直接交给 kernel，在
+            kernel 内部按下标读取，避免先 gather 出完整 K/V；KV
+            池的组织方式见 <a href="./memory_pool.md">Memory Pool</a> 与
+            <a href="./paged_attention.html">Paged Attention</a>。</p>
+            <h3 id="读代码时的检查顺序">读代码时的检查顺序</h3>
+            <ol type="1">
+            <li>写出输入、输出每一维的语义，而不只看数字。</li>
+            <li>判断广播后的结果规模；可以先用
+            <code>torch.broadcast_shapes()</code> 检查。</li>
+            <li>区分 view、复制读取与写回原张量；看
+            <code>buffer[idx]</code> 在等号的哪一侧。</li>
+            <li>遇到原地运算或 <code>out=</code>，确认还有谁共享这块
+            storage，以及结果能否放进它的 shape 和 dtype。</li>
+            <li>写出每个中间结果的 dtype，找出混入的 fp32 张量和
+            <code>cat</code>、<code>.to()</code> 这类隐式分配。</li>
+            <li>检查零 stride、重复下标和动态输出长度。</li>
+            <li>检查后续 kernel 是否要求物化，是否出现隐式同步。</li>
+            </ol>
+            <h3 id="小结">小结</h3>
+            <p>广播、索引和逐元素运算的每一行代码都同时回答了四个问题：形状从哪来、存储是谁的、数据往哪流、类型由谁决定。广播减少输入复制，并不自动减少输出规模，也不检查维度语义；<code>expand</code>
+            省掉复制，却换来零 stride 和写入限制；同样的
+            <code>buffer[idx]</code>，在等号左边是写回原存储，在右边是
+            gather 出的副本；<code>x += y</code>
+            让别名看到修改，<code>x = x + y</code>
+            只是换绑名字；一个混入的 fp32
+            张量就能让整条表达式变宽。Attention mask 和 RoPE
+            把这些规则集中在了几行代码里：把 shape 推导、存储读写和
+            dtype 一起看，才能判断推理代码是否既正确又高效。</p>
+          </main>
+        <aside class="wiki-toc">
+      <ul>
+      <li><a href="#抽象每个表达式回答四个问题"
+      id="toc-抽象每个表达式回答四个问题">抽象：每个表达式回答四个问题</a></li>
+      <li><a href="#广播对齐的是维度不是语义"
+      id="toc-广播对齐的是维度不是语义">广播：对齐的是维度，不是语义</a></li>
+      <li><a href="#expand-与-repeat逻辑复用和物理复制"
+      id="toc-expand-与-repeat逻辑复用和物理复制">expand 与
+      repeat：逻辑复用和物理复制</a></li>
+      <li><a href="#索引读取与索引赋值需要分开理解"
+      id="toc-索引读取与索引赋值需要分开理解">索引读取与索引赋值需要分开理解</a></li>
+      <li><a href="#动态索引还可能带来同步"
+      id="toc-动态索引还可能带来同步">动态索引还可能带来同步</a></li>
+      <li><a href="#in-place-与-out写进一块已存在的存储"
+      id="toc-in-place-与-out写进一块已存在的存储">In-place 与
+      out=：写进一块已存在的存储</a></li>
+      <li><a href="#隐式拷贝与隐式类型转换"
+      id="toc-隐式拷贝与隐式类型转换">隐式拷贝与隐式类型转换</a></li>
+      <li><a href="#在-sglang-中attention-mask-的广播与类型"
+      id="toc-在-sglang-中attention-mask-的广播与类型">在 SGLang
+      中：Attention Mask 的广播与类型</a></li>
+      <li><a href="#在-sglang-中rope-的广播与写回"
+      id="toc-在-sglang-中rope-的广播与写回">在 SGLang 中：RoPE
+      的广播与写回</a></li>
+      <li><a href="#在-sglang-中kv-cache-的一读一写"
+      id="toc-在-sglang-中kv-cache-的一读一写">在 SGLang 中：KV cache
+      的一读一写</a></li>
+      <li><a href="#读代码时的检查顺序"
+      id="toc-读代码时的检查顺序">读代码时的检查顺序</a></li>
+      <li><a href="#小结" id="toc-小结">小结</a></li>
+      </ul>
+    </aside>
+      </div>
+</body>
+
+</html>

@@ -25,82 +25,27 @@
   </title>
     <link rel="stylesheet" href="./WikiTheme/theme/bootstrap.css"  />
         <script defer=""
-        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
-        type="text/javascript"></script>
-        <style type="text/css">
-    /* ---- three column wiki layout (left: site directory, center: content, right: page TOC) ---- */
-    .wiki-layout {
-      display: flex;
-      align-items: flex-start;
-      gap: 24px;
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 0 20px;
-      box-sizing: border-box;
-    }
-    .wiki-sidebar {
-      flex: 0 0 240px;
-      width: 240px;
-      position: sticky;
-      top: 0;
-      max-height: 100vh;
-      overflow-y: auto;
-      padding: 10px 4px 20px 0;
-      border-right: 1px solid #eee;
-      font-size: 14px;
-    }
-    .wiki-sidebar[hidden] { display: none; }
-    .wiki-toc {
-      flex: 0 0 220px;
-      width: 220px;
-      position: sticky;
-      top: 0;
-      max-height: 100vh;
-      overflow-y: auto;
-      padding: 10px 0 20px 4px;
-      border-left: 1px solid #eee;
-      font-size: 14px;
-    }
-    .wiki-main {
-      flex: 1 1 auto;
-      min-width: 0;
-      max-width: 820px;
-      padding: 10px 0 40px;
-    }
-    /* site directory tree */
-    .wiki-sidebar .wiki-home {
-      display: block;
-      font-weight: bold;
-      margin-bottom: 10px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid #eee;
-      text-decoration: none;
-      color: #333;
-    }
-    .wiki-sidebar ul { list-style: none; margin: 0 0 0 12px; padding: 0; }
-    .wiki-sidebar > ul { margin-left: 0; }
-    .wiki-sidebar li { line-height: 1.7; }
-    .wiki-sidebar a { text-decoration: none; color: #555; }
-    .wiki-sidebar a:hover { color: #0088cc; text-decoration: underline; }
-    .wiki-sidebar a.active { color: #0088cc; font-weight: bold; }
-    /* page TOC */
-    .wiki-toc ul { list-style: none; margin: 0 0 0 12px; padding: 0; }
-    .wiki-toc > ul { margin-left: 0; }
-    .wiki-toc li { line-height: 1.6; }
-    .wiki-toc a { text-decoration: none; color: #555; }
-    .wiki-toc a:hover { color: #0088cc; }
-    @media (max-width: 980px) {
-      .wiki-layout { flex-direction: column; }
-      .wiki-sidebar, .wiki-toc {
-        position: static;
-        width: 100%;
-        flex-basis: auto;
-        max-height: none;
-        border: 0;
-      }
-      .wiki-main { max-width: none; }
-    }
-  </style>
+        src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+        <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+        </script>
+        <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+        <!-- wiki three-column layout styles/behavior, kept external so the ~5KB
+       block isn't duplicated into every generated page -->
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/wiki-layout.css" />
+  <script defer src="./WikiTheme/wiki-layout.js"></script>
 </head>
 
 <body>
@@ -120,48 +65,48 @@
     <main class="wiki-main">
             <h3 id="瓶颈分析">瓶颈分析</h3>
             <p>在深度学习中，模型的计算本质上可以看作是大量矩阵乘法的组合，而矩阵乘法又由浮点乘法和加法等基本运算（FLOPs）构成。模型在计算阶段所花费的时间，取决于所需的计算量以及加速器本身的算力，其估计公式为：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \begin{equation}
             T_\text{math} = \frac{\text{Computation
             FLOPs}}{\text{Accelerator FLOPs}}
             \end{equation}
-            \]</span></p>
+            </span></p>
             <p>除了计算之外，数据在系统中的流动同样会带来时间开销。无论是芯片内部的数据访问，还是跨芯片、跨节点的通信，这部分成本通常用带宽（Bytes/s）来衡量，对应的通信时间可以估算为：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \begin{equation}
             T_\text{comms} = \frac{\text{Communication
             Bytes}}{\text{Network/Memory Bandwidth Bytes/s}}
             \end{equation}
-            \]</span></p>
+            </span></p>
             <p>在大多数（但并非所有）情况下，计算与通信是可以部分甚至高度重叠的，例如在执行计算的同时预取数据，或在计算下一层时传输上一层的中间结果。基于这一点，我们通常可以用<strong>计算时间和通信时间中的较大者</strong>来作为训练或推理耗时的一个<strong>下界估计</strong>；而在最保守的情况下，则可以用两者之和作为<strong>上界估计</strong>。</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \begin{equation}
             T_\text{lower}=\max(T_\text{math}, T_\text{comms})
             \end{equation}
-            \]</span></p>
-            <p><span class="math display">\[
+            </span></p>
+            <p><span class="math display">
             \begin{equation}
             T_\text{upper} = T_\text{math} + T_\text{comms}
             \end{equation}
-            \]</span></p>
-            <p>如果以 <span class="math inline">\(\max(T_\text{math},
-            T_\text{comms})\)</span>
+            </span></p>
+            <p>如果以 <span class="math inline">\max(T_\text{math},
+            T_\text{comms})</span>
             为优化目标，那么上下界之间的差距最多只有 2
             倍，因为始终有：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             T_{\text{math}} + T_{\text{comms}} \leq 2 \times
             \max(T_{\text{math}}, T_{\text{comms}})
-            \]</span></p>
+            </span></p>
             <p>这种近似在工程实践中非常常见：一方面数学形式更简单，另一方面通过精心设计的流水线和调度机制，往往可以接近这一理想下界。进一步的精度提升，则需要引入对“重叠区间”和系统额外开销的建模，这通常依赖于对具体模型和硬件平台的
             profiling 结果。</p>
             <hr />
             <p>如果假设计算与通信能够做到<strong>完全重叠</strong>，那么系统的瓶颈就由两者中更慢的一方决定：</p>
             <ul>
-            <li>当 <span class="math inline">\(T_{\text{math}} &gt;
-            T_{\text{comms}}\)</span>
+            <li>当 <span class="math inline">T_{\text{math}} &gt;
+            T_{\text{comms}}</span>
             时，整体性能受限于计算能力，此时加速器可以被充分利用，我们称这种情况为<strong>计算受限（compute-bound）</strong>。</li>
-            <li>当 <span class="math inline">\(T_{\text{comms}} &gt;
-            T_{\text{math}}\)</span>
+            <li>当 <span class="math inline">T_{\text{comms}} &gt;
+            T_{\text{math}}</span>
             时，系统主要在等待数据传输，部分算力被闲置，这种情况称为<strong>通信受限（communication-bound）</strong>。</li>
             </ul>
             <p>为了判断某个算子或算法更可能属于哪一类，我们通常引入一个关键指标——<strong>算术强度（Arithmetic
@@ -171,29 +116,29 @@
             Compute-to-Memory Ratio）的 <strong>定义</strong>
             如下：算法执行过程中，每传输 1
             字节数据所能完成的浮点运算数量，也就是：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \begin{equation}
             \text{Arithmetic Intensity} = \frac{\text{Computation
             FLOPs}}{\text{Communication Bytes}}
             \end{equation}
-            \]</span></p>
+            </span></p>
             <p>也就是说，<strong>计算强度</strong> 刻画了
             “<strong>每字节数据能榨出多少
             FLOPs</strong>”。从一阶近似的角度看：</p>
             <ul>
             <li>算术强度高 → 计算占主导，<span
-            class="math inline">\(T_{\text{math}} \gg
-            T_{\text{comms}}\)</span>，算力利用率高；</li>
+            class="math inline">T_{\text{math}} \gg
+            T_{\text{comms}}</span>，算力利用率高；</li>
             <li>算术强度低 → 通信占主导，系统花大量时间在搬数据上，FLOPs
             难以充分发挥。</li>
             </ul>
             <p>对于一套具体硬件而言，存在一个“分界点”，即硬件的<strong>峰值算术强度</strong>，它由计算峰值与带宽峰值之比决定：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \text{Peak Intensity} = \frac{\text{Accelerator
             FLOPs/s}}{\text{Bandwidth Bytes/s}}
-            \]</span></p>
+            </span></p>
             <p>当算法的算术强度高于这一值时，系统趋向于计算受限；反之则更容易落入通信受限状态。这一点可以通过以下等价关系清晰地表示出来：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \begin{aligned}
             T_{\text{math}} &gt; T_{\text{comms}}
             &amp;\quad\Leftrightarrow\quad
@@ -210,7 +155,7 @@
             \text{Intensity}_{\text{Computation}} \;&gt;\;
             \text{Intensity}_{\text{Accelerator}}
             \end{aligned}
-            \]</span></p>
+            </span></p>
             <blockquote>
             <p>不断增加一个 kernel
             的计算量，计算强度不会无限增加，增加到计算访存比后，kernel
@@ -226,11 +171,11 @@
             显存带宽约为 1.55 TB/s</strong>。</p>
             <p>将二者放在同一量纲下，可以得到该 GPU 的
             <strong>计算访存比</strong>：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \text{Intensity} = \frac{312 \times 10^{12}\
             \text{FLOPs/s}}{1.55 \times 10^{12}\ \text{Bytes/s}}
             \approx 200\ \text{FLOPs/Byte}
-            \]</span></p>
+            </span></p>
             <p>这意味着：只有当算子的算术强度（Arithmetic
             Intensity）达到或超过约 200 FLOPs/Byte
             时，才能真正进入计算受限（compute-bound）区间，从而充分发挥
@@ -252,59 +197,55 @@
             <h3 id="矩阵乘法">矩阵乘法</h3>
             <p>来看一个即将成为我们最常用的算法：矩阵乘法（简称
             matmul）。<br />
-            记作 <span class="math inline">\(X * Y \rightarrow
-            Z\)</span>，其中：</p>
+            记作 <span class="math inline">X * Y \rightarrow
+            Z</span>，其中：</p>
             <ul>
-            <li><span class="math inline">\(X\)</span> 的形状为 <span
-            class="math inline">\(\text{bf16}[M, K]\)</span><br />
+            <li><span class="math inline">X</span> 的形状为 <span
+            class="math inline">\text{bf16}[M, K]</span><br />
             </li>
-            <li><span class="math inline">\(Y\)</span> 的形状为 <span
-            class="math inline">\(\text{bf16}[K, N]\)</span><br />
+            <li><span class="math inline">Y</span> 的形状为 <span
+            class="math inline">\text{bf16}[K, N]</span><br />
             </li>
-            <li><span class="math inline">\(Z\)</span> 的形状为 <span
-            class="math inline">\(\text{bf16}[M, N]\)</span></li>
+            <li><span class="math inline">Z</span> 的形状为 <span
+            class="math inline">\text{bf16}[M, N]</span></li>
             </ul>
             <p>执行该矩阵乘法时，需要：<br />
-            - 加载数据量：<span class="math inline">\(2MK + 2KN\)</span>
+            - 加载数据量：<span class="math inline">2MK + 2KN</span>
             字节<br />
-            - 浮点运算次数：<span class="math inline">\(2MNK\)</span>
+            - 浮点运算次数：<span class="math inline">2MNK</span>
             次<br />
-            - 写回结果量：<span class="math inline">\(2KN\)</span>
-            字节</p>
-            <p><span class="math display">\[
+            - 写回结果量：<span class="math inline">2KN</span> 字节</p>
+            <p><span class="math display">
             \begin{aligned}
             \text{计算访存比} &amp;= \frac{MNK}{MN + NK + MK} \\
             &amp;= \frac{NK}{N + \frac{NK}{M} + K}
             \end{aligned}
-            \]</span></p>
-            <p>当 <span class="math inline">\(M \to \infty\)</span>
-            时，<span class="math inline">\(\dfrac{NK}{M} \to
-            0\)</span></p>
-            <p><span class="math display">\[
+            </span></p>
+            <p>当 <span class="math inline">M \to \infty</span>
+            时，<span class="math inline">\dfrac{NK}{M} \to 0</span></p>
+            <p><span class="math display">
             \frac{NK}{N + K}
-            \]</span></p>
+            </span></p>
             <p>如果是 FP8 gemm，访存量相当于只有
             1/2，那么极限计算访存比为：</p>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \frac{2NK}{N + K}
-            \]</span></p>
+            </span></p>
             <h3 id="attention">Attention</h3>
             <ul>
-            <li><span class="math inline">\(B\)</span>：batch size</li>
-            <li><span class="math inline">\(H\)</span>：num of q
+            <li><span class="math inline">B</span>：batch size</li>
+            <li><span class="math inline">H</span>：num of q heads</li>
+            <li><span class="math inline">H_{kv}</span>：num of kv
             heads</li>
-            <li><span class="math inline">\(H_{kv}\)</span>：num of kv
-            heads</li>
-            <li><span class="math inline">\(G\)</span>：<span
-            class="math inline">\(\frac{H}{H_{kv}}\)</span></li>
-            <li><span class="math inline">\(T\)</span>：q length</li>
-            <li><span class="math inline">\(S\)</span>：kv length</li>
-            <li><span class="math inline">\(d_{qk}\)</span>：qk head
+            <li><span class="math inline">G</span>：<span
+            class="math inline">\frac{H}{H_{kv}}</span></li>
+            <li><span class="math inline">T</span>：q length</li>
+            <li><span class="math inline">S</span>：kv length</li>
+            <li><span class="math inline">d_{qk}</span>：qk head
             dim</li>
-            <li><span class="math inline">\(d_{v}\)</span>：v head
-            dim</li>
+            <li><span class="math inline">d_{v}</span>：v head dim</li>
             </ul>
-            <p><span class="math display">\[
+            <p><span class="math display">
             \begin{aligned}
             \frac{B T S \cdot 2H (d_{qk}+d_v)}{B\left(T H d_{qk} + S
             H_{kv}(d_{qk}+d_v) + T H d_v\right)}
@@ -316,27 +257,27 @@
             &amp;= \frac{2 T S}{T + S \cdot \frac{H_{kv}}{H}} \\
             &amp;= \frac{2 T}{\frac{T}{S} + \frac{H_{kv}}{H}}
             \end{aligned}
-            \]</span></p>
-            <p>在 prefill 阶段，<span class="math inline">\(T =
-            S\)</span>，上式可以化简为：</p>
-            <p><span class="math display">\[
+            </span></p>
+            <p>在 prefill 阶段，<span class="math inline">T =
+            S</span>，上式可以化简为：</p>
+            <p><span class="math display">
             \frac{2T}{1+G} \sim O(T)
-            \]</span></p>
+            </span></p>
             <p>在 decode 阶段，<span
-            class="math inline">\(\frac{T}{S}\)</span> 接近于 <span
-            class="math inline">\(0\)</span>，上式可以化简为：</p>
-            <p><span class="math display">\[
+            class="math inline">\frac{T}{S}</span> 接近于 <span
+            class="math inline">0</span>，上式可以化简为：</p>
+            <p><span class="math display">
             \frac{2TH}{H_{kv}} = 2TG \sim O(1)
-            \]</span></p>
+            </span></p>
             <p>所以 prefill 阶段 attention
             的计算访存比随着序列长度不断增长而增大，而 decode
             阶段计算访存比为一个定值，这也比较直观：</p>
             <ul>
             <li>prefill 阶段计算量复杂度为 <span
-            class="math inline">\(O(T^2)\)</span>，访存量为 <span
-            class="math inline">\(O(T)\)</span></li>
+            class="math inline">O(T^2)</span>，访存量为 <span
+            class="math inline">O(T)</span></li>
             <li>decode 阶段每个 step 计算量和访存两都为 <span
-            class="math inline">\(O(T)\)</span></li>
+            class="math inline">O(T)</span></li>
             </ul>
           </main>
         <aside class="wiki-toc">
@@ -348,39 +289,6 @@
       </ul>
     </aside>
       </div>
-  <script type="text/javascript">
-    (function () {
-      function markActive() {
-        var here = location.href.split('#')[0];
-        var links = document.querySelectorAll('.wiki-sidebar a');
-        for (var i = 0; i < links.length; i++) {
-          if (links[i].href.split('#')[0] === here) {
-            links[i].classList.add('active');
-          }
-        }
-      }
-      // load the shared site directory once (served from the wiki root);
-      // kept in a standalone file so adding a page needn't rebuild every page.
-      var nav = document.getElementById('wiki-sidebar');
-      if (nav) {
-        fetch('/wiki_sidebar.html')
-          .then(function (r) { return r.ok ? r.text() : ''; })
-          .then(function (html) {
-            if (html) {
-              nav.innerHTML = html;
-              nav.hidden = false;
-              markActive();
-            }
-          })
-          .catch(function () {});
-      }
-      // keep bootstrap table styling (previously done by sticky_menu.js)
-      var tables = document.getElementsByTagName('table');
-      for (var j = 0; j < tables.length; j++) {
-        tables[j].classList.add('table');
-      }
-    })();
-  </script>
 </body>
 
 </html>

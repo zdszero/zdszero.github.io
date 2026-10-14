@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 500" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="500" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">两种等待：GPU 等 GPU 不挡 CPU，CPU 等 GPU 才会停</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">以 SGLang overlap scheduler 为例：forward_stream 算第 N 批，copy_stream 搬结果，CPU 只在 copy_done 处等待</text>
+
+  <!-- lane labels -->
+  <g font-size="12" font-weight="700" fill="#495057">
+    <text x="40" y="125">CPU 线程</text>
+  </g>
+  <g font-size="12" font-weight="700" font-family="monospace">
+    <text x="40" y="185" fill="#0b7285">forward_stream</text>
+    <text x="40" y="245" fill="#e8590c">copy_stream</text>
+  </g>
+  <rect x="160" y="104" width="700" height="32" rx="6" fill="#f8f9fa" stroke="#e9ecef"/>
+  <rect x="160" y="164" width="700" height="32" rx="6" fill="#f8f9fa" stroke="#e9ecef"/>
+  <rect x="160" y="224" width="700" height="32" rx="6" fill="#f8f9fa" stroke="#e9ecef"/>
+
+  <!-- CPU lane -->
+  <g font-size="11" font-weight="700" text-anchor="middle">
+    <rect x="170" y="108" width="70" height="24" rx="5" fill="#edf2ff" stroke="#4c6ef5"/><text x="205" y="124" fill="#3b5bdb">提交 N</text>
+    <rect x="245" y="108" width="155" height="24" rx="5" fill="#f1f3f5" stroke="#adb5bd"/><text x="322" y="124" fill="#495057">处理 N-1 结果</text>
+    <rect x="405" y="108" width="105" height="24" rx="5" fill="#f1f3f5" stroke="#adb5bd"/><text x="457" y="124" fill="#495057">调度 N+1</text>
+    <rect x="515" y="108" width="55" height="24" rx="5" fill="#edf2ff" stroke="#4c6ef5"/><text x="542" y="124" fill="#3b5bdb">提交</text>
+    <rect x="575" y="108" width="50" height="24" rx="5" fill="#fff5f5" stroke="#fa5252"/><text x="600" y="124" fill="#c92a2a">等</text>
+    <rect x="630" y="108" width="220" height="24" rx="5" fill="#f1f3f5" stroke="#adb5bd"/><text x="740" y="124" fill="#495057">处理 N 结果：.tolist()</text>
+  </g>
+  <text x="600" y="96" text-anchor="middle" font-size="11" font-family="monospace" fill="#c92a2a">copy_done.synchronize()</text>
+
+  <!-- forward_stream lane -->
+  <g font-size="11" font-weight="700" text-anchor="middle" fill="#0b7285">
+    <rect x="240" y="168" width="330" height="24" rx="5" fill="#e6fcf5" stroke="#0ca678"/><text x="405" y="184">forward N（wait_stream(schedule_stream) 后开始）</text>
+    <rect x="574" y="168" width="276" height="24" rx="5" fill="#e6fcf5" stroke="#0ca678"/><text x="712" y="184">forward N+1</text>
+  </g>
+
+  <!-- copy_stream lane -->
+  <rect x="574" y="228" width="48" height="24" rx="5" fill="#fff9db" stroke="#f08c00"/>
+  <text x="598" y="244" text-anchor="middle" font-size="11" font-weight="700" fill="#e8590c">D2H N</text>
+  <path d="M627 232 L635 240 L627 248 L619 240 z" fill="#f08c00"/>
+  <text x="645" y="244" font-size="11" fill="#e8590c">copy_done.record()</text>
+
+  <!-- dependencies -->
+  <path d="M570 192 L577 226" stroke="#0ca678" stroke-width="1.8" stroke-dasharray="4 3" fill="none" marker-end="url(#arT)"/>
+  <text x="300" y="214" font-size="10.5" font-family="monospace" fill="#0b7285">copy_stream.wait_stream(forward_stream)</text>
+  <path d="M627 230 L627 210 L622 138" stroke="#c92a2a" stroke-width="1.6" fill="none" marker-end="url(#arR)"/>
+
+  <!-- explanation boxes -->
+  <rect x="40" y="282" width="400" height="136" rx="10" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="58" y="306" font-size="13.5" font-weight="700" fill="#0b7285">GPU 等 GPU：依赖写进队列</text>
+  <g font-size="11.5" font-family="monospace" fill="#495057">
+    <text x="58" y="330">consumer.wait_stream(producer)</text>
+    <text x="58" y="350">consumer.wait_event(event)</text>
+  </g>
+  <g font-size="11.5" fill="#495057">
+    <text x="58" y="376">调用立即返回，CPU 继续调度、提交；</text>
+    <text x="58" y="396">只有消费 stream 里排在其后的工作会等待。</text>
+  </g>
+
+  <rect x="460" y="282" width="400" height="136" rx="10" fill="#fff5f5" stroke="#fa5252"/>
+  <text x="478" y="306" font-size="13.5" font-weight="700" fill="#c92a2a">CPU 等 GPU：线程阻塞</text>
+  <g font-size="11.5" font-family="monospace" fill="#495057">
+    <text x="478" y="330">event.synchronize()</text>
+    <text x="478" y="350">torch.cuda.synchronize() / 隐式：.item()</text>
+  </g>
+  <g font-size="11.5" fill="#495057">
+    <text x="478" y="376">CPU 停在这一行，直到对应 GPU 工作完成；</text>
+    <text x="478" y="396">应只放在 Python 真正要读值的地方。</text>
+  </g>
+
+  <rect x="40" y="436" width="820" height="40" rx="9" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="58" y="461" font-size="12" fill="#495057">关键：CPU 的硬等待集中在 copy_done 一处，而且发生在 forward N+1 已经入队之后——CPU 在等，GPU 并不空转。</text>
+
+  <defs>
+    <marker id="arT" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#0ca678"/></marker>
+    <marker id="arR" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#c92a2a"/></marker>
+  </defs>
+</svg>

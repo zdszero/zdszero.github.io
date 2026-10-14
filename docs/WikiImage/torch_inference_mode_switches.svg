@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 440" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="440" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">三个开关各管一列：eval、no_grad、inference_mode</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">绿色 = 该开关会改变这一项；灰色 = 不影响；橙红 = 换来的额外约束</text>
+
+  <!-- header -->
+  <g font-size="12.5" font-weight="700" fill="#495057" text-anchor="middle">
+    <text x="115" y="98">开关</text>
+    <text x="272" y="92">module.training</text>
+    <text x="272" y="108" font-size="11" font-weight="400" fill="#868e96">Dropout / BN 分支</text>
+    <text x="437" y="92">记录 autograd 图</text>
+    <text x="437" y="108" font-size="11" font-weight="400" fill="#868e96">grad_fn、保存激活</text>
+    <text x="602" y="92">版本计数 / view 追踪</text>
+    <text x="602" y="108" font-size="11" font-weight="400" fill="#868e96">每次原地写的簿记</text>
+    <text x="767" y="92">区域内新建的张量</text>
+    <text x="767" y="108" font-size="11" font-weight="400" fill="#868e96">离开区域后能怎么用</text>
+  </g>
+  <line x1="40" y1="118" x2="850" y2="118" stroke="#dee2e6" stroke-width="1.5"/>
+
+  <!-- row labels -->
+  <g font-family="monospace" font-size="13" font-weight="700" text-anchor="middle">
+    <text x="115" y="160" fill="#3b5bdb">model.eval()</text>
+    <text x="115" y="236" fill="#0b7285">no_grad()</text>
+    <text x="115" y="312" fill="#5f3dc4">inference_mode()</text>
+  </g>
+  <g font-size="11" fill="#868e96" text-anchor="middle">
+    <text x="115" y="178">改对象</text>
+    <text x="115" y="254">改当前线程</text>
+    <text x="115" y="330">改当前线程</text>
+  </g>
+
+  <!-- row 1: eval -->
+  <rect x="195" y="128" width="155" height="64" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="272" y="156" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0b7285">置为 False</text>
+  <text x="272" y="175" text-anchor="middle" font-size="11" fill="#495057">递归到所有子 module</text>
+  <rect x="360" y="128" width="155" height="64" rx="8" fill="#f8f9fa" stroke="#adb5bd"/>
+  <text x="437" y="156" text-anchor="middle" font-size="12.5" font-weight="700" fill="#495057">不影响</text>
+  <text x="437" y="175" text-anchor="middle" font-size="11" fill="#868e96">有 requires_grad 输入就记录</text>
+  <rect x="525" y="128" width="155" height="64" rx="8" fill="#f8f9fa" stroke="#adb5bd"/>
+  <text x="602" y="165" text-anchor="middle" font-size="12.5" font-weight="700" fill="#495057">照常</text>
+  <rect x="690" y="128" width="155" height="64" rx="8" fill="#f8f9fa" stroke="#adb5bd"/>
+  <text x="767" y="165" text-anchor="middle" font-size="12.5" font-weight="700" fill="#495057">普通张量</text>
+
+  <!-- row 2: no_grad -->
+  <rect x="195" y="204" width="155" height="64" rx="8" fill="#f8f9fa" stroke="#adb5bd"/>
+  <text x="272" y="232" text-anchor="middle" font-size="12.5" font-weight="700" fill="#495057">不影响</text>
+  <text x="272" y="251" text-anchor="middle" font-size="11" fill="#868e96">仍需单独 eval()</text>
+  <rect x="360" y="204" width="155" height="64" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="437" y="232" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0b7285">不记录</text>
+  <text x="437" y="251" text-anchor="middle" font-size="11" fill="#495057">不保存反向所需激活</text>
+  <rect x="525" y="204" width="155" height="64" rx="8" fill="#f8f9fa" stroke="#adb5bd"/>
+  <text x="602" y="232" text-anchor="middle" font-size="12.5" font-weight="700" fill="#495057">照常</text>
+  <text x="602" y="251" text-anchor="middle" font-size="11" fill="#868e96">仍做簿记</text>
+  <rect x="690" y="204" width="155" height="64" rx="8" fill="#f8f9fa" stroke="#adb5bd"/>
+  <text x="767" y="232" text-anchor="middle" font-size="12.5" font-weight="700" fill="#495057">普通张量</text>
+  <text x="767" y="251" text-anchor="middle" font-size="11" fill="#868e96">可再参与 autograd</text>
+
+  <!-- row 3: inference_mode -->
+  <rect x="195" y="280" width="155" height="64" rx="8" fill="#f8f9fa" stroke="#adb5bd"/>
+  <text x="272" y="308" text-anchor="middle" font-size="12.5" font-weight="700" fill="#495057">不影响</text>
+  <text x="272" y="327" text-anchor="middle" font-size="11" fill="#868e96">仍需单独 eval()</text>
+  <rect x="360" y="280" width="155" height="64" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="437" y="308" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0b7285">不记录</text>
+  <text x="437" y="327" text-anchor="middle" font-size="11" fill="#495057">同 no_grad</text>
+  <rect x="525" y="280" width="155" height="64" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="602" y="308" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0b7285">省掉</text>
+  <text x="602" y="327" text-anchor="middle" font-size="11" fill="#495057">inference tensor 不做簿记</text>
+  <rect x="690" y="280" width="155" height="64" rx="8" fill="#fff5f5" stroke="#fa5252"/>
+  <text x="767" y="302" text-anchor="middle" font-size="12.5" font-weight="700" fill="#c92a2a">inference tensor</text>
+  <text x="767" y="320" text-anchor="middle" font-size="11" fill="#495057">不能被 autograd 保存；</text>
+  <text x="767" y="335" text-anchor="middle" font-size="11" fill="#495057">区域外不能原地修改</text>
+
+  <!-- bracket over grad columns -->
+  <path d="M360 360 L360 368 L680 368 L680 360" fill="none" stroke="#0ca678" stroke-width="1.5"/>
+  <text x="520" y="384" text-anchor="middle" font-size="11.5" fill="#0b7285">inference_mode 比 no_grad 多省一列，代价落在最后一列</text>
+
+  <!-- note -->
+  <rect x="40" y="394" width="810" height="36" rx="9" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="58" y="417" font-size="12" fill="#495057">要点：第一列只有 eval() 能改；后两列只有梯度 context 能改。纯推理通常两者都要：先 eval()，再在梯度 context 中 forward。</text>
+</svg>

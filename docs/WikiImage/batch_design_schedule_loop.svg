@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 610" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="610" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">调度器的心跳：每个 tick 做什么，核心在第 ③ 步</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">主循环五步走；get_next_batch_to_run 的灵魂是「prefill 优先于 decode」</text>
+
+  <!-- loop return arrow -->
+  <path d="M816 160 L816 186 L104 186 L104 162" fill="none" stroke="#adb5bd" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#arGb)"/>
+  <text x="460" y="202" text-anchor="middle" font-size="10.5" fill="#868e96">while True — 无限循环</text>
+
+  <!-- 5 step boxes -->
+  <rect x="30" y="96" width="148" height="64" rx="9" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="104" y="124" text-anchor="middle" font-size="12.5" font-weight="700" fill="#495057">① recv_requests</text>
+  <text x="104" y="145" text-anchor="middle" font-size="10" fill="#868e96">收新请求</text>
+
+  <rect x="208" y="96" width="148" height="64" rx="9" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="282" y="124" text-anchor="middle" font-size="12.5" font-weight="700" fill="#495057">② process_input</text>
+  <text x="282" y="145" text-anchor="middle" font-size="10" fill="#868e96">解析 → waiting_queue</text>
+
+  <rect x="386" y="96" width="148" height="64" rx="9" fill="#fff9db" stroke="#f08c00"/>
+  <text x="460" y="124" text-anchor="middle" font-size="12.5" font-weight="700" fill="#e8590c">③ get_next_batch</text>
+  <text x="460" y="145" text-anchor="middle" font-size="10" fill="#b26a00">★ 组装这一步 batch</text>
+
+  <rect x="564" y="96" width="148" height="64" rx="9" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="638" y="124" text-anchor="middle" font-size="12.5" font-weight="700" fill="#495057">④ run_batch</text>
+  <text x="638" y="145" text-anchor="middle" font-size="10" fill="#868e96">GPU forward</text>
+
+  <rect x="742" y="96" width="148" height="64" rx="9" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="816" y="124" text-anchor="middle" font-size="12.5" font-weight="700" fill="#495057">⑤ process_result</text>
+  <text x="816" y="145" text-anchor="middle" font-size="10" fill="#868e96">出 token · 判完成 · 回流</text>
+
+  <path d="M178 128 L206 128" stroke="#868e96" stroke-width="2" marker-end="url(#arGb)"/>
+  <path d="M356 128 L384 128" stroke="#868e96" stroke-width="2" marker-end="url(#arGb)"/>
+  <path d="M534 128 L562 128" stroke="#868e96" stroke-width="2" marker-end="url(#arGb)"/>
+  <path d="M712 128 L740 128" stroke="#868e96" stroke-width="2" marker-end="url(#arGb)"/>
+
+  <text x="450" y="236" text-anchor="middle" font-size="14" font-weight="700" fill="#343a40">③ 展开：get_next_batch_to_run() 的决策链</text>
+
+  <!-- decision ladder -->
+  <rect x="70" y="252" width="300" height="50" rx="9" fill="#f8f9fa" stroke="#ced4da"/>
+  <text x="220" y="283" text-anchor="middle" font-size="12" fill="#343a40">① 上一轮是 extend / prefill batch？</text>
+
+  <rect x="70" y="334" width="300" height="50" rx="9" fill="#f8f9fa" stroke="#ced4da"/>
+  <text x="220" y="358" text-anchor="middle" font-size="12" fill="#343a40">② 能从 waiting_queue</text>
+  <text x="220" y="375" text-anchor="middle" font-size="12" fill="#343a40">组出新的 prefill batch？</text>
+
+  <rect x="70" y="416" width="300" height="50" rx="9" fill="#f8f9fa" stroke="#ced4da"/>
+  <text x="220" y="440" text-anchor="middle" font-size="12" fill="#343a40">③ running_batch 非空</text>
+  <text x="220" y="457" text-anchor="middle" font-size="12" fill="#343a40">且非 prefill-only？</text>
+
+  <rect x="70" y="498" width="300" height="46" rx="9" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="220" y="526" text-anchor="middle" font-size="12.5" font-weight="700" fill="#495057">返回 None — 服务器空闲</text>
+
+  <!-- right outcomes -->
+  <rect x="470" y="252" width="390" height="50" rx="9" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="488" y="275" font-size="12" font-weight="700" fill="#0b7285">merge_batch：完成的 prefill 请求并入 running_batch</text>
+  <text x="488" y="293" font-size="10.5" fill="#495057">它们从此进入 decode 循环</text>
+
+  <rect x="470" y="334" width="390" height="50" rx="9" fill="#edf2ff" stroke="#4c6ef5" stroke-width="2"/>
+  <text x="488" y="357" font-size="12.5" font-weight="700" fill="#3b5bdb">★ 返回 prefill batch —— 优先于 decode</text>
+  <text x="488" y="375" font-size="10.5" fill="#495057">保证新请求 TTFT 不被 decode 阻塞</text>
+
+  <rect x="470" y="416" width="390" height="50" rx="9" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="488" y="439" font-size="12" font-weight="700" fill="#0b7285">update_running_batch → 返回 decode batch</text>
+  <text x="488" y="457" font-size="10.5" fill="#495057">没有可做的 prefill 时才推进 decode</text>
+
+  <!-- spine arrows -->
+  <path d="M130 302 L130 332" stroke="#868e96" stroke-width="2" marker-end="url(#arGb)"/>
+  <text x="150" y="321" font-size="10.5" fill="#868e96">继续</text>
+  <path d="M130 384 L130 414" stroke="#868e96" stroke-width="2" marker-end="url(#arGb)"/>
+  <text x="150" y="403" font-size="10.5" fill="#868e96">没有</text>
+  <path d="M130 466 L130 496" stroke="#868e96" stroke-width="2" marker-end="url(#arGb)"/>
+  <text x="150" y="485" font-size="10.5" fill="#868e96">否</text>
+
+  <!-- branch arrows -->
+  <path d="M370 277 L468 277" stroke="#868e96" stroke-width="2" marker-end="url(#arGb)"/>
+  <text x="419" y="270" text-anchor="middle" font-size="10.5" font-weight="700" fill="#495057">是</text>
+  <path d="M370 359 L468 359" stroke="#4c6ef5" stroke-width="2" marker-end="url(#arBb)"/>
+  <text x="419" y="352" text-anchor="middle" font-size="10.5" font-weight="700" fill="#3b5bdb">有</text>
+  <path d="M370 441 L468 441" stroke="#868e96" stroke-width="2" marker-end="url(#arGb)"/>
+  <text x="419" y="434" text-anchor="middle" font-size="10.5" font-weight="700" fill="#495057">是</text>
+
+  <!-- note -->
+  <rect x="30" y="560" width="830" height="40" rx="10" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="48" y="585" font-size="12" fill="#495057">返回的其实是 NextBatchPlan；重点在决策顺序：只要 waiting_queue 还能组出 prefill，就先 prefill，用新请求的首 token 延迟换取吞吐。</text>
+
+  <defs>
+    <marker id="arGb" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#868e96"/></marker>
+    <marker id="arBb" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#4c6ef5"/></marker>
+  </defs>
+</svg>

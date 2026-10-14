@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 470" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="470" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">“推理”由三份状态共同决定，它们住在不同的地方</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">每一项有自己的所有者、设置方式和作用范围；任何一个开关都不会顺手改另外两项</text>
+
+  <!-- Column A: module state -->
+  <rect x="40" y="78" width="260" height="300" rx="10" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="40" y="78" width="260" height="36" rx="10" fill="#4c6ef5"/>
+  <rect x="40" y="100" width="260" height="14" fill="#4c6ef5"/>
+  <text x="170" y="102" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">① module 行为状态</text>
+  <g font-size="12" fill="#495057">
+    <text x="58" y="140" font-weight="700" fill="#3b5bdb">存放在哪</text>
+    <text x="58" y="160">module 对象的 <tspan font-family="monospace">training</tspan> 属性</text>
+    <text x="58" y="188" font-weight="700" fill="#3b5bdb">怎么设置</text>
+    <text x="58" y="208" font-family="monospace">model.eval() / .train()</text>
+    <text x="58" y="226">递归作用于所有子 module</text>
+    <text x="58" y="254" font-weight="700" fill="#3b5bdb">作用范围</text>
+    <text x="58" y="274">对象本身：共享对象的线程</text>
+    <text x="58" y="292">看到的是同一份状态</text>
+    <text x="58" y="320" font-weight="700" fill="#c92a2a">它不管</text>
+    <text x="58" y="340">autograd 是否记录图；</text>
+    <text x="58" y="358">函数式 API 显式传入的参数</text>
+  </g>
+
+  <!-- Column B: grad mode -->
+  <rect x="320" y="78" width="260" height="300" rx="10" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="320" y="78" width="260" height="36" rx="10" fill="#0ca678"/>
+  <rect x="320" y="100" width="260" height="14" fill="#0ca678"/>
+  <text x="450" y="102" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">② 梯度 context</text>
+  <g font-size="12" fill="#495057">
+    <text x="338" y="140" font-weight="700" fill="#0b7285">存放在哪</text>
+    <text x="338" y="160">当前线程的 grad mode</text>
+    <text x="338" y="188" font-weight="700" fill="#0b7285">怎么设置</text>
+    <text x="338" y="208" font-family="monospace" font-size="11">with no_grad() / inference_mode()</text>
+    <text x="338" y="226">或作为装饰器包住函数</text>
+    <text x="338" y="254" font-weight="700" fill="#0b7285">作用范围</text>
+    <text x="338" y="274">进入区域的那个线程；</text>
+    <text x="338" y="292">退出区域即恢复原值</text>
+    <text x="338" y="320" font-weight="700" fill="#c92a2a">它不管</text>
+    <text x="338" y="340">module.training；</text>
+    <text x="338" y="358">数据是否被原地改写</text>
+  </g>
+  <text x="560" y="160" text-anchor="end" font-size="11" fill="#868e96">thread-local</text>
+
+  <!-- Column C: runtime / cache state -->
+  <rect x="600" y="78" width="260" height="300" rx="10" fill="#fff4e6" stroke="#f08c00"/>
+  <rect x="600" y="78" width="260" height="36" rx="10" fill="#f08c00"/>
+  <rect x="600" y="100" width="260" height="14" fill="#f08c00"/>
+  <text x="730" y="102" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">③ 请求 / 缓存状态</text>
+  <g font-size="12" fill="#495057">
+    <text x="618" y="140" font-weight="700" fill="#e8590c">存放在哪</text>
+    <text x="618" y="160">运行时持有的可变 buffer：</text>
+    <text x="618" y="178">KV cache、位置、RNG 等</text>
+    <text x="618" y="206" font-weight="700" fill="#e8590c">怎么设置</text>
+    <text x="618" y="226">调度器分配 slot，forward</text>
+    <text x="618" y="244">中原地写入新的 K/V</text>
+    <text x="618" y="272" font-weight="700" fill="#e8590c">作用范围</text>
+    <text x="618" y="292">所有共享该 storage 的</text>
+    <text x="618" y="310">张量、view 和请求</text>
+    <text x="618" y="338" font-weight="700" fill="#c92a2a">它不受谁管</text>
+    <text x="618" y="358">①② 都不会让它变成只读</text>
+  </g>
+
+  <!-- question row -->
+  <g font-size="11.5" fill="#868e96" text-anchor="middle">
+    <text x="170" y="398">Dropout 还会生效吗？</text>
+    <text x="450" y="398">会记录反向图、保存激活吗？</text>
+    <text x="730" y="398">同一输入再跑一遍，结果一样吗？</text>
+  </g>
+
+  <!-- note -->
+  <rect x="40" y="414" width="820" height="40" rx="9" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="58" y="439" font-size="12" fill="#495057">要点：<tspan font-family="monospace">eval()</tspan> 改对象，<tspan font-family="monospace">no_grad / inference_mode</tspan> 改线程，KV cache 归运行时——三项要分别设对，谁也替代不了谁。</text>
+</svg>

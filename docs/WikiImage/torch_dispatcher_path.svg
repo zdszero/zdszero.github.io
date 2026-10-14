@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 670" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#868e96"/>
+    </marker>
+    <marker id="arb" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#4c6ef5"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="900" height="670" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">一次 torch.add 从 Python 到 GPU kernel 的路径</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">Dispatcher 不是“选一次实现”，而是按 dispatch key 优先级逐层处理、逐层 redispatch（简化示意）</text>
+
+  <!-- 1. Python call -->
+  <rect x="30" y="76" width="570" height="44" rx="9" fill="#f8f9fa" stroke="#adb5bd"/>
+  <text x="46" y="96" font-size="13" font-weight="700" fill="#495057">Python 调用</text>
+  <text x="46" y="112" font-size="11.5" font-family="monospace" fill="#495057">y = torch.add(x, b)      # x: [B, H] bf16 cuda,  b: [H] bf16 cuda</text>
+  <path d="M315 120 L315 134" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+
+  <!-- 2. Binding -->
+  <rect x="30" y="136" width="570" height="44" rx="9" fill="#f8f9fa" stroke="#adb5bd"/>
+  <text x="46" y="156" font-size="13" font-weight="700" fill="#495057">Python binding（代码生成）：解析参数、匹配 overload</text>
+  <text x="46" y="172" font-size="11.5" font-family="monospace" fill="#495057">aten::add.Tensor(Tensor self, Tensor other, *, Scalar alpha=1) -&gt; Tensor</text>
+  <path d="M315 180 L315 194" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+
+  <!-- 3. Dispatcher -->
+  <rect x="30" y="196" width="570" height="58" rx="9" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="46" y="216" font-size="13" font-weight="700" fill="#3b5bdb">Dispatcher：计算 dispatch key set，取优先级最高的 key</text>
+  <text x="46" y="234" font-size="11.5" fill="#495057">key set = 所有输入张量的 key 并集 ∪ TLS include − TLS exclude</text>
+  <text x="46" y="248" font-size="11" fill="#868e96">TLS（线程局部状态）由 autocast、inference_mode、FakeTensorMode 等上下文修改</text>
+  <path d="M315 254 L315 266" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+
+  <!-- onion container -->
+  <rect x="30" y="268" width="570" height="208" rx="10" fill="#ffffff" stroke="#4c6ef5" stroke-dasharray="5 4"/>
+  <text x="590" y="284" text-anchor="end" font-size="11" fill="#868e96">优先级 高 → 低</text>
+  <!-- row: AutocastCUDA -->
+  <rect x="46" y="290" width="538" height="36" rx="7" fill="#fff9db" stroke="#f08c00"/>
+  <text x="60" y="313" font-size="12.5" font-weight="700" font-family="monospace" fill="#e8590c">AutocastCUDA</text>
+  <text x="200" y="313" font-size="11.5" fill="#495057">按算子策略转换输入 dtype；add 没有此层 kernel → fallthrough</text>
+  <!-- row: AutogradCUDA -->
+  <rect x="46" y="338" width="538" height="36" rx="7" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="60" y="361" font-size="12.5" font-weight="700" font-family="monospace" fill="#5f3dc4">AutogradCUDA</text>
+  <text x="200" y="361" font-size="11.5" fill="#495057">需要梯度时记录 grad_fn，然后 redispatch 到下一层</text>
+  <!-- row: ADInplaceOrView -->
+  <rect x="46" y="386" width="538" height="36" rx="7" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="60" y="409" font-size="12.5" font-weight="700" font-family="monospace" fill="#5f3dc4">ADInplaceOrView</text>
+  <text x="200" y="409" font-size="11.5" fill="#495057">in-place / view 算子更新 version counter 与 view 元数据</text>
+  <!-- row: CUDA backend -->
+  <rect x="46" y="434" width="538" height="36" rx="7" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="60" y="457" font-size="12.5" font-weight="700" font-family="monospace" fill="#0b7285">CUDA</text>
+  <text x="200" y="457" font-size="11.5" fill="#495057">backend kernel：<tspan font-family="monospace">add_kernel</tspan>，真正决定 GPU 上跑什么</text>
+  <!-- redispatch arrows -->
+  <g stroke="#4c6ef5" stroke-width="1.6">
+    <path d="M150 326 L150 336" marker-end="url(#arb)"/>
+    <path d="M150 374 L150 384" marker-end="url(#arb)"/>
+    <path d="M150 422 L150 432" marker-end="url(#arb)"/>
+  </g>
+  <g font-size="9.5" fill="#3b5bdb">
+    <text x="158" y="335">redispatch</text>
+    <text x="158" y="383">redispatch</text>
+    <text x="158" y="431">redispatch</text>
+  </g>
+
+  <!-- right column annotations -->
+  <text x="622" y="284" font-size="12" font-weight="700" fill="#212529">开启 inference_mode 后</text>
+  <rect x="620" y="290" width="258" height="36" rx="7" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="632" y="306" font-size="11" fill="#495057">只在 autocast 区域内生效（TLS 控制）</text>
+  <text x="632" y="320" font-size="11" fill="#868e96">与 inference_mode 无关</text>
+  <rect x="620" y="338" width="258" height="84" rx="7" fill="#fff5f5" stroke="#fa5252"/>
+  <text x="632" y="358" font-size="11.5" font-weight="700" fill="#c92a2a">TLS exclude：两层整体跳过</text>
+  <text x="632" y="376" font-size="11" fill="#495057">不建图、不更新 version counter</text>
+  <text x="632" y="394" font-size="11" fill="#495057">no_grad 则仍进入 Autograd 层，</text>
+  <text x="632" y="410" font-size="11" fill="#495057">只是不记录 grad_fn</text>
+  <path d="M584 380 L616 380" stroke="#fa5252" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <rect x="620" y="434" width="258" height="36" rx="7" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="632" y="450" font-size="11" fill="#0b7285">任何模式下都会到达</text>
+  <text x="632" y="464" font-size="11" fill="#868e96">FakeTensor 在 Python key 被接管，不到这层</text>
+
+  <path d="M315 476 L315 490" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <!-- TensorIterator -->
+  <rect x="30" y="492" width="570" height="48" rx="9" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="46" y="512" font-size="13" font-weight="700" fill="#0b7285">TensorIterator（逐元素 / 归约类算子的公共框架）</text>
+  <text x="46" y="530" font-size="11.5" fill="#495057">广播出输出 shape [B, H]、计算公共 dtype、分配输出、按 stride 选向量化或通用路径</text>
+  <path d="M315 540 L315 554" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <!-- GPU kernel -->
+  <rect x="30" y="556" width="570" height="40" rx="9" fill="#fff4e6" stroke="#f08c00"/>
+  <text x="46" y="581" font-size="12" font-family="monospace" fill="#e8590c">GPU: vectorized_elementwise_kernel&lt;..., AddFunctor&lt;bf16&gt;&gt;</text>
+  <text x="622" y="514" font-size="11" fill="#868e96">profiler CPU 侧看到 aten::add</text>
+  <text x="622" y="580" font-size="11" fill="#868e96">profiler CUDA 侧看到这个 kernel 名</text>
+
+  <!-- note -->
+  <rect x="30" y="612" width="848" height="42" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="46" y="630" font-size="12" fill="#495057">关键：autograd、autocast、追踪等“横切关注点”各占一个 key，backend 也只是其中一个 key。</text>
+  <text x="46" y="646" font-size="12" fill="#495057">某层没有注册 kernel 就 fallthrough；inference_mode 的收益正是把两层从每次调用里拿掉。</text>
+</svg>

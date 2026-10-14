@@ -1,0 +1,966 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    Kimi K3 参数量与权重存储精算
+  </title>
+    <link rel="stylesheet" href="./WikiTheme/theme/bootstrap.css"  />
+          <!-- wiki three-column layout styles/behavior, kept external so the ~5KB
+       block isn't duplicated into every generated page -->
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/wiki-layout.css" />
+  <script defer src="./WikiTheme/wiki-layout.js"></script>
+</head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">Kimi K3 参数量与权重存储精算</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="wiki-layout">
+    <nav class="wiki-sidebar" id="wiki-sidebar" hidden></nav>
+    <main class="wiki-main">
+            <h3 id="config">Config</h3>
+            <table>
+            <colgroup>
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th style="text-align: left;">配置项</th>
+            <th style="text-align: right;">数值</th>
+            <th style="text-align: left;">计数意义</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td style="text-align: left;"><code>hidden_size</code></td>
+            <td style="text-align: right;">7168</td>
+            <td style="text-align: left;">主干维度 H</td>
+            </tr>
+            <tr>
+            <td
+            style="text-align: left;"><code>num_hidden_layers</code></td>
+            <td style="text-align: right;">93</td>
+            <td style="text-align: left;">层列表为 1-based；权重名为
+            0-based</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">KDA / MLA 层数</td>
+            <td style="text-align: right;">69 / 24</td>
+            <td style="text-align: left;">MLA 为 4、8、…、92 及 93
+            层</td>
+            </tr>
+            <tr>
+            <td
+            style="text-align: left;"><code>first_k_dense_replace</code>
+            / <code>moe_layer_freq</code></td>
+            <td style="text-align: right;">1 / 1</td>
+            <td style="text-align: left;">第 1 层 dense，其余 92 层
+            MoE</td>
+            </tr>
+            <tr>
+            <td
+            style="text-align: left;"><code>intermediate_size</code></td>
+            <td style="text-align: right;">33792</td>
+            <td style="text-align: left;">Dense FFN 中间维度</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;"><code>num_experts</code> /
+            <code>num_experts_per_token</code></td>
+            <td style="text-align: right;">896 / 16</td>
+            <td style="text-align: left;">每层路由专家总数 / 每 token
+            选中数</td>
+            </tr>
+            <tr>
+            <td
+            style="text-align: left;"><code>num_shared_experts</code></td>
+            <td style="text-align: right;">2</td>
+            <td style="text-align: left;">合并中间维度 2 × 3072 =
+            6144</td>
+            </tr>
+            <tr>
+            <td
+            style="text-align: left;"><code>routed_expert_hidden_size</code></td>
+            <td style="text-align: right;">3584</td>
+            <td style="text-align: left;">路由专家的 latent 维度 D</td>
+            </tr>
+            <tr>
+            <td
+            style="text-align: left;"><code>moe_intermediate_size</code></td>
+            <td style="text-align: right;">3072</td>
+            <td style="text-align: left;">每个专家中间维度 M</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">KDA heads × head dim</td>
+            <td style="text-align: right;">96 × 128 = 12288</td>
+            <td style="text-align: left;">Q/K/V/G/O 投影宽度</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">MLA Q / KV rank</td>
+            <td style="text-align: right;">1536 / 512</td>
+            <td style="text-align: left;">Q、KV 低秩维度</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">MLA nope / rope / V dim</td>
+            <td style="text-align: right;">128 / 64 / 128</td>
+            <td style="text-align: left;"><code>mla_use_nope=true</code>
+            不代表删除 checkpoint 的 rope 维权重</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;"><code>vocab_size</code> /
+            <code>tie_word_embeddings</code></td>
+            <td style="text-align: right;">163840 / false</td>
+            <td style="text-align: left;">Embedding 和 LM head
+            分别计数</td>
+            </tr>
+            <tr>
+            <td
+            style="text-align: left;"><code>num_nextn_predict_layers</code></td>
+            <td style="text-align: right;">0</td>
+            <td style="text-align: left;">不计 MTP 层</td>
+            </tr>
+            </tbody>
+            </table>
+            <h3 id="精算总览">精算总览</h3>
+            <table>
+            <thead>
+            <tr>
+            <th style="text-align: left;">模块</th>
+            <th style="text-align: right;">逻辑参数量</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td style="text-align: left;">69 层 KDA 注意力（含其内部
+            norm / conv）</td>
+            <td style="text-align: right;">30,618,088,704</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">24 层 MLA 注意力（含 Q/KV
+            norm）</td>
+            <td style="text-align: right;">5,572,706,304</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">93 层公共 norm 与 Attention
+            Residual 投影</td>
+            <td style="text-align: right;">3,999,744</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">1 层 Dense FFN</td>
+            <td style="text-align: right;">726,663,168</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">92 层共享专家</td>
+            <td style="text-align: right;">12,155,092,992</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">92 层路由器（含 correction
+            bias）</td>
+            <td style="text-align: right;">590,955,008</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">92 层 latent 上下投影与
+            norm</td>
+            <td style="text-align: right;">4,727,310,336</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">92 × 896 个路由专家</td>
+            <td style="text-align: right;">2,722,740,830,208</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">Embedding、LM head 与输出 norm
+            / residual</td>
+            <td style="text-align: right;">2,348,831,744</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">语言模型合计</td>
+            <td style="text-align: right;">2,779,484,478,208</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">Vision tower</td>
+            <td style="text-align: right;">401,214,464</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">多模态 projector</td>
+            <td style="text-align: right;">46,144,512</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">完整多模态模型合计</td>
+            <td style="text-align: right;">2,779,931,837,184</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>完整模型为 <strong>2.779931837 T</strong>（2779.931837
+            B）；语言模型为 <strong>2.779484478 T</strong>。</p>
+            <p>单 token 的语言模型激活参数口径为：所有公共权重加每层 16
+            个路由专家（包含完整 embedding / LM head
+            表的常见架构统计口径）：</p>
+            <p><code>P_active = P_text − 92 × (896 − 16) × (3 × 3584 × 3072) = 105,364,019,968 ≈ 105.364020 B</code>。</p>
+            <p>这不是实际逐 token 读取量或 FLOPs：embedding
+            只查一行，注意力还受序列长度影响；视觉参数是否执行取决于输入。</p>
+            <table>
+            <thead>
+            <tr>
+            <th style="text-align: left;">存储类别</th>
+            <th style="text-align: right;">逻辑参数量</th>
+            <th style="text-align: right;">权重 Bytes（含 MXFP4
+            scale）</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td style="text-align: left;">路由专家 MXFP4</td>
+            <td style="text-align: right;">2,722,740,830,208</td>
+            <td style="text-align: right;">1,446,456,066,048</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">语言模型其他 BF16</td>
+            <td style="text-align: right;">56,732,525,568</td>
+            <td style="text-align: right;">113,465,051,136</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">语言模型 FP32</td>
+            <td style="text-align: right;">11,122,432</td>
+            <td style="text-align: right;">44,489,728</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">语言模型合计</td>
+            <td style="text-align: right;">2,779,484,478,208</td>
+            <td style="text-align: right;">1,559,965,606,912</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">视觉与 projector（按
+            BF16）</td>
+            <td style="text-align: right;">447,358,976</td>
+            <td style="text-align: right;">894,717,952</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">完整多模态模型合计</td>
+            <td style="text-align: right;">2,779,931,837,184</td>
+            <td style="text-align: right;">1,560,860,324,864</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>混合精度完整权重约 <strong>1560.860 GB / 1453.664
+            GiB</strong>。若统一按 BF16 理论折算，则为
+            <code>5,559,863,674,368</code> Bytes；不能用 4 bit
+            直接乘完整模型参数量。</p>
+            <h3 id="分模块张量明细">分模块张量明细</h3>
+            <p>MLA、KDA 两表均包含每层的 6 个公共向量（合计 43,008 参数
+            / 86,016 Bytes）；总览中已单独提取，不能重复相加。FFN
+            表另计。</p>
+            <h3 id="layer-0-mlp">Layer 0 MLP</h3>
+            <table>
+            <colgroup>
+            <col style="width: 20%" />
+            <col style="width: 20%" />
+            <col style="width: 20%" />
+            <col style="width: 20%" />
+            <col style="width: 20%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th style="text-align: left;">权重名称</th>
+            <th style="text-align: left;">形状</th>
+            <th style="text-align: left;">数据类型</th>
+            <th style="text-align: left;">参数量</th>
+            <th style="text-align: left;">字节数 (Bytes)</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td
+            style="text-align: left;">layers.0.mlp.down_proj.weight</td>
+            <td style="text-align: left;">[7168, 33792]</td>
+            <td style="text-align: left;">BF16</td>
+            <td style="text-align: left;">242,221,056</td>
+            <td style="text-align: left;">484,442,112</td>
+            </tr>
+            <tr>
+            <td
+            style="text-align: left;">layers.0.mlp.gate_proj.weight</td>
+            <td style="text-align: left;">[33792, 7168]</td>
+            <td style="text-align: left;">BF16</td>
+            <td style="text-align: left;">242,221,056</td>
+            <td style="text-align: left;">484,442,112</td>
+            </tr>
+            <tr>
+            <td
+            style="text-align: left;">layers.0.mlp.up_proj.weight</td>
+            <td style="text-align: left;">[33792, 7168]</td>
+            <td style="text-align: left;">BF16</td>
+            <td style="text-align: left;">242,221,056</td>
+            <td style="text-align: left;">484,442,112</td>
+            </tr>
+            </tbody>
+            </table>
+            <h3 id="mla">MLA</h3>
+            <table>
+            <colgroup>
+            <col style="width: 20%" />
+            <col style="width: 20%" />
+            <col style="width: 20%" />
+            <col style="width: 20%" />
+            <col style="width: 20%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th style="text-align: left;">参数字段</th>
+            <th style="text-align: left;">张量形状</th>
+            <th style="text-align: left;">数据类型</th>
+            <th style="text-align: left;">参数量</th>
+            <th style="text-align: left;">总字节数</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td style="text-align: left;">input_layernorm.weight</td>
+            <td style="text-align: left;">[7168]</td>
+            <td style="text-align: left;">BF16</td>
+            <td style="text-align: left;">7,168</td>
+            <td style="text-align: left;">14,336</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">mlp_res_norm.weight</td>
+            <td style="text-align: left;">[7168]</td>
+            <td style="text-align: left;">BF16</td>
+            <td style="text-align: left;">7,168</td>
+            <td style="text-align: left;">14,336</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">mlp_res_proj.weight</td>
+            <td style="text-align: left;">[1, 7168]</td>
+            <td style="text-align: left;">BF16</td>
+            <td style="text-align: left;">7,168</td>
+            <td style="text-align: left;">14,336</td>
+            </tr>
+            <tr>
+            <td
+            style="text-align: left;">post_attention_layernorm.weight</td>
+            <td style="text-align: left;">[7168]</td>
+            <td style="text-align: left;">BF16</td>
+            <td style="text-align: left;">7,168</td>
+            <td style="text-align: left;">14,336</td>
+            </tr>
+            <tr>
+            <td
+            style="text-align: left;">self_attention_res_norm.weight</td>
+            <td style="text-align: left;">[7168]</td>
+            <td style="text-align: left;">BF16</td>
+            <td style="text-align: left;">7,168</td>
+            <td style="text-align: left;">14,336</td>
+            </tr>
+            <tr>
+            <td
+            style="text-align: left;">self_attention_res_proj.weight</td>
+            <td style="text-align: left;">[1, 7168]</td>
+            <td style="text-align: left;">BF16</td>
+            <td style="text-align: left;">7,168</td>
+            <td style="text-align: left;">14,336</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">self_attn.g_proj.weight</td>
+            <td style="text-align: left;">[12288, 7168]</td>
+            <td style="text-align: left;">BF16</td>
+            <td style="text-align: left;">88,080,384</td>
+            <td style="text-align: left;">176,160,768</td>
+            </tr>
+            <tr>
+            <td
+            style="text-align: left;">self_attn.kv_a_layernorm.weight</td>
+            <td style="text-align: left;">[512]</td>
+            <td style="text-align: left;">BF16</td>
+            <td style="text-align: left;">512</td>
+            <td style="text-align: left;">1,024</td>
+            </tr>
+            <tr>
+            <td
+            style="text-align: left;">self_attn.kv_a_proj_with_mqa.weight</td>
+            <td style="text-align: left;">[576, 7168]</td>
+            <td style="text-align: left;">BF16</td>
+            <td style="text-align: left;">4,128,768</td>
+            <td style="text-align: left;">8,257,536</td>
+            </tr>
+            <tr>
+            <td
+            style="text-align: left;">self_attn.kv_b_proj.weight</td>
+            <td style="text-align: left;">[24576, 512]</td>
+            <td style="text-align: left;">BF16</td>
+            <td style="text-align: left;">12,582,912</td>
+            <td style="text-align: left;">25,165,824</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">self_attn.o_proj.weight</td>
+            <td style="text-align: left;">[7168, 12288]</td>
+            <td style="text-align: left;">BF16</td>
+            <td style="text-align: left;">88,080,384</td>
+            <td style="text-align: left;">176,160,768</td>
+            </tr>
+            <tr>
+            <td
+            style="text-align: left;">self_attn.q_a_layernorm.weight</td>
+            <td style="text-align: left;">[1536]</td>
+            <td style="text-align: left;">BF16</td>
+            <td style="text-align: left;">1,536</td>
+            <td style="text-align: left;">3,072</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">self_attn.q_a_proj.weight</td>
+            <td style="text-align: left;">[1536, 7168]</td>
+            <td style="text-align: left;">BF16</td>
+            <td style="text-align: left;">11,010,048</td>
+            <td style="text-align: left;">22,020,096</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">self_attn.q_b_proj.weight</td>
+            <td style="text-align: left;">[18432, 1536]</td>
+            <td style="text-align: left;">BF16</td>
+            <td style="text-align: left;">28,311,552</td>
+            <td style="text-align: left;">56,623,104</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;"></td>
+            <td style="text-align: left;"></td>
+            <td style="text-align: left;"></td>
+            <td style="text-align: left;"></td>
+            <td style="text-align: left;">464,478,208</td>
+            </tr>
+            </tbody>
+            </table>
+            <h3 id="kda">KDA</h3>
+            <table>
+            <colgroup>
+            <col style="width: 20%" />
+            <col style="width: 20%" />
+            <col style="width: 20%" />
+            <col style="width: 20%" />
+            <col style="width: 20%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th style="text-align: left;">参数字段</th>
+            <th style="text-align: left;">张量形状</th>
+            <th style="text-align: left;">数据类型</th>
+            <th style="text-align: left;">参数量</th>
+            <th style="text-align: left;">总字节数</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td style="text-align: left;">input_layernorm.weight</td>
+            <td style="text-align: left;">[7168]</td>
+            <td style="text-align: left;">BF16</td>
+            <td style="text-align: left;">7,168</td>
+            <td style="text-align: left;">14,336</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">mlp_res_norm.weight</td>
+            <td style="text-align: left;">[7168]</td>
+            <td style="text-align: left;">BF16</td>
+            <td style="text-align: left;">7,168</td>
+            <td style="text-align: left;">14,336</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">mlp_res_proj.weight</td>
+            <td style="text-align: left;">[1, 7168]</td>
+            <td style="text-align: left;">BF16</td>
+            <td style="text-align: left;">7,168</td>
+            <td style="text-align: left;">14,336</td>
+            </tr>
+            <tr>
+            <td
+            style="text-align: left;">post_attention_layernorm.weight</td>
+            <td style="text-align: left;">[7168]</td>
+            <td style="text-align: left;">BF16</td>
+            <td style="text-align: left;">7,168</td>
+            <td style="text-align: left;">14,336</td>
+            </tr>
+            <tr>
+            <td
+            style="text-align: left;">self_attention_res_norm.weight</td>
+            <td style="text-align: left;">[7168]</td>
+            <td style="text-align: left;">BF16</td>
+            <td style="text-align: left;">7,168</td>
+            <td style="text-align: left;">14,336</td>
+            </tr>
+            <tr>
+            <td
+            style="text-align: left;">self_attention_res_proj.weight</td>
+            <td style="text-align: left;">[1, 7168]</td>
+            <td style="text-align: left;">BF16</td>
+            <td style="text-align: left;">7,168</td>
+            <td style="text-align: left;">14,336</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">self_attn.A_log</td>
+            <td style="text-align: left;">[128]</td>
+            <td style="text-align: left;">F32</td>
+            <td style="text-align: left;">128</td>
+            <td style="text-align: left;">512</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">self_attn.b_proj.weight</td>
+            <td style="text-align: left;">[96, 7168]</td>
+            <td style="text-align: left;">BF16</td>
+            <td style="text-align: left;">688,128</td>
+            <td style="text-align: left;">1,376,256</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">self_attn.dt_bias</td>
+            <td style="text-align: left;">[12288]</td>
+            <td style="text-align: left;">F32</td>
+            <td style="text-align: left;">12,288</td>
+            <td style="text-align: left;">49,152</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">self_attn.f_a_proj.weight</td>
+            <td style="text-align: left;">[128, 7168]</td>
+            <td style="text-align: left;">BF16</td>
+            <td style="text-align: left;">917,504</td>
+            <td style="text-align: left;">1,835,008</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">self_attn.f_b_proj.weight</td>
+            <td style="text-align: left;">[12288, 128]</td>
+            <td style="text-align: left;">BF16</td>
+            <td style="text-align: left;">1,572,864</td>
+            <td style="text-align: left;">3,145,728</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">self_attn.g_proj.weight</td>
+            <td style="text-align: left;">[12288, 7168]</td>
+            <td style="text-align: left;">BF16</td>
+            <td style="text-align: left;">88,080,384</td>
+            <td style="text-align: left;">176,160,768</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">self_attn.k_conv1d.weight</td>
+            <td style="text-align: left;">[12288, 1, 4]</td>
+            <td style="text-align: left;">F32</td>
+            <td style="text-align: left;">49,152</td>
+            <td style="text-align: left;">196,608</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">self_attn.k_proj.weight</td>
+            <td style="text-align: left;">[12288, 7168]</td>
+            <td style="text-align: left;">BF16</td>
+            <td style="text-align: left;">88,080,384</td>
+            <td style="text-align: left;">176,160,768</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">self_attn.o_norm.weight</td>
+            <td style="text-align: left;">[128]</td>
+            <td style="text-align: left;">F32</td>
+            <td style="text-align: left;">128</td>
+            <td style="text-align: left;">512</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">self_attn.o_proj.weight</td>
+            <td style="text-align: left;">[7168, 12288]</td>
+            <td style="text-align: left;">BF16</td>
+            <td style="text-align: left;">88,080,384</td>
+            <td style="text-align: left;">176,160,768</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">self_attn.q_conv1d.weight</td>
+            <td style="text-align: left;">[12288, 1, 4]</td>
+            <td style="text-align: left;">F32</td>
+            <td style="text-align: left;">49,152</td>
+            <td style="text-align: left;">196,608</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">self_attn.q_proj.weight</td>
+            <td style="text-align: left;">[12288, 7168]</td>
+            <td style="text-align: left;">BF16</td>
+            <td style="text-align: left;">88,080,384</td>
+            <td style="text-align: left;">176,160,768</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">self_attn.v_conv1d.weight</td>
+            <td style="text-align: left;">[12288, 1, 4]</td>
+            <td style="text-align: left;">F32</td>
+            <td style="text-align: left;">49,152</td>
+            <td style="text-align: left;">196,608</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">self_attn.v_proj.weight</td>
+            <td style="text-align: left;">[12288, 7168]</td>
+            <td style="text-align: left;">BF16</td>
+            <td style="text-align: left;">88,080,384</td>
+            <td style="text-align: left;">176,160,768</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;"></td>
+            <td style="text-align: left;"></td>
+            <td style="text-align: left;"></td>
+            <td style="text-align: left;"></td>
+            <td style="text-align: left;">887,886,848</td>
+            </tr>
+            </tbody>
+            </table>
+            <h3 id="moe">MoE</h3>
+            <p>每个 MoE 层的共享专家仍在 7168 维主干空间运行；896
+            个路由专家均在 3584 维 latent 空间运行。上下投影和 latent
+            norm 每层各一份，不随专家数重复。</p>
+            <ul>
+            <li>单个路由专家：<code>3 × 3584 × 3072 = 33,030,144</code>
+            逻辑参数。</li>
+            <li>每层全部路由专家：<code>896 × 33,030,144 = 29,595,009,024</code>
+            参数。</li>
+            <li>每层共享专家：<code>3 × 7168 × 6144 = 132,120,576</code>
+            参数。</li>
+            <li>每层 latent 投影及
+            norm：<code>2 × 7168 × 3584 + 3584 = 51,383,808</code>
+            参数。</li>
+            <li>每层路由器：<code>896 × 7168 + 896 = 6,423,424</code>
+            参数。</li>
+            <li>每层 MoE 合计：<strong>29,784,936,832
+            参数</strong>。</li>
+            </ul>
+            <p>下表 <code>weight_packed</code> 的“参数量”为 <strong>U8
+            存储元素数</strong>，并非逻辑参数量；每个 U8 存两个 FP4
+            权重。scale 不计入上述逻辑参数量。</p>
+            <table>
+            <colgroup>
+            <col style="width: 20%" />
+            <col style="width: 20%" />
+            <col style="width: 20%" />
+            <col style="width: 20%" />
+            <col style="width: 20%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th style="text-align: left;">参数字段</th>
+            <th style="text-align: left;">张量形状</th>
+            <th style="text-align: left;">数据类型</th>
+            <th style="text-align: left;">参数量</th>
+            <th style="text-align: left;">总字节数</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td
+            style="text-align: left;">shared_experts.down_proj.weight</td>
+            <td style="text-align: left;">[7168, 6144]</td>
+            <td style="text-align: left;">BF16</td>
+            <td style="text-align: left;">44,040,192</td>
+            <td style="text-align: left;">88,080,384</td>
+            </tr>
+            <tr>
+            <td
+            style="text-align: left;">shared_experts.gate_proj.weight</td>
+            <td style="text-align: left;">[6144, 7168]</td>
+            <td style="text-align: left;">BF16</td>
+            <td style="text-align: left;">44,040,192</td>
+            <td style="text-align: left;">88,080,384</td>
+            </tr>
+            <tr>
+            <td
+            style="text-align: left;">shared_experts.up_proj.weight</td>
+            <td style="text-align: left;">[6144, 7168]</td>
+            <td style="text-align: left;">BF16</td>
+            <td style="text-align: left;">44,040,192</td>
+            <td style="text-align: left;">88,080,384</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;"></td>
+            <td style="text-align: left;"></td>
+            <td style="text-align: left;"></td>
+            <td style="text-align: left;"></td>
+            <td style="text-align: left;">264,241,152</td>
+            </tr>
+            <tr>
+            <td
+            style="text-align: left;">gate.e_score_correction_bias</td>
+            <td style="text-align: left;">[896]</td>
+            <td style="text-align: left;">F32</td>
+            <td style="text-align: left;">896</td>
+            <td style="text-align: left;">3,584</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">gate.weight</td>
+            <td style="text-align: left;">[896, 7168]</td>
+            <td style="text-align: left;">BF16</td>
+            <td style="text-align: left;">6,422,528</td>
+            <td style="text-align: left;">12,845,056</td>
+            </tr>
+            <tr>
+            <td
+            style="text-align: left;">routed_expert_down_proj.weight</td>
+            <td style="text-align: left;">[3584, 7168]</td>
+            <td style="text-align: left;">BF16</td>
+            <td style="text-align: left;">25,690,112</td>
+            <td style="text-align: left;">51,380,224</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">routed_expert_norm.weight</td>
+            <td style="text-align: left;">[3584]</td>
+            <td style="text-align: left;">BF16</td>
+            <td style="text-align: left;">3,584</td>
+            <td style="text-align: left;">7,168</td>
+            </tr>
+            <tr>
+            <td
+            style="text-align: left;">routed_expert_up_proj.weight</td>
+            <td style="text-align: left;">[7168, 3584]</td>
+            <td style="text-align: left;">BF16</td>
+            <td style="text-align: left;">25,690,112</td>
+            <td style="text-align: left;">51,380,224</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;"></td>
+            <td style="text-align: left;"></td>
+            <td style="text-align: left;"></td>
+            <td style="text-align: left;"></td>
+            <td style="text-align: left;">115,616,256</td>
+            </tr>
+            <tr>
+            <td
+            style="text-align: left;">experts.0.w1.weight_packed</td>
+            <td style="text-align: left;">[3072, 1792]</td>
+            <td style="text-align: left;">U8</td>
+            <td style="text-align: left;">5,505,024</td>
+            <td style="text-align: left;">5,505,024</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">experts.0.w1.weight_scale</td>
+            <td style="text-align: left;">[3072, 112]</td>
+            <td style="text-align: left;">U8</td>
+            <td style="text-align: left;">344,064</td>
+            <td style="text-align: left;">344,064</td>
+            </tr>
+            <tr>
+            <td
+            style="text-align: left;">experts.0.w2.weight_packed</td>
+            <td style="text-align: left;">[3584, 1536]</td>
+            <td style="text-align: left;">U8</td>
+            <td style="text-align: left;">5,505,024</td>
+            <td style="text-align: left;">5,505,024</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">experts.0.w2.weight_scale</td>
+            <td style="text-align: left;">[3584, 96]</td>
+            <td style="text-align: left;">U8</td>
+            <td style="text-align: left;">344,064</td>
+            <td style="text-align: left;">344,064</td>
+            </tr>
+            <tr>
+            <td
+            style="text-align: left;">experts.0.w3.weight_packed</td>
+            <td style="text-align: left;">[3072, 1792]</td>
+            <td style="text-align: left;">U8</td>
+            <td style="text-align: left;">5,505,024</td>
+            <td style="text-align: left;">5,505,024</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">experts.0.w3.weight_scale</td>
+            <td style="text-align: left;">[3072, 112]</td>
+            <td style="text-align: left;">U8</td>
+            <td style="text-align: left;">344,064</td>
+            <td style="text-align: left;">344,064</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;"></td>
+            <td style="text-align: left;"></td>
+            <td style="text-align: left;"></td>
+            <td style="text-align: left;"></td>
+            <td style="text-align: left;">17,547,264</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>单个专家的 packed 数据为 16,515,072 Bytes，scale 为
+            1,032,192 Bytes，合计 17,547,264 Bytes。每层 896 个专家为
+            15,722,348,544 Bytes；加共享专家、路由器和 latent
+            投影后，每层 MoE 为 <strong>16,102,205,952
+            Bytes</strong>。</p>
+            <h3 id="etc">ETC</h3>
+            <table>
+            <colgroup>
+            <col style="width: 20%" />
+            <col style="width: 20%" />
+            <col style="width: 20%" />
+            <col style="width: 20%" />
+            <col style="width: 20%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th style="text-align: left;">权重名称</th>
+            <th style="text-align: left;">形状</th>
+            <th style="text-align: left;">数据类型</th>
+            <th style="text-align: left;">参数量</th>
+            <th style="text-align: left;">字节数 (Bytes)</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td style="text-align: left;">embed_tokens.weight</td>
+            <td style="text-align: left;">[163840, 7168]</td>
+            <td style="text-align: left;">BF16</td>
+            <td style="text-align: left;">1,174,405,120</td>
+            <td style="text-align: left;">2,348,810,240</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">model.norm.weight</td>
+            <td style="text-align: left;">[7168]</td>
+            <td style="text-align: left;">BF16</td>
+            <td style="text-align: left;">7,168</td>
+            <td style="text-align: left;">14,336</td>
+            </tr>
+            <tr>
+            <td
+            style="text-align: left;">model.output_attn_res_norm.weight</td>
+            <td style="text-align: left;">[7168]</td>
+            <td style="text-align: left;">BF16</td>
+            <td style="text-align: left;">7,168</td>
+            <td style="text-align: left;">14,336</td>
+            </tr>
+            <tr>
+            <td
+            style="text-align: left;">model.output_attn_res_proj.weight</td>
+            <td style="text-align: left;">[1, 7168]</td>
+            <td style="text-align: left;">BF16</td>
+            <td style="text-align: left;">7,168</td>
+            <td style="text-align: left;">14,336</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">lm_head.weight</td>
+            <td style="text-align: left;">[163840, 7168]</td>
+            <td style="text-align: left;">BF16</td>
+            <td style="text-align: left;">1,174,405,120</td>
+            <td style="text-align: left;">2,348,810,240</td>
+            </tr>
+            </tbody>
+            </table>
+            <h3 id="视觉模块与多模态投影">视觉模块与多模态投影</h3>
+            <p>依照本地 <code>kimi_k3_vl.py</code>
+            的构造：视觉注意力内部宽度是
+            <code>qkv_hidden_size=1536</code>，不是
+            <code>vt_hidden_size=1024</code>；视觉 MLP 为两矩阵 GELU
+            MLP，不按三矩阵 gated FFN 计算。配置关闭
+            attention、linear、patch projection bias。</p>
+            <table>
+            <thead>
+            <tr>
+            <th style="text-align: left;">模块</th>
+            <th style="text-align: left;">公式</th>
+            <th style="text-align: right;">参数量</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td style="text-align: left;">Patch embed</td>
+            <td style="text-align: left;">1024 × 3 × 14 × 14</td>
+            <td style="text-align: right;">602,112</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">空间位置嵌入</td>
+            <td style="text-align: left;">64 × 64 × 1024</td>
+            <td style="text-align: right;">4,194,304</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">每层视觉 QKV + O</td>
+            <td style="text-align: left;">3 × 1536 × 1024 + 1024 ×
+            1536</td>
+            <td style="text-align: right;">6,291,456</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">每层视觉 MLP</td>
+            <td style="text-align: left;">2 × 1024 × 4096</td>
+            <td style="text-align: right;">8,388,608</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">每层两组 RMSNorm</td>
+            <td style="text-align: left;">2 × 1024</td>
+            <td style="text-align: right;">2,048</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">27 层视觉 encoder</td>
+            <td style="text-align: left;">27 × 14,682,112</td>
+            <td style="text-align: right;">396,417,024</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">视觉 final RMSNorm</td>
+            <td style="text-align: left;">1024</td>
+            <td style="text-align: right;">1,024</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">Vision tower 合计</td>
+            <td style="text-align: left;">上述非重复项之和</td>
+            <td style="text-align: right;">401,214,464</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">Projector 第一矩阵</td>
+            <td style="text-align: left;">4096 × 4096</td>
+            <td style="text-align: right;">16,777,216</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">Projector 第二矩阵</td>
+            <td style="text-align: left;">7168 × 4096</td>
+            <td style="text-align: right;">29,360,128</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">Projector post RMSNorm</td>
+            <td style="text-align: left;">7168</td>
+            <td style="text-align: right;">7,168</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">Projector 合计</td>
+            <td style="text-align: left;">16,777,216 + 29,360,128 +
+            7,168</td>
+            <td style="text-align: right;">46,144,512</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>2 × 2 patch 合并得到 4096 维输入。时间位置编码为固定
+            sin/cos、非持久
+            buffer，不计参数；时间池化也不增加权重。视觉与 projector
+            合计 <strong>447,358,976 参数</strong>。</p>
+          </main>
+        <aside class="wiki-toc">
+      <ul>
+      <li><a href="#config" id="toc-config">Config</a></li>
+      <li><a href="#精算总览" id="toc-精算总览">精算总览</a></li>
+      <li><a href="#分模块张量明细"
+      id="toc-分模块张量明细">分模块张量明细</a></li>
+      <li><a href="#layer-0-mlp" id="toc-layer-0-mlp">Layer 0
+      MLP</a></li>
+      <li><a href="#mla" id="toc-mla">MLA</a></li>
+      <li><a href="#kda" id="toc-kda">KDA</a></li>
+      <li><a href="#moe" id="toc-moe">MoE</a></li>
+      <li><a href="#etc" id="toc-etc">ETC</a></li>
+      <li><a href="#视觉模块与多模态投影"
+      id="toc-视觉模块与多模态投影">视觉模块与多模态投影</a></li>
+      </ul>
+    </aside>
+      </div>
+</body>
+
+</html>

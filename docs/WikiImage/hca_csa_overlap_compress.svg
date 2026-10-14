@@ -1,0 +1,133 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="600" rx="12" fill="#ffffff"/>
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#868e96"/>
+    </marker>
+    <marker id="arb" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#4c6ef5"/>
+    </marker>
+    <marker id="arg" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#7048e8"/>
+    </marker>
+  </defs>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">CSA 的重叠压缩：每条压缩 KV 看 2m 个 token，步长仍是 m</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">m = 4：第 i 条用「块 i 的 Cᵃ」和「块 i−1 的 Cᵇ」，8 个槽位一起做逐通道 softmax</text>
+
+  <!-- block labels -->
+  <text x="222" y="84" text-anchor="middle" font-size="12.5" font-weight="700" fill="#495057">块 0</text>
+  <text x="454" y="84" text-anchor="middle" font-size="12.5" font-weight="700" fill="#495057">块 1</text>
+  <text x="686" y="84" text-anchor="middle" font-size="12.5" font-weight="700" fill="#495057">块 2</text>
+  <path d="M120 98 L120 92 L324 92 L324 98" fill="none" stroke="#adb5bd" stroke-width="1.5"/>
+  <path d="M352 98 L352 92 L556 92 L556 98" fill="none" stroke="#adb5bd" stroke-width="1.5"/>
+  <path d="M584 98 L584 92 L788 92 L788 98" fill="none" stroke="#adb5bd" stroke-width="1.5"/>
+
+  <!-- padding box -->
+  <rect x="28" y="106" width="72" height="56" rx="6" fill="#f8f9fa" stroke="#adb5bd" stroke-dasharray="4 3"/>
+  <text x="64" y="128" text-anchor="middle" font-size="11" fill="#868e96">块 −1</text>
+  <text x="64" y="146" text-anchor="middle" font-size="10.5" font-family="monospace" fill="#868e96">Z=−∞ C=0</text>
+
+  <!-- legend -->
+  <rect x="820" y="110" width="14" height="12" rx="2" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="840" y="121" font-size="11" fill="#3b5bdb">Cᵃ,Zᵃ</text>
+  <rect x="820" y="140" width="14" height="12" rx="2" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="840" y="151" font-size="11" fill="#5f3dc4">Cᵇ,Zᵇ</text>
+  <rect x="120" y="106" width="48" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="120" y="136" width="48" height="26" rx="4" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="144" y="180" text-anchor="middle" font-size="11" font-family="monospace" fill="#495057">t0</text>
+  <rect x="172" y="106" width="48" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="172" y="136" width="48" height="26" rx="4" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="196" y="180" text-anchor="middle" font-size="11" font-family="monospace" fill="#495057">t1</text>
+  <rect x="224" y="106" width="48" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="224" y="136" width="48" height="26" rx="4" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="248" y="180" text-anchor="middle" font-size="11" font-family="monospace" fill="#495057">t2</text>
+  <rect x="276" y="106" width="48" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="276" y="136" width="48" height="26" rx="4" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="300" y="180" text-anchor="middle" font-size="11" font-family="monospace" fill="#495057">t3</text>
+  <rect x="352" y="106" width="48" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="352" y="136" width="48" height="26" rx="4" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="376" y="180" text-anchor="middle" font-size="11" font-family="monospace" fill="#495057">t4</text>
+  <rect x="404" y="106" width="48" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="404" y="136" width="48" height="26" rx="4" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="428" y="180" text-anchor="middle" font-size="11" font-family="monospace" fill="#495057">t5</text>
+  <rect x="456" y="106" width="48" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="456" y="136" width="48" height="26" rx="4" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="480" y="180" text-anchor="middle" font-size="11" font-family="monospace" fill="#495057">t6</text>
+  <rect x="508" y="106" width="48" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="508" y="136" width="48" height="26" rx="4" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="532" y="180" text-anchor="middle" font-size="11" font-family="monospace" fill="#495057">t7</text>
+  <rect x="584" y="106" width="48" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="584" y="136" width="48" height="26" rx="4" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="608" y="180" text-anchor="middle" font-size="11" font-family="monospace" fill="#495057">t8</text>
+  <rect x="636" y="106" width="48" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="636" y="136" width="48" height="26" rx="4" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="660" y="180" text-anchor="middle" font-size="11" font-family="monospace" fill="#495057">t9</text>
+  <rect x="688" y="106" width="48" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="688" y="136" width="48" height="26" rx="4" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="712" y="180" text-anchor="middle" font-size="11" font-family="monospace" fill="#495057">t10</text>
+  <rect x="740" y="106" width="48" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="740" y="136" width="48" height="26" rx="4" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="764" y="180" text-anchor="middle" font-size="11" font-family="monospace" fill="#495057">t11</text>
+
+  <!-- converging lines: blue = Ca of own block, grape = Cb of previous block -->
+  <path d="M210 190 L210 244" fill="none" stroke="#4c6ef5" stroke-width="2" marker-end="url(#arb)"/>
+  <path d="M64 166 L190 244" fill="none" stroke="#7048e8" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#arg)"/>
+  <path d="M442 190 L442 244" fill="none" stroke="#4c6ef5" stroke-width="2" marker-end="url(#arb)"/>
+  <path d="M236 190 L422 244" fill="none" stroke="#7048e8" stroke-width="2" marker-end="url(#arg)"/>
+  <path d="M674 190 L674 244" fill="none" stroke="#4c6ef5" stroke-width="2" marker-end="url(#arb)"/>
+  <path d="M468 190 L654 244" fill="none" stroke="#7048e8" stroke-width="2" marker-end="url(#arg)"/>
+
+  <!-- compressed outputs -->
+  <rect x="132" y="250" width="180" height="58" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="222" y="272" text-anchor="middle" font-size="13" font-weight="700" fill="#0b7285">压缩 KV #0</text>
+  <text x="222" y="292" text-anchor="middle" font-size="11" font-family="monospace" fill="#495057">Cᵃ[t0..t3] + Cᵇ[pad]</text>
+  <rect x="364" y="250" width="180" height="58" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="454" y="272" text-anchor="middle" font-size="13" font-weight="700" fill="#0b7285">压缩 KV #1</text>
+  <text x="454" y="292" text-anchor="middle" font-size="11" font-family="monospace" fill="#495057">Cᵃ[t4..t7] + Cᵇ[t0..t3]</text>
+  <rect x="596" y="250" width="180" height="58" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="686" y="272" text-anchor="middle" font-size="13" font-weight="700" fill="#0b7285">压缩 KV #2</text>
+  <text x="686" y="292" text-anchor="middle" font-size="11" font-family="monospace" fill="#495057">Cᵃ[t8..t11] + Cᵇ[t4..t7]</text>
+  <text x="836" y="276" text-anchor="middle" font-size="11" fill="#868e96">n/m 条</text>
+  <text x="836" y="292" text-anchor="middle" font-size="11" fill="#868e96">每条 512 维</text>
+
+  <!-- detail panel -->
+  <rect x="24" y="330" width="852" height="170" rx="10" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="44" y="356" font-size="13" font-weight="700" fill="#212529">放大压缩 KV #1：对每个通道 j，8 个槽位竞争同一份权重</text>
+  <rect x="48" y="376" width="44" height="34" rx="4" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="70" y="397" text-anchor="middle" font-size="11" font-family="monospace" fill="#5f3dc4">t0</text>
+  <rect x="96" y="376" width="44" height="34" rx="4" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="118" y="397" text-anchor="middle" font-size="11" font-family="monospace" fill="#5f3dc4">t1</text>
+  <rect x="144" y="376" width="44" height="34" rx="4" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="166" y="397" text-anchor="middle" font-size="11" font-family="monospace" fill="#5f3dc4">t2</text>
+  <rect x="192" y="376" width="44" height="34" rx="4" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="214" y="397" text-anchor="middle" font-size="11" font-family="monospace" fill="#5f3dc4">t3</text>
+  <rect x="244" y="376" width="44" height="34" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="266" y="397" text-anchor="middle" font-size="11" font-family="monospace" fill="#3b5bdb">t4</text>
+  <rect x="292" y="376" width="44" height="34" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="314" y="397" text-anchor="middle" font-size="11" font-family="monospace" fill="#3b5bdb">t5</text>
+  <rect x="340" y="376" width="44" height="34" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="362" y="397" text-anchor="middle" font-size="11" font-family="monospace" fill="#3b5bdb">t6</text>
+  <rect x="388" y="376" width="44" height="34" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="410" y="397" text-anchor="middle" font-size="11" font-family="monospace" fill="#3b5bdb">t7</text>
+  <path d="M48 418 L48 424 L236 424 L236 418" fill="none" stroke="#7048e8" stroke-width="1.5"/>
+  <text x="142" y="442" text-anchor="middle" font-size="11" fill="#5f3dc4">Zᵇ + Bᵇ（块 0）</text>
+  <path d="M244 418 L244 424 L432 424 L432 418" fill="none" stroke="#4c6ef5" stroke-width="1.5"/>
+  <text x="338" y="442" text-anchor="middle" font-size="11" fill="#3b5bdb">Zᵃ + Bᵃ（块 1）</text>
+
+  <path d="M438 393 L462 393" fill="none" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <rect x="468" y="368" width="150" height="50" rx="8" fill="#fff9db" stroke="#f08c00"/>
+  <text x="543" y="389" text-anchor="middle" font-size="12.5" font-weight="700" fill="#e8590c">softmax</text>
+  <text x="543" y="407" text-anchor="middle" font-size="11" fill="#495057">8 槽归一，逐通道</text>
+  <path d="M622 393 L646 393" fill="none" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <rect x="652" y="368" width="204" height="50" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="754" y="389" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0b7285">Σ S ⊙ C</text>
+  <text x="754" y="407" text-anchor="middle" font-size="11" fill="#495057">→ RMSNorm → RoPE → KV #1</text>
+
+  <text x="44" y="470" font-size="11.5" fill="#868e96">B = ape，形状 [m, 2c]：块内每个位置一个可学习偏置；S 是 c 维向量，不同通道可以偏爱不同 token —— 这是「软池化」而非平均池化</text>
+  <text x="44" y="488" font-size="11.5" fill="#868e96">t0..t3 的 Cᵃ 早已用于 KV #0，这里再用它们的 Cᵇ：同一个 token 投影出两份 (C, Z)，分别服务相邻两条压缩 KV</text>
+
+  <!-- note -->
+  <rect x="24" y="516" width="852" height="66" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="44" y="541" font-size="12" fill="#495057">重叠让感受野翻倍（2m），条目数仍是 n/m：块边界两侧的 token 总会在同一条压缩 KV 里相遇。</text>
+  <text x="44" y="563" font-size="12" fill="#495057">HCA（m = 128）关闭重叠：wkv_gate 只出单流 [C | Z]，128 槽 softmax，没有「块 −1」。</text>
+</svg>

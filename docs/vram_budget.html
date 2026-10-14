@@ -1,0 +1,662 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    显存预算与统计口径
+  </title>
+    <link rel="stylesheet" href="./WikiTheme/theme/bootstrap.css"  />
+        <style type="text/css">
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+      <!-- wiki three-column layout styles/behavior, kept external so the ~5KB
+       block isn't duplicated into every generated page -->
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/wiki-layout.css" />
+  <script defer src="./WikiTheme/wiki-layout.js"></script>
+</head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">显存预算与统计口径</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="wiki-layout">
+    <nav class="wiki-sidebar" id="wiki-sidebar" hidden></nav>
+    <main class="wiki-main">
+            <ul>
+            <li>启动日志里每个阶段都打印了
+            <code>mem usage</code>，加起来却和 <code>nvidia-smi</code>
+            对不上，差的那部分去哪了？</li>
+            <li><code>--mem-fraction-static=0.85</code> 是不是说 85%
+            的显存给了权重和 KV cache？</li>
+            <li><a href="./vram_usage.html">VRAM Usage</a>
+            把显存分成七类，为什么不能把七类各自估一个数再相加？</li>
+            </ul>
+            <p>本篇是 <a href="./vram_usage.md">VRAM Usage</a>
+            的展开：那一页回答“显存被用来做什么”，这一页回答“这笔账该怎么记、怎么测”，以及
+            SGLang 启动时怎样从一块 GPU 的总显存一步步算出 KV cache
+            能放多少 token。分配器内部的 block、碎片和 CUDA Graph
+            私有池细节见 <a
+            href="./torch_memory_management.html">显存管理与生命周期</a>，这里不重复。</p>
+            <h3
+            id="问题同一块显存可以被记两次也可能一次都没记">问题：同一块显存可以被记两次，也可能一次都没记</h3>
+            <p>做显存预算时最自然的做法是列清单：权重多少、KV
+            多少、activation 多少、CUDA Graph
+            多少，相加得到总量。这个做法会在两个方向上出错。</p>
+            <p><strong>重复计算。</strong>
+            七类是按“逻辑用途”划分的，而显存是按“谁调用了分配接口”实际占用的。一个
+            decode activation 张量如果是在 CUDA Graph capture
+            期间分配的，它就躺在 graph 私有池里——它既是 activation，也是
+            CUDA Graph 显存，也属于 PyTorch allocator 的
+            reserved。分别估算三类再相加，同一块显存会被算三次。</p>
+            <p><strong>漏算。</strong> 反过来，有一些显存根本不经过
+            PyTorch：CUDA context、NCCL 的通信 buffer、第三方库直接
+            <code>cudaMalloc</code> 的区域、用 CUDA VMM
+            接口自己映射的内存。只看
+            <code>torch.cuda.memory_reserved()</code>
+            的人会觉得“明明还有很多空闲”，直到驱动拒绝下一次分配。</p>
+            <p>所以问题不是“七类各占多少”，而是：<strong>每一字节显存由哪个分配者持有、活多久，以及我们手上的指标能看到哪些分配者。</strong></p>
+            <h3
+            id="抽象两个维度记账用空闲显存的差分测量">抽象：两个维度记账，用“空闲显存的差分”测量</h3>
+            <p>把每一笔显存放进一个二维表里：</p>
+            <ul>
+            <li><strong>逻辑用途</strong>（七类）：回答“为什么需要它”，用于理解和优化；</li>
+            <li><strong>物理分配者</strong>：PyTorch caching allocator
+            的普通池、CUDA Graph 私有池、NCCL/通信库、直接
+            <code>cudaMalloc</code>/VMM、CUDA
+            context；回答“谁持有它、哪个指标看得见它”。</li>
+            </ul>
+            <p>一个逻辑类别可能分散在多个分配者里（KV cache 通常走
+            PyTorch allocator，开启 post-capture sizing 时走
+            VMM），一个分配者里也混着多个逻辑类别（graph 私有池里同时有
+            activation、workspace 和静态输出
+            buffer）。<strong>预算应按物理分配者加总，用途只用来解释每个分配者里装了什么。</strong></p>
+            <p>那么怎么测？只有一个指标能覆盖所有分配者：驱动报告的设备空闲显存（<code>cudaMemGetInfo</code>，即
+            <code>torch.cuda.mem_get_info()</code>）。它不区分用途，但任何一次分配——无论走不走
+            PyTorch——都会让它变小。于是关键的工程手法是：<strong>在每个初始化阶段前后各测一次空闲显存，把差值记给这个阶段。</strong>
+            阶段顺序是确定的，差值之和加上最后剩余，正好等于起点时的空闲量，账一定能对平；而阶段之内装了什么，再用
+            allocator 指标或 snapshot 细分。</p>
+            <figure>
+            <img src="./WikiImage/vram_budget_views.svg"
+            alt="每个指标能看见哪些分配者" />
+            <figcaption
+            aria-hidden="true">每个指标能看见哪些分配者</figcaption>
+            </figure>
+            <p>图里最需要记住的是两条包含关系：<code>memory_allocated ⊂ memory_reserved ⊂ 设备已用</code>，而
+            graph 私有池在 <code>memory_reserved</code>
+            之内、不是额外的一份。<code>memory_reserved</code>
+            和“设备已用”之间的差，就是 PyTorch 看不见的那部分。</p>
+            <h3
+            id="七类显存落在哪个分配者里">七类显存落在哪个分配者里</h3>
+            <p>把 <a href="./vram_usage.html">VRAM Usage</a>
+            的七类映射到物理分配者，重叠和盲区就一目了然：</p>
+            <table>
+            <colgroup>
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>逻辑类别</th>
+            <th>典型物理分配者</th>
+            <th><code>memory_reserved</code> 能否看到</th>
+            <th>相加时的陷阱</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>Model Weights</td>
+            <td>PyTorch allocator（普通池）</td>
+            <td>能</td>
+            <td>量化权重的 scale、packed 布局也在这里</td>
+            </tr>
+            <tr>
+            <td>KV Cache</td>
+            <td>PyTorch allocator；post-capture 模式下是 VMM arena</td>
+            <td>普通模式能；VMM 模式不在常规池里</td>
+            <td>KV 的大小由“剩余量”反推，不是独立输入</td>
+            </tr>
+            <tr>
+            <td>CUDA Graph</td>
+            <td>allocator 的 graph 私有池</td>
+            <td>能（属于 reserved 的一部分）</td>
+            <td>和 decode activation、workspace 是同一块</td>
+            </tr>
+            <tr>
+            <td>Runtime Workspace</td>
+            <td>allocator 缓存块，或库自管</td>
+            <td>部分能</td>
+            <td>走 allocator 的部分和 activation 共享缓存</td>
+            </tr>
+            <tr>
+            <td>Activation</td>
+            <td>allocator 普通池，或 graph 私有池</td>
+            <td>能</td>
+            <td>eager 的峰值与 graph 内的 activation 不能同时计</td>
+            </tr>
+            <tr>
+            <td>Allocator 开销</td>
+            <td>allocator 缓存与碎片</td>
+            <td>能（reserved − allocated）</td>
+            <td>它本身就是前几类的“包装损耗”</td>
+            </tr>
+            <tr>
+            <td>Context / 通信</td>
+            <td>驱动、NCCL、DeepEP、直接 <code>cudaMalloc</code></td>
+            <td>不能</td>
+            <td>只能通过设备空闲显存的差分看到</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>可以看出，第 3、5、6 类大量重叠，第 7 类则完全在 PyTorch
+            视野之外。这就是 <a href="./vram_usage.html">VRAM Usage</a>
+            结尾那句话的含义：显存预算按实际独立分配的物理内存计算，而不是把七类机械相加。</p>
+            <h3 id="sglang-启动时的显存账从总显存到-kv-容量">SGLang
+            启动时的显存账：从总显存到 KV 容量</h3>
+            <p>SGLang 的启动顺序本身就是一套“阶段差分”记账。按
+            <code>managers/scheduler.py</code> 的
+            <code>init_model_worker()</code> 和
+            <code>model_executor/model_runner.py</code> 的调用顺序，一个
+            target worker 依次经过：</p>
+            <ol type="1">
+            <li><strong>初始化分布式</strong>（<code>distributed/bootstrap.py</code>）：建立
+            TP/PP/EP 通信组，按需预热 NCCL。阶段末测得的空闲显存记为
+            <code>pre_model_load_memory</code>，它是后面一切预算的基准。</li>
+            <li><strong>加载权重</strong>（<code>ModelRunner.load_model()</code>）：前后各测一次，差值存为
+            <code>weight_load_mem_usage</code>。</li>
+            <li><strong>分配 KV
+            池</strong>（<code>ModelRunner.alloc_memory_pool()</code> →
+            <code>KVCacheConfigurator.configure()</code>）：此时才根据剩余空闲显存算出能放多少
+            token，然后一次性分配。</li>
+            <li><strong>初始化 attention backend，捕获 CUDA
+            Graph</strong>（<code>init_cuda_graphs()</code> →
+            <code>model_runner_components/cuda_graph_setup.py</code>）：prefill
+            与 decode 的 capture 各自前后测量。</li>
+            <li><strong>可选：post-capture 调整
+            KV</strong>（<code>post_capture_resize_kv_pool()</code>），见后文。</li>
+            </ol>
+            <figure>
+            <img src="./WikiImage/vram_budget_init_timeline.svg"
+            alt="SGLang 启动阶段的空闲显存瀑布" />
+            <figcaption aria-hidden="true">SGLang
+            启动阶段的空闲显存瀑布</figcaption>
+            </figure>
+            <p>这个顺序有一个直接后果：<strong>KV 池在 CUDA Graph
+            之前分配。</strong> KV 的大小必须提前给 graph、activation 和
+            workspace 留出余量，而这份余量在分配 KV 时还无法实测——这正是
+            <code>mem_fraction_static</code> 要解决的问题。</p>
+            <h4 id="kv-容量怎么算">KV 容量怎么算</h4>
+            <p><code>mem_cache/kv_cache_configurator.py</code> 的
+            <code>_profile_available_bytes()</code>
+            是整套预算的核心，三行就能概括：</p>
+            <div class="sourceCode" id="cb1"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>slack_gb    <span class="op">=</span> pre_model_load_memory <span class="op">*</span> (<span class="dv">1</span> <span class="op">-</span> mem_fraction_static)  <span class="co"># 留给运行期</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>rest_memory <span class="op">=</span> available_gpu_memory <span class="op">-</span> slack_gb <span class="op">-</span> mm_reservation_gb  <span class="co"># 留给 KV</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 之后：max_total_num_tokens = rest_bytes // cell_size，再按 page_size 向下取整</span></span></code></pre></div>
+            <p>其中 <code>available_gpu_memory</code>
+            是权重加载完之后测得的空闲显存，<code>mm_reservation_gb</code>
+            是多模态特征传输的额外预留（纯文本模型为
+            0）。<code>cell_size</code> 是一个 token 在所有层上占用的 KV
+            字节数，由 <code>model_executor/pool_configurator.py</code>
+            按模型类型计算；标准 MHA/GQA 为
+            <code>kv_heads × (head_dim + v_head_dim) × layers × dtype 字节数</code>，FP4、MLA、SWA、混合
+            Mamba 等各有自己的 configurator。得到的 token 数再经过
+            <code>_apply_token_constraints()</code>：取用户
+            <code>--max-total-tokens</code> 与实测值的较小者，多 PP
+            stage 时在各 rank 间取最小值。</p>
+            <p>旧版本里这段逻辑叫
+            <code>profile_max_num_token</code>，现在已拆成
+            <code>_profile_available_bytes()</code>（算字节预算）和各个
+            pool configurator（把字节换成
+            token），读老文章时注意对应关系。</p>
+            <p>一个示意算例（数字为说明用，非实测）：单卡 80
+            GB，Llama-3-8B
+            bf16，<code>mem_fraction_static=0.85</code>。</p>
+            <table>
+            <colgroup>
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>量</th>
+            <th>数值</th>
+            <th>说明</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td><code>pre_model_load_memory</code></td>
+            <td>78.0 GiB</td>
+            <td>分布式初始化后的空闲显存</td>
+            </tr>
+            <tr>
+            <td><code>slack_gb</code></td>
+            <td>78.0 × 0.15 = 11.7 GiB</td>
+            <td>留给 graph、activation、workspace</td>
+            </tr>
+            <tr>
+            <td>权重</td>
+            <td>15.0 GiB</td>
+            <td>8B 参数 × 2 字节</td>
+            </tr>
+            <tr>
+            <td><code>available_gpu_memory</code></td>
+            <td>63.0 GiB</td>
+            <td>权重加载后的空闲显存</td>
+            </tr>
+            <tr>
+            <td><code>rest_memory</code></td>
+            <td>63.0 − 11.7 = 51.3 GiB</td>
+            <td>全部交给 KV</td>
+            </tr>
+            <tr>
+            <td><code>cell_size</code></td>
+            <td>8 × (128 + 128) × 32 × 2 = 128 KiB</td>
+            <td>8 个 kv head、32 层、bf16</td>
+            </tr>
+            <tr>
+            <td><code>max_total_num_tokens</code></td>
+            <td>51.3 GiB ÷ 128 KiB ≈ 420k</td>
+            <td>再按 page_size 取整</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>注意 SGLang 日志里的 “GB” 都是
+            <code>/ (1 &lt;&lt; 30)</code> 算出来的，实际是
+            GiB；<code>nvidia-smi</code> 报的是
+            MiB，对账前先统一单位。</p>
+            <p>如果
+            <code>rest_memory &lt;= 0</code>，<code>_profile_available_bytes()</code>
+            直接抛 <code>ValueError</code>，提示把
+            <code>mem_fraction_static</code> 调到大于
+            <code>1 − available / pre_model_load_memory</code>。含义是：权重本身已经吃掉了超过
+            <code>f</code> 比例的显存，KV 一个 token 都放不下。</p>
+            <h3
+            id="mem_fraction_static-的真实含义"><code>mem_fraction_static</code>
+            的真实含义</h3>
+            <p><code>server_args.py</code> 对这个参数的说明是 “(model
+            weights + KV cache pool) / GPU memory
+            capacity”，但实现里的分母不是总容量，而是
+            <code>pre_model_load_memory</code>：</p>
+            <pre><code>静态预算 = pre_model_load_memory × f        （权重 + draft 权重 + KV + 二者之间分配的一切）
+运行余量 = pre_model_load_memory × (1 − f)  （CUDA Graph、activation、workspace、之后的通信 buffer）</code></pre>
+            <p>所以回答开头的问题：<code>0.85</code> 不是“总显存的 85%
+            给权重和 KV”。CUDA context、分布式初始化阶段的 NCCL 预热在
+            <code>pre_model_load_memory</code>
+            之前就已经扣掉，不在任何一边；静态预算里也不只有权重和
+            KV，凡是在测量 <code>pre_model_load_memory</code> 之后、分配
+            KV 之前占用的显存（例如 speculative decoding 的 draft
+            模型权重）都从这 85% 里出；而 15% 的余量要装下之后的 CUDA
+            Graph capture
+            和运行期峰值。<code>pre_model_load_memory</code>
+            在多卡时还是各 rank 的最小值（<code>distributed=True</code>
+            时 all_reduce MIN），一张卡被别的进程占了显存，所有 rank 的
+            KV 都会跟着缩小——<code>bootstrap.py</code> 的
+            <code>_check_tp_memory_balance()</code> 会在某个 rank
+            低于本地 90% 时打印 “The memory capacity is unbalanced”
+            警告。</p>
+            <h4 id="不指定时的默认值">不指定时的默认值</h4>
+            <p><code>mem_fraction_static</code> 默认为
+            <code>None</code>，由
+            <code>ServerArgs._handle_gpu_memory_settings()</code>
+            按“要给运行期留多少 MB”反推：</p>
+            <pre><code>reserved_mb = 512                                  # 固定底数
+            + activation_tokens × 1.5              # 运行期 activation 估计
+            + tp × pp / 8 × 1024                   # 并行规模越大，通信与杂项越多
+            + reserve_for_graph_mb()               # CUDA Graph，按 cuda_graph_max_bs 等估算
+            (+ reserve_for_deepep_a2a_mb())        # DeepEP all-to-all 且开启 decode graph 时 +2048
+mem_fraction_static = round((gpu_mem − reserved_mb) / gpu_mem, 3)</code></pre>
+            <p><code>activation_tokens</code> 取
+            <code>max(chunked_prefill_size, 2048)</code>（开启 chunked
+            prefill 时）、<code>max(max_prefill_tokens, 2048)</code>，PD
+            分离的 decode 实例则按
+            <code>max_running_requests × draft_tokens</code>
+            估；总显存大于 60 GB 时余量至少 10 GiB；拿不到显存容量时退回
+            0.88，多模态模型另有修正。这里的 <code>gpu_mem</code> 是
+            <code>nvidia-smi</code> 报的总容量，而公式最终作用在更小的
+            <code>pre_model_load_memory</code>
+            上，所以实际留出的余量会比 <code>reserved_mb</code>
+            略少。</p>
+            <p>这套默认值的本质是<strong>经验估计</strong>：graph 和
+            activation 的真实大小要到 capture 之后才知道。估大了浪费 KV
+            容量，估小了在 capture 或高峰期 OOM。</p>
+            <h3
+            id="post-capture-kv-sizing先-capture再定-kv">Post-capture KV
+            sizing：先 capture，再定 KV</h3>
+            <p>既然困难在于“KV 必须在 graph
+            之前分配”，另一种做法就是把顺序反过来——但 CUDA Graph
+            回放要求 KV buffer 的地址在 capture 时就固定。SGLang
+            的实验性方案用 CUDA
+            VMM（虚拟内存管理）把“地址”和“物理显存”拆开：</p>
+            <ol type="1">
+            <li><p><strong>分配 KV 时只预留虚拟地址。</strong>
+            <code>memory_pool.py</code> 的
+            <code>_alloc_post_capture_buffers()</code> 按上限 token
+            数为每层 K/V 预留一段 VA，底层是
+            <code>mem_cache/kv_vmm_backing.py</code> 的
+            <code>KvVmmArena</code>（经
+            <code>CUDAPluggableAllocator</code> 接入的 bump
+            allocator），只先映射够跑 capture
+            的一小段前缀。此时日志打印的是 “VA upper
+            bound”，而不是实际占用。</p></li>
+            <li><p><strong>照常 capture CUDA Graph。</strong> graph
+            记住的是 VA，之后映射多少物理页都不改变地址。</p></li>
+            <li><p><strong>实测空闲显存，再决定 KV。</strong>
+            <code>kv_pool_runtime.py</code> 的
+            <code>compute_post_capture_kv_resize()</code> 先
+            <code>torch.cuda.synchronize()</code>，再测一次（多卡取最小值）空闲显存，计算：</p>
+            <div class="sourceCode" id="cb4"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>headroom <span class="op">=</span> pre_model_load_memory <span class="op">*</span> (<span class="dv">1</span> <span class="op">-</span> mem_fraction_static)  <span class="co"># 部分情况抬高到 pre_capture_activation_reserve_mb</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>budget   <span class="op">=</span> <span class="bu">max</span>(<span class="dv">0</span>, free <span class="op">-</span> headroom <span class="op">-</span> mm_reservation) <span class="op">+</span> pool.post_capture_backed_bytes</span></code></pre></div>
+            <p>然后用同一套 configurator 把 <code>budget</code> 换成
+            token 数（上限为第 1 步的 VA 容量），由
+            <code>finalize_backing()</code> 一次性 <code>cuMemMap</code>
+            到位，并相应 <code>resize</code> token allocator，必要时下调
+            <code>max_running_requests</code>。</p></li>
+            </ol>
+            <p>这样 slack 不必再替 graph 预留：graph 已经实际占用、已被
+            <code>free</code>
+            体现，<code>_handle_gpu_memory_settings()</code>
+            在这一模式下也只保留 <code>1536 + tp × pp / 8 × 1024</code>
+            MB。剩下的 headroom 只需覆盖 eager 路径（decode graph 的 max
+            bs 小于 <code>max_running_requests</code> 时）和 Mamba
+            等模型的运行期 activation。</p>
+            <p>开启条件比较苛刻：环境变量
+            <code>SGLANG_ENABLE_POST_CAPTURE_KV_SIZING</code>（默认关闭），CUDA
+            设备，非 MLA、非 FP4 KV、非量化
+            KV，<code>dcp_size == 1</code>，未启用 memory saver 和自定义
+            Mooncake 内存池，decode CUDA Graph 未禁用；draft worker 共享
+            target 的池，不单独走这条路径。条件见
+            <code>server_args.py</code> 的
+            <code>post_capture_kv_sizing_planned()</code> 和
+            <code>kv_pool_runtime.py</code> 的
+            <code>is_post_capture_kv_active()</code>。</p>
+            <h3
+            id="统计口径每个指标看见什么">统计口径：每个指标看见什么</h3>
+            <table>
+            <colgroup>
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>指标</th>
+            <th>来源</th>
+            <th>看得见</th>
+            <th>看不见 / 注意</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td><code>torch.cuda.memory_allocated()</code></td>
+            <td>PyTorch allocator</td>
+            <td>活着的张量占用的 block</td>
+            <td>缓存空闲块、context、NCCL、直接
+            <code>cudaMalloc</code></td>
+            </tr>
+            <tr>
+            <td><code>torch.cuda.memory_reserved()</code></td>
+            <td>PyTorch allocator</td>
+            <td>allocated + 缓存空闲块，含 graph 私有池</td>
+            <td>allocator 之外的一切；<code>empty_cache()</code>
+            后会下降</td>
+            </tr>
+            <tr>
+            <td><code>torch.cuda.max_memory_allocated()</code></td>
+            <td>PyTorch allocator</td>
+            <td>自上次 reset 以来的峰值</td>
+            <td>同 allocated；用于量 activation 峰值</td>
+            </tr>
+            <tr>
+            <td><code>torch.cuda.mem_get_info()</code></td>
+            <td><code>cudaMemGetInfo</code></td>
+            <td>整卡的 free / total</td>
+            <td>不分用途；<strong>其他进程的占用也算进去</strong></td>
+            </tr>
+            <tr>
+            <td><code>nvidia-smi</code> / NVML</td>
+            <td>驱动</td>
+            <td>每个进程的占用、整卡已用</td>
+            <td>不分用途；单位 MiB；进程级数字含 context</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>SGLang 的启动预算只用
+            <code>mem_get_info</code>：<code>utils/common.py</code> 的
+            <code>get_available_gpu_memory()</code> 默认先
+            <code>empty_cache()</code> 把 allocator
+            的缓存块还给驱动，再读 free 值；多卡时对所有 rank
+            取最小值；集成显卡（<code>props.is_integrated</code>）改用
+            <code>psutil</code> 的主机可用内存。这个选择保证了 PyTorch
+            之外的分配也被计入，但也意味着同卡上的其他进程会直接挤占 KV
+            容量。</p>
+            <p>日志里的两类字段由此而来：</p>
+            <ul>
+            <li><code>avail mem=… GB</code>：该时刻的
+            <code>mem_get_info</code> 空闲值。</li>
+            <li><code>mem usage=… GB</code>：同一阶段前后两次
+            <code>avail mem</code> 之差，即这个阶段的显存增量。</li>
+            </ul>
+            <p>按阶段对照的日志行：</p>
+            <table>
+            <colgroup>
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>阶段</th>
+            <th>日志关键字</th>
+            <th>用途</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>分布式初始化</td>
+            <td><code>Init torch distributed ends. … mem usage=</code></td>
+            <td>通信组与 NCCL 预热的开销</td>
+            </tr>
+            <tr>
+            <td>加载权重</td>
+            <td><code>Load weight end. … avail mem=… mem usage=</code></td>
+            <td>本 rank 的权重分片大小</td>
+            </tr>
+            <tr>
+            <td>分配 KV</td>
+            <td><code>KV Cache is allocated. … #tokens: … K size: … V size:</code>，<code>Memory pool end. avail mem=</code></td>
+            <td>KV 容量与剩余显存</td>
+            </tr>
+            <tr>
+            <td>捕获 graph</td>
+            <td><code>Capture … CUDA graph end. … mem usage=… avail mem=</code></td>
+            <td>prefill / decode / verify 各自的 graph 开销</td>
+            </tr>
+            <tr>
+            <td>post-capture</td>
+            <td><code>Post-capture KV sizing: KV cache allocated. …</code></td>
+            <td>最终 KV 容量</td>
+            </tr>
+            <tr>
+            <td>就绪</td>
+            <td><code>max_total_num_tokens=… available_gpu_mem=… GB</code></td>
+            <td>服务开始前的余量</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>最后一行的 <code>available_gpu_mem</code> 用的是
+            <code>empty_cache=False</code>，即 allocator
+            的缓存块不还给驱动；它就是运行期 activation
+            峰值真正能用的空间（加上 allocator 里已缓存的部分）。</p>
+            <h3
+            id="排查顺序对不上账时先看什么">排查顺序：对不上账时先看什么</h3>
+            <ol type="1">
+            <li><strong>先统一口径。</strong> 日志的 GB 是
+            GiB，<code>nvidia-smi</code> 是
+            MiB；<code>mem_get_info</code> 是整卡，NVML
+            进程列表是单进程。先确认同卡上没有别的进程。</li>
+            <li><strong>按阶段读 <code>mem usage</code>。</strong>
+            分布式初始化、权重、KV、各类 graph capture 的增量加上最后的
+            <code>available_gpu_mem</code>，应该约等于起点的空闲显存；哪一段异常大，问题就在哪个阶段。</li>
+            <li><strong>再把差值拆给分配者。</strong> 阶段增量与该阶段
+            <code>memory_reserved</code>
+            的变化比较：两者接近，说明大头在 PyTorch allocator
+            里，可以用 memory snapshot 继续细分（方法见 <a
+            href="./torch_memory_management.html">显存管理与生命周期</a>）；差距大，说明是
+            NCCL、DeepEP、VMM 或第三方库的直接分配。</li>
+            <li><strong>运行期 OOM 看余量而不是 KV。</strong> 启动后 KV
+            已经常驻，运行期 OOM 来自 activation、eager 路径的 workspace
+            或碎片。对策是降低
+            <code>mem_fraction_static</code>（直接加大余量），或减小
+            <code>chunked_prefill_size</code> /
+            <code>cuda_graph_max_bs</code>（降低峰值需求）；<code>--max-total-tokens</code>
+            也能通过 <code>_apply_token_constraints()</code> 截小
+            KV、间接留出余量，但它不随卡型和并行规模自适应，不如前两者直接。</li>
+            <li><strong>启动期报
+            <code>rest_memory &lt;= 0</code>。</strong> 权重加上 slack
+            已经超出可用显存：要么调高
+            <code>mem_fraction_static</code>，要么增大 TP/EP
+            让每卡权重变小。</li>
+            </ol>
+            <h3 id="小结">小结</h3>
+            <p>显存预算有两个维度：七类逻辑用途解释“为什么需要”，物理分配者决定“谁持有、哪个指标看得见”。七类之间大量重叠（graph
+            私有池、activation、workspace、allocator
+            缓存），又有一类完全在 PyTorch 视野之外（context、NCCL、直接
+            <code>cudaMalloc</code>、VMM），所以只能按分配者加总，并用设备空闲显存的阶段差分来测。</p>
+            <p>SGLang 启动正是这套记账：分布式初始化后测得
+            <code>pre_model_load_memory</code>，加载权重，再用
+            <code>available − pre × (1 − f)</code> 一次性分配 KV，最后
+            capture CUDA Graph。因为 KV 在 graph
+            之前分配，<code>mem_fraction_static</code> 的
+            <code>1 − f</code> 必须预先为 graph
+            和运行期峰值留出余量，默认值也只是按
+            batch、chunk、并行规模的经验估计；post-capture KV sizing 用
+            VMM 先固定地址、capture
+            后再提交物理页，把这份估计换成了实测。读启动日志时，<code>avail mem</code>
+            是 <code>mem_get_info</code>
+            的空闲值，<code>mem usage</code> 是阶段增量，二者配合
+            <code>memory_reserved</code> 和 snapshot，就能把每一 GiB
+            落到具体的分配者上。</p>
+          </main>
+        <aside class="wiki-toc">
+      <ul>
+      <li><a href="#问题同一块显存可以被记两次也可能一次都没记"
+      id="toc-问题同一块显存可以被记两次也可能一次都没记">问题：同一块显存可以被记两次，也可能一次都没记</a></li>
+      <li><a href="#抽象两个维度记账用空闲显存的差分测量"
+      id="toc-抽象两个维度记账用空闲显存的差分测量">抽象：两个维度记账，用“空闲显存的差分”测量</a></li>
+      <li><a href="#七类显存落在哪个分配者里"
+      id="toc-七类显存落在哪个分配者里">七类显存落在哪个分配者里</a></li>
+      <li><a href="#sglang-启动时的显存账从总显存到-kv-容量"
+      id="toc-sglang-启动时的显存账从总显存到-kv-容量">SGLang
+      启动时的显存账：从总显存到 KV 容量</a></li>
+      <li><a href="#mem_fraction_static-的真实含义"
+      id="toc-mem_fraction_static-的真实含义"><code>mem_fraction_static</code>
+      的真实含义</a></li>
+      <li><a href="#post-capture-kv-sizing先-capture再定-kv"
+      id="toc-post-capture-kv-sizing先-capture再定-kv">Post-capture KV
+      sizing：先 capture，再定 KV</a></li>
+      <li><a href="#统计口径每个指标看见什么"
+      id="toc-统计口径每个指标看见什么">统计口径：每个指标看见什么</a></li>
+      <li><a href="#排查顺序对不上账时先看什么"
+      id="toc-排查顺序对不上账时先看什么">排查顺序：对不上账时先看什么</a></li>
+      <li><a href="#小结" id="toc-小结">小结</a></li>
+      </ul>
+    </aside>
+      </div>
+</body>
+
+</html>

@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 400" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="400" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">inference tensor 的边界：在哪个模式里出生，决定以后能怎么写</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">持久 buffer 若在 inference_mode 中创建，之后在 inference_mode 之外原地写入会被拒绝</text>
+
+  <defs>
+    <marker id="arG" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#868e96"/></marker>
+    <marker id="arT" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#0ca678"/></marker>
+  </defs>
+
+  <!-- lane labels -->
+  <text x="40" y="92" font-size="13" font-weight="700" fill="#c92a2a">出问题的写法</text>
+  <text x="40" y="242" font-size="13" font-weight="700" fill="#0b7285">SGLang 的做法</text>
+
+  <!-- problem lane -->
+  <rect x="40" y="104" width="240" height="96" rx="9" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="160" y="128" text-anchor="middle" font-size="12.5" font-weight="700" fill="#5f3dc4">初始化（inference_mode 中）</text>
+  <text x="160" y="152" text-anchor="middle" font-size="11.5" font-family="monospace" fill="#495057">buf = torch.empty(...)</text>
+  <text x="160" y="174" text-anchor="middle" font-size="11.5" fill="#495057">buf 被标记为 inference tensor</text>
+  <text x="160" y="190" text-anchor="middle" font-size="11" fill="#868e96">不做版本计数，不追踪 view</text>
+
+  <path d="M282 152 L328 152" stroke="#868e96" stroke-width="2" marker-end="url(#arG)"/>
+
+  <rect x="330" y="104" width="240" height="96" rx="9" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="450" y="128" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0b7285">后续路径（仅 no_grad）</text>
+  <text x="450" y="152" text-anchor="middle" font-size="11.5" fill="#495057">例如 CUDA graph capture</text>
+  <text x="450" y="174" text-anchor="middle" font-size="11.5" font-family="monospace" fill="#495057">buf.copy_(x)  # 原地写</text>
+  <text x="450" y="190" text-anchor="middle" font-size="11" fill="#868e96">已不在 inference_mode 内</text>
+
+  <path d="M572 152 L618 152" stroke="#868e96" stroke-width="2" marker-end="url(#arG)"/>
+
+  <rect x="620" y="104" width="240" height="96" rx="9" fill="#fff5f5" stroke="#fa5252"/>
+  <text x="740" y="128" text-anchor="middle" font-size="12.5" font-weight="700" fill="#c92a2a">RuntimeError</text>
+  <text x="740" y="152" text-anchor="middle" font-size="11" font-family="monospace" fill="#c92a2a">Inplace update to inference</text>
+  <text x="740" y="168" text-anchor="middle" font-size="11" font-family="monospace" fill="#c92a2a">tensor outside InferenceMode</text>
+  <text x="740" y="190" text-anchor="middle" font-size="11" fill="#868e96">失败点离出生点很远，难定位</text>
+
+  <line x1="40" y1="220" x2="860" y2="220" stroke="#dee2e6" stroke-width="1.5" stroke-dasharray="5 4"/>
+
+  <!-- fix lane -->
+  <rect x="40" y="254" width="240" height="84" rx="9" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="160" y="278" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0b7285">初始化时显式退出</text>
+  <text x="160" y="302" text-anchor="middle" font-size="11" font-family="monospace" fill="#495057">with torch.inference_mode(False):</text>
+  <text x="160" y="320" text-anchor="middle" font-size="11" font-family="monospace" fill="#495057">    buf = ...empty(...)</text>
+
+  <path d="M282 296 L328 296" stroke="#0ca678" stroke-width="2" marker-end="url(#arT)"/>
+
+  <rect x="330" y="254" width="240" height="84" rx="9" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="450" y="278" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0b7285">buf 是普通张量</text>
+  <text x="450" y="302" text-anchor="middle" font-size="11.5" fill="#495057">照常做版本计数</text>
+  <text x="450" y="320" text-anchor="middle" font-size="11.5" fill="#495057">与外层 grad 模式无关</text>
+
+  <path d="M572 296 L618 296" stroke="#0ca678" stroke-width="2" marker-end="url(#arT)"/>
+
+  <rect x="620" y="254" width="240" height="84" rx="9" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="740" y="278" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0b7285">任何路径都可原地写</text>
+  <text x="740" y="302" text-anchor="middle" font-size="11.5" fill="#495057">no_grad / inference_mode 均可</text>
+  <text x="740" y="320" text-anchor="middle" font-size="11" fill="#868e96">见 layers/k3_ar_fusion.py</text>
+
+  <!-- note -->
+  <rect x="40" y="352" width="820" height="36" rx="9" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="58" y="375" font-size="12" fill="#495057">要点：inference_mode 的限制跟着张量走，而不是跟着代码块走——跨请求复用的持久 buffer 要在普通模式下创建。</text>
+</svg>

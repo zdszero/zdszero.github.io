@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 470" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="470" rx="12" fill="#ffffff"/>
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#868e96"/>
+    </marker>
+    <marker id="arA" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#f08c00"/>
+    </marker>
+  </defs>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">Gated MLA 的 decode：门控接在 absorb 路径的末端</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">以 KimiK3MLAAttention 为例；形状均为单个 attn-TP rank 上的局部形状</text>
+
+  <!-- brackets -->
+  <path d="M174 104 V96 H488 V104" fill="none" stroke="#4c6ef5" stroke-width="1.5"/>
+  <text x="331" y="88" text-anchor="middle" font-size="11.5" font-weight="700" fill="#3b5bdb">latent 空间：W_UK 吸收进 q，直接对 c_KV 算注意力</text>
+  <path d="M512 104 V96 H870 V104" fill="none" stroke="#f08c00" stroke-width="1.5"/>
+  <text x="691" y="88" text-anchor="middle" font-size="11.5" font-weight="700" fill="#e8590c">回到 head 空间：门控只能乘在这里</text>
+
+  <!-- main lane -->
+  <rect x="30" y="120" width="120" height="72" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="90" y="146" text-anchor="middle" font-size="13" font-weight="700" fill="#495057">hidden X</text>
+  <text x="90" y="168" text-anchor="middle" font-size="11" fill="#868e96" font-family="monospace">[T, d]</text>
+
+  <rect x="174" y="120" width="140" height="72" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="244" y="144" text-anchor="middle" font-size="13" font-weight="700" fill="#3b5bdb">q 吸收 W_UK</text>
+  <text x="244" y="163" text-anchor="middle" font-size="11" fill="#495057" font-family="monospace">q_nope·W_UK</text>
+  <text x="244" y="181" text-anchor="middle" font-size="11" fill="#868e96" font-family="monospace">[T, H, d_c]</text>
+
+  <rect x="338" y="120" width="150" height="72" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="413" y="144" text-anchor="middle" font-size="13" font-weight="700" fill="#3b5bdb">MLA kernel</text>
+  <text x="413" y="163" text-anchor="middle" font-size="11" fill="#495057">softmax(·)·c_KV</text>
+  <text x="413" y="181" text-anchor="middle" font-size="11" fill="#868e96" font-family="monospace">[T, H, d_c]</text>
+
+  <rect x="512" y="120" width="130" height="72" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="577" y="144" text-anchor="middle" font-size="13" font-weight="700" fill="#495057">展开 W_UV</text>
+  <text x="577" y="163" text-anchor="middle" font-size="11" fill="#495057" font-family="monospace">bmm(·, w_vc)</text>
+  <text x="577" y="181" text-anchor="middle" font-size="11" fill="#868e96" font-family="monospace">[T, H·d_v]</text>
+
+  <circle cx="682" cy="156" r="18" fill="#fff9db" stroke="#f08c00" stroke-width="1.5"/>
+  <text x="682" y="162" text-anchor="middle" font-size="18" font-weight="700" fill="#e8590c">⊙</text>
+
+  <rect x="722" y="120" width="148" height="72" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="796" y="144" text-anchor="middle" font-size="13" font-weight="700" fill="#495057">o_proj</text>
+  <text x="796" y="163" text-anchor="middle" font-size="11" fill="#495057">RowParallel</text>
+  <text x="796" y="181" text-anchor="middle" font-size="11" fill="#868e96" font-family="monospace">[T, d]</text>
+
+  <g stroke="#868e96" stroke-width="2" fill="none">
+    <path d="M150 156 H170" marker-end="url(#ar)"/>
+    <path d="M314 156 H334" marker-end="url(#ar)"/>
+    <path d="M488 156 H508" marker-end="url(#ar)"/>
+    <path d="M642 156 H660" marker-end="url(#ar)"/>
+    <path d="M700 156 H718" marker-end="url(#ar)"/>
+  </g>
+  <!-- KV cache -->
+  <rect x="338" y="228" width="150" height="54" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="413" y="249" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0b7285">latent KV cache</text>
+  <text x="413" y="268" text-anchor="middle" font-size="11" fill="#495057" font-family="monospace">c_KV ‖ k_rope</text>
+  <path d="M413 228 V196" fill="none" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <text x="496" y="250" font-size="11" fill="#0b7285">内容、大小都与</text>
+  <text x="496" y="266" font-size="11" fill="#0b7285">无门控的 MLA 相同</text>
+
+  <!-- gate lane -->
+  <rect x="500" y="304" width="230" height="78" rx="10" fill="none" stroke="#f08c00" stroke-width="1.2" stroke-dasharray="5 4"/>
+  <text x="615" y="398" text-anchor="middle" font-size="11" fill="#e8590c">gate_alt_stream：小 batch 的 CUDA graph 中与 attention 核并行</text>
+  <rect x="512" y="316" width="130" height="54" rx="8" fill="#fff4e6" stroke="#f08c00"/>
+  <text x="577" y="337" text-anchor="middle" font-size="12.5" font-weight="700" fill="#e8590c">g_proj</text>
+  <text x="577" y="356" text-anchor="middle" font-size="11" fill="#868e96" font-family="monospace">[T, H·d_v]</text>
+  <circle cx="682" cy="343" r="18" fill="#fff9db" stroke="#f08c00" stroke-width="1.5"/>
+  <text x="682" y="348" text-anchor="middle" font-size="15" font-weight="700" fill="#e8590c">σ</text>
+  <g stroke="#f08c00" stroke-width="2" fill="none">
+    <path d="M90 192 V343 H508" marker-end="url(#arA)"/>
+    <path d="M642 343 H660" marker-end="url(#arA)"/>
+    <path d="M682 325 V178" marker-end="url(#arA)"/>
+  </g>
+  <text x="250" y="334" text-anchor="middle" font-size="11" fill="#e8590c">同一个 hidden X，与 q/kv 投影并列</text>
+  <text x="744" y="252" font-size="11" fill="#495057">σ 与乘法融合成</text>
+  <text x="744" y="268" font-size="11" fill="#495057" font-family="monospace">mla_output_gate</text>
+  <text x="744" y="284" font-size="11" fill="#868e96">一个 kernel</text>
+
+  <!-- note -->
+  <rect x="30" y="414" width="840" height="40" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="450" y="439" text-anchor="middle" font-size="12" fill="#495057">门控只依赖当前 x，又乘在 W_UV 展开之后：absorb 的数学形式与 latent cache 都原样保留</text>
+</svg>

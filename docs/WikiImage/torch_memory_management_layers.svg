@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 500" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="500" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">显存的三层账本：每个指标只看见一层</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">引用决定数据是否活着；分配器决定内存是否被保留；驱动决定 GPU 上实际占了多少</text>
+
+  <!-- Layer 1: references -->
+  <rect x="40" y="80" width="560" height="104" rx="10" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="40" y="80" width="560" height="28" rx="10" fill="#4c6ef5"/>
+  <rect x="40" y="96" width="560" height="12" fill="#4c6ef5"/>
+  <text x="56" y="99" font-size="13" font-weight="700" fill="#ffffff">① 引用层 · 张量 / view → storage</text>
+  <rect x="60" y="120" width="96" height="30" rx="7" fill="#ffffff" stroke="#4c6ef5"/>
+  <text x="108" y="140" text-anchor="middle" font-size="11.5" font-family="monospace" fill="#3b5bdb">big</text>
+  <rect x="168" y="120" width="96" height="30" rx="7" fill="#ffffff" stroke="#4c6ef5"/>
+  <text x="216" y="140" text-anchor="middle" font-size="11.5" font-family="monospace" fill="#3b5bdb">big[:1]</text>
+  <rect x="276" y="120" width="96" height="30" rx="7" fill="#ffffff" stroke="#4c6ef5"/>
+  <text x="324" y="140" text-anchor="middle" font-size="11.5" font-family="monospace" fill="#3b5bdb">cache[i]</text>
+  <rect x="384" y="120" width="200" height="30" rx="7" fill="#ffffff" stroke="#adb5bd" stroke-dasharray="4 3"/>
+  <text x="484" y="140" text-anchor="middle" font-size="11.5" fill="#868e96">del x → 只删一个名字</text>
+  <text x="60" y="172" font-size="11.5" fill="#495057">任何一个引用还在，storage 就是活的（列表、闭包、属性、view 都算）</text>
+
+  <!-- Layer 2: caching allocator -->
+  <rect x="40" y="200" width="560" height="120" rx="10" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="40" y="200" width="560" height="28" rx="10" fill="#0ca678"/>
+  <rect x="40" y="216" width="560" height="12" fill="#0ca678"/>
+  <text x="56" y="219" font-size="13" font-weight="700" fill="#ffffff">② 缓存分配器层 · block（按 stream 归属）</text>
+  <rect x="60" y="242" width="150" height="34" rx="7" fill="#d3f9d8" stroke="#0ca678"/>
+  <text x="135" y="264" text-anchor="middle" font-size="11.5" font-weight="700" fill="#0b7285">活跃 block</text>
+  <rect x="220" y="242" width="110" height="34" rx="7" fill="#d3f9d8" stroke="#0ca678"/>
+  <text x="275" y="264" text-anchor="middle" font-size="11.5" font-weight="700" fill="#0b7285">活跃 block</text>
+  <rect x="340" y="242" width="120" height="34" rx="7" fill="#ffffff" stroke="#0ca678" stroke-dasharray="4 3"/>
+  <text x="400" y="264" text-anchor="middle" font-size="11.5" fill="#0b7285">空闲缓存</text>
+  <rect x="470" y="242" width="114" height="34" rx="7" fill="#ffffff" stroke="#0ca678" stroke-dasharray="4 3"/>
+  <text x="527" y="264" text-anchor="middle" font-size="11.5" fill="#0b7285">空闲缓存</text>
+  <text x="60" y="304" font-size="11.5" fill="#495057">storage 释放后 block 回到缓存，等下一次复用；empty_cache() 只归还“空闲缓存”</text>
+
+  <!-- Layer 3: driver -->
+  <rect x="40" y="336" width="560" height="100" rx="10" fill="#fff9db" stroke="#f08c00"/>
+  <rect x="40" y="336" width="560" height="28" rx="10" fill="#f08c00"/>
+  <rect x="40" y="352" width="560" height="12" fill="#f08c00"/>
+  <text x="56" y="355" font-size="13" font-weight="700" fill="#ffffff">③ 驱动 / 设备层 · 进程实际占用的显存</text>
+  <rect x="60" y="376" width="270" height="32" rx="7" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="195" y="397" text-anchor="middle" font-size="11.5" font-weight="700" fill="#0b7285">分配器保留的全部 block</text>
+  <rect x="340" y="376" width="110" height="32" rx="7" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="395" y="397" text-anchor="middle" font-size="11.5" fill="#495057">CUDA context</text>
+  <rect x="460" y="376" width="124" height="32" rx="7" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="522" y="397" text-anchor="middle" font-size="11.5" fill="#495057">通信库 / 直接分配</text>
+  <text x="60" y="426" font-size="11.5" fill="#495057">后两者不经过 PyTorch allocator，PyTorch 的统计看不到</text>
+
+  <!-- Right column: metrics -->
+  <text x="745" y="96" text-anchor="middle" font-size="13" font-weight="700" fill="#495057">对应的观察指标</text>
+  <rect x="640" y="112" width="210" height="56" rx="9" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="745" y="134" text-anchor="middle" font-size="11.5" font-family="monospace" fill="#3b5bdb">numel()*element_size()</text>
+  <text x="745" y="154" text-anchor="middle" font-size="11" fill="#868e96">逻辑字节，≠ 独占 storage</text>
+
+  <rect x="640" y="214" width="210" height="44" rx="9" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="745" y="234" text-anchor="middle" font-size="11.5" font-family="monospace" fill="#0b7285">memory_allocated()</text>
+  <text x="745" y="250" text-anchor="middle" font-size="11" fill="#868e96">= 活跃 block</text>
+  <rect x="640" y="266" width="210" height="44" rx="9" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="745" y="286" text-anchor="middle" font-size="11.5" font-family="monospace" fill="#0b7285">memory_reserved()</text>
+  <text x="745" y="302" text-anchor="middle" font-size="11" fill="#868e96">= 活跃 + 空闲缓存</text>
+
+  <rect x="640" y="360" width="210" height="56" rx="9" fill="#fff4e6" stroke="#f08c00"/>
+  <text x="745" y="382" text-anchor="middle" font-size="11.5" font-family="monospace" fill="#e8590c">nvidia-smi / mem_get_info</text>
+  <text x="745" y="402" text-anchor="middle" font-size="11" fill="#868e96">驱动视角，含非 PyTorch 分配</text>
+
+  <path d="M602 140 L636 140" stroke="#868e96" stroke-width="2" marker-end="url(#arL)"/>
+  <path d="M602 260 L636 260" stroke="#868e96" stroke-width="2" marker-end="url(#arL)"/>
+  <path d="M602 388 L636 388" stroke="#868e96" stroke-width="2" marker-end="url(#arL)"/>
+
+  <!-- note -->
+  <rect x="40" y="452" width="810" height="36" rx="9" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="58" y="475" font-size="12" fill="#495057">del 只动 ①；empty_cache() 只动 ②（归还空闲缓存）；allocated 降而 reserved / nvidia-smi 不降，通常不是泄漏。</text>
+
+  <defs>
+    <marker id="arL" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#868e96"/></marker>
+  </defs>
+</svg>

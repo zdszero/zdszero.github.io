@@ -1,0 +1,413 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    Torch dtype 与数值精度
+  </title>
+    <link rel="stylesheet" href="./WikiTheme/theme/bootstrap.css"  />
+        <script defer=""
+        src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+        <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+        </script>
+        <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+      <style type="text/css">
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+      <!-- wiki three-column layout styles/behavior, kept external so the ~5KB
+       block isn't duplicated into every generated page -->
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/wiki-layout.css" />
+  <script defer src="./WikiTheme/wiki-layout.js"></script>
+</head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">Torch dtype 与数值精度</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="wiki-layout">
+    <nav class="wiki-sidebar" id="wiki-sidebar" hidden></nav>
+    <main class="wiki-main">
+            <ul>
+            <li>模型已经 <code>.to(torch.bfloat16)</code>，为什么
+            RMSNorm、logits、softmax 附近还到处是
+            <code>.float()</code>？</li>
+            <li>BF16 和 FP16 都是 2
+            字节，为什么一个更容易溢出、另一个更容易“看不出小差别”？</li>
+            <li>同一个 prompt、<code>temperature=0</code>，batch
+            里多拼了几个请求，贪心输出的 token 却变了——这是 bug
+            吗？</li>
+            </ul>
+            <p>这些问题背后是同一个误解：把“张量的
+            dtype”当成“这次计算的精度”。把模型转成
+            BF16，不代表每一步都以 BF16 完成累加；输入是
+            FP32，也不代表底层 matmul 一定采用完整 FP32 尾数精度。LLM
+            推理需要分别看存储格式、算子的执行策略和误差传播。</p>
+            <h3
+            id="抽象一次计算里至少有三种精度">抽象：一次计算里至少有三种“精度”</h3>
+            <p>核心的一句话：<strong><code>.dtype</code>
+            只告诉你结果被存成什么格式，不告诉你它是怎么算出来的。</strong>
+            一个算子从读入到写出，至少经过三个可以各自选择精度的环节：</p>
+            <ul>
+            <li><strong>存储精度（storage）</strong>：张量在显存里以什么格式躺着，决定字节数和带宽；</li>
+            <li><strong>计算 / 累加精度（compute &amp;
+            accumulate）</strong>：kernel
+            内部把乘积加起来时用的寄存器格式，决定长归约的误差；</li>
+            <li><strong>输出舍入（output）</strong>：累加结果写回时再次转成存储格式，又舍入一次。</li>
+            </ul>
+            <figure>
+            <img
+            src="./WikiImage/torch_numerical_precision_pipeline.svg"
+            alt="一次 BF16 matmul 中的三种精度" />
+            <figcaption aria-hidden="true">一次 BF16 matmul
+            中的三种精度</figcaption>
+            </figure>
+            <p>有了这个模型，读代码时就不再问“这个张量是不是
+            BF16”，而是对 matmul、softmax 和归约分别问：输入是什么
+            dtype、内部累加是什么精度、最终输出存成什么
+            dtype？只打印输出的 <code>.dtype</code>
+            推断不出全部计算细节。TF32 则是相关硬件上 FP32
+            matmul/卷积的一种计算路径，不是常规张量存储 dtype。见 <a
+            href="https://docs.pytorch.org/docs/main/notes/numerical_accuracy.html">Numerical
+            accuracy</a>。</p>
+            <h3
+            id="格式本身指数管范围尾数管精度">格式本身：指数管范围，尾数管精度</h3>
+            <p>浮点数 = 符号 × 尾数 ×
+            2^指数。<strong>指数位数决定能表示多大、多小的数（范围），尾数位数决定相邻两个可表示数之间有多密（精度）。</strong>
+            三种常见格式就是在 2 或 4 个字节里对这两者做不同分配：</p>
+            <figure>
+            <img
+            src="./WikiImage/torch_numerical_precision_formats.svg"
+            alt="FP32 / FP16 / BF16 的位布局" />
+            <figcaption aria-hidden="true">FP32 / FP16 / BF16
+            的位布局</figcaption>
+            </figure>
+            <table>
+            <colgroup>
+            <col style="width: 20%" />
+            <col style="width: 20%" />
+            <col style="width: 20%" />
+            <col style="width: 20%" />
+            <col style="width: 20%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>格式</th>
+            <th>每元素字节数</th>
+            <th>符号/指数/尾数</th>
+            <th>最大有限值</th>
+            <th><code>eps</code>（1 附近的间隔）</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>FP32</td>
+            <td>4</td>
+            <td>1 / 8 / 23</td>
+            <td>≈ 3.4e38</td>
+            <td>≈ 1.2e-7</td>
+            </tr>
+            <tr>
+            <td>FP16</td>
+            <td>2</td>
+            <td>1 / 5 / 10</td>
+            <td>65504</td>
+            <td>≈ 9.8e-4</td>
+            </tr>
+            <tr>
+            <td>BF16</td>
+            <td>2</td>
+            <td>1 / 8 / 7</td>
+            <td>≈ 3.4e38</td>
+            <td>7.8e-3</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>数值可用 <code>torch.finfo(dtype)</code> 查看。BF16
+            的指数位与 FP32 相同，所以范围接近 FP32、从 FP32
+            截断转换很直接；代价是尾数只有 7
+            位，表示相近数值时量化间隔更大。FP16 相比 BF16
+            尾数位更多，但指数范围小，更容易在大幅值运算中溢出成
+            <code>inf</code>，小幅值也更早进入 subnormal 或下溢。</p>
+            <p>因此 BF16 并不是在所有数值区间都比 FP16
+            更准确；应该结合模型激活与权重的数值范围、算子和目标硬件选择格式。FP8
+            等更低精度格式通常还要配合缩放因子，这已经超出“选一个
+            dtype”的范畴。</p>
+            <h3
+            id="类型提升一个输入就可能改变表达式">类型提升：一个输入就可能改变表达式</h3>
+            <div class="sourceCode" id="cb1"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> torch.ones(<span class="dv">4</span>, dtype<span class="op">=</span>torch.bfloat16)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>bias <span class="op">=</span> torch.ones(<span class="dv">4</span>, dtype<span class="op">=</span>torch.float32)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> x <span class="op">+</span> bias</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> y.dtype <span class="op">==</span> torch.float32</span></code></pre></div>
+            <p>上述逐元素表达式发生类型提升，输出和临时结果可能比预期更大，后续算子也随之在
+            FP32 上运行。但不是所有算子都接受混合 dtype
+            并自动提升，例如常规 matmul 的输入通常需要 dtype
+            匹配。Python
+            标量、零维张量和有维度张量的提升规则也有差异：零维张量和
+            Python 标量只在类别更高时（例如整数张量加 Python
+            浮点数）才改变结果 dtype，同为浮点类别时通常保留有维度张量的
+            dtype，<code>bf16_tensor * 0.5</code> 仍是 BF16。</p>
+            <p>因此在 residual、mask
+            加法和辅助张量创建处，应检查实际输出 dtype；不能把“混入一个
+            Python 浮点数”一概视为强制变成 FP32。规则见 <a
+            href="https://docs.pytorch.org/docs/stable/tensor_attributes.html#type-promotion-doc">Tensor
+            dtype promotion</a>，可用 <code>torch.result_type()</code>
+            预先确认。</p>
+            <h3 id="autocast-是按算子选择策略">autocast
+            是按算子选择策略</h3>
+            <p><code>model.to(dtype=...)</code>
+            改变参数等浮点张量的<strong>存储</strong>格式；<code>torch.autocast()</code>
+            则按算子的策略选择<strong>执行</strong>
+            dtype，二者不是同一件事。</p>
+            <div class="sourceCode" id="cb2"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># model、inputs 由调用方准备，并位于兼容设备上</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> torch.inference_mode(), torch.autocast(<span class="st">&quot;cuda&quot;</span>, dtype<span class="op">=</span>torch.bfloat16):</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    output <span class="op">=</span> model(inputs)</span></code></pre></div>
+            <p>autocast 区域里的结果不一定都是 BF16。部分算子保留或转用
+            FP32，一些算子按输入类型提升；原地操作、显式指定 dtype 和
+            <code>out=</code> 调用也有不同的适用规则。进入 autocast
+            区域不会永久把模型权重全部改写成 BF16。见 <a
+            href="https://docs.pytorch.org/docs/stable/amp.html">Automatic
+            Mixed Precision</a>。</p>
+            <p>自定义 CUDA/Triton kernel 是否参与 autocast、是否内部转为
+            FP32 累加，需要检查实现，不能从外层 context
+            推断。推理框架往往不依赖
+            autocast，而是直接以低精度存储权重，并在少数敏感算子里手工升精度（见下文
+            SGLang 的做法）。</p>
+            <h3 id="softmax归约与误差传播">softmax、归约与误差传播</h3>
+            <p>softmax
+            通常先减去最大值，再做指数与归一化，以降低溢出风险：</p>
+            <p><span class="math display">
+            p_i = \frac{\exp(z_i - m)}{\sum_j \exp(z_j - m)}, \qquad m =
+            \max_j z_j
+            </span></p>
+            <p>算法稳定性与 dtype
+            是两层问题：减最大值解决的是“指数会不会溢出”，升精度解决的是“累加会不会丢掉小量”。中间阶段提高精度，不会自动恢复输入已经丢失的信息；最后转换成低精度输出，也会再次舍入。</p>
+            <p>归约是低精度最脆弱的地方。BF16 在 256
+            附近相邻可表示数的间隔已经是 2，若累加器本身是
+            BF16，往一个已经很大的部分和上逐个加小量，小量可能被直接舍掉；累加长度越长，问题越明显。所以
+            attention、RMSNorm
+            和长序列归约里，累加长度和内部精度都影响误差，常见做法是“低精度存储
+            + FP32 累加”。</p>
+            <p>实现需要按后端确认；例如 SDPA
+            的不同后端有不同数值路径，math 后端对 FP16/BF16 输入默认保留
+            FP32 中间量。见 <a
+            href="https://docs.pytorch.org/docs/stable/generated/torch.nn.functional.scaled_dot_product_attention">SDPA
+            文档</a>。</p>
+            <h3 id="数学等价不保证逐位一致">数学等价不保证逐位一致</h3>
+            <p>浮点加法不满足结合律：</p>
+            <p><span class="math display">
+            \operatorname{fl}(\operatorname{fl}(a+b)+c)
+            \neq
+            \operatorname{fl}(a+\operatorname{fl}(b+c))
+            </span></p>
+            <figure>
+            <img
+            src="./WikiImage/torch_numerical_precision_reduction_order.svg"
+            alt="归约顺序改变结果" />
+            <figcaption aria-hidden="true">归约顺序改变结果</figcaption>
+            </figure>
+            <p>一个具体例子：在 BF16 中，<code>(256 + 1) + 1</code> 得到
+            <code>256</code>（每一步的 257 都按“舍入到偶数”回到
+            256），而 <code>256 + (1 + 1)</code> 得到
+            <code>258</code>。kernel 不会按 Python
+            代码的顺序做加法，而是按自己的分块和并行策略组织归约：改变
+            batch 大小、kernel 后端、split-K
+            切分或融合策略，都可能改变归约顺序和舍入位置。</p>
+            <p>所以优化前后比较应同时关注数值误差和业务输出，而不是默认所有张量必须逐位相等。batch
+            大小影响单条请求输出（batch invariance）以及它与 run-to-run
+            不确定性的区别，详见 <a
+            href="./nondeterminism.html">Nondeterminism</a>。</p>
+            <div class="sourceCode" id="cb3"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ref、actual 由对照路径生成；这里的阈值仅为示例</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>torch.testing.assert_close(actual, ref, rtol<span class="op">=</span><span class="fl">1e-3</span>, atol<span class="op">=</span><span class="fl">1e-3</span>)</span></code></pre></div>
+            <p>误差容忍不能统一套一个数字：需要根据
+            dtype、数值尺度、层数和业务指标选择。top-1 logits
+            很接近时，小误差也可能改变贪心
+            token，随后生成轨迹进一步分叉。见 <a
+            href="https://docs.pytorch.org/docs/stable/testing.html#torch.testing.assert_close">assert_close</a>。</p>
+            <h3 id="引擎落点">引擎落点</h3>
+            <p>SGLang
+            的做法可以概括为：<strong>权重和激活默认低精度存储，在少数对精度敏感的环节显式升到
+            FP32。</strong> 几个值得知道的位置（基于
+            <code>python/sglang/srt/</code> 当前代码）：</p>
+            <ul>
+            <li><strong>两个独立的存储精度开关。</strong>
+            <code>server_args.py</code> 中的 <code>--dtype</code>
+            控制权重和激活的格式（<code>auto</code> 对 BF16 模型使用
+            BF16、对 FP32/FP16 模型使用
+            FP16），<code>--kv-cache-dtype</code> 单独控制 KV cache
+            的存储格式，<code>auto</code> 时沿用模型 dtype。KV cache 用
+            FP8 存储时，帮助信息提示应通过
+            <code>--quantization-param-path</code>
+            提供缩放因子，否则默认 1.0
+            可能带来精度问题——这正是“存储精度”和“计算精度”分离的例子。</li>
+            <li><strong>RMSNorm 的参考实现在 FP32 中完成。</strong>
+            <code>layers/layernorm.py</code> 中
+            <code>RMSNorm.forward_native</code> 先记下
+            <code>orig_dtype</code>，把 <code>x</code> 和
+            <code>residual</code> 转成 <code>torch.float32</code>
+            再相加、求方差和 <code>rsqrt</code>，最后转回原
+            dtype；<code>fp32_residual=True</code> 时 residual
+            本身也保留 FP32。CUDA 路径调用
+            <code>fused_add_rmsnorm</code> 等融合
+            kernel，其内部累加精度需要看对应 kernel 实现。</li>
+            <li><strong>logits 在采样前转成 FP32。</strong>
+            <code>layers/logits_processor.py</code> 的
+            <code>_copy_logits_to_buffer</code> 要么
+            <code>logits.float()</code>，要么拷进一块预分配的 FP32
+            buffer（并
+            <code>assert logits_buffer.dtype == torch.float</code>）。随后
+            <code>layers/sampler.py</code> 的 <code>Sampler</code>
+            在其上做 <code>softmax</code> /
+            <code>log_softmax</code>，避免在 BF16
+            下计算大词表的归一化。</li>
+            </ul>
+            <h3 id="推理排查建议">推理排查建议</h3>
+            <ol type="1">
+            <li>记录输入、权重、mask、residual、KV cache 与输出
+            dtype。</li>
+            <li>确认 autocast、TF32
+            和归约精度配置，避免依赖版本默认值。</li>
+            <li>用固定输入分别比较单算子、单层和完整前向，定位误差最早出现的位置。</li>
+            <li>排查 NaN/Inf，再比较绝对误差、相对误差和 token
+            输出。</li>
+            <li>数值稳定后测吞吐与显存，分别报告这几个维度。</li>
+            </ol>
+            <h3 id="小结">小结</h3>
+            <p>dtype
+            是“存成什么”，不是“怎么算”。把一次计算拆成存储、计算/累加、输出舍入三个环节，就能解释为什么
+            BF16 模型里仍要在 RMSNorm、softmax 和 logits 处升到
+            FP32，为什么 FP16 与 BF16 各有短板，以及为什么换 batch
+            或后端会让结果不再逐位一致。低精度推理的关键不是给所有张量套同一个
+            dtype，而是让存储、内部计算和验证标准彼此匹配；具体后端和版本的精度行为，应以实际文档、配置与测量为准。</p>
+          </main>
+        <aside class="wiki-toc">
+      <ul>
+      <li><a href="#抽象一次计算里至少有三种精度"
+      id="toc-抽象一次计算里至少有三种精度">抽象：一次计算里至少有三种“精度”</a></li>
+      <li><a href="#格式本身指数管范围尾数管精度"
+      id="toc-格式本身指数管范围尾数管精度">格式本身：指数管范围，尾数管精度</a></li>
+      <li><a href="#类型提升一个输入就可能改变表达式"
+      id="toc-类型提升一个输入就可能改变表达式">类型提升：一个输入就可能改变表达式</a></li>
+      <li><a href="#autocast-是按算子选择策略"
+      id="toc-autocast-是按算子选择策略">autocast
+      是按算子选择策略</a></li>
+      <li><a href="#softmax归约与误差传播"
+      id="toc-softmax归约与误差传播">softmax、归约与误差传播</a></li>
+      <li><a href="#数学等价不保证逐位一致"
+      id="toc-数学等价不保证逐位一致">数学等价不保证逐位一致</a></li>
+      <li><a href="#引擎落点" id="toc-引擎落点">引擎落点</a></li>
+      <li><a href="#推理排查建议"
+      id="toc-推理排查建议">推理排查建议</a></li>
+      <li><a href="#小结" id="toc-小结">小结</a></li>
+      </ul>
+    </aside>
+      </div>
+</body>
+
+</html>

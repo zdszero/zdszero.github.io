@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 500" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="500" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">一个 12000 token 请求的分块生命周期</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">chunked_prefill_size = 4096，page_size = 16，不开 mixed；每一行是一轮调度 + 一次 forward</text>
+
+  <!-- legend / headers -->
+  <text x="170" y="88" font-size="11.5" fill="#495057">请求的 token 区间（0 → 12000）</text>
+  <rect x="380" y="79" width="14" height="10" rx="2" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="398" y="88" font-size="11" fill="#495057">已在 KV</text>
+  <rect x="448" y="79" width="14" height="10" rx="2" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="466" y="88" font-size="11" fill="#495057">本轮 extend</text>
+  <rect x="530" y="79" width="14" height="10" rx="2" fill="#f1f3f5" stroke="#ced4da"/>
+  <text x="548" y="88" font-size="11" fill="#495057">未算</text>
+  <text x="600" y="88" font-size="11.5" fill="#495057">调度器做了什么</text>
+
+  <!-- Round 1 -->
+  <rect x="60" y="98" width="790" height="72" rx="10" fill="#ffffff" stroke="#dee2e6"/>
+  <text x="76" y="128" font-size="13.5" font-weight="700" fill="#343a40">Round 1</text>
+  <text x="76" y="146" font-size="11" fill="#868e96">chunk 1</text>
+  <rect x="170" y="110" width="136.5" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="306.5" y="110" width="263.5" height="26" rx="4" fill="#f1f3f5" stroke="#ced4da"/>
+  <text x="170" y="158" font-size="11" font-family="monospace" fill="#495057">prefix_len=0     extend_end=4096</text>
+  <text x="600" y="124" font-size="11.5" fill="#495057">从 waiting_queue 取出，add_one_req 截断</text>
+  <text x="600" y="142" font-size="11.5" fill="#495057"><tspan font-family="monospace" fill="#3b5bdb">chunked_req</tspan> = req</text>
+  <text x="600" y="159" font-size="11" fill="#868e96">中间片不预留 max_new_tokens</text>
+
+  <!-- Round 2 -->
+  <rect x="60" y="180" width="790" height="72" rx="10" fill="#ffffff" stroke="#dee2e6"/>
+  <text x="76" y="210" font-size="13.5" font-weight="700" fill="#343a40">Round 2</text>
+  <text x="76" y="228" font-size="11" fill="#868e96">chunk 2</text>
+  <rect x="170" y="192" width="136.5" height="26" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="306.5" y="192" width="136.6" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="443.1" y="192" width="126.9" height="26" rx="4" fill="#f1f3f5" stroke="#ced4da"/>
+  <text x="170" y="240" font-size="11" font-family="monospace" fill="#495057">prefix_len=4096  extend_end=8192</text>
+  <text x="600" y="206" font-size="11.5" fill="#495057">开头 stash：checkpoint 进 radix tree，</text>
+  <text x="600" y="224" font-size="11.5" fill="#495057"><tspan font-family="monospace">prefix_len ← extend_end</tspan></text>
+  <text x="600" y="241" font-size="11" fill="#868e96">add_chunked_req 续算，仍然截断</text>
+  <!-- Round 3 (the one that matters) -->
+  <rect x="60" y="262" width="790" height="72" rx="10" fill="#fff9db" stroke="#f08c00"/>
+  <text x="76" y="292" font-size="13.5" font-weight="700" fill="#e8590c">Round 3</text>
+  <text x="76" y="310" font-size="11" fill="#e8590c">最后一片</text>
+  <rect x="170" y="274" width="273.1" height="26" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="443.1" y="274" width="126.9" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="170" y="322" font-size="11" font-family="monospace" fill="#495057">prefix_len=8192  extend_end=12000</text>
+  <text x="600" y="288" font-size="11.5" fill="#495057">剩 3808 ≤ 4096，不截断：此刻才预留</text>
+  <text x="600" y="306" font-size="11.5" fill="#495057"><tspan font-family="monospace">max_new_tokens</tspan>；<tspan font-family="monospace" fill="#3b5bdb">chunked_req</tspan> = None</text>
+  <text x="600" y="323" font-size="11" fill="#868e96">剩余 288 token 预算可装别的新请求</text>
+
+  <!-- Round 4 -->
+  <rect x="60" y="344" width="790" height="72" rx="10" fill="#ffffff" stroke="#dee2e6"/>
+  <text x="76" y="374" font-size="13.5" font-weight="700" fill="#343a40">Round 4</text>
+  <text x="76" y="392" font-size="11" fill="#868e96">decode</text>
+  <rect x="170" y="356" width="400" height="26" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="573" y="356" width="12" height="26" rx="3" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="170" y="404" font-size="11" font-family="monospace" fill="#495057">seq_len=12001，每步 +1</text>
+  <text x="600" y="370" font-size="11.5" fill="#495057">上一轮的 batch 不再排除它，</text>
+  <text x="600" y="388" font-size="11.5" fill="#495057">filter 后 merge 进 <tspan font-family="monospace" fill="#0b7285">running_batch</tspan></text>
+  <text x="600" y="405" font-size="11" fill="#868e96">Round 3 已采样出首 token</text>
+
+  <!-- note -->
+  <rect x="60" y="430" width="790" height="56" rx="10" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="78" y="453" font-size="12" fill="#495057">整个过程中请求的 req_to_token 行一直保留，只有游标 [prefix_len, extend_end) 在向右推进；</text>
+  <text x="78" y="472" font-size="12" fill="#495057">中间片的输出 token 被丢弃、不流式返回，也不进入 running_batch——它只是「下一轮的 prefix」。</text>
+</svg>

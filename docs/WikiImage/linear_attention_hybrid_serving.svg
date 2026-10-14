@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 540" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="540" rx="12" fill="#ffffff"/>
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#868e96"/>
+    </marker>
+  </defs>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">混合模型在 SGLang 中的服务形态：两种层、两种显存</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">按 layer_id 路由到不同 backend；full-attn 层用 per-token KV，linear 层用 per-request 状态 slot</text>
+
+  <!-- left: layer stack -->
+  <text x="30" y="82" font-size="12" font-weight="700" fill="#495057">层结构（Qwen3-Next）</text>
+  <g font-size="12" font-weight="700">
+    <rect x="30" y="92" width="190" height="30" rx="6" fill="#e6fcf5" stroke="#0ca678"/><text x="44" y="112" fill="#0b7285">L0  GDN</text>
+    <rect x="30" y="128" width="190" height="30" rx="6" fill="#e6fcf5" stroke="#0ca678"/><text x="44" y="148" fill="#0b7285">L1  GDN</text>
+    <rect x="30" y="164" width="190" height="30" rx="6" fill="#e6fcf5" stroke="#0ca678"/><text x="44" y="184" fill="#0b7285">L2  GDN</text>
+    <rect x="30" y="200" width="190" height="30" rx="6" fill="#f3f0ff" stroke="#7048e8"/><text x="44" y="220" fill="#5f3dc4">L3  Full Attention</text>
+    <rect x="30" y="236" width="190" height="30" rx="6" fill="#e6fcf5" stroke="#0ca678"/><text x="44" y="256" fill="#0b7285">L4  GDN</text>
+    <rect x="30" y="272" width="190" height="30" rx="6" fill="#e6fcf5" stroke="#0ca678"/><text x="44" y="292" fill="#0b7285">L5  GDN</text>
+    <rect x="30" y="308" width="190" height="30" rx="6" fill="#e6fcf5" stroke="#0ca678"/><text x="44" y="328" fill="#0b7285">L6  GDN</text>
+    <rect x="30" y="344" width="190" height="30" rx="6" fill="#f3f0ff" stroke="#7048e8"/><text x="44" y="364" fill="#5f3dc4">L7  Full Attention</text>
+  </g>
+  <text x="125" y="394" text-anchor="middle" font-size="12" fill="#868e96">⋮</text>
+  <text x="30" y="414" font-size="10.5" fill="#868e96" font-family="monospace">(l+1) % full_attention_interval == 0</text>
+  <text x="30" y="428" font-size="10.5" fill="#868e96">Kimi-Linear：kda_layers 列表，其余层为 MLA</text>
+
+  <!-- middle: routing -->
+  <rect x="256" y="92" width="250" height="84" rx="10" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="256" y="92" width="250" height="26" rx="10" fill="#4c6ef5"/>
+  <text x="270" y="110" font-size="13" font-weight="700" fill="#ffffff">HybridLinearAttnBackend</text>
+  <text x="270" y="140" font-size="11.5" fill="#343a40" font-family="monospace">_is_full_attn(layer_id)</text>
+  <text x="270" y="160" font-size="11" fill="#495057">metadata 同时交给两个子 backend</text>
+  <path d="M220 134 L252 134" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <rect x="256" y="204" width="250" height="70" rx="10" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="270" y="226" font-size="12.5" font-weight="700" fill="#5f3dc4">full_attn_backend</text>
+  <text x="270" y="246" font-size="11" fill="#495057">普通 attention backend（q, k, v）</text>
+  <text x="270" y="263" font-size="11" fill="#868e96">FlashInfer / FA3 / MLA …</text>
+  <rect x="256" y="300" width="250" height="88" rx="10" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="270" y="322" font-size="12.5" font-weight="700" fill="#0b7285">linear_attn_backend</text>
+  <text x="270" y="342" font-size="11" fill="#495057" font-family="monospace">GDNAttnBackend / KDAAttnBackend</text>
+  <text x="270" y="360" font-size="11" fill="#495057">入参 mixed_qkv, a, b</text>
+  <text x="270" y="377" font-size="11" fill="#868e96">都继承 MambaAttnBackendBase</text>
+  <path d="M340 176 L340 200" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <path d="M440 176 L440 296" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <text x="346" y="193" font-size="10.5" fill="#5f3dc4">是</text>
+  <text x="446" y="193" font-size="10.5" fill="#0b7285">否</text>
+  <!-- right: memory -->
+  <rect x="540" y="92" width="330" height="150" rx="10" fill="#f3f0ff" stroke="#7048e8"/>
+  <rect x="540" y="92" width="330" height="26" rx="10" fill="#7048e8"/>
+  <text x="554" y="110" font-size="13" font-weight="700" fill="#ffffff">HybridLinearKVPool：per-token KV</text>
+  <text x="554" y="140" font-size="11.5" fill="#495057">只为 full-attn 层分配 KV buffer</text>
+  <text x="554" y="160" font-size="11" fill="#343a40" font-family="monospace">full_attention_layer_id_mapping</text>
+  <text x="554" y="178" font-size="11" fill="#5f3dc4" font-family="monospace">{3→0, 7→1, 11→2, …}</text>
+  <text x="554" y="198" font-size="11" fill="#343a40" font-family="monospace">req_to_token[req, pos] → kv_index</text>
+  <text x="554" y="224" font-size="11.5" font-weight="700" fill="#5f3dc4">大小 ∝ 序列长度</text>
+  <rect x="540" y="260" width="330" height="150" rx="10" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="540" y="260" width="330" height="26" rx="10" fill="#0ca678"/>
+  <text x="554" y="278" font-size="13" font-weight="700" fill="#ffffff">MambaPool：per-request 状态 slot</text>
+  <text x="554" y="306" font-size="11" fill="#343a40" font-family="monospace">req_index_to_mamba_index_mapping</text>
+  <text x="554" y="323" font-size="11" fill="#0b7285" font-family="monospace">req_pool_idx → mamba_pool_idx</text>
+  <text x="554" y="342" font-size="11" fill="#343a40" font-family="monospace">conv:     [L_lin, slots+1, conv_dim, K−1]</text>
+  <text x="554" y="359" font-size="11" fill="#343a40" font-family="monospace">temporal: [L_lin, slots+1, HV, d_v, d_k]</text>
+  <text x="554" y="377" font-size="11" fill="#495057">mamba_map：global layer id → linear 层序号</text>
+  <text x="554" y="397" font-size="11.5" font-weight="700" fill="#0b7285">大小与序列长度无关</text>
+  <path d="M506 239 L536 200" stroke="#7048e8" stroke-width="2" marker-end="url(#ar)"/>
+  <path d="M506 344 L536 344" stroke="#0ca678" stroke-width="2" marker-end="url(#ar)"/>
+
+  <!-- numbers -->
+  <rect x="30" y="444" width="840" height="82" rx="10" fill="#fff9db" stroke="#f08c00"/>
+  <text x="46" y="466" font-size="13" font-weight="700" fill="#e8590c">算一笔账：Qwen3-Next-80B-A3B（48 层 = 36 GDN + 12 full-attn，TP=1，按 config 估算）</text>
+  <text x="46" y="487" font-size="11.5" fill="#343a40" font-family="monospace">SSM state = 32 head × 128 × 128 × 4B = 2 MiB/层 → ×36 ≈ 72 MiB/请求（conv state 另约 1.7 MiB）</text>
+  <text x="46" y="505" font-size="11.5" fill="#343a40" font-family="monospace">full-attn KV = 12 层 × 2 × 2 kv-head × 256 × 2B = 24 KiB/token → 128K 上下文 = 3 GiB</text>
+  <text x="46" y="521" font-size="11" fill="#868e96">固定状态 ≈ 3K token 的 KV：短请求反而更“贵”，长请求优势巨大（48 层全 attention 需 12 GiB）</text>
+</svg>

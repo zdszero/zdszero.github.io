@@ -1,0 +1,381 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    Torch 推理模式与状态
+  </title>
+    <link rel="stylesheet" href="./WikiTheme/theme/bootstrap.css"  />
+        <style type="text/css">
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+      <!-- wiki three-column layout styles/behavior, kept external so the ~5KB
+       block isn't duplicated into every generated page -->
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/wiki-layout.css" />
+  <script defer src="./WikiTheme/wiki-layout.js"></script>
+</head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">Torch 推理模式与状态</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="wiki-layout">
+    <nav class="wiki-sidebar" id="wiki-sidebar" hidden></nav>
+    <main class="wiki-main">
+            <ul>
+            <li>已经 <code>model.eval()</code>
+            了，为什么显存里还在为反向保存激活？换个问法：<code>eval()</code>
+            和 <code>no_grad()</code> 到底谁管谁？</li>
+            <li>把 <code>no_grad()</code> 换成更“快”的
+            <code>inference_mode()</code> 后，某个持久 buffer 在 CUDA
+            graph capture 时原地写入，为什么突然报错？</li>
+            <li>模式开关都设了，同一份输入跑两遍结果却不一样，问题出在哪？</li>
+            </ul>
+            <p>“模型在做推理”是业务语义，PyTorch
+            不会据此自动关闭训练行为和
+            autograd，也不会把缓存冻结成只读。这三个问题分别落在三份互相独立的状态上。本篇先建立“三份状态、三个所有者”的模型，再看每个开关的边界，最后对照
+            SGLang 中它们各自在哪里被设定。</p>
+            <h3
+            id="抽象三份状态三个所有者">抽象：三份状态，三个所有者</h3>
+            <p>“推理是否正确、是否省资源”由三份状态共同决定，关键在于<strong>它们住在不同的地方</strong>：</p>
+            <ul>
+            <li><strong>module 行为状态</strong>挂在对象上：每个
+            <code>nn.Module</code> 的 <code>training</code>
+            属性。<code>model.eval()</code>
+            改的是这个对象，所有持有它的线程看到同一份值。</li>
+            <li><strong>梯度 context</strong> 挂在线程上：grad mode 是
+            thread-local 的，进入 <code>no_grad()</code> /
+            <code>inference_mode()</code> 区域时设置，离开时恢复。</li>
+            <li><strong>请求 / 缓存状态</strong>挂在运行时上：KV
+            cache、位置计数、随机数状态等可变 buffer
+            由推理框架持有，forward 中会被原地写入。</li>
+            </ul>
+            <figure>
+            <img src="./WikiImage/torch_inference_mode_owners.svg"
+            alt="三份状态的所有者" />
+            <figcaption aria-hidden="true">三份状态的所有者</figcaption>
+            </figure>
+            <p>有了这个模型，排查就有了统一判据：<strong>出问题的那项状态归谁管，就去那里修。</strong>
+            Dropout
+            还在生效，看对象状态或函数式参数；显存里有反向图，看当前线程的梯度
+            context；结果不可复现，看可变 buffer
+            和随机性。任何一个开关都不能替代另外两项。</p>
+            <h3
+            id="evalno_grad-与-inference_mode-各管什么">eval、no_grad 与
+            inference_mode 各管什么</h3>
+            <table>
+            <colgroup>
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>手段</th>
+            <th>控制什么</th>
+            <th>主要边界</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td><code>model.eval()</code></td>
+            <td>将 module 及子 module 的 <code>training</code> 状态置为
+            false</td>
+            <td>不关闭梯度记录，也不冻结参数</td>
+            </tr>
+            <tr>
+            <td><code>torch.no_grad()</code></td>
+            <td>禁止区域内的反向自动微分图记录</td>
+            <td>不自动切换 module 的训练状态</td>
+            </tr>
+            <tr>
+            <td><code>torch.inference_mode()</code></td>
+            <td>关闭梯度记录，并减少 view tracking 和版本计数等开销</td>
+            <td>其中创建的 inference tensor 与后续 autograd
+            的交互限制更严格</td>
+            </tr>
+            </tbody>
+            </table>
+            <figure>
+            <img
+            src="./WikiImage/torch_inference_mode_switches.svg"
+            alt="三个开关的作用矩阵" />
+            <figcaption
+            aria-hidden="true">三个开关的作用矩阵</figcaption>
+            </figure>
+            <p><code>eval()</code> 是否改变输出，由各 module
+            的实现决定，例如标准 Dropout 和 BatchNorm
+            会依据训练状态切换行为。纯 Linear
+            本身没有相同的训练/推理分支。梯度模式和 module
+            模式互相独立，见 <a
+            href="https://docs.pytorch.org/docs/stable/notes/autograd">Autograd
+            mechanics</a>。</p>
+            <p>纯推理的常见写法是两者都设：</p>
+            <div class="sourceCode" id="cb1"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>model.<span class="bu">eval</span>()</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> torch.inference_mode():</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    output <span class="op">=</span> model(inputs)</span></code></pre></div>
+            <p><code>inference_mode()</code> 比 <code>no_grad()</code>
+            多省掉的，是对 inference tensor 的版本计数和 view
+            追踪；代价是这些张量离开区域后受限：不能被需要 autograd
+            保存它的计算使用，也不能在 inference mode
+            之外被原地修改。因此如果结果随后要参与训练或梯度计算，通常优先考虑
+            <code>no_grad()</code>，并确认后续计算需要哪些张量；必要时应在区域外创建普通副本（例如
+            <code>clone()</code>），而不是假定 <code>detach()</code>
+            可以解除所有限制。见 <a
+            href="https://docs.pytorch.org/docs/stable/generated/torch.autograd.grad_mode.inference_mode.html">inference_mode</a>。</p>
+            <p>这条限制<strong>跟着张量走，而不是跟着代码块走</strong>：张量在哪个模式下“出生”，决定了它之后能怎么被写。推理服务中最容易踩到的，是初始化阶段在
+            inference mode 中创建的持久 buffer，后来在只开了
+            <code>no_grad()</code> 的路径上被原地写入。</p>
+            <figure>
+            <img
+            src="./WikiImage/torch_inference_mode_inference_tensor.svg"
+            alt="inference tensor 的边界" />
+            <figcaption aria-hidden="true">inference tensor
+            的边界</figcaption>
+            </figure>
+            <h3 id="函数式-api-未必读取-model.training">函数式 API
+            未必读取 model.training</h3>
+            <p><code>model.training</code> 只被读取它的代码使用。标准
+            <code>nn.Dropout</code> 会依据 module
+            状态工作，但直接调用函数式算子时，其行为由参数决定——这相当于把“对象状态”这一项绕过去了。</p>
+            <p>SDPA 即使在 <code>eval()</code> 下，也按传入的
+            <code>dropout_p</code> 应用
+            dropout；应显式传入推理所需值：</p>
+            <div class="sourceCode" id="cb2"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># forward 中，self.p 是配置的训练 dropout 概率</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>out <span class="op">=</span> torch.nn.functional.scaled_dot_product_attention(</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    q, k, v,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    dropout_p<span class="op">=</span><span class="va">self</span>.p <span class="cf">if</span> <span class="va">self</span>.training <span class="cf">else</span> <span class="fl">0.0</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+            <p><code>torch.nn.functional.dropout()</code> 也需要正确传递
+            <code>training</code>。不能只看到模型已 <code>eval()</code>
+            就认为所有自定义函数路径都关闭了 dropout。见 <a
+            href="https://docs.pytorch.org/docs/stable/generated/torch.nn.functional.scaled_dot_product_attention">SDPA</a>
+            和 <a
+            href="https://docs.pytorch.org/docs/stable/generated/torch.nn.functional.dropout.html">functional.dropout</a>。</p>
+            <h3
+            id="推理模式不会让状态变成只读">推理模式不会让状态变成只读</h3>
+            <p>第三份状态不受前两个开关管辖。<code>inference_mode()</code>
+            不会把模型和缓存变成只读对象；KV
+            cache、位置计数、随机数状态以及自定义模块的状态，仍可能在
+            forward 中变化。原地操作也照常生效：</p>
+            <div class="sourceCode" id="cb3"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>view <span class="op">=</span> cache[:, :valid_length]</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>view.zero_()  <span class="co"># view 与 cache 共享存储，原 cache 也被修改</span></span></code></pre></div>
+            <p>这在没有梯度的推理中依然会发生。<code>no_grad()</code> 和
+            <code>inference_mode()</code> 控制自动微分，不替你管理
+            aliasing
+            和业务状态。使用原地更新节省内存前，应确认没有其他请求、张量别名或未完成的
+            stream 工作继续读取原内容。<code>detach()</code>
+            同样不复制数据，也不能将一个共享缓冲区变成独立的请求副本。布局与共享关系见
+            <a href="./torch_tensor_memory.md">Tensor
+            Memory</a>，异步生命周期见 <a
+            href="./torch_memory_management.html">显存管理</a>。</p>
+            <p>因此“同一份输入重复执行”是否得到同一结果，需要同时确认：</p>
+            <ul>
+            <li>dropout 与其他随机分支是否关闭；</li>
+            <li>cache 是否按预期清空、复用或追加；</li>
+            <li>position、mask 与有效序列长度是否一致；</li>
+            <li>多请求是否误用同一个可变缓冲区；</li>
+            <li>kernel 的数值与确定性行为是否一致，见 <a
+            href="./nondeterminism.html">Nondeterminism</a>。</li>
+            </ul>
+            <p>评估无 cache 的完整前向与带 cache 的逐 token
+            前向时，模式开关相同还不够，需要对齐这些状态和位置语义。</p>
+            <h3
+            id="线程边界context-不跨线程对象状态跨线程">线程边界：context
+            不跨线程，对象状态跨线程</h3>
+            <p>两类开关的作用范围恰好相反。梯度模式是 thread-local
+            的：主线程进入 <code>inference_mode()</code>
+            后，不能假定另一个工作线程也继承了相同
+            context，应在执行推理的线程中设置。<code>model.eval()</code>
+            则改变 module
+            对象的状态，如果多个线程共享对象，其状态也被共享——一个线程调用
+            <code>train()</code>，其他线程立即受影响。见 <a
+            href="https://docs.pytorch.org/docs/stable/generated/torch.no_grad.html">no_grad</a>
+            和 <a
+            href="https://docs.pytorch.org/docs/stable/generated/torch.autograd.grad_mode.inference_mode.html">inference_mode</a>。</p>
+            <p>实践上，把梯度 context 设在“真正执行 forward
+            的那个循环”的入口，而不是进程启动处；把 <code>eval()</code>
+            放在模型加载完成时一次性设好。</p>
+            <h3 id="在-sglang-中三份状态分别由谁设定">在 SGLang
+            中，三份状态分别由谁设定</h3>
+            <p>以下路径均指 <code>python/sglang/srt/</code> 下。</p>
+            <p><strong>对象状态：加载完即 eval。</strong>
+            绝大多数模型加载器在 <code>model_loader/loader.py</code>
+            中以 <code>return model.eval()</code> 结束
+            <code>load_model()</code>，之后 <code>training</code>
+            不再改变。</p>
+            <p><strong>梯度 context：包在调度循环上。</strong>
+            <code>managers/scheduler.py</code> 的
+            <code>event_loop_normal()</code> 与
+            <code>event_loop_overlap()</code> 都用
+            <code>@DynamicGradMode()</code> 装饰，因此 context
+            落在运行调度循环的线程上，循环内所有 forward
+            都继承它。<code>DynamicGradMode</code>（<code>utils/common.py</code>）把两种模式合成一个开关：</p>
+            <div class="sourceCode" id="cb4"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> <span class="fu">__enter__</span>(<span class="va">self</span>):</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> _ENABLE_TORCH_INFERENCE_MODE:      <span class="co"># SGLANG_ENABLE_TORCH_INFERENCE_MODE</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._inference_mode_context <span class="op">=</span> torch._C._InferenceMode(<span class="va">self</span>.mode)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._inference_mode_context.<span class="fu">__enter__</span>()</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:                                 <span class="co"># 默认</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.prev <span class="op">=</span> torch.is_grad_enabled()</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>        torch.set_grad_enabled(<span class="va">False</span>)</span></code></pre></div>
+            <p>即默认走 <code>no_grad</code> 语义，设置环境变量
+            <code>SGLANG_ENABLE_TORCH_INFERENCE_MODE</code> 后才切到
+            inference mode。此外，模型的
+            <code>*ForCausalLM.forward</code> 自身通常也带
+            <code>@torch.no_grad()</code>（例如
+            <code>models/llama.py</code> 的
+            <code>LlamaForCausalLM.forward</code>）；<code>model_executor/runner/prefill_cuda_graph_runner.py</code>
+            的 <code>_run_forward()</code> 注释说明，绕过外层 forward
+            直接调用内层时需要补上这个装饰器，否则部分
+            <code>torch.compile</code> 的 <code>out=</code> 调用会因
+            autograd 报错。</p>
+            <p><strong>inference tensor 的边界：持久 buffer 显式退出
+            inference mode。</strong> 因为梯度 context
+            可能是两种之一，跨步复用的 buffer
+            必须在两种模式下都能被原地写。<code>layers/k3_ar_fusion.py</code>
+            的 <code>_create_buffer()</code> 就用
+            <code>with torch.inference_mode(False):</code> 创建对称内存
+            buffer，注释写明原因：若在 inference mode 中创建，它会成为
+            inference tensor，之后在 no_grad 路径（CUDA graph
+            capture）上的原地写入会被拒绝。<code>distributed/device_communicators/triton_symm_mem_ag.py</code>
+            中也有同样的写法。</p>
+            <p><strong>请求 / 缓存状态：归运行时，不归 module。</strong>
+            KV cache 不是模型参数或 module buffer，而是
+            <code>ModelRunner.token_to_kv_pool</code>（如
+            <code>mem_cache/memory_pool.py</code> 的
+            <code>MHATokenToKVPool</code>，持有 <code>k_buffer</code> /
+            <code>v_buffer</code>）。attention backend 持有同一个 pool
+            的引用，在 forward 中通过 <code>set_kv_buffer()</code>
+            原地写入调度器分配的
+            slot（<code>ForwardBatch.out_cache_loc</code>）；<code>RadixAttention</code>
+            层只提供 <code>layer_id</code> 等元信息。哪个请求占哪些
+            slot、何时释放，由调度器和内存池决定，梯度开关对此毫无影响，见
+            <a href="./memory_pool.html">Memory Pool</a>。</p>
+            <h3 id="小结">小结</h3>
+            <p>推理初始化时，应将 module 行为、梯度 context
+            和请求级缓存分别设定清楚：<code>eval()</code>
+            改对象，<code>no_grad()</code> /
+            <code>inference_mode()</code>
+            改当前线程，可变缓存归运行时管理。三者共同决定正确性，其中任何一个开关都不能替代另外两项；而
+            <code>inference_mode()</code>
+            的额外限制附着在它创建的张量上，持久 buffer
+            应在普通模式下创建。</p>
+          </main>
+        <aside class="wiki-toc">
+      <ul>
+      <li><a href="#抽象三份状态三个所有者"
+      id="toc-抽象三份状态三个所有者">抽象：三份状态，三个所有者</a></li>
+      <li><a href="#evalno_grad-与-inference_mode-各管什么"
+      id="toc-evalno_grad-与-inference_mode-各管什么">eval、no_grad 与
+      inference_mode 各管什么</a></li>
+      <li><a href="#函数式-api-未必读取-model.training"
+      id="toc-函数式-api-未必读取-model.training">函数式 API 未必读取
+      model.training</a></li>
+      <li><a href="#推理模式不会让状态变成只读"
+      id="toc-推理模式不会让状态变成只读">推理模式不会让状态变成只读</a></li>
+      <li><a href="#线程边界context-不跨线程对象状态跨线程"
+      id="toc-线程边界context-不跨线程对象状态跨线程">线程边界：context
+      不跨线程，对象状态跨线程</a></li>
+      <li><a href="#在-sglang-中三份状态分别由谁设定"
+      id="toc-在-sglang-中三份状态分别由谁设定">在 SGLang
+      中，三份状态分别由谁设定</a></li>
+      <li><a href="#小结" id="toc-小结">小结</a></li>
+      </ul>
+    </aside>
+      </div>
+</body>
+
+</html>

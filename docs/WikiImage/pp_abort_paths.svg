@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 560" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="560" rx="12" fill="#ffffff"/>
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#868e96"/></marker>
+  </defs>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">Abort：先当作输入复制，再按请求所在位置处理</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">AbortReq 只从 PP0 进入，沿 meta 链到达每个 rank，所有 rank 在同一个槽位调用 abort_request</text>
+
+  <!-- entry lane -->
+  <rect x="40" y="74" width="170" height="40" rx="8" fill="#fff5f5" stroke="#fa5252"/>
+  <text x="125" y="91" text-anchor="middle" font-size="12.5" font-weight="700" fill="#c92a2a">AbortReq</text>
+  <text x="125" y="106" text-anchor="middle" font-size="10.5" fill="#868e96">客户端断开 / 超时（仅 PP0 产生）</text>
+  <path d="M212 94 L246 94" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <rect x="250" y="74" width="300" height="40" rx="8" fill="#fff4e6" stroke="#f08c00"/>
+  <text x="400" y="91" text-anchor="middle" font-size="12.5" font-weight="700" fill="#e8590c">meta 链：混在 recv_reqs 里</text>
+  <text x="400" y="106" text-anchor="middle" font-size="10.5" fill="#868e96">PP0 → PP1 → … ，与新请求同序</text>
+  <path d="M552 94 L586 94" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <rect x="590" y="74" width="270" height="40" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="725" y="91" text-anchor="middle" font-size="12.5" font-weight="700" fill="#3b5bdb">每个 rank：abort_request()</text>
+  <text x="725" y="106" text-anchor="middle" font-size="10.5" fill="#868e96">在 get_next_batch_to_run 之前</text>
+
+  <!-- column headers -->
+  <g font-size="12" font-weight="700" fill="#868e96">
+    <text x="40" y="144">请求在哪</text><text x="250" y="144">处理</text><text x="600" y="144">为什么所有 rank 一致</text>
+  </g>
+  <g font-size="11.5" fill="#495057">
+    <!-- row 1 -->
+    <rect x="30" y="154" width="840" height="56" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+    <text x="40" y="177" font-size="13" font-weight="700" fill="#212529">waiting queue</text>
+    <text x="40" y="196" font-size="11" fill="#868e96">还没被任何 rank 调度</text>
+    <text x="250" y="177">直接出队并回收资源（PD decode 下已分配的 KV 也在此释放）</text>
+    <text x="250" y="196" fill="#868e96">只有 PP0 真的把 abort 结果发给 tokenizer</text>
+    <text x="600" y="177">调度一致 ⇒ 各 rank 都还没调度它</text>
+
+    <!-- row 2 -->
+    <rect x="30" y="218" width="840" height="56" rx="8" fill="#fff9db" stroke="#f08c00"/>
+    <text x="40" y="241" font-size="13" font-weight="700" fill="#e8590c">chunked prefill 中</text>
+    <text x="40" y="260" font-size="11" fill="#868e96">chunked_req</text>
+    <text x="250" y="241">记到 _pending_chunked_abort_req</text>
+    <text x="250" y="260" fill="#868e96">下轮调度开头清掉 chunked_req，不再发下一个 chunk</text>
+    <text x="600" y="241">清理点是调度的固定位置</text>
+    <text x="600" y="260" fill="#868e96">不在 chunk 还在 forward 时动 KV</text>
+
+    <!-- row 3 -->
+    <rect x="30" y="282" width="840" height="74" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+    <text x="40" y="305" font-size="13" font-weight="700" fill="#3b5bdb">running / 在途</text>
+    <text x="40" y="324" font-size="11" fill="#868e96">running_mbs + mbs</text>
+    <text x="40" y="340" font-size="11" fill="#868e96">（所有槽位）</text>
+    <text x="250" y="305">只设 req.to_finish = FINISH_ABORT，不立即移除</text>
+    <text x="250" y="324" fill="#868e96">它所在槽位的结果被收割时，update_finish_state</text>
+    <text x="250" y="340" fill="#868e96">把 to_finish 转成 finished_reason，走正常 finish 路径释放 KV</text>
+    <text x="600" y="305">各 rank 收割的是同一份环上 outputs</text>
+    <text x="600" y="324" fill="#868e96">⇒ 在同一步 finish、同一步 filter_batch</text>
+    <text x="600" y="340" fill="#868e96">⇒ 下游 rank 还在算它时 KV 不会被释放</text>
+
+    <!-- row 4 -->
+    <rect x="30" y="364" width="840" height="56" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+    <text x="40" y="387" font-size="13" font-weight="700" fill="#5f3dc4">PD prefill 队列</text>
+    <text x="40" y="406" font-size="11" fill="#868e96">bootstrap / inflight</text>
+    <text x="250" y="387">kv_sender.abort() → 本地状态记为 Failed</text>
+    <text x="250" y="406" fill="#868e96">bootstrap 队列还会 prepare_abort 设 FINISH_ABORT</text>
+    <text x="600" y="387">PPConsensusStore 取 min ⇒ Failed</text>
+    <text x="600" y="406" fill="#868e96">或 release 投票集合里带上它</text>
+
+    <!-- row 5 -->
+    <rect x="30" y="428" width="840" height="56" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+    <text x="40" y="451" font-size="13" font-weight="700" fill="#5f3dc4">PD decode 队列</text>
+    <text x="40" y="470" font-size="11" fill="#868e96">prealloc / transfer / retracted</text>
+    <text x="250" y="451">kv_receiver.abort() + prepare_abort</text>
+    <text x="250" y="470" fill="#868e96">retracted：丢弃 KV 备份，直接回 abort</text>
+    <text x="600" y="451">_route_aborts_to_bad：从"好"集合</text>
+    <text x="600" y="470" fill="#868e96">移到"坏"集合（并集）⇒ 全员一起失败</text>
+  </g>
+
+  <rect x="30" y="498" width="840" height="48" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="450" y="518" text-anchor="middle" font-size="12" fill="#495057">核心：abort 不是"立刻删掉"，而是"在下一个所有 rank 都会经过的确定性时刻结束它"</text>
+  <text x="450" y="536" text-anchor="middle" font-size="12" fill="#495057">在途请求复用正常的 finish 路径，所以 KV 释放时间点和普通请求结束完全一样</text>
+</svg>

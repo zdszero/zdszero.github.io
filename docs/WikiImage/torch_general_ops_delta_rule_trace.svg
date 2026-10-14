@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 600" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="920" height="600" rx="12" fill="#ffffff"/>
+  <text x="460" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">逐行追踪 shape：gated delta rule 循环体的一步</text>
+  <text x="460" y="56" text-anchor="middle" font-size="13" fill="#868e96">每个 (b, h) 各有一个 dk×dv 的状态矩阵 S；所有语法糖都只是在让 [b, h] 这两个 batch 维按意图对齐</text>
+
+  <!-- column headers -->
+  <g font-size="12" font-weight="700" fill="#868e96">
+    <text x="76" y="88">代码</text><text x="470" y="88">怎么读</text><text x="752" y="88">结果 shape</text>
+  </g>
+  <line x1="40" y1="96" x2="880" y2="96" stroke="#dee2e6"/>
+
+  <!-- spine -->
+  <line x1="52" y1="120" x2="52" y2="500" stroke="#dee2e6" stroke-width="2"/>
+
+  <!-- row 0: slicing -->
+  <circle cx="52" cy="128" r="11" fill="#adb5bd"/><text x="52" y="132" text-anchor="middle" font-size="11" font-weight="700" fill="#ffffff">0</text>
+  <text x="76" y="126" font-family="monospace" font-size="12" font-weight="700" fill="#212529">q_i = q[:, :, i]</text>
+  <text x="76" y="144" font-family="monospace" font-size="11" fill="#868e96">q: [b, h, t, dk]</text>
+  <text x="470" y="126" font-size="12" fill="#495057">整数下标 i 取出第 i 步，并<tspan font-weight="700">删掉</tspan> t 这一维</text>
+  <text x="470" y="144" font-size="11" fill="#868e96">若写 q[:, :, i:i+1] 则保留为 1，得到 [b, h, 1, dk]</text>
+  <rect x="740" y="112" width="140" height="30" rx="7" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="810" y="132" text-anchor="middle" font-family="monospace" font-size="12" font-weight="700" fill="#495057">[b, h, dk]</text>
+
+  <!-- row 1: decay -->
+  <circle cx="52" cy="196" r="11" fill="#4c6ef5"/><text x="52" y="200" text-anchor="middle" font-size="11" font-weight="700" fill="#ffffff">①</text>
+  <text x="76" y="194" font-family="monospace" font-size="12" font-weight="700" fill="#212529">S * g[:, :, i].exp()[..., None, None]</text>
+  <text x="76" y="212" font-family="monospace" font-size="11" fill="#868e96">[b, h] → [b, h, 1, 1]</text>
+  <text x="470" y="194" font-size="12" fill="#495057">... 代表前面所有维；两个 None 在尾部补两维</text>
+  <text x="470" y="212" font-size="11" fill="#868e96">右对齐广播到 S：每个 (b, h) 的整块矩阵乘同一标量</text>
+  <rect x="740" y="180" width="140" height="30" rx="7" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="810" y="200" text-anchor="middle" font-family="monospace" font-size="12" font-weight="700" fill="#3b5bdb">[b, h, dk, dv]</text>
+  <!-- row 2: predict (contraction) -->
+  <circle cx="52" cy="264" r="11" fill="#0ca678"/><text x="52" y="268" text-anchor="middle" font-size="11" font-weight="700" fill="#ffffff">②</text>
+  <text x="76" y="262" font-family="monospace" font-size="12" font-weight="700" fill="#212529">einsum("bhk,bhkv-&gt;bhv", k_i, S)</text>
+  <text x="76" y="280" font-family="monospace" font-size="11" fill="#868e96">≡ (k_i[..., None] * S).sum(-2)</text>
+  <text x="470" y="262" font-size="12" fill="#495057">b、h 两侧都有 → batch；<tspan font-weight="700" fill="#0b7285">k 只在左边 → 求和</tspan></text>
+  <text x="470" y="280" font-size="11" fill="#868e96">即每个 (b, h) 做一次向量 × 矩阵：kᵢᵀ S</text>
+  <rect x="740" y="248" width="140" height="30" rx="7" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="810" y="268" text-anchor="middle" font-family="monospace" font-size="12" font-weight="700" fill="#0b7285">[b, h, dv]</text>
+
+  <!-- row 3: error -->
+  <circle cx="52" cy="332" r="11" fill="#4c6ef5"/><text x="52" y="336" text-anchor="middle" font-size="11" font-weight="700" fill="#ffffff">③</text>
+  <text x="76" y="330" font-family="monospace" font-size="12" font-weight="700" fill="#212529">beta[:, :, i, None] * (v_i - v_hat)</text>
+  <text x="76" y="348" font-family="monospace" font-size="11" fill="#868e96">[b, h, 1] × [b, h, dv]</text>
+  <text x="470" y="330" font-size="12" fill="#495057">同一个 [] 里：i 删掉 t 维，None 在尾部补 1</text>
+  <text x="470" y="348" font-size="11" fill="#868e96">缺 None 时 [b, h] 会对到 [h, dv] 上，错位或报错</text>
+  <rect x="740" y="316" width="140" height="30" rx="7" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="810" y="336" text-anchor="middle" font-family="monospace" font-size="12" font-weight="700" fill="#3b5bdb">[b, h, dv]</text>
+
+  <!-- row 4: outer product (highlight) -->
+  <rect x="64" y="378" width="824" height="52" rx="9" fill="#fff9db" stroke="#f08c00"/>
+  <circle cx="52" cy="400" r="11" fill="#f08c00"/><text x="52" y="404" text-anchor="middle" font-size="11" font-weight="700" fill="#ffffff">④</text>
+  <text x="76" y="398" font-family="monospace" font-size="12" font-weight="700" fill="#212529">einsum("bhk,bhv-&gt;bhkv", k_i, delta)</text>
+  <text x="76" y="416" font-family="monospace" font-size="11" fill="#868e96">≡ k_i[..., :, None] * delta[..., None, :]</text>
+  <text x="470" y="398" font-size="12" fill="#495057"><tspan font-weight="700" fill="#e8590c">没有下标只出现在左边 → 不求和</tspan>，是外积</text>
+  <text x="470" y="416" font-size="11" fill="#868e96">k 和 v 两个向量张成一个秩 1 矩阵，加到 S 上</text>
+  <rect x="740" y="384" width="140" height="30" rx="7" fill="#ffffff" stroke="#f08c00"/>
+  <text x="810" y="404" text-anchor="middle" font-family="monospace" font-size="12" font-weight="700" fill="#e8590c">[b, h, dk, dv]</text>
+
+  <!-- row 5: read + stack -->
+  <circle cx="52" cy="468" r="11" fill="#0ca678"/><text x="52" y="472" text-anchor="middle" font-size="11" font-weight="700" fill="#ffffff">⑤</text>
+  <text x="76" y="466" font-family="monospace" font-size="12" font-weight="700" fill="#212529">einsum("bhk,bhkv-&gt;bhv", q_i, S)</text>
+  <text x="76" y="484" font-family="monospace" font-size="11" fill="#868e96">循环外：torch.stack(outs, dim=2)</text>
+  <text x="470" y="466" font-size="12" fill="#495057">与 ② 同一个公式，换成 q 去读更新后的 S</text>
+  <text x="470" y="484" font-size="11" fill="#868e96">stack 后 [b, h, t, dv]；cat 会得 [b, h, t·dv]</text>
+  <rect x="740" y="452" width="140" height="30" rx="7" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="810" y="472" text-anchor="middle" font-family="monospace" font-size="12" font-weight="700" fill="#0b7285">[b, h, dv]</text>
+
+  <rect x="40" y="518" width="840" height="66" rx="9" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="58" y="540" font-size="12" fill="#495057">读法：整数下标删一维、None 加一维、... 占住其余所有维——它们只改 shape，目的是让广播按意图对齐；</text>
+  <text x="58" y="558" font-size="12" fill="#495057">einsum 看箭头右边缺了哪些下标：缺的被求和（②⑤ 是向量×矩阵），一个不缺就是逐元素乘（④ 是外积）。</text>
+  <text x="58" y="576" font-size="12" fill="#495057">合起来就是公式 S ← αS + β·kᵀ(v − kS)，然后 o = qS。</text>
+</svg>

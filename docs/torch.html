@@ -1,0 +1,562 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    Torch
+  </title>
+    <link rel="stylesheet" href="./WikiTheme/theme/bootstrap.css"  />
+        <style type="text/css">
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+      <!-- wiki three-column layout styles/behavior, kept external so the ~5KB
+       block isn't duplicated into every generated page -->
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/wiki-layout.css" />
+  <script defer src="./WikiTheme/wiki-layout.js"></script>
+</head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">Torch</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="wiki-layout">
+    <nav class="wiki-sidebar" id="wiki-sidebar" hidden></nav>
+    <main class="wiki-main">
+            <p>在 LLM Inference 工程中，PyTorch
+            有大量文档里有，但实际需要踩坑才能建立直觉的默会知识（Tacit
+            Knowledge）。</p>
+            <p>如果从 LLM Inference
+            工程师的角度建立知识体系，我建议分成以下 10 个
+            Topic。重点不是学习 PyTorch API，而是理解 PyTorch
+            的底层执行语义、性能代价以及容易产生的隐式行为。</p>
+            <h2 id="一pytorch-工程默会知识地图">一、PyTorch
+            工程默会知识地图</h2>
+            <table>
+            <colgroup>
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>Topic</th>
+            <th>核心知识</th>
+            <th>LLM Inference 典型场景</th>
+            <th>详细页</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>1. Tensor 内存模型</td>
+            <td>Storage、stride、offset、contiguous、view/copy、alias</td>
+            <td>QKV reshape、KV Cache、Tensor 切片</td>
+            <td><a href="./torch_tensor_memory.html">Tensor
+            Memory</a></td>
+            </tr>
+            <tr>
+            <td>2. Tensor 数据类型</td>
+            <td>FP32、BF16、FP16、FP8、量化、类型提升</td>
+            <td>KV Cache 精度、MXFP4/NVFP4</td>
+            <td><a href="./torch_dtype.html">Data Types</a></td>
+            </tr>
+            <tr>
+            <td>3. GPU 异步执行模型</td>
+            <td>CUDA Stream、Event、同步点、异步错误</td>
+            <td>Prefill/Decode overlap</td>
+            <td><a href="./torch_cuda_execution.html">CUDA
+            Execution</a></td>
+            </tr>
+            <tr>
+            <td>4. 内存分配与生命周期</td>
+            <td>CUDA Caching Allocator、显存碎片、OOM、引用计数</td>
+            <td>KV Cache、CUDA Graph</td>
+            <td><a href="./torch_memory_management.html">Memory
+            Management</a></td>
+            </tr>
+            <tr>
+            <td>5. PyTorch 算子调度</td>
+            <td>Dispatcher、ATen、Kernel、Backend</td>
+            <td>算子性能分析、自定义算子</td>
+            <td><a href="./torch_dispatcher.html">Dispatcher</a></td>
+            </tr>
+            <tr>
+            <td>6. Broadcasting 与 Tensor 操作语义</td>
+            <td>广播、in-place、隐式拷贝、类型转换</td>
+            <td>Attention Mask、RoPE</td>
+            <td><a href="./torch_broadcast_indexing.html">Broadcast
+            &amp; Indexing</a></td>
+            </tr>
+            <tr>
+            <td>7. CUDA Graph</td>
+            <td>Capture、Replay、静态地址、Graph Pool</td>
+            <td>Decode CUDA Graph</td>
+            <td><a href="./cuda_graph.html">Cuda Graph</a></td>
+            </tr>
+            <tr>
+            <td>8. 数值计算与精度</td>
+            <td>累加精度、归约顺序、数值稳定性、非确定性</td>
+            <td>Softmax、RMSNorm、MoE</td>
+            <td><a href="./torch_numerical_precision.html">Numerical
+            Precision</a></td>
+            </tr>
+            <tr>
+            <td>9. Profiling 与性能模型</td>
+            <td>GPU 时间测量、Profiler、带宽、算力、Launch overhead</td>
+            <td>Kernel 优化、TTFT/TPOT</td>
+            <td><a href="./torch_kernel_compile.md">Kernel &amp;
+            Compile</a>、<a href="./roofline.html">Roofline</a></td>
+            </tr>
+            <tr>
+            <td>10. 多 GPU 通信与执行</td>
+            <td>NCCL、Collective、Stream ordering、同步</td>
+            <td>TP、EP、DP、All-to-All</td>
+            <td><a href="./torch_multi_gpu.html">Multi-GPU</a></td>
+            </tr>
+            </tbody>
+            </table>
+            <p>其中 1–6 是 PyTorch 基础运行语义，7–10 更偏向 LLM
+            Inference 的工程实践。</p>
+            <h2 id="二每个-topic-具体需要掌握什么">二、每个 Topic
+            具体需要掌握什么？</h2>
+            <h3 id="tensor-内存模型">1. Tensor 内存模型</h3>
+            <p>你已经提到了其中三个核心概念，可以进一步扩展为：</p>
+            <ul>
+            <li>Tensor、Storage、Storage Offset 之间的关系</li>
+            <li>Shape、Stride 如何决定逻辑索引到物理地址的映射</li>
+            <li>Contiguous 与非 Contiguous</li>
+            <li><code>view()</code>、<code>reshape()</code>、<code>flatten()</code>、<code>permute()</code>、<code>transpose()</code>
+            的内存行为</li>
+            <li><code>expand()</code> 的 zero-stride 机制</li>
+            <li><code>as_strided()</code> 与重叠内存</li>
+            <li>Tensor aliasing（不同 Tensor 共享 Storage）</li>
+            <li><code>clone()</code>、<code>contiguous()</code>、<code>detach()</code>
+            的区别</li>
+            </ul>
+            <p>关键默会知识：<code>reshape()</code>
+            不保证零拷贝，<code>contiguous()</code>
+            也不保证发生拷贝。</p>
+            <p>例如：</p>
+            <div class="sourceCode" id="cb1"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> torch.randn(<span class="dv">4</span>, <span class="dv">8</span>, device<span class="op">=</span><span class="st">&quot;cuda&quot;</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> x.T</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(y.is_contiguous())  <span class="co"># False</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>z <span class="op">=</span> y.reshape(<span class="dv">32</span>)          <span class="co"># 通常需要 copy</span></span></code></pre></div>
+            <p>这在 Attention 的 QKV 维度变换中非常常见。</p>
+            <h3 id="tensor-数据类型与转换">2. Tensor 数据类型与转换</h3>
+            <ul>
+            <li><code>dtype</code> 与 <code>element_size()</code></li>
+            <li>FP16 和 BF16 的动态范围、尾数精度</li>
+            <li><code>torch.promote_types</code> 与算子类型提升规则</li>
+            <li><code>torch.autocast</code> 的作用范围</li>
+            <li><code>to(dtype)</code> 是否分配新内存</li>
+            <li><code>view(dtype)</code> 的位重解释与数值转换的区别</li>
+            <li>FP8 的 scale 与量化表示</li>
+            <li>FP32 accumulation 与低精度输入</li>
+            <li>FP4 的 packed representation</li>
+            </ul>
+            <p>关键是区分
+            存储精度、计算精度和累加精度，三者不一定相同。</p>
+            <h3 id="cuda-异步执行模型">3. CUDA 异步执行模型</h3>
+            <p>这是我认为 LLM Inference 中最重要、也最容易被忽略的 Topic
+            之一。</p>
+            <ul>
+            <li>CPU 发射 CUDA Kernel 通常是异步的</li>
+            <li>GPU Stream 内的执行顺序</li>
+            <li>不同 Stream 之间没有天然的全序保证</li>
+            <li>CUDA Event 的 record / wait</li>
+            <li><code>torch.cuda.synchronize()</code> 的作用</li>
+            <li><code>.item()</code>、<code>.tolist()</code>、CPU
+            数据读取可能引入同步</li>
+            <li>GPU → CPU Copy 的同步行为</li>
+            <li>Pinned Memory 与 <code>non_blocking=True</code></li>
+            <li>CUDA 异步错误可能在后续 API 才暴露</li>
+            <li>Tensor 生命周期与异步 Stream
+            使用：<code>record_stream()</code></li>
+            </ul>
+            <p>例如：</p>
+            <div class="sourceCode" id="cb2"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>start <span class="op">=</span> time.perf_counter()</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> torch.matmul(a, b)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>end <span class="op">=</span> time.perf_counter()</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(end <span class="op">-</span> start)</span></code></pre></div>
+            <p>这里主要测量 CPU 发射操作的耗时，而不是 GPU
+            完成矩阵乘法的时间。</p>
+            <p>实际意义： Prefill/Decode overlap、通信计算重叠、Profiler
+            时间分析都依赖对异步模型的理解。</p>
+            <h3 id="cuda-内存管理">4. CUDA 内存管理</h3>
+            <ul>
+            <li>CUDA Caching Allocator 的工作方式</li>
+            <li><code>memory_allocated()</code> vs
+            <code>memory_reserved()</code></li>
+            <li>为什么 <code>del tensor</code> 不一定让
+            <code>nvidia-smi</code> 中显存下降</li>
+            <li><code>torch.cuda.empty_cache()</code> 的真实作用</li>
+            <li>显存碎片化</li>
+            <li>Tensor 引用与 Python GC</li>
+            <li>跨 Stream 的 Tensor 生命周期</li>
+            <li>Pinned Host Memory</li>
+            <li>CUDA Graph Private Memory Pool</li>
+            <li>OOM 不一定意味着所有显存都被有效 Tensor 占用</li>
+            </ul>
+            <p>典型问题：为什么显存看起来还有剩余，却无法分配一个新的大
+            Tensor？</p>
+            <h3 id="pytorch-算子执行与-dispatch">5. PyTorch 算子执行与
+            Dispatch</h3>
+            <p>这一块适合有 CUDA/Triton Kernel 开发需求的工程师。</p>
+            <ul>
+            <li>Python API → ATen → Dispatcher → Backend Kernel</li>
+            <li>Tensor device / dtype / layout 如何影响 dispatch</li>
+            <li>一个 PyTorch Op 不一定对应一个 CUDA Kernel</li>
+            <li>算子可能调用 cuBLAS、cuDNN 或自定义 CUDA Kernel</li>
+            <li>TensorIterator 的作用</li>
+            <li>算子内部可能存在隐式 contiguous/copy</li>
+            <li>Kernel Fusion 为什么能减少 launch 和中间 Tensor</li>
+            <li><code>torch.compile</code>、TorchInductor、Triton
+            的基本关系</li>
+            <li>Custom Op 的注册与调用</li>
+            </ul>
+            <p>关键默会知识：Python 层只有一行代码，不意味着 GPU
+            上只有一个 Kernel。</p>
+            <h3 id="broadcasting-与-in-place-语义">6. Broadcasting 与
+            In-place 语义</h3>
+            <ul>
+            <li>Broadcasting 的维度匹配规则</li>
+            <li>Broadcasting 通常通过 zero-stride view 实现</li>
+            <li>Broadcasting 后的计算可能产生大规模输出</li>
+            <li>In-place Op 的 aliasing 副作用</li>
+            <li><code>x += y</code> 与 <code>x = x + y</code>
+            的区别</li>
+            <li>Advanced Indexing 与 Basic Slicing 的区别</li>
+            <li>Boolean Masking 可能创建新 Tensor</li>
+            <li><code>index_select</code>、<code>gather</code>、<code>scatter</code>
+            的访存特点</li>
+            <li><code>torch.cat()</code> 通常需要分配输出</li>
+            <li><code>torch.stack()</code> 与 <code>cat()</code>
+            的关系</li>
+            </ul>
+            <p>例如：</p>
+            <div class="sourceCode" id="cb3"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> torch.randn(<span class="dv">1024</span>, <span class="dv">1</span>, device<span class="op">=</span><span class="st">&quot;cuda&quot;</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> x.expand(<span class="dv">1024</span>, <span class="dv">4096</span>)</span></code></pre></div>
+            <p><code>y</code> 逻辑上有 400
+            多万个元素，但不会因此实际分配同等规模的新 Storage。</p>
+            <p>这类机制在 Attention Mask、Batch Broadcasting
+            中很重要。</p>
+            <h3 id="cuda-graph">7. CUDA Graph</h3>
+            <p>LLM Decode 中尤其重要。</p>
+            <ul>
+            <li>Capture / Instantiate / Replay</li>
+            <li>为什么 CUDA Graph 需要稳定的内存地址</li>
+            <li>Capture 期间的内存分配限制</li>
+            <li>Graph Private Pool</li>
+            <li>Static Input Buffer</li>
+            <li>Graph Replay 与输入更新</li>
+            <li>Dynamic Shape 和 Padding/Bucketing</li>
+            <li>Graph Capture 与 CUDA Stream 的关系</li>
+            <li>Graph 内部跨 Stream 依赖</li>
+            <li>为什么某些 CPU 同步操作无法 Capture</li>
+            <li>Graph 生命周期与显存占用</li>
+            </ul>
+            <p>这里有一个典型的认知差异：</p>
+            <p>CUDA Graph 不是简单地把 Python 函数编译成 GPU
+            程序，而是记录并重放 GPU 工作及其依赖关系。</p>
+            <h3 id="数值计算与稳定性">8. 数值计算与稳定性</h3>
+            <ul>
+            <li>Floating-point non-associativity</li>
+            <li>Reduction 顺序对结果的影响</li>
+            <li>FP16/BF16 accumulation</li>
+            <li>Softmax 的数值稳定性</li>
+            <li><code>exp</code>、<code>log</code>、<code>rsqrt</code>
+            的精度</li>
+            <li>TF32 的计算行为</li>
+            <li>Deterministic vs Non-deterministic Kernel</li>
+            <li>Atomic 操作与结果差异</li>
+            <li>Fused Kernel 与非 Fused Kernel 的数值差异</li>
+            <li><code>torch.allclose()</code> 的容差语义</li>
+            </ul>
+            <p>尤其是在比较 Triton Kernel 与 PyTorch Reference
+            时，不能简单地要求逐位相等。</p>
+            <h3 id="profiling-与性能模型">9. Profiling 与性能模型</h3>
+            <ul>
+            <li>CUDA Event 与 CPU Wall Time</li>
+            <li>Warmup 为什么必要</li>
+            <li>CUDA Graph Replay 的测量方式</li>
+            <li><code>torch.profiler</code> 的 CPU/CUDA Timeline</li>
+            <li><code>nsys</code> 与 <code>ncu</code> 的区别</li>
+            <li>Kernel Launch Overhead</li>
+            <li>Memory-bound vs Compute-bound</li>
+            <li>Arithmetic Intensity</li>
+            <li>Roofline Model</li>
+            <li>GPU Occupancy</li>
+            <li>Register Pressure</li>
+            <li>Memory Coalescing</li>
+            <li>Kernel Fusion 的收益与代价</li>
+            </ul>
+            <p>对于 LLM Inference，特别需要建立一个直觉：</p>
+            <p>小 Batch Decode 与大 Batch Prefill
+            的性能瓶颈可能完全不同。</p>
+            <h3 id="多-gpu-通信与分布式执行">10. 多 GPU
+            通信与分布式执行</h3>
+            <p>详细说明见 <a href="./torch_multi_gpu.html">Torch 多 GPU
+            通信与执行</a>。</p>
+            <ul>
+            <li>NCCL Collective 的基本语义</li>
+            <li>AllReduce、AllGather、ReduceScatter、AllToAll</li>
+            <li>NCCL 操作与 CUDA Stream 的关系</li>
+            <li>Async Collective 与 Completion</li>
+            <li>通信 Buffer 的生命周期</li>
+            <li>不同 Rank 的 Collective 调用顺序</li>
+            <li>TP / EP 的通信模式</li>
+            <li>Compute-Communication Overlap</li>
+            <li>通信等待与 GPU Idle 的区别</li>
+            <li>分布式 Deadlock 的常见来源</li>
+            </ul>
+            <p>例如，<code>async_op=True</code> 不等于可以立即在任意
+            Stream 上安全使用通信结果，仍需理解 completion 和 stream
+            dependency。</p>
+            <h2 id="三学习优先级">三、学习优先级</h2>
+            <p>如果目标是 LLM Inference Runtime
+            开发与性能优化，可以这样排序：</p>
+            <p>优先级与知识依赖</p>
+            <p>P0 · 基础语义</p>
+            <p>必须掌握</p>
+            <p>Tensor 内存模型 → Broadcasting / In-place → CUDA 异步执行
+            → 显存管理</p>
+            <p>P1 · Runtime 核心</p>
+            <p>重点掌握</p>
+            <p>CUDA Graph → Profiling → 多 GPU 通信</p>
+            <p>P2 · Kernel 深入</p>
+            <p>按需深入</p>
+            <p>Dispatcher / ATen → 数值精度 → Kernel 实现与优化</p>
+            <h2 id="四跨-topic-的经典默会知识">四、跨 Topic
+            的经典默会知识</h2>
+            <p>这些问题特别适合做成工程师的知识卡片：</p>
+            <table>
+            <colgroup>
+            <col style="width: 55%" />
+            <col style="width: 44%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>常见直觉</th>
+            <th>实际情况</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td><code>reshape()</code> 只是修改 Shape</td>
+            <td>可能发生真实内存拷贝</td>
+            </tr>
+            <tr>
+            <td><code>flatten()</code> 一定零拷贝</td>
+            <td>取决于 Stride</td>
+            </tr>
+            <tr>
+            <td><code>x.to("cuda")</code> 一定发生拷贝</td>
+            <td>如果已经在目标 Device，默认可能直接返回原 Tensor</td>
+            </tr>
+            <tr>
+            <td><code>non_blocking=True</code> 就一定完全异步</td>
+            <td>还取决于传输方向、内存类型和同步依赖</td>
+            </tr>
+            <tr>
+            <td><code>del x</code> 就释放 GPU 显存</td>
+            <td>可能还有引用，释放的显存也可能被缓存</td>
+            </tr>
+            <tr>
+            <td><code>torch.cuda.empty_cache()</code> 能释放活跃
+            Tensor</td>
+            <td>不能</td>
+            </tr>
+            <tr>
+            <td><code>torch.matmul()</code> 只启动一个 Kernel</td>
+            <td>不保证</td>
+            </tr>
+            <tr>
+            <td>GPU Kernel 返回就代表计算完成</td>
+            <td>CUDA 调用通常异步</td>
+            </tr>
+            <tr>
+            <td>CUDA Graph 可以随意更改 Shape</td>
+            <td>通常需要固定形状或其他专门机制</td>
+            </tr>
+            <tr>
+            <td>In-place 一定更快</td>
+            <td>可能带来依赖、aliasing 或其他性能问题</td>
+            </tr>
+            <tr>
+            <td><code>torch.cat()</code> 只是拼接 Tensor 元数据</td>
+            <td>通常需要创建新 Tensor 并复制数据</td>
+            </tr>
+            <tr>
+            <td>PyTorch 算子输出一定是 Contiguous</td>
+            <td>不保证</td>
+            </tr>
+            <tr>
+            <td>两个数学等价的 Kernel 结果一定完全相同</td>
+            <td>浮点运算顺序不同可能产生差异</td>
+            </tr>
+            </tbody>
+            </table>
+            <h2
+            id="五还可以单独增加一个-topicpython-与-pytorch-的交互边界">五、还可以单独增加一个
+            Topic：Python 与 PyTorch 的交互边界</h2>
+            <p>这一类问题在 LLM Runtime 中非常常见，却容易被忽视：</p>
+            <ul>
+            <li>Python GIL 与 GPU 异步执行的关系</li>
+            <li>Python Loop 的 CPU Dispatch Overhead</li>
+            <li>Tensor <code>.item()</code> 为什么容易成为性能陷阱</li>
+            <li>Python 引用计数如何影响 Tensor 生命周期</li>
+            <li><code>torch.inference_mode()</code> 与
+            <code>torch.no_grad()</code> 的区别</li>
+            <li>Python 控制流与 CUDA Graph Capture 的关系</li>
+            <li>为什么 GPU 利用率低不一定是 GPU Kernel 慢</li>
+            <li>多线程调用 PyTorch 时的线程安全和 Stream 语义</li>
+            </ul>
+            <p>我会把它列为第 11 个 Topic，因为很多 LLM Serving
+            性能问题，实际上发生在 Python Runtime、PyTorch Dispatcher 与
+            CUDA Driver 的边界，而不是 CUDA Kernel 内部。</p>
+            <p>整体而言，最值得形成系统性直觉的是四种模型：Tensor
+            内存模型、CUDA 异步执行模型、GPU 内存生命周期模型，以及
+            PyTorch 算子执行模型。 理解它们之后，再看 SGLang、vLLM 中的
+            CUDA Graph、KV Cache、Overlap Scheduling、Custom
+            Kernel，会更容易判断代码背后的隐式成本和正确性约束。</p>
+          </main>
+        <aside class="wiki-toc">
+      <ul>
+      <li><a href="#一pytorch-工程默会知识地图"
+      id="toc-一pytorch-工程默会知识地图">一、PyTorch
+      工程默会知识地图</a></li>
+      <li><a href="#二每个-topic-具体需要掌握什么"
+      id="toc-二每个-topic-具体需要掌握什么">二、每个 Topic
+      具体需要掌握什么？</a>
+      <ul>
+      <li><a href="#tensor-内存模型" id="toc-tensor-内存模型">1. Tensor
+      内存模型</a></li>
+      <li><a href="#tensor-数据类型与转换"
+      id="toc-tensor-数据类型与转换">2. Tensor 数据类型与转换</a></li>
+      <li><a href="#cuda-异步执行模型" id="toc-cuda-异步执行模型">3.
+      CUDA 异步执行模型</a></li>
+      <li><a href="#cuda-内存管理" id="toc-cuda-内存管理">4. CUDA
+      内存管理</a></li>
+      <li><a href="#pytorch-算子执行与-dispatch"
+      id="toc-pytorch-算子执行与-dispatch">5. PyTorch 算子执行与
+      Dispatch</a></li>
+      <li><a href="#broadcasting-与-in-place-语义"
+      id="toc-broadcasting-与-in-place-语义">6. Broadcasting 与 In-place
+      语义</a></li>
+      <li><a href="#cuda-graph" id="toc-cuda-graph">7. CUDA
+      Graph</a></li>
+      <li><a href="#数值计算与稳定性" id="toc-数值计算与稳定性">8.
+      数值计算与稳定性</a></li>
+      <li><a href="#profiling-与性能模型"
+      id="toc-profiling-与性能模型">9. Profiling 与性能模型</a></li>
+      <li><a href="#多-gpu-通信与分布式执行"
+      id="toc-多-gpu-通信与分布式执行">10. 多 GPU
+      通信与分布式执行</a></li>
+      </ul></li>
+      <li><a href="#三学习优先级"
+      id="toc-三学习优先级">三、学习优先级</a></li>
+      <li><a href="#四跨-topic-的经典默会知识"
+      id="toc-四跨-topic-的经典默会知识">四、跨 Topic
+      的经典默会知识</a></li>
+      <li><a
+      href="#五还可以单独增加一个-topicpython-与-pytorch-的交互边界"
+      id="toc-五还可以单独增加一个-topicpython-与-pytorch-的交互边界">五、还可以单独增加一个
+      Topic：Python 与 PyTorch 的交互边界</a></li>
+      </ul>
+    </aside>
+      </div>
+</body>
+
+</html>
