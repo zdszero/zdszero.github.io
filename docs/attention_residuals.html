@@ -129,72 +129,81 @@
     <div class="wiki-layout">
     <nav class="wiki-sidebar" id="wiki-sidebar" hidden></nav>
     <main class="wiki-main">
-            <p>理解 Attention
-            Residuals（AttnRes），需要先回答几个问题：</p>
-            <ol type="1">
-            <li>残差连接在深度方向上累加了什么？</li>
-            <li>Attention 的选择对象是 Token，还是历史层输出？</li>
-            <li>Query 不依赖当前 Hidden
-            State，为什么权重仍然与输入有关？</li>
-            <li>Full AttnRes 与 Block AttnRes 分别保留哪些状态？</li>
-            <li>增加跨层访问后，显存、通信和推理执行需要怎样调整？</li>
-            </ol>
-            <p>下面按照残差连接、深度注意力、分块实现和工程分析的顺序讲解。本文介绍
-            Moonshot / Kimi Team 的 Attention Residuals；概念与公式依据
-            <a href="https://arxiv.org/pdf/2603.15031">原论文第 2–4
-            节</a>，实现接口可对照 <a
-            href="https://github.com/MoonshotAI/Attention-Residuals">官方仓库</a>。</p>
-            <h2
-            id="一残差连接既是梯度通路也是信息聚合">一、残差连接：既是梯度通路，也是信息聚合</h2>
+            <p>本文介绍 Moonshot / Kimi Team 的 Attention
+            Residuals（AttnRes）：把残差连接从“固定累加”改成“沿深度做
+            Attention”。概念与公式依据 <a
+            href="https://arxiv.org/pdf/2603.15031">原论文第 2–4
+            节</a>，参考实现见 <a
+            href="https://github.com/MoonshotAI/Attention-Residuals">官方仓库</a>；推理侧的实现对照
+            SGLang 中的 Kimi K3。</p>
+            <h3
+            id="问题残差把所有历史层压成了一个和">问题：残差把所有历史层压成了一个和</h3>
             <p>一个 PreNorm 子层可以写成：</p>
             <p><span class="math display">
             h_{l+1}=h_l+f_l(\operatorname{Norm}(h_l)) </span></p>
-            <p>这里的子层可以是 Self-Attention，也可以是 MLP /
-            MoE。为了简化符号，下面把子层内部的 Norm 包含在 <span
-            class="math inline">f_l</span> 中，记子层输出为 <span
+            <p>子层可以是 Self-Attention，也可以是 MLP /
+            MoE。为简化符号，把 Norm 并入 <span
+            class="math inline">f_l</span>，记子层输出为 <span
             class="math inline">v_l=f_l(h_l)</span>，Embedding 为 <span
-            class="math inline">v_0</span>。</p>
-            <p>展开递推，可以得到：</p>
+            class="math inline">v_0</span>。展开递推：</p>
             <p><span class="math display"> h_l=v_0+\sum_{i=1}^{l-1}v_i
             </span></p>
-            <p>这说明每个后续子层读到的是历史输出的累加结果。</p>
+            <p>这个式子说明残差同时做了两件事：</p>
             <table>
+            <colgroup>
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            </colgroup>
             <thead>
             <tr>
             <th>观察角度</th>
             <th>残差连接在做什么</th>
-            <th>需要理解什么</th>
+            <th>带来的结果</th>
             </tr>
             </thead>
             <tbody>
             <tr>
             <td>梯度传播</td>
             <td>提供绕过子层变换的恒等路径</td>
-            <td>深层网络如何训练</td>
+            <td>深层网络可以训练</td>
             </tr>
             <tr>
             <td>信息传播</td>
             <td>累加 Embedding 与历史子层输出</td>
-            <td>后续子层实际读到什么</td>
+            <td>后续子层读到的是“所有历史的和”</td>
             </tr>
             <tr>
             <td>聚合权重</td>
-            <td>对每个历史输出使用单位系数</td>
-            <td>无法直接按来源选择信息</td>
+            <td>每个历史输出的系数恒为 1</td>
+            <td>无法按来源选择信息</td>
             </tr>
             </tbody>
             </table>
-            <p>例如，当前输入是 <span
-            class="math inline">v_0+v_1+v_2</span>，即使当前子层更需要
+            <p>第三行是 AttnRes 要解决的问题。假设当前输入是 <span
+            class="math inline">v_0+v_1+v_2</span>，即使当前子层其实最需要
             <span
-            class="math inline">v_1</span>，残差合并本身也没有一个单独调整
-            <span class="math inline">v_1</span>
-            权重的接口。子层仍然可以通过自身变换处理混合结果，但无法直接读取合并前的各个来源。</p>
-            <p>随着深度增加，累加状态的幅度和新输出的相对占比会变化。这是理解
+            class="math inline">v_1</span>，加法也已经把三个来源混在一起；子层只能从混合结果里间接分离，而不能直接调大
+            <span class="math inline">v_1</span> 的权重。</p>
+            <p>随着深度增加，累加状态的幅度变大，每个新输出在和中的相对占比变小，这就是
             PreNorm Dilution
-            的入口；幅度的具体增长速度依赖输出相关性等条件，不能把它理解成所有模型都遵循同一个增长公式。</p>
-            <h2 id="二attention-沿哪个维度发生">二、Attention
-            沿哪个维度发生？</h2>
+            的入口。幅度的具体增长速度依赖各层输出的相关性，不存在对所有模型都成立的增长公式。</p>
+            <p>所以问题可以表述为：<strong>残差本身就是一次沿深度方向的聚合，只是权重被写死成了全
+            1。</strong>
+            能不能让每个子层自己决定从哪些历史层读多少？</p>
+            <h3
+            id="核心抽象把历史层输出当作-attention-的候选">核心抽象：把历史层输出当作
+            Attention 的候选</h3>
+            <p>Self-Attention 解决的是“当前 Token 应该从哪些 Token
+            读信息”，做法是保留候选、打分、Softmax、加权求和。AttnRes
+            把同一套思路转 90 度：<strong>候选不再是同一层的其他
+            Token，而是同一个 Token 在历史各子层的输出。</strong></p>
+            <figure>
+            <img src="./WikiImage/attention_residuals_axes.svg"
+            alt="Token 维度与深度维度上的 Attention" />
+            <figcaption aria-hidden="true">Token 维度与深度维度上的
+            Attention</figcaption>
+            </figure>
             <table>
             <colgroup>
             <col style="width: 25%" />
@@ -207,7 +216,7 @@
             <th>机制</th>
             <th>当前计算选择什么</th>
             <th>聚合方向</th>
-            <th>输出主要解决什么问题</th>
+            <th>解决什么问题</th>
             </tr>
             </thead>
             <tbody>
@@ -227,34 +236,32 @@
             <td>Block AttnRes</td>
             <td>同一个 Token 的历史块摘要</td>
             <td>深度维度</td>
-            <td>降低跨层状态保存成本</td>
+            <td>降低跨层状态的保存成本</td>
             </tr>
             </tbody>
             </table>
-            <p>AttnRes 的聚合算子本身不会混合不同 Token。不同 Token
-            可以得到不同的深度权重，但各自只聚合自己位置上的历史表示。</p>
-            <p>因此，AttnRes 与 MQA、GQA、MLA
-            等机制处在不同位置：后者改变 Token Attention 的实现，AttnRes
-            改变子层之间的信息聚合。两类设计可以组合。</p>
-            <p>还要区分三个容易混淆的 Block：</p>
+            <p>AttnRes 的聚合算子不混合不同 Token：不同 Token
+            可以得到不同的深度权重，但各自只聚合自己位置上的历史表示。因此它与
+            MQA、GQA、MLA 处在不同位置——后者改变 Token Attention
+            的实现，AttnRes
+            改变子层之间的信息聚合，两类设计可以组合。</p>
+            <p>本文出现三种 Block，需要区分：</p>
             <ul>
-            <li>Transformer Block：通常包含 Attention 和 MLP
-            两个子层。</li>
+            <li>Transformer Block（Decoder Layer）：通常包含 Attention
+            和 MLP 两个子层。</li>
             <li>AttnRes
-            Block：将一组子层输出压缩成一个摘要的深度分组。</li>
+            Block：把一组子层输出压缩成一个摘要的深度分组。</li>
             <li>GPU Thread Block：GPU 执行与线程协作单位。</li>
             </ul>
-            <p>下面的 <span class="math inline">L</span> 统计 Attention
-            / MLP 子层数量，不是 Transformer Block 数量。</p>
-            <h2 id="三full-attnres保留来源再学习如何聚合">三、Full
-            AttnRes：保留来源，再学习如何聚合</h2>
-            <p>对于第 <span class="math inline">l</span>
-            个子层，候选来源是：</p>
-            <p><span class="math display">
-            V_l=\{v_0,v_1,\ldots,v_{l-1}\} </span></p>
-            <p>每个子层有自己的可学习向量 <span
-            class="math inline">w_l\in\mathbb
-            R^d</span>。聚合过程为：</p>
+            <p>下文的 <span class="math inline">L</span> 统计 Attention
+            / MLP 子层数量，不是 Decoder Layer 数量。</p>
+            <h3 id="full-attnres保留来源再学习如何聚合">Full
+            AttnRes：保留来源，再学习如何聚合</h3>
+            <p>对第 <span class="math inline">l</span>
+            个子层，候选来源是所有历史输出 <span
+            class="math inline">V_l=\{v_0,v_1,\ldots,v_{l-1}\}</span>。每个子层有一个自己的可学习向量
+            <span class="math inline">w_l\in\mathbb
+            R^d</span>，聚合过程为：</p>
             <p><span class="math display">
             s_{i\to l}=w_l^\top\operatorname{RMSNorm}_l(v_i),\qquad
             \alpha_{i\to l}=\frac{\exp(s_{i\to
@@ -263,30 +270,38 @@
             <p><span class="math display">
             h_l=\sum_{i=0}^{l-1}\alpha_{i\to l}v_i,\qquad v_l=f_l(h_l)
             </span></p>
+            <figure>
+            <img src="./WikiImage/attention_residuals_full.svg"
+            alt="Full AttnRes：一次深度聚合" />
+            <figcaption aria-hidden="true">Full
+            AttnRes：一次深度聚合</figcaption>
+            </figure>
+            <p>与 Self-Attention 对应起来看：</p>
             <table>
             <thead>
             <tr>
             <th>组件</th>
-            <th>含义</th>
-            <th>关键区别</th>
+            <th>AttnRes 中是什么</th>
+            <th>与 Self-Attention 的区别</th>
             </tr>
             </thead>
             <tbody>
             <tr>
             <td>Query</td>
             <td>子层参数 <span class="math inline">w_l</span></td>
-            <td>不是从当前 Token 用 <span
-            class="math inline">W_Qh</span> 生成</td>
+            <td>不是用 <span class="math inline">W_Qh</span> 从当前
+            Token 生成</td>
             </tr>
             <tr>
             <td>Key</td>
-            <td>用于打分的归一化历史表示</td>
-            <td>控制来源幅度对打分的影响</td>
+            <td><span
+            class="math inline">\operatorname{RMSNorm}(v_i)</span></td>
+            <td>去掉来源幅度对打分的影响</td>
             </tr>
             <tr>
             <td>Value</td>
             <td>原始历史表示 <span class="math inline">v_i</span></td>
-            <td>加权聚合时保留原始表示</td>
+            <td>不做投影，保留原始幅度</td>
             </tr>
             <tr>
             <td>Softmax</td>
@@ -295,45 +310,52 @@
             </tr>
             </tbody>
             </table>
-            <p>这里没有必要机械套用普通 Self-Attention 的 Q/K/V
-            投影矩阵或 <span class="math inline">1/\sqrt d</span>
-            缩放；应以 AttnRes 自身的参数化为准。</p>
-            <h3 id="固定-query-为什么能产生动态权重">1. 固定 Query
-            为什么能产生动态权重？</h3>
-            <p>训练结束后，<span class="math inline">w_l</span>
-            是固定参数，但是 Key
-            来自当前输入产生的历史表示。输入变了，Key
-            和分数会变化，所以权重仍然是 Input-dependent 的。</p>
-            <p>可以把 <span class="math inline">w_l</span>
-            理解为该子层学习到的“选择标准”，而历史表示是每次推理中被选择的内容。</p>
-            <h3 id="加权平均与固定累加的区别">2.
-            加权平均与固定累加的区别</h3>
+            <p>没有 <span class="math inline">W_Q/W_K/W_V</span>
+            投影，也没有 <span class="math inline">1/\sqrt d</span>
+            缩放；不必机械套用 Self-Attention 的参数化。</p>
+            <h4 id="固定-query-为什么能产生动态权重">固定 Query
+            为什么能产生动态权重</h4>
+            <p>训练结束后 <span class="math inline">w_l</span>
+            是固定参数，但 Key 来自当前输入产生的历史表示。输入变了，Key
+            和分数随之变化，所以权重仍然是 Input-dependent 的。可以把
+            <span class="math inline">w_l</span>
+            理解为这个子层学到的“选择标准”，历史表示是每次推理中被选择的内容。</p>
+            <p>这个设计的工程意义很大：Query 与当前 Hidden State
+            无关，意味着<strong>一个子层的 Query
+            在它的输入算出来之前就已知</strong>。后面的两阶段计算正是利用了这一点。</p>
+            <h4
+            id="加权平均与固定累加的区别">加权平均与固定累加的区别</h4>
             <p>假设某个 Token 的三个来源是 <span
             class="math inline">v_0,v_1,v_2</span>，权重为 <span
-            class="math inline">(0.1,0.7,0.2)</span>，则：</p>
-            <p><span class="math display"> h_l=0.1v_0+0.7v_1+0.2v_2
-            </span></p>
-            <p>权重对来源不同，但同一来源的所有 Hidden
-            通道共享这个标量权重。这不是逐通道门控，也不是 Top-k
-            选择；有限分数下，Softmax 通常仍给每个候选一个非零权重。</p>
-            <p>由于权重非负、和为 1，给定这些 Value
-            时，输出是它们的凸组合：</p>
-            <p><span class="math display"> \|h_l\|\leq\sum_i\alpha_{i\to
-            l}\|v_i\|\leq\max_i\|v_i\| </span></p>
-            <p>这个性质约束的是聚合本身。子层 <span
-            class="math inline">f_l</span>
-            仍然可能放大输出，因此不能由此推导整个网络一定有界或梯度一定稳定。</p>
-            <h2 id="四block-attnres用深度分块控制状态数量">四、Block
-            AttnRes：用深度分块控制状态数量</h2>
-            <p>Full AttnRes 需要保留各个历史来源。Block AttnRes
-            将子层分为 <span class="math inline">N</span>
-            组，每组内部累加子层输出，得到一个块摘要。</p>
-            <p>令 <span class="math inline">B_n</span> 为第 <span
-            class="math inline">n</span> 个深度块，完成后的摘要为：</p>
+            class="math inline">(0.1,0.7,0.2)</span>，则 <span
+            class="math inline">h_l=0.1v_0+0.7v_1+0.2v_2</span>。</p>
+            <ul>
+            <li>权重对来源不同，但同一来源的所有 Hidden
+            通道共享一个标量权重。这不是逐通道门控，也不是 Top-k
+            选择；有限分数下 Softmax 给每个候选非零权重。</li>
+            <li>权重非负、和为 1，输出是 Value 的凸组合：<span
+            class="math inline">\|h_l\|\leq\max_i\|v_i\|</span>。与标准残差相比，聚合本身不再让幅度随深度累加。这个性质只约束聚合；子层
+            <span class="math inline">f_l</span>
+            仍可能放大输出，不能由此推出整个网络有界或梯度稳定。</li>
+            <li><span class="math inline">w_l=0</span> 时所有分数为
+            0，权重均匀，<span class="math inline">h_l</span>
+            是来源的平均值。它与标准残差相差一个“来源数量”的比例因子，并不数值相同。</li>
+            </ul>
+            <h3 id="block-attnres用深度分块控制状态数量">Block
+            AttnRes：用深度分块控制状态数量</h3>
+            <p>Full AttnRes 的代价是要保存全部 <span
+            class="math inline">L</span>
+            个历史输出，并在每个子层上读一遍。Block AttnRes
+            的折中是：<strong>块内仍用普通残差累加，块与块之间用
+            Attention 选择。</strong></p>
+            <p>把子层分成 <span class="math inline">N</span> 组。令
+            <span class="math inline">B_n</span> 为第 <span
+            class="math inline">n</span>
+            个深度块，完成后的块摘要为：</p>
             <p><span class="math display"> b_n=\sum_{j\in B_n}v_j,\qquad
             b_0=v_0 </span></p>
-            <p>当前块执行到一半时，还维护已完成子层输出的部分和 <span
-            class="math inline">p</span>。每次聚合的候选为：</p>
+            <p>当前块执行到一半时，还维护一个本块已完成子层输出的部分和
+            <span class="math inline">p</span>。每次聚合的候选是：</p>
             <table>
             <thead>
             <tr>
@@ -357,86 +379,48 @@
             </tr>
             <tr>
             <td>最终输出聚合</td>
-            <td>Embedding 与所有完成块摘要</td>
+            <td>Embedding 与所有块摘要</td>
             </tr>
             </tbody>
             </table>
-            <p>聚合后的 <span class="math inline">h_l</span>
-            用作子层输入；得到 <span
-            class="math inline">v_l=f_l(h_l)</span> 后，更新：</p>
-            <p><span class="math display"> p\leftarrow p+v_l </span></p>
-            <p>到达块边界时，将 <span class="math inline">p</span>
-            保存为一个完成块摘要，并开始新的块。</p>
-            <p>需要特别注意：块摘要是该块自身子层输出的和，不能把整个历史混合输入
-            <span class="math inline">h_l</span>
-            每次加进摘要，否则会重复累加历史信息。</p>
-            <h3 id="一个具体例子">一个具体例子</h3>
-            <p>假设 6 个子层被分成 3 块，每块 2 个子层：</p>
-            <ol type="1">
-            <li>第一块先读取 <span class="math inline">v_0</span>，产生
-            <span class="math inline">v_1</span>；第二个子层读取 <span
-            class="math inline">\{v_0,v_1\}</span>，产生 <span
-            class="math inline">v_2</span>，完成 <span
-            class="math inline">b_1=v_1+v_2</span>。</li>
-            <li>第二块先读取 <span
-            class="math inline">\{v_0,b_1\}</span>，产生 <span
-            class="math inline">v_3</span>；下一个子层读取 <span
-            class="math inline">\{v_0,b_1,v_3\}</span>，产生 <span
-            class="math inline">v_4</span>，完成 <span
-            class="math inline">b_2=v_3+v_4</span>。</li>
-            <li>第三块按相同方式读取历史摘要并维护自己的部分和。</li>
-            </ol>
-            <p>第一块结束后，后续子层可以选择 <span
-            class="math inline">b_1</span>，但不能再分别选择 <span
-            class="math inline">v_1</span> 和 <span
-            class="math inline">v_2</span>。这是状态压缩带来的选择粒度变化。</p>
-            <h2 id="五一个可读的-pytorch-聚合示例">五、一个可读的
-            PyTorch 聚合示例</h2>
-            <p>下面仅实现候选来源的聚合算子，省略可学习的 RMSNorm
-            Gain、完整 Transformer 与系统优化。<code>sources</code>
-            可以是 Full 的历史子层输出，也可以是 Block
-            的摘要与部分和。</p>
-            <div class="sourceCode" id="cb1"><pre
-            class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> attention_residual(sources, query, eps<span class="op">=</span><span class="fl">1e-6</span>):</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># sources: 非空列表，每个 Tensor 的 Shape 为 [B, T, D]</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># query: 当前子层的可学习参数，Shape 为 [D]</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    values <span class="op">=</span> torch.stack(sources, dim<span class="op">=</span><span class="dv">0</span>)  <span class="co"># [R, B, T, D]</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    values_fp32 <span class="op">=</span> values.<span class="bu">float</span>()</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    rms_inv <span class="op">=</span> torch.rsqrt(values_fp32.square().mean(dim<span class="op">=-</span><span class="dv">1</span>, keepdim<span class="op">=</span><span class="va">True</span>) <span class="op">+</span> eps)</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    keys <span class="op">=</span> values_fp32 <span class="op">*</span> rms_inv</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    scores <span class="op">=</span> (keys <span class="op">*</span> query.<span class="bu">float</span>()).<span class="bu">sum</span>(dim<span class="op">=-</span><span class="dv">1</span>)  <span class="co"># [R, B, T]</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    weights <span class="op">=</span> torch.softmax(scores, dim<span class="op">=</span><span class="dv">0</span>)      <span class="co"># 沿来源轴归一化</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    mixed <span class="op">=</span> (weights.unsqueeze(<span class="op">-</span><span class="dv">1</span>) <span class="op">*</span> values_fp32).<span class="bu">sum</span>(dim<span class="op">=</span><span class="dv">0</span>)</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> mixed.to(values.dtype), weights</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>sources <span class="op">=</span> [torch.randn(<span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">8</span>) <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">4</span>)]</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>query <span class="op">=</span> torch.nn.Parameter(torch.zeros(<span class="dv">8</span>))</span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>mixed, weights <span class="op">=</span> attention_residual(sources, query)</span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> mixed.shape <span class="op">==</span> (<span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">8</span>)</span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>torch.testing.assert_close(weights.<span class="bu">sum</span>(dim<span class="op">=</span><span class="dv">0</span>), torch.ones(<span class="dv">2</span>, <span class="dv">3</span>))</span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>torch.testing.assert_close(mixed, torch.stack(sources).mean(dim<span class="op">=</span><span class="dv">0</span>))</span></code></pre></div>
-            <p><span class="math inline">w_l=0</span> 时，分数都是
-            0，初始权重是均匀分布。这个例子由此验证输出为来源的平均值。均匀平均与标准残差的求和相差来源数量的比例，不能称为数值完全相同。</p>
-            <p>工程实现还要决定最终输出的聚合、Norm
-            参数、块边界及初始化方式。用 <code>stack</code>
-            展开来源适合解释
-            Shape，但高性能实现应分析它的额外分配和访存成本。</p>
-            <h2
-            id="六显存与计算成本如何估算">六、显存与计算成本如何估算？</h2>
-            <p>设当前处理的 Tensor 大小为 <span
-            class="math inline">[B,T,d]</span>，存储每个元素需要 <span
+            <p>聚合得到 <span class="math inline">h_l</span>
+            作为子层输入；算出 <span
+            class="math inline">v_l=f_l(h_l)</span> 后更新 <span
+            class="math inline">p\leftarrow
+            p+v_l</span>。到达块边界时，把 <span
+            class="math inline">p</span>
+            冻结成一个块摘要，再从空开始累加下一块。</p>
+            <figure>
+            <img src="./WikiImage/attention_residuals_blocks.svg"
+            alt="Block AttnRes：块摘要与部分和" />
+            <figcaption aria-hidden="true">Block
+            AttnRes：块摘要与部分和</figcaption>
+            </figure>
+            <p>两个容易出错的地方：</p>
+            <ul>
+            <li>块摘要只包含<strong>本块子层自己的输出</strong>。如果把聚合后的
+            <span
+            class="math inline">h_l</span>（它已经混入了全部历史）加进摘要，历史信息会被重复累加。</li>
+            <li>块边界之后，后续子层只能选择 <span
+            class="math inline">b_1</span> 这个整体，不能再分别选择
+            <span class="math inline">v_1</span> 和 <span
+            class="math inline">v_2</span>。这就是用状态压缩换来的选择粒度损失。</li>
+            </ul>
+            <p>两个极端可以帮助理解 <span class="math inline">N</span>
+            的含义：每块一个子层时，Block 就是
+            Full；只有一块时，候选只剩 Embedding
+            和“全部子层输出之和”两项，选择能力几乎退回标准残差。</p>
+            <h3 id="代价显存与访存">代价：显存与访存</h3>
+            <p>设当前处理的 Tensor 为 <span
+            class="math inline">[B,T,d]</span>，每元素 <span
             class="math inline">e</span>
-            字节。以下估算针对前向聚合使用的来源状态，不包含模型权重、Token
-            Attention KV Cache 或完整反向激活。</p>
+            字节。以下只估算前向聚合使用的来源状态，不含模型权重、Token
+            KV Cache 或反向激活。</p>
             <table>
             <thead>
             <tr>
             <th>形式</th>
-            <th>历史来源状态规模</th>
+            <th>历史来源状态</th>
             <th>直接实现的深度聚合计算量</th>
             </tr>
             </thead>
@@ -459,44 +443,48 @@
             </tr>
             </tbody>
             </table>
-            <p>Block 的计算估算来自“<span class="math inline">L</span>
-            个子层分别访问最多约 <span class="math inline">N</span>
-            个来源”，不应仅因为状态数降到 <span
-            class="math inline">N</span>，就把整个网络直接实现的计算量写成与
-            <span class="math inline">L</span> 无关。</p>
-            <p>例如，假设 <span
-            class="math inline">B=1,T=8192,d=4096,N=8,e=2</span>，只按 8
-            个摘要 Tensor 估算：</p>
-            <p><span class="math display"> M=BTNd
-            e=536{,}870{,}912\text{ bytes}=512\text{ MiB} </span></p>
-            <p>这不包含 Embedding、当前部分和及临时
-            Buffer。即使块数不多，长上下文 Prefill
-            的临时状态仍可能很大。</p>
-            <p>训练中，如果某些激活本来就为反向传播保留，来源状态与其可能重叠；采用重计算或流水线并行时，应重新分析状态生命周期和跨
-            Stage 传输，不能直接把上表当作额外显存的精确值。</p>
-            <h2
-            id="七为什么可以采用两阶段计算">七、为什么可以采用两阶段计算？</h2>
-            <p>对于当前块，已经完成的历史摘要不再变化，而块内所有子层的
-            Query 都是已知参数。因此，可以先批量计算这些 Query
-            对历史摘要的打分和聚合，再随子层执行依次处理当前部分和。</p>
-            <p>但 Self-Attention 和 MLP 本身仍依赖前面的计算，不能因为
-            Query 已知，就把整个 Transformer 的子层并行执行。</p>
-            <p>对两组候选，分别保存稳定 Softmax 的三个统计量：</p>
+            <p>Block 的计算量来自“<span class="math inline">L</span>
+            个子层各自访问最多约 <span class="math inline">N+1</span>
+            个来源”，不能因为状态降到 <span class="math inline">N</span>
+            个就说计算与 <span class="math inline">L</span>
+            无关。打分和加权求和都是逐元素的点积与
+            AXPY，算术强度很低，<strong>瓶颈是把这些来源从 HBM
+            读出来</strong>，而不是 FLOPs。</p>
+            <p>以 Kimi K3 的形状估算：<span
+            class="math inline">d=7168</span>，实现里断言 bank 最多 8
+            行（Embedding 加块摘要），bf16 存储。一次 <span
+            class="math inline">T=8192</span> 的 Prefill：</p>
+            <p><span class="math display"> M=T\cdot N\cdot d\cdot
+            e=8192\times8\times7168\times2\approx 896\text{ MiB}
+            </span></p>
+            <p>这块状态只活在一次前向内部；块数不多，长上下文 Prefill
+            时它仍然是一个不可忽略的临时
+            Buffer。训练中如果这些输出本来就要为反向保留，它们与来源状态可能重叠；采用重计算或流水线并行时，需要重新分析生命周期和跨
+            Stage 传输。</p>
+            <h3
+            id="为什么可以拆开计算softmax-的可合并性">为什么可以拆开计算：Softmax
+            的可合并性</h3>
+            <p>Query
+            是参数、已完成块摘要不再变化，所以同一块内所有子层对历史摘要的打分可以<strong>提前批量算好</strong>，只有当前部分和
+            <span class="math inline">p</span>
+            需要随子层执行逐个处理。这是论文用来减少重复读取的两阶段计算。注意：被提前的只是深度聚合；Attention
+            和 MLP 本身仍然依赖前一个子层的输出，不能并行。</p>
+            <p>能拆开的数学基础，是稳定 Softmax
+            的三个统计量可以合并。对一组候选保存：</p>
             <p><span class="math display"> m=\max_i s_i,\quad z=\sum_i
             e^{s_i-m},\quad u=\sum_i e^{s_i-m}v_i </span></p>
-            <p>合并两组统计量时，令 <span
+            <p>两组合并时令 <span
             class="math inline">m=\max(m_a,m_b)</span>：</p>
             <p><span class="math display">
             z=e^{m_a-m}z_a+e^{m_b-m}z_b,\qquad
             u=e^{m_a-m}u_a+e^{m_b-m}u_b,\qquad h=u/z
             </span></p>
-            <p>这说明两组候选可以分别处理后再合并，保持同一个 Softmax
-            的数学结果；浮点实现仍可能有舍入差异。不能把两组各自归一化后的输出直接相加，因为它们的归一化分母不同。</p>
-            <p>对照 <a href="./gpu_arch.html">GPU
-            Arch</a>，这类优化主要减少重复 HBM 读取并改变 Kernel
-            调度，而不是改变子层要执行的数学变换。</p>
-            <h2
-            id="八与其他残差机制如何比较">八、与其他残差机制如何比较？</h2>
+            <p>结果与一次完整 Softmax
+            数学上相同（浮点舍入可能不同）。不能把两组各自归一化后的输出直接相加，因为分母不同。这与
+            FlashAttention 的 online softmax
+            是同一个技巧，只是作用在深度轴上；SGLang 的 TMA kernel
+            正是按行分块、用 online softmax 流式处理来源的。</p>
+            <h3 id="与其他残差机制的比较">与其他残差机制的比较</h3>
             <table>
             <colgroup>
             <col style="width: 33%" />
@@ -506,7 +494,7 @@
             <thead>
             <tr>
             <th>机制</th>
-            <th>用于理解的主要问题</th>
+            <th>回答的问题</th>
             <th>保存的状态与选择方式</th>
             </tr>
             </thead>
@@ -529,101 +517,255 @@
             <tr>
             <td>Full AttnRes</td>
             <td>当前子层需要哪些历史来源？</td>
-            <td>保存历史输出并进行深度 Softmax</td>
+            <td>保存全部历史输出，深度 Softmax</td>
             </tr>
             <tr>
             <td>Block AttnRes</td>
-            <td>怎样减少历史来源的保存成本？</td>
-            <td>保存块摘要与当前部分和</td>
+            <td>怎样降低历史来源的保存成本？</td>
+            <td>块摘要 + 当前部分和</td>
             </tr>
             </tbody>
             </table>
-            <p>这个对比描述设计接口，不代表模型效果排序。比较实际模型需要控制参数量、训练数据、训练预算和执行配置。</p>
-            <h2
-            id="九工程实践中需要检查什么">九、工程实践中需要检查什么？</h2>
+            <p>这个对比描述设计接口，不代表效果排序；比较实际模型需要控制参数量、数据、训练预算和执行配置。另外，这是模型结构的改变：把已训练模型的残差加法直接替换成加权平均会改变各层输入分布，需要相应训练或验证过的适配。</p>
+            <h3 id="在-sglang-中的实现">在 SGLang 中的实现</h3>
+            <p>SGLang 只在 Kimi K3 上实现了 Block AttnRes（推理不需要
+            Full）。代码分三层：</p>
             <table>
+            <colgroup>
+            <col style="width: 50%" />
+            <col style="width: 50%" />
+            </colgroup>
             <thead>
             <tr>
-            <th>场景</th>
-            <th>检查重点</th>
+            <th>位置</th>
+            <th>职责</th>
             </tr>
             </thead>
             <tbody>
             <tr>
-            <td>模型结构</td>
-            <td>每个 Attention / MLP 是否有独立
-            Query，最终输出如何聚合</td>
+            <td><code>srt/models/kimi_k3.py</code></td>
+            <td>每层的打分参数、写块时机、每次前向开关 bank、PP
+            传递</td>
             </tr>
             <tr>
-            <td>Block 状态</td>
-            <td>Embedding 是否重复加入、摘要是否只包含本块输出</td>
+            <td><code>srt/layers/layer_boundary/residual/attn_bank.py</code></td>
+            <td>把“读 bank”挂到层边界的 residual 读写协议上</td>
             </tr>
             <tr>
-            <td>数值实现</td>
-            <td>RMSNorm 作用于 Key，Softmax 作用于来源轴</td>
-            </tr>
-            <tr>
-            <td>长上下文 Prefill</td>
-            <td>摘要规模、分块执行、Sequence Sharding</td>
-            </tr>
-            <tr>
-            <td>Decode</td>
-            <td>临时深度来源与长期 Token KV Cache 的生命周期</td>
-            </tr>
-            <tr>
-            <td>Pipeline Parallel</td>
-            <td>接收方需要哪些历史摘要、是否存在重复传输</td>
-            </tr>
-            <tr>
-            <td>性能测量</td>
-            <td>聚合访存、临时分配、Kernel Launch 与端到端耗时</td>
+            <td><code>srt/layers/attn_residual.py</code></td>
+            <td>bank 张量本身与聚合 kernel 的硬件分派</td>
             </tr>
             </tbody>
             </table>
-            <p>AttnRes 来源状态服务于当前 Token 沿深度的计算；Token KV
-            Cache 服务于未来 Token 的序列
-            Attention。不要把两个维度的缓存混为一谈，也不要默认所有深度摘要都需要跨生成步永久保留。</p>
-            <p>这是模型结构的改变。把已训练模型中的残差加法直接替换成加权平均，会改变各层输入分布；要得到有效模型，需要相应训练或经过验证的适配过程。</p>
-            <p>学习时可以先手工展开三个子层的残差，再实现来源轴上的
-            Softmax，最后加入 Block
-            摘要。每一步都检查：保存了哪些来源、哪些来源还可被单独选择，以及为了读取它们付出了多少存储与访存成本。</p>
+            <h4
+            id="状态一个-snapshot-bank-加一条运行中的残差">状态：一个
+            snapshot bank 加一条运行中的残差</h4>
+            <p><code>AttnResidual</code>
+            在每次模型前向时新建一次，持有：</p>
+            <ul>
+            <li><code>block_residual</code>：形状
+            <code>[T, NB, H]</code> 的 bank，每行是一个冻结的块摘要，第
+            0 行是 Embedding；</li>
+            <li><code>num_valid_blocks</code>：已写入的行数，即聚合时的
+            <code>nvb</code>；</li>
+            <li>而当前块的部分和 <span class="math inline">p</span>
+            并不在 bank 里，它就是层间传递的普通 residual（代码里叫
+            prefix / stream head）。</li>
+            </ul>
+            <p>配置项 <code>attn_res_block_size</code> 以
+            <strong>Decoder Layer</strong> 为单位，所以一个 AttnRes
+            Block 含 <code>2 × attn_res_block_size</code>
+            个子层。<code>layer_idx % attn_res_block_size == 0</code>
+            的层是写块层；bank 的行数是
+            <code>cdiv(end_layer, attn_res_block_size)</code>。</p>
+            <figure>
+            <img src="./WikiImage/attention_residuals_sglang.svg"
+            alt="SGLang 中的 bank 状态与一次聚合" />
+            <figcaption aria-hidden="true">SGLang 中的 bank
+            状态与一次聚合</figcaption>
+            </figure>
+            <p>每个 Decoder Layer 有两个聚合点，各自一套参数：Attention
+            输入用 <code>self_attention_res_norm</code> +
+            <code>self_attention_res_proj</code>，MLP 输入用
+            <code>mlp_res_norm</code> +
+            <code>mlp_res_proj</code>；模型末尾还有一个
+            <code>output_attn_res_*</code>
+            做最终输出聚合（<code>AttnBankOutputRead</code>）。<code>*_res_proj</code>
+            是一个 <code>H → 1</code> 的
+            <code>ReplicatedLinear</code>，它的权重就是论文里的 <span
+            class="math inline">w_l</span>。</p>
+            <p>写块的时序有一个巧妙之处：在写块层的 Attention
+            读入点，当前 prefix
+            恰好是刚结束那一块的完整摘要。<code>AttnResidual.forward(write=True)</code>
+            先把它作为最后一个候选参与聚合，同时把它拷进 bank 的第
+            <code>nvb</code> 行；随后 residual
+            <strong>重置为空</strong>，本层 Attention
+            的输出单独成为新块的第一项。第 0 层的情况是
+            <code>nvb == 0</code>：只有 Embedding 一个候选，直接做
+            RMSNorm，并把 Embedding 写成 bank 第 0 行。</p>
+            <h4 id="一次聚合点做了什么">一次聚合点做了什么</h4>
+            <p>聚合入口是 <code>_aggregate</code>，语义是“score →
+            softmax → mix → norm”：</p>
+            <ol type="1">
+            <li>对 <code>nvb</code> 行 bank 加 prefix 共
+            <code>nvb + 1</code> 个来源，各自算 RMS，与 <span
+            class="math inline">w_l</span> 点积得到分数；</li>
+            <li>沿来源轴 Softmax，对原始来源加权求和；</li>
+            <li>对结果做本子层原有的
+            PreNorm（<code>input_layernorm</code> 或
+            <code>post_attention_layernorm</code>），交给 Attention /
+            MLP。</li>
+            </ol>
+            <p>注意第 3 步：AttnRes 的输出仍要过子层自己的 Norm，所以
+            kernel 把这个“out
+            norm”一起融合了。另外两个融合点值得知道：</p>
+            <ul>
+            <li><strong>Norm 权重折进 Query。</strong> 打分是 <span
+            class="math inline">w^\top(\gamma\odot
+            v\cdot\text{rrms})=(\gamma\odot w)^\top
+            v\cdot\text{rrms}</span>，<code>get_cw</code> 预先算好并缓存
+            <code>norm.weight ⊙ proj.weight</code>，kernel
+            每行只需要一次点积加一次平方和。</li>
+            <li><strong>残差加法折进聚合。</strong> 层边界声明更新是
+            <code>PLAIN_ADD</code>，但不单独执行：<code>_aggregate_fused_add</code>
+            把“prefix = residual +
+            子层输出”和聚合放在一起。因为读出不是普通
+            Norm，<code>_BankReadout.is_plain_norm = False</code>，通用的
+            add+norm 融合 kernel 不能接管它。</li>
+            </ul>
+            <p>后端按硬件分派：</p>
+            <table>
+            <colgroup>
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>路径</th>
+            <th>条件</th>
+            <th>做法</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>fast</td>
+            <td>SM100+（除 SM12x），<code>H = 7168</code></td>
+            <td>warp-specialized TMA kernel：生产者用
+            <code>cp.async.bulk</code>
+            搬运来源行，消费者对双缓冲的行块做 online softmax，out norm
+            融合，可顺带写 bank 行</td>
+            </tr>
+            <tr>
+            <td>hip</td>
+            <td>ROCm 且在寄存器预算内</td>
+            <td>单个 Triton kernel，bank
+            留在寄存器，打分和加权共用一次读取</td>
+            </tr>
+            <tr>
+            <td>fused</td>
+            <td>其余情况</td>
+            <td>两个 Triton kernel：<code>_score_kernel</code> 按
+            (token, 行) 算分；<code>_combine_kernel</code> 按 (token, H
+            分块) 冗余地重算 ≤16 个元素的 Softmax 后加权，再调用 SGLang
+            的 RMSNorm</td>
+            </tr>
+            </tbody>
+            </table>
+            <p><code>aggregate_stream_torch</code> 是 eager
+            参考实现，用于测试和 <code>H</code> 不是 1024
+            倍数时的兜底。fast 路径写 bank 行几乎是免费的：prefix
+            本来就要在打分阶段流过一遍。</p>
+            <h4 id="并行与周边">并行与周边</h4>
+            <ul>
+            <li><strong>Pipeline Parallel</strong>：bank
+            是跨层状态，下一 Stage 需要前面写过的所有行。发送方把
+            <code>block_residual</code> 放进
+            <code>pp_proxy_tensors["attn_res_bank"]</code>，并先把
+            pending add 折进 hidden states；接收方用
+            <code>inherited</code> 拷入自己的 bank 继续写。</li>
+            <li><strong>Sequence Parallel（SP-MoE）</strong>：每个 rank
+            只持有自己 Attention-TP 分片的 token 行，bank
+            也按行切片读写（<code>_bank_rows</code>）。聚合可以与
+            reduce-scatter / all-gather
+            融合（<code>forward_sp_reduce_scatter</code>、<code>forward_sp_all_gather</code>）。只写了本地分片后，不能再读全部行，<code>written_on_slice</code>
+            用来拦截这种会读到陈旧数据的情况。</li>
+            <li><strong>投机解码的 hidden state
+            捕获</strong>：普通模型直接捕获层间残差；K3
+            层间传递的只是当前块的部分和，不是完整状态，所以
+            <code>_dspark_capture_stream</code> 调用
+            <code>aggregate_stream</code>，算出下一个聚合点会形成的
+            Pre-norm 混合值作为捕获结果。</li>
+            <li><strong>Decode 与 KV Cache</strong>：bank 只服务于当前
+            Token 沿深度的计算，每次前向新建，不跨生成步保留；Decode 时
+            <code>T</code> 是 batch 的 token 数，bank 很小。它与服务未来
+            Token 的 KV Cache 是两回事。</li>
+            </ul>
+            <h3 id="最小实现">最小实现</h3>
+            <p>只实现一个聚合点，省略 Norm 的可学习 Gain
+            和系统优化。<code>sources</code> 可以是 Full
+            的历史子层输出，也可以是 Block 的 bank 行加 prefix——这正是
+            <code>aggregate_stream_torch</code> 的做法。</p>
+            <div class="sourceCode" id="cb1"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> attention_residual(sources, query, eps<span class="op">=</span><span class="fl">1e-6</span>):</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># sources: 非空列表，每个 [T, D]；query: 当前子层的 w_l，[D]</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    values <span class="op">=</span> torch.stack(sources, dim<span class="op">=</span><span class="dv">0</span>).<span class="bu">float</span>()          <span class="co"># [R, T, D]</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    rrms <span class="op">=</span> torch.rsqrt(values.square().mean(<span class="op">-</span><span class="dv">1</span>, keepdim<span class="op">=</span><span class="va">True</span>) <span class="op">+</span> eps)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    scores <span class="op">=</span> (values <span class="op">*</span> rrms <span class="op">*</span> query.<span class="bu">float</span>()).<span class="bu">sum</span>(<span class="op">-</span><span class="dv">1</span>)      <span class="co"># [R, T]，Key = RMSNorm(v)</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    weights <span class="op">=</span> torch.softmax(scores, dim<span class="op">=</span><span class="dv">0</span>)                <span class="co"># 沿来源轴归一化</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    mixed <span class="op">=</span> (weights.unsqueeze(<span class="op">-</span><span class="dv">1</span>) <span class="op">*</span> values).<span class="bu">sum</span>(<span class="dv">0</span>)       <span class="co"># Value = 原始 v</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> mixed.to(sources[<span class="dv">0</span>].dtype), weights</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>sources <span class="op">=</span> [torch.randn(<span class="dv">3</span>, <span class="dv">8</span>) <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">4</span>)]</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>mixed, weights <span class="op">=</span> attention_residual(sources, torch.zeros(<span class="dv">8</span>))</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>torch.testing.assert_close(weights.<span class="bu">sum</span>(<span class="dv">0</span>), torch.ones(<span class="dv">3</span>))</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>torch.testing.assert_close(mixed, torch.stack(sources).mean(<span class="dv">0</span>))  <span class="co"># w=0 时为均匀平均</span></span></code></pre></div>
+            <p><code>stack</code> 让 Shape 一目了然，但会多一次
+            <code>[R, T, D]</code>
+            的分配和读写；生产实现直接按行流式读取
+            bank，不物化这个张量。</p>
+            <h3 id="小结">小结</h3>
+            <p>标准残差是一次权重写死为 1 的深度聚合；AttnRes
+            把它换成以子层参数为 Query、以归一化历史输出为
+            Key、以原始输出为 Value 的深度
+            Softmax，让每个子层自己决定读哪些历史层、读多少。Full
+            形式保留全部来源，Block 形式用“块内累加、块间选择”把状态压到
+            <span class="math inline">N</span> 个摘要。由于 Query
+            与当前输入无关、Softmax
+            可合并，深度聚合可以流式、分块地计算；SGLang 的 K3
+            实现据此在 fast 路径上把 bank
+            读取、打分、混合、残差加法、子层 Norm 和写块融合进一个
+            kernel，每个聚合点基本只需把 <span
+            class="math inline">N+1</span> 行来源从 HBM 流式读一遍。</p>
           </main>
         <aside class="wiki-toc">
       <ul>
-      <li><a href="#一残差连接既是梯度通路也是信息聚合"
-      id="toc-一残差连接既是梯度通路也是信息聚合">一、残差连接：既是梯度通路，也是信息聚合</a></li>
-      <li><a href="#二attention-沿哪个维度发生"
-      id="toc-二attention-沿哪个维度发生">二、Attention
-      沿哪个维度发生？</a></li>
-      <li><a href="#三full-attnres保留来源再学习如何聚合"
-      id="toc-三full-attnres保留来源再学习如何聚合">三、Full
-      AttnRes：保留来源，再学习如何聚合</a>
-      <ul>
-      <li><a href="#固定-query-为什么能产生动态权重"
-      id="toc-固定-query-为什么能产生动态权重">1. 固定 Query
-      为什么能产生动态权重？</a></li>
-      <li><a href="#加权平均与固定累加的区别"
-      id="toc-加权平均与固定累加的区别">2.
-      加权平均与固定累加的区别</a></li>
-      </ul></li>
-      <li><a href="#四block-attnres用深度分块控制状态数量"
-      id="toc-四block-attnres用深度分块控制状态数量">四、Block
-      AttnRes：用深度分块控制状态数量</a>
-      <ul>
-      <li><a href="#一个具体例子"
-      id="toc-一个具体例子">一个具体例子</a></li>
-      </ul></li>
-      <li><a href="#五一个可读的-pytorch-聚合示例"
-      id="toc-五一个可读的-pytorch-聚合示例">五、一个可读的 PyTorch
-      聚合示例</a></li>
-      <li><a href="#六显存与计算成本如何估算"
-      id="toc-六显存与计算成本如何估算">六、显存与计算成本如何估算？</a></li>
-      <li><a href="#七为什么可以采用两阶段计算"
-      id="toc-七为什么可以采用两阶段计算">七、为什么可以采用两阶段计算？</a></li>
-      <li><a href="#八与其他残差机制如何比较"
-      id="toc-八与其他残差机制如何比较">八、与其他残差机制如何比较？</a></li>
-      <li><a href="#九工程实践中需要检查什么"
-      id="toc-九工程实践中需要检查什么">九、工程实践中需要检查什么？</a></li>
+      <li><a href="#问题残差把所有历史层压成了一个和"
+      id="toc-问题残差把所有历史层压成了一个和">问题：残差把所有历史层压成了一个和</a></li>
+      <li><a href="#核心抽象把历史层输出当作-attention-的候选"
+      id="toc-核心抽象把历史层输出当作-attention-的候选">核心抽象：把历史层输出当作
+      Attention 的候选</a></li>
+      <li><a href="#full-attnres保留来源再学习如何聚合"
+      id="toc-full-attnres保留来源再学习如何聚合">Full
+      AttnRes：保留来源，再学习如何聚合</a></li>
+      <li><a href="#block-attnres用深度分块控制状态数量"
+      id="toc-block-attnres用深度分块控制状态数量">Block
+      AttnRes：用深度分块控制状态数量</a></li>
+      <li><a href="#代价显存与访存"
+      id="toc-代价显存与访存">代价：显存与访存</a></li>
+      <li><a href="#为什么可以拆开计算softmax-的可合并性"
+      id="toc-为什么可以拆开计算softmax-的可合并性">为什么可以拆开计算：Softmax
+      的可合并性</a></li>
+      <li><a href="#与其他残差机制的比较"
+      id="toc-与其他残差机制的比较">与其他残差机制的比较</a></li>
+      <li><a href="#在-sglang-中的实现" id="toc-在-sglang-中的实现">在
+      SGLang 中的实现</a></li>
+      <li><a href="#最小实现" id="toc-最小实现">最小实现</a></li>
+      <li><a href="#小结" id="toc-小结">小结</a></li>
       </ul>
     </aside>
       </div>

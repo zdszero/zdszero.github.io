@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 516" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="516" rx="12" fill="#ffffff"/>
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#868e96"/>
+    </marker>
+    <marker id="arT" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#0ca678"/>
+    </marker>
+  </defs>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">Full AttnRes：第 l 个子层的一次深度聚合</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">Key 用归一化后的来源打分，Value 用原始来源求和；Query 是子层参数，与当前输入无关</text>
+
+  <!-- Row 1: sources -->
+  <g font-family="monospace" font-size="13" font-weight="700" fill="#0b7285" text-anchor="middle">
+    <rect x="60" y="80" width="100" height="40" rx="8" fill="#e6fcf5" stroke="#0ca678"/><text x="110" y="105">v₀ Emb</text>
+    <rect x="190" y="80" width="100" height="40" rx="8" fill="#e6fcf5" stroke="#0ca678"/><text x="240" y="105">v₁</text>
+    <rect x="320" y="80" width="100" height="40" rx="8" fill="#e6fcf5" stroke="#0ca678"/><text x="370" y="105">v₂</text>
+    <rect x="450" y="80" width="100" height="40" rx="8" fill="#e6fcf5" stroke="#0ca678"/><text x="500" y="105">v₃</text>
+  </g>
+  <rect x="600" y="80" width="160" height="40" rx="8" fill="#ffffff" stroke="#0ca678" stroke-dasharray="5 4"/>
+  <text x="680" y="98" text-anchor="middle" font-family="monospace" font-size="13" font-weight="700" fill="#0b7285">v_l</text>
+  <text x="680" y="113" text-anchor="middle" font-size="10.5" fill="#868e96">算完后追加为新候选</text>
+
+  <!-- Row 2: RMSNorm -> key -->
+  <g fill="none" stroke="#868e96" stroke-width="2">
+    <path d="M110 120 L110 144" marker-end="url(#ar)"/><path d="M240 120 L240 144" marker-end="url(#ar)"/>
+    <path d="M370 120 L370 144" marker-end="url(#ar)"/><path d="M500 120 L500 144" marker-end="url(#ar)"/>
+  </g>
+  <g font-size="12" fill="#3b5bdb" text-anchor="middle">
+    <rect x="65" y="148" width="90" height="30" rx="6" fill="#edf2ff" stroke="#4c6ef5"/><text x="110" y="168">RMSNorm → k₀</text>
+    <rect x="195" y="148" width="90" height="30" rx="6" fill="#edf2ff" stroke="#4c6ef5"/><text x="240" y="168">RMSNorm → k₁</text>
+    <rect x="325" y="148" width="90" height="30" rx="6" fill="#edf2ff" stroke="#4c6ef5"/><text x="370" y="168">RMSNorm → k₂</text>
+    <rect x="455" y="148" width="90" height="30" rx="6" fill="#edf2ff" stroke="#4c6ef5"/><text x="500" y="168">RMSNorm → k₃</text>
+  </g>
+
+  <!-- Row 3: scores with shared query -->
+  <path d="M600 220 L60 220" fill="none" stroke="#f08c00" stroke-width="1.5" stroke-dasharray="5 4"/>
+  <g fill="none" stroke="#868e96" stroke-width="2">
+    <path d="M110 178 L110 198" marker-end="url(#ar)"/><path d="M240 178 L240 198" marker-end="url(#ar)"/>
+    <path d="M370 178 L370 198" marker-end="url(#ar)"/><path d="M500 178 L500 198" marker-end="url(#ar)"/>
+  </g>
+  <g font-family="monospace" font-size="12" fill="#e8590c" text-anchor="middle">
+    <rect x="75" y="202" width="70" height="36" rx="18" fill="#fff4e6" stroke="#f08c00"/><text x="110" y="224">s₀=w·k₀</text>
+    <rect x="205" y="202" width="70" height="36" rx="18" fill="#fff4e6" stroke="#f08c00"/><text x="240" y="224">s₁=w·k₁</text>
+    <rect x="335" y="202" width="70" height="36" rx="18" fill="#fff4e6" stroke="#f08c00"/><text x="370" y="224">s₂=w·k₂</text>
+    <rect x="465" y="202" width="70" height="36" rx="18" fill="#fff4e6" stroke="#f08c00"/><text x="500" y="224">s₃=w·k₃</text>
+  </g>
+  <rect x="600" y="196" width="160" height="48" rx="8" fill="#fff9db" stroke="#f08c00"/>
+  <text x="680" y="216" text-anchor="middle" font-size="13" font-weight="700" fill="#e8590c">Query w_l ∈ ℝᵈ</text>
+  <text x="680" y="234" text-anchor="middle" font-size="11" fill="#495057">子层参数，所有来源共享</text>
+  <!-- Row 4: softmax over source axis -->
+  <g fill="none" stroke="#868e96" stroke-width="2">
+    <path d="M110 238 L110 258" marker-end="url(#ar)"/><path d="M240 238 L240 258" marker-end="url(#ar)"/>
+    <path d="M370 238 L370 258" marker-end="url(#ar)"/><path d="M500 238 L500 258" marker-end="url(#ar)"/>
+  </g>
+  <rect x="60" y="262" width="490" height="34" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="305" y="284" text-anchor="middle" font-size="13" font-weight="700" fill="#5f3dc4">Softmax：沿来源轴归一化（每个 Token 独立）</text>
+  <g font-family="monospace" font-size="13" font-weight="700" fill="#5f3dc4" text-anchor="middle">
+    <text x="110" y="322">α₀=.1</text><text x="240" y="322">α₁=.6</text><text x="370" y="322">α₂=.2</text><text x="500" y="322">α₃=.1</text>
+  </g>
+
+  <!-- Value bypass: original v goes straight to the weighted sum -->
+  <g fill="none" stroke="#0ca678" stroke-width="1.5" stroke-dasharray="4 4">
+    <path d="M60 100 L44 100 L44 392 L56 392" marker-end="url(#arT)"/>
+  </g>
+  <text x="38" y="250" text-anchor="middle" font-size="11" fill="#0b7285" transform="rotate(-90 38 250)">Value：原始 v_i，不经 Norm</text>
+
+  <!-- Row 5: weighted sum -->
+  <g fill="none" stroke="#868e96" stroke-width="2">
+    <path d="M110 330 L110 370" marker-end="url(#ar)"/><path d="M240 330 L240 370" marker-end="url(#ar)"/>
+    <path d="M370 330 L370 370" marker-end="url(#ar)"/><path d="M500 330 L500 370" marker-end="url(#ar)"/>
+  </g>
+  <rect x="60" y="374" width="490" height="40" rx="8" fill="#e6fcf5" stroke="#0ca678" stroke-width="1.5"/>
+  <text x="305" y="399" text-anchor="middle" font-family="monospace" font-size="13" font-weight="700" fill="#0b7285">h_l = .1·v₀ + .6·v₁ + .2·v₂ + .1·v₃</text>
+
+  <!-- Right: sublayer and append -->
+  <path d="M550 394 L596 394" fill="none" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <rect x="600" y="374" width="160" height="40" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="680" y="392" text-anchor="middle" font-size="12.5" font-weight="700" fill="#495057">f_l：Attn / MLP</text>
+  <text x="680" y="407" text-anchor="middle" font-size="10.5" fill="#868e96">含子层自己的 PreNorm</text>
+  <path d="M760 394 L830 394 L830 100 L764 100" fill="none" stroke="#0ca678" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#arT)"/>
+  <text x="840" y="250" font-size="11" fill="#0b7285" transform="rotate(90 840 250)" text-anchor="middle">v_l = f_l(h_l)</text>
+
+  <!-- Note strip -->
+  <rect x="30" y="442" width="840" height="56" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="450" y="465" text-anchor="middle" font-size="12" fill="#495057">权重是每个来源一个标量（同一来源的所有通道共享），和为 1 → h_l 是来源的凸组合，幅度不随深度累加</text>
+  <text x="450" y="485" text-anchor="middle" font-size="12" fill="#495057">标准残差相当于把所有 α 固定为 1；w_l = 0 时 α 均匀，h_l 是来源的平均</text>
+</svg>

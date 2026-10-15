@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 560" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="560" rx="12" fill="#ffffff"/>
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#868e96"/>
+    </marker>
+  </defs>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">Block AttnRes：块内累加，块间选择</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">6 个子层分成 3 块、每块 2 个；每一行是一个子层的聚合输入与执行后的状态更新</text>
+
+  <!-- Column headers -->
+  <text x="160" y="88" font-size="12" font-weight="700" fill="#495057">候选来源（对它们做深度 Softmax）</text>
+  <text x="600" y="88" font-size="12" font-weight="700" fill="#495057">子层输出 → 状态更新</text>
+
+  <!-- Block bands -->
+  <rect x="30" y="98" width="840" height="100" rx="8" fill="#f8f9fa"/>
+  <rect x="30" y="206" width="840" height="100" rx="8" fill="#ffffff" stroke="#f1f3f5"/>
+  <rect x="30" y="314" width="840" height="100" rx="8" fill="#f8f9fa"/>
+  <rect x="30" y="422" width="840" height="46" rx="8" fill="#f3f0ff"/>
+  <g font-size="12" font-weight="700" text-anchor="middle">
+    <text x="70" y="144" fill="#0b7285">块 1</text><text x="70" y="160" font-size="11" font-weight="400" fill="#868e96">子层 1–2</text>
+    <text x="70" y="252" fill="#0b7285">块 2</text><text x="70" y="268" font-size="11" font-weight="400" fill="#868e96">子层 3–4</text>
+    <text x="70" y="360" fill="#0b7285">块 3</text><text x="70" y="376" font-size="11" font-weight="400" fill="#868e96">子层 5–6</text>
+    <text x="70" y="450" fill="#5f3dc4">输出</text>
+  </g>
+  <g font-size="11" fill="#868e96" text-anchor="end">
+    <text x="146" y="127">子层 1</text><text x="146" y="177">子层 2</text>
+    <text x="146" y="235">子层 3</text><text x="146" y="285">子层 4</text>
+    <text x="146" y="343">子层 5</text><text x="146" y="393">子层 6</text>
+    <text x="146" y="450">最终</text>
+  </g>
+
+  <!-- Candidate chips: E = embedding (neutral), b = frozen summary (teal), p = live partial sum (amber) -->
+  <g font-family="monospace" font-size="12" font-weight="700" text-anchor="middle">
+    <!-- row 1 -->
+    <rect x="160" y="108" width="70" height="28" rx="6" fill="#f1f3f5" stroke="#adb5bd"/><text x="195" y="127" fill="#495057">v₀</text>
+    <!-- row 2 -->
+    <rect x="160" y="158" width="70" height="28" rx="6" fill="#f1f3f5" stroke="#adb5bd"/><text x="195" y="177" fill="#495057">v₀</text>
+    <rect x="240" y="158" width="90" height="28" rx="6" fill="#fff4e6" stroke="#f08c00"/><text x="285" y="177" fill="#e8590c">p=v₁</text>
+    <!-- row 3 -->
+    <rect x="160" y="216" width="70" height="28" rx="6" fill="#f1f3f5" stroke="#adb5bd"/><text x="195" y="235" fill="#495057">v₀</text>
+    <rect x="240" y="216" width="70" height="28" rx="6" fill="#e6fcf5" stroke="#0ca678"/><text x="275" y="235" fill="#0b7285">b₁</text>
+    <!-- row 4 -->
+    <rect x="160" y="266" width="70" height="28" rx="6" fill="#f1f3f5" stroke="#adb5bd"/><text x="195" y="285" fill="#495057">v₀</text>
+    <rect x="240" y="266" width="70" height="28" rx="6" fill="#e6fcf5" stroke="#0ca678"/><text x="275" y="285" fill="#0b7285">b₁</text>
+    <rect x="320" y="266" width="90" height="28" rx="6" fill="#fff4e6" stroke="#f08c00"/><text x="365" y="285" fill="#e8590c">p=v₃</text>
+    <!-- row 5 -->
+    <rect x="160" y="324" width="70" height="28" rx="6" fill="#f1f3f5" stroke="#adb5bd"/><text x="195" y="343" fill="#495057">v₀</text>
+    <rect x="240" y="324" width="70" height="28" rx="6" fill="#e6fcf5" stroke="#0ca678"/><text x="275" y="343" fill="#0b7285">b₁</text>
+    <rect x="320" y="324" width="70" height="28" rx="6" fill="#e6fcf5" stroke="#0ca678"/><text x="355" y="343" fill="#0b7285">b₂</text>
+    <!-- row 6 -->
+    <rect x="160" y="374" width="70" height="28" rx="6" fill="#f1f3f5" stroke="#adb5bd"/><text x="195" y="393" fill="#495057">v₀</text>
+    <rect x="240" y="374" width="70" height="28" rx="6" fill="#e6fcf5" stroke="#0ca678"/><text x="275" y="393" fill="#0b7285">b₁</text>
+    <rect x="320" y="374" width="70" height="28" rx="6" fill="#e6fcf5" stroke="#0ca678"/><text x="355" y="393" fill="#0b7285">b₂</text>
+    <rect x="400" y="374" width="90" height="28" rx="6" fill="#fff4e6" stroke="#f08c00"/><text x="445" y="393" fill="#e8590c">p=v₅</text>
+    <!-- output row -->
+    <rect x="160" y="431" width="70" height="28" rx="6" fill="#f1f3f5" stroke="#adb5bd"/><text x="195" y="450" fill="#495057">v₀</text>
+    <rect x="240" y="431" width="70" height="28" rx="6" fill="#e6fcf5" stroke="#0ca678"/><text x="275" y="450" fill="#0b7285">b₁</text>
+    <rect x="320" y="431" width="70" height="28" rx="6" fill="#e6fcf5" stroke="#0ca678"/><text x="355" y="450" fill="#0b7285">b₂</text>
+    <rect x="400" y="431" width="70" height="28" rx="6" fill="#e6fcf5" stroke="#0ca678"/><text x="435" y="450" fill="#0b7285">b₃</text>
+  </g>
+  <!-- Arrows to state column -->
+  <g fill="none" stroke="#868e96" stroke-width="2">
+    <path d="M510 122 L592 122" marker-end="url(#ar)"/><path d="M510 172 L592 172" marker-end="url(#ar)"/>
+    <path d="M510 230 L592 230" marker-end="url(#ar)"/><path d="M510 280 L592 280" marker-end="url(#ar)"/>
+    <path d="M510 338 L592 338" marker-end="url(#ar)"/><path d="M510 388 L592 388" marker-end="url(#ar)"/>
+    <path d="M510 445 L592 445" marker-end="url(#ar)"/>
+  </g>
+  <g font-size="10.5" fill="#868e96" text-anchor="middle">
+    <text x="551" y="116">f₁</text><text x="551" y="166">f₂</text><text x="551" y="224">f₃</text>
+    <text x="551" y="274">f₄</text><text x="551" y="332">f₅</text><text x="551" y="382">f₆</text>
+  </g>
+
+  <!-- State updates -->
+  <g font-family="monospace" font-size="12" fill="#e8590c">
+    <text x="600" y="126">v₁ ⇒ p = v₁</text>
+    <text x="600" y="176">v₂ ⇒ p = v₁+v₂</text>
+    <text x="600" y="234">v₃ ⇒ p = v₃</text>
+    <text x="600" y="284">v₄ ⇒ p = v₃+v₄</text>
+    <text x="600" y="342">v₅ ⇒ p = v₅</text>
+    <text x="600" y="392">v₆ ⇒ p = v₅+v₆</text>
+  </g>
+  <g font-size="10.5" fill="#868e96">
+    <text x="720" y="234">新块：p 从空开始</text>
+    <text x="720" y="342">新块：p 从空开始</text>
+  </g>
+  <g font-family="monospace" font-size="12" font-weight="700" fill="#0b7285" text-anchor="middle">
+    <rect x="752" y="158" width="104" height="28" rx="6" fill="#e6fcf5" stroke="#0ca678" stroke-width="1.5"/><text x="804" y="177">冻结为 b₁</text>
+    <rect x="752" y="266" width="104" height="28" rx="6" fill="#e6fcf5" stroke="#0ca678" stroke-width="1.5"/><text x="804" y="285">冻结为 b₂</text>
+    <rect x="752" y="374" width="104" height="28" rx="6" fill="#e6fcf5" stroke="#0ca678" stroke-width="1.5"/><text x="804" y="393">冻结为 b₃</text>
+  </g>
+  <text x="600" y="449" font-size="12" fill="#5f3dc4">聚合结果 → 最终 Norm → LM Head</text>
+
+  <!-- Note strip -->
+  <rect x="30" y="482" width="840" height="62" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <g font-family="monospace" font-size="11" font-weight="700" text-anchor="middle">
+    <rect x="48" y="494" width="34" height="18" rx="4" fill="#f1f3f5" stroke="#adb5bd"/><text x="65" y="507" fill="#495057">v₀</text>
+    <rect x="180" y="494" width="34" height="18" rx="4" fill="#e6fcf5" stroke="#0ca678"/><text x="197" y="507" fill="#0b7285">b</text>
+    <rect x="360" y="494" width="34" height="18" rx="4" fill="#fff4e6" stroke="#f08c00"/><text x="377" y="507" fill="#e8590c">p</text>
+  </g>
+  <g font-size="12" fill="#495057">
+    <text x="88" y="507">Embedding</text>
+    <text x="220" y="507">冻结的块摘要（只读）</text>
+    <text x="400" y="507">本块部分和（运行中，随子层累加）</text>
+    <text x="48" y="532">摘要只累加本块子层的输出 v，而不是聚合后的 h；块边界之后只能整体选 b₁，不能再单独选 v₁ 或 v₂</text>
+  </g>
+</svg>
