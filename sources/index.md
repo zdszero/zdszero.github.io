@@ -14,7 +14,7 @@
         - [Types](./attn_types.md)
         - [MQA](./mqa.md)
         - [GQA](./gqa.md)
-        - [MLA](./MLA.md)
+        - [MLA](./mla.md)
         - [DSA](./dsa.md)
         - [SWA](./swa.md)
         - [CSA HCA](./hca_csa.md)
