@@ -1,0 +1,132 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1008 560" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="1008" height="560" rx="12" fill="#ffffff"/>
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#868e96"/>
+    </marker>
+    <marker id="arg" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#7048e8"/>
+    </marker>
+  </defs>
+  <text x="504" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">Kimi K3 一层 KDA：每个权重落在计算流程的哪一步</text>
+  <text x="504" y="56" text-anchor="middle" font-size="13" fill="#868e96">96 heads × d=128 = 12288；四条支路从同一个 x_t 出发，三条汇入 delta rule，输出门绕过它直达 o_norm</text>
+
+  <!-- column headers -->
+  <g font-size="12" font-weight="700" fill="#495057" text-anchor="middle">
+    <text x="225" y="84">① 投影（GEMM）</text>
+    <text x="440" y="84">② 激活 / 变换</text>
+    <text x="652" y="84">③ 记忆更新</text>
+    <text x="810" y="84">④ 输出门</text>
+    <text x="934" y="84">⑤ 输出投影</text>
+  </g>
+
+  <!-- input -->
+  <rect x="24" y="186" width="86" height="128" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="67" y="232" text-anchor="middle" font-size="14" font-weight="700" fill="#495057">x_t</text>
+  <text x="67" y="252" text-anchor="middle" font-size="11" fill="#868e96">norm 之后</text>
+  <text x="67" y="270" text-anchor="middle" font-size="11" fill="#495057" font-family="monospace">[7168]</text>
+  <g stroke="#868e96" stroke-width="2" fill="none">
+    <path d="M110 230 L136 131" marker-end="url(#ar)"/>
+    <path d="M110 240 L136 212" marker-end="url(#ar)"/>
+    <path d="M110 262 L136 302" marker-end="url(#ar)"/>
+    <path d="M110 284 L136 386" marker-end="url(#ar)"/>
+  </g>
+
+  <!-- column A: projections -->
+  <rect x="140" y="94" width="170" height="74" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="152" y="114" font-size="12.5" font-weight="700" fill="#3b5bdb">内容：q / k / v</text>
+  <text x="152" y="134" font-size="10.5" fill="#495057" font-family="monospace">q_proj, k_proj, v_proj</text>
+  <text x="152" y="152" font-size="10.5" fill="#495057" font-family="monospace">[12288, 7168] × 3</text>
+  <rect x="140" y="184" width="170" height="56" rx="8" fill="#fff9db" stroke="#f08c00"/>
+  <text x="152" y="204" font-size="12.5" font-weight="700" fill="#e8590c">写入强度 β</text>
+  <text x="152" y="224" font-size="10.5" fill="#495057" font-family="monospace">b_proj [96, 7168]</text>
+  <rect x="140" y="256" width="170" height="92" rx="8" fill="#fff9db" stroke="#f08c00"/>
+  <text x="152" y="276" font-size="12.5" font-weight="700" fill="#e8590c">遗忘门 α（低秩）</text>
+  <text x="152" y="296" font-size="10.5" fill="#495057" font-family="monospace">f_a_proj [128, 7168]</text>
+  <text x="152" y="314" font-size="10.5" fill="#495057" font-family="monospace">f_b_proj [12288, 128]</text>
+  <text x="152" y="334" font-size="10.5" fill="#868e96">秩 = head_dim = 128</text>
+  <rect x="140" y="362" width="170" height="48" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="152" y="381" font-size="12.5" font-weight="700" fill="#5f3dc4">输出门（满秩）</text>
+  <text x="152" y="399" font-size="10.5" fill="#495057" font-family="monospace">g_proj [12288, 7168]</text>
+  <!-- A -> B arrows -->
+  <g stroke="#868e96" stroke-width="2" fill="none">
+    <path d="M310 131 L336 131" marker-end="url(#ar)"/>
+    <path d="M310 212 L336 212" marker-end="url(#ar)"/>
+    <path d="M310 302 L336 302" marker-end="url(#ar)"/>
+  </g>
+
+  <!-- column B: activations -->
+  <rect x="340" y="94" width="200" height="74" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="352" y="114" font-size="12.5" font-weight="700" fill="#3b5bdb">短卷积 + SiLU</text>
+  <text x="352" y="134" font-size="10.5" fill="#495057" font-family="monospace">q/k/v_conv1d [12288,1,4]</text>
+  <text x="352" y="154" font-size="10.5" fill="#868e96">之后 q、k 做 L2Norm（无权重）</text>
+  <rect x="340" y="184" width="200" height="56" rx="8" fill="#fff9db" stroke="#f08c00"/>
+  <text x="352" y="204" font-size="10.5" fill="#495057" font-family="monospace">β = sigmoid(b)</text>
+  <text x="352" y="224" font-size="10.5" fill="#868e96">每 head 1 个标量 ∈ (0, 1)</text>
+  <rect x="340" y="256" width="200" height="92" rx="8" fill="#fff9db" stroke="#f08c00"/>
+  <text x="352" y="275" font-size="12.5" font-weight="700" fill="#e8590c">safe gate（逐通道）</text>
+  <text x="352" y="292" font-size="10" fill="#495057" font-family="monospace">g = −5·sigmoid(e^A_log[h]</text>
+  <text x="352" y="306" font-size="10" fill="#495057" font-family="monospace" xml:space="preserve">    ·(f + dt_bias)) → α=e^g</text>
+  <text x="352" y="323" font-size="10.5" fill="#495057" font-family="monospace">A_log [128] 只用前 96</text>
+  <text x="352" y="340" font-size="10.5" fill="#495057" font-family="monospace">dt_bias [12288]</text>
+
+  <!-- B -> C arrows with labels -->
+  <g stroke="#868e96" stroke-width="2" fill="none">
+    <path d="M540 131 L568 131" marker-end="url(#ar)"/>
+    <path d="M540 212 L568 212" marker-end="url(#ar)"/>
+    <path d="M540 302 L568 302" marker-end="url(#ar)"/>
+  </g>
+
+  <!-- column C: delta rule -->
+  <rect x="572" y="94" width="160" height="254" rx="10" fill="#e6fcf5" stroke="#0ca678" stroke-width="1.5"/>
+  <text x="652" y="116" text-anchor="middle" font-size="13" font-weight="700" fill="#0b7285">gated delta rule</text>
+  <g font-size="10.5" fill="#495057" font-family="monospace" xml:space="preserve">
+    <text x="584" y="140">S ← (I − β kᵀk)</text>
+    <text x="584" y="156">    · Diag(α) S</text>
+    <text x="584" y="172">  + β kᵀv</text>
+    <text x="584" y="194">o = q · S · d^−½</text>
+  </g>
+  <text x="652" y="222" text-anchor="middle" font-size="12" font-weight="700" fill="#e8590c">这一步没有任何权重</text>
+  <text x="652" y="240" text-anchor="middle" font-size="10.5" fill="#868e96">只消费前三条支路的产物</text>
+  <rect x="584" y="262" width="136" height="74" rx="8" fill="#ffffff" stroke="#0ca678"/>
+  <text x="652" y="282" text-anchor="middle" font-size="12" font-weight="700" fill="#0b7285">状态 S（每请求）</text>
+  <text x="652" y="302" text-anchor="middle" font-size="10.5" fill="#495057" font-family="monospace">[96, 128, 128]</text>
+  <text x="652" y="322" text-anchor="middle" font-size="10.5" fill="#868e96">fp32 · MambaPool</text>
+  <!-- column D: o_norm, column E: o_proj -->
+  <path d="M732 232 L756 232" stroke="#868e96" stroke-width="2" fill="none" marker-end="url(#ar)"/>
+  <text x="745" y="224" text-anchor="middle" font-size="10.5" fill="#868e96">o</text>
+  <rect x="760" y="180" width="100" height="104" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="772" y="202" font-size="12.5" font-weight="700" fill="#5f3dc4">o_norm</text>
+  <text x="772" y="222" font-size="10.5" fill="#495057" font-family="monospace">[128]</text>
+  <text x="772" y="240" font-size="10.5" fill="#495057" font-family="monospace">RMSNorm(o)</text>
+  <text x="772" y="256" font-size="10.5" fill="#495057" font-family="monospace">⊙ sigmoid(g)</text>
+  <text x="772" y="274" font-size="10.5" fill="#868e96">各 head 共享</text>
+  <path d="M860 232 L880 232" stroke="#868e96" stroke-width="2" fill="none" marker-end="url(#ar)"/>
+  <rect x="884" y="180" width="100" height="104" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="896" y="202" font-size="12.5" font-weight="700" fill="#495057">o_proj</text>
+  <text x="896" y="222" font-size="10.5" fill="#495057" font-family="monospace">[7168,</text>
+  <text x="896" y="238" font-size="10.5" fill="#495057" font-family="monospace"> 12288]</text>
+  <text x="896" y="256" font-size="10.5" fill="#868e96">行并行</text>
+  <text x="896" y="274" font-size="10.5" fill="#495057" font-family="monospace">→ [7168]</text>
+
+  <!-- lane 4: output gate bypasses delta rule -->
+  <path d="M310 386 L810 386 L810 290" stroke="#7048e8" stroke-width="2" fill="none" marker-end="url(#arg)"/>
+  <text x="560" y="378" text-anchor="middle" font-size="10.5" fill="#5f3dc4">g: [96, 128]，绕过 delta rule 直达输出门</text>
+
+  <!-- parameter share bar -->
+  <text x="24" y="440" font-size="12.5" font-weight="700" fill="#212529">每层 self_attn.* 参数分布（共 443,740,416，×69 层 = 30.6 B）</text>
+  <rect x="24" y="450" width="572" height="26" fill="#4c6ef5"/>
+  <rect x="596" y="450" width="191" height="26" fill="#7048e8"/>
+  <rect x="787" y="450" width="190" height="26" fill="#adb5bd"/>
+  <rect x="977" y="450" width="7" height="26" fill="#f08c00"/>
+  <g font-size="11.5" font-weight="700" text-anchor="middle">
+    <text x="310" y="467" fill="#ffffff">q / k / v_proj · 59.6%</text>
+    <text x="691" y="467" fill="#ffffff">g_proj · 19.8%</text>
+    <text x="882" y="467" fill="#212529">o_proj · 19.8%</text>
+  </g>
+  <path d="M980 478 L980 488" stroke="#f08c00" stroke-width="1.5"/>
+  <text x="984" y="498" text-anchor="end" font-size="11" font-weight="700" fill="#e8590c">b / f_a / f_b / A_log / dt_bias + conv + o_norm · 0.75%</text>
+
+  <rect x="24" y="512" width="960" height="36" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="40" y="535" font-size="12" fill="#495057">99% 的参数在“搬运内容”（五个 7168 ↔ 12288 的大矩阵）；决定“写多少、忘多少”的 β 与 α 只占 0.7%，却是 KDA 区别于普通 attention 的全部所在。</text>
+</svg>

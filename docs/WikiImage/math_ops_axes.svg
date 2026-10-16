@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 446" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="446" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">先问一个问题：这个算子沿哪个轴混合信息</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">hidden states 是一个 [T, D] 的矩阵：行是 token，列是特征</text>
+
+  <!-- Panel A: mix along D -->
+  <rect x="30" y="76" width="270" height="282" rx="10" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="46" y="100" font-size="14" font-weight="700" fill="#3b5bdb">沿 D 混合：token 内部</text>
+  <text x="46" y="118" font-size="11" fill="#868e96">每个 token 独立计算，不看别的 token</text>
+  <text x="165" y="140" text-anchor="middle" font-size="11" fill="#868e96" font-family="monospace">D →</text>
+  <text x="64" y="204" text-anchor="middle" font-size="11" fill="#868e96" font-family="monospace">T↓</text>
+  <rect x="77" y="148" width="176" height="108" fill="#ffffff" stroke="#adb5bd"/>
+  <rect x="77" y="184" width="176" height="18" fill="#4c6ef5" opacity="0.55"/>
+  <path d="M99 148 V256 M121 148 V256 M143 148 V256 M165 148 V256 M187 148 V256 M209 148 V256 M231 148 V256 M77 166 H253 M77 184 H253 M77 202 H253 M77 220 H253 M77 238 H253" stroke="#dee2e6" fill="none"/>
+  <path d="M88 193 Q165 170 242 193" fill="none" stroke="#3b5bdb" stroke-width="1.5"/>
+  <path d="M88 193 Q165 216 242 193" fill="none" stroke="#3b5bdb" stroke-width="1.5"/>
+  <text x="46" y="282" font-size="12" fill="#495057">Linear / MLP / Low-rank</text>
+  <text x="46" y="300" font-size="12" fill="#495057">RoPE（D 内两两配对旋转）</text>
+  <text x="46" y="318" font-size="12" fill="#495057">Norm（沿 D 求统计量再缩放）</text>
+  <text x="46" y="336" font-size="12" fill="#495057">MoE Router / LM Head</text>
+
+  <!-- Panel B: mix along T -->
+  <rect x="315" y="76" width="270" height="282" rx="10" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="331" y="100" font-size="14" font-weight="700" fill="#0b7285">沿 T 混合：token 之间</text>
+  <text x="331" y="118" font-size="11" fill="#868e96">唯一能让 token 交换信息的一类算子</text>
+  <text x="450" y="140" text-anchor="middle" font-size="11" fill="#868e96" font-family="monospace">D →</text>
+  <text x="349" y="204" text-anchor="middle" font-size="11" fill="#868e96" font-family="monospace">T↓</text>
+  <rect x="362" y="148" width="176" height="108" fill="#ffffff" stroke="#adb5bd"/>
+  <rect x="428" y="148" width="22" height="54" fill="#0ca678" opacity="0.3"/>
+  <rect x="428" y="202" width="22" height="18" fill="#0ca678" opacity="0.85"/>
+  <path d="M384 148 V256 M406 148 V256 M428 148 V256 M450 148 V256 M472 148 V256 M494 148 V256 M516 148 V256 M362 166 H538 M362 184 H538 M362 202 H538 M362 220 H538 M362 238 H538" stroke="#dee2e6" fill="none"/>
+  <path d="M458 157 Q476 184 458 209" fill="none" stroke="#0b7285" stroke-width="1.5"/>
+  <text x="482" y="190" font-size="10.5" fill="#0b7285">因果：只读过去</text>
+  <text x="331" y="282" font-size="12" fill="#495057">Attention（权重随内容变）</text>
+  <text x="331" y="300" font-size="12" fill="#495057">Conv1D（固定的局部权重）</text>
+  <text x="331" y="318" font-size="12" fill="#495057">Recurrent / Cumsum（状态递推）</text>
+  <text x="331" y="336" font-size="12" fill="#495057">Mask 决定能看见哪些行</text>
+
+  <!-- Panel C: pointwise -->
+  <rect x="600" y="76" width="270" height="282" rx="10" fill="#fff9db" stroke="#f08c00"/>
+  <text x="616" y="100" font-size="14" font-weight="700" fill="#e8590c">逐元素：不混合</text>
+  <text x="616" y="118" font-size="11" fill="#868e96">每个数各算各的，memory bound，适合融合</text>
+  <text x="735" y="140" text-anchor="middle" font-size="11" fill="#868e96" font-family="monospace">D →</text>
+  <text x="634" y="204" text-anchor="middle" font-size="11" fill="#868e96" font-family="monospace">T↓</text>
+  <rect x="647" y="148" width="176" height="108" fill="#ffffff" stroke="#adb5bd"/>
+  <rect x="713" y="184" width="22" height="18" fill="#f08c00" opacity="0.85"/>
+  <rect x="779" y="220" width="22" height="18" fill="#f08c00" opacity="0.85"/>
+  <rect x="669" y="148" width="22" height="18" fill="#f08c00" opacity="0.85"/>
+  <path d="M669 148 V256 M691 148 V256 M713 148 V256 M735 148 V256 M757 148 V256 M779 148 V256 M801 148 V256 M647 166 H823 M647 184 H823 M647 202 H823 M647 220 H823 M647 238 H823" stroke="#dee2e6" fill="none"/>
+  <text x="616" y="282" font-size="12" fill="#495057">Sigmoid / Exp / Softplus / Tanh</text>
+  <text x="616" y="300" font-size="12" fill="#495057">SiLU / GELU</text>
+  <text x="616" y="318" font-size="12" fill="#495057">⊙ 门控 / + Residual</text>
+  <text x="616" y="336" font-size="12" fill="#495057">Softcap / Clamp / 量化</text>
+
+  <!-- note -->
+  <rect x="30" y="374" width="840" height="56" rx="10" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="46" y="397" font-size="12" fill="#495057">一个 Transformer 层 = 沿 T 混合（Attention）+ 沿 D 混合（MLP），中间用逐元素算子做门控和约束。</text>
+  <text x="46" y="417" font-size="12" fill="#495057">Softmax、Norm、TopK 是“混合型”：先沿某个轴 reduce 出一个统计量（和 / 均方 / 排名），再逐元素地作用回去。</text>
+</svg>
