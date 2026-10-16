@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 470" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="470" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">一层 cache 的四个旋钮</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">每种 attention 变体都只是在改其中一两项；精度 e 是对所有项都生效的第五个乘数</text>
+
+  <!-- formula strip -->
+  <rect x="30" y="74" width="840" height="50" rx="10" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="120" y="105" font-size="17" font-weight="700" fill="#212529" font-family="monospace">M_l(S) =</text>
+  <rect x="222" y="86" width="68" height="28" rx="6" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="256" y="105" text-anchor="middle" font-size="16" font-weight="700" fill="#5f3dc4" font-family="monospace">σ</text>
+  <text x="304" y="105" text-anchor="middle" font-size="16" fill="#495057">×</text>
+  <rect x="318" y="86" width="90" height="28" rx="6" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="363" y="105" text-anchor="middle" font-size="16" font-weight="700" fill="#0b7285" font-family="monospace">n(S)</text>
+  <text x="422" y="105" text-anchor="middle" font-size="16" fill="#495057">×</text>
+  <rect x="436" y="86" width="68" height="28" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="470" y="105" text-anchor="middle" font-size="16" font-weight="700" fill="#3b5bdb" font-family="monospace">E</text>
+  <text x="520" y="105" text-anchor="middle" font-size="16" fill="#495057">+</text>
+  <rect x="536" y="86" width="68" height="28" rx="6" fill="#fff9db" stroke="#f08c00"/>
+  <text x="570" y="105" text-anchor="middle" font-size="16" font-weight="700" fill="#e8590c" font-family="monospace">C</text>
+  <text x="626" y="104" font-size="12" fill="#868e96">份数 × 条目数 × 每条字节 + 固定状态</text>
+
+  <!-- column: sigma -->
+  <rect x="30" y="142" width="195" height="246" rx="10" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="46" y="166" font-size="14" font-weight="700" fill="#5f3dc4">σ：这层存不存</text>
+  <text x="46" y="185" font-size="11" fill="#868e96">沿层方向</text>
+  <rect x="46" y="200" width="163" height="22" rx="5" fill="#ffffff" stroke="#b197fc"/>
+  <text x="56" y="215" font-size="11.5" fill="#495057">绝大多数 attention：σ = 1</text>
+  <text x="46" y="246" font-size="11.5" font-weight="700" fill="#5f3dc4">CSA2 / YOCO</text>
+  <!-- layer stack: owner + consumers -->
+  <rect x="46" y="256" width="40" height="16" rx="3" fill="#7048e8"/>
+  <rect x="46" y="276" width="40" height="16" rx="3" fill="#ffffff" stroke="#b197fc"/>
+  <rect x="46" y="296" width="40" height="16" rx="3" fill="#ffffff" stroke="#b197fc"/>
+  <rect x="46" y="316" width="40" height="16" rx="3" fill="#ffffff" stroke="#b197fc"/>
+  <text x="96" y="268" font-size="11" fill="#495057">Full：σ = 1</text>
+  <text x="96" y="304" font-size="11" fill="#495057">Reindex / Reuse：</text>
+  <text x="96" y="320" font-size="11" fill="#495057">σ = 0，读上面那份</text>
+  <text x="46" y="358" font-size="11" fill="#868e96">斜率 × L_F / L_g</text>
+  <text x="46" y="375" font-size="11" fill="#868e96">与 1/m 相乘、互相独立</text>
+
+  <!-- column: n(S) -->
+  <rect x="245" y="142" width="195" height="246" rx="10" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="261" y="166" font-size="14" font-weight="700" fill="#0b7285">n(S)：沿序列存几条</text>
+  <text x="261" y="185" font-size="11" fill="#868e96">沿序列方向</text>
+  <text x="261" y="210" font-size="11.5" font-weight="700" fill="#0b7285">Full / MLA / DSA</text>
+  <rect x="261" y="218" width="163" height="12" rx="2" fill="#0ca678"/>
+  <text x="261" y="246" font-size="11" fill="#495057" font-family="monospace">n = S</text>
+  <text x="261" y="270" font-size="11.5" font-weight="700" fill="#0b7285">SWA</text>
+  <rect x="261" y="278" width="163" height="12" rx="2" fill="#ffffff" stroke="#96f2d7"/>
+  <rect x="384" y="278" width="40" height="12" rx="2" fill="#0ca678"/>
+  <text x="261" y="306" font-size="11" fill="#495057" font-family="monospace">n = min(S, W)</text>
+  <text x="261" y="330" font-size="11.5" font-weight="700" fill="#0b7285">CSA / HCA</text>
+  <rect x="261" y="338" width="163" height="12" rx="2" fill="#ffffff" stroke="#96f2d7"/>
+  <rect x="384" y="338" width="40" height="12" rx="2" fill="#0ca678"/>
+  <rect x="263" y="341" width="8" height="6" rx="1" fill="#63e6be"/>
+  <rect x="283" y="341" width="8" height="6" rx="1" fill="#63e6be"/>
+  <rect x="303" y="341" width="8" height="6" rx="1" fill="#63e6be"/>
+  <rect x="323" y="341" width="8" height="6" rx="1" fill="#63e6be"/>
+  <rect x="343" y="341" width="8" height="6" rx="1" fill="#63e6be"/>
+  <rect x="363" y="341" width="8" height="6" rx="1" fill="#63e6be"/>
+  <text x="261" y="372" font-size="11" fill="#495057" font-family="monospace">n = W + S/m</text>
+
+  <!-- column: E -->
+  <rect x="460" y="142" width="195" height="246" rx="10" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="476" y="166" font-size="14" font-weight="700" fill="#3b5bdb">E：每条多宽</text>
+  <text x="476" y="185" font-size="11" fill="#868e96">沿 head / 特征方向</text>
+  <rect x="476" y="200" width="163" height="14" rx="3" fill="#4c6ef5"/>
+  <text x="476" y="230" font-size="11" fill="#495057">MHA <tspan font-family="monospace">2NH·e</tspan></text>
+  <rect x="476" y="242" width="60" height="14" rx="3" fill="#4c6ef5"/>
+  <text x="476" y="272" font-size="11" fill="#495057">GQA <tspan font-family="monospace">2KH·e</tspan></text>
+  <rect x="476" y="284" width="24" height="14" rx="3" fill="#4c6ef5"/>
+  <text x="476" y="314" font-size="11" fill="#495057">MLA <tspan font-family="monospace">(d_c+d_r)·e</tspan></text>
+  <rect x="476" y="326" width="24" height="14" rx="3" fill="#4c6ef5"/>
+  <rect x="502" y="326" width="8" height="14" rx="2" fill="#f08c00"/>
+  <text x="476" y="356" font-size="11" fill="#495057">DSA <tspan font-family="monospace">+ d_I·e_I</tspan></text>
+  <text x="476" y="375" font-size="11" fill="#868e96">DSA 反而更宽，只换每步少读</text>
+
+  <!-- column: C -->
+  <rect x="675" y="142" width="195" height="246" rx="10" fill="#fff9db" stroke="#f08c00"/>
+  <text x="691" y="166" font-size="14" font-weight="700" fill="#e8590c">C：与 S 无关</text>
+  <text x="691" y="185" font-size="11" fill="#868e96">按请求，不按 token</text>
+  <text x="691" y="210" font-size="11.5" font-weight="700" fill="#e8590c">GDN / KDA</text>
+  <rect x="691" y="218" width="44" height="44" rx="4" fill="#ffffff" stroke="#f08c00"/>
+  <path d="M691 232.7 H735 M691 247.3 H735 M705.7 218 V262 M720.3 218 V262" stroke="#ffd8a8" stroke-width="1"/>
+  <text x="745" y="236" font-size="11" fill="#495057">状态 H_k × H_v</text>
+  <text x="745" y="252" font-size="11" fill="#495057">每个 v 头一份</text>
+  <text x="691" y="280" font-size="11" fill="#495057" font-family="monospace">N_v·H_k·H_v·e_s + conv</text>
+  <text x="691" y="306" font-size="11.5" font-weight="700" fill="#e8590c">CSA / HCA 压缩 ring</text>
+  <rect x="691" y="314" width="14" height="14" rx="2" fill="#ffffff" stroke="#f08c00"/>
+  <rect x="707" y="314" width="14" height="14" rx="2" fill="#ffffff" stroke="#f08c00"/>
+  <rect x="723" y="314" width="14" height="14" rx="2" fill="#ffffff" stroke="#f08c00"/>
+  <rect x="739" y="314" width="14" height="14" rx="2" fill="#ffffff" stroke="#f08c00"/>
+  <text x="761" y="325" font-size="11" fill="#495057">凑块前的原料</text>
+  <text x="691" y="356" font-size="11" fill="#868e96">短请求、高并发时</text>
+  <text x="691" y="375" font-size="11" fill="#868e96">这一项可能成为大头</text>
+
+  <!-- note -->
+  <rect x="30" y="404" width="840" height="50" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="450" y="425" text-anchor="middle" font-size="12" fill="#495057">σ、n、E 三项相乘，压哪一项都按比例省；C 不随 S 增长，但随并发数 B 增长</text>
+  <text x="450" y="443" text-anchor="middle" font-size="12" fill="#868e96">“存多少”决定能装多少请求，“每步读多少”决定 decode 带宽：稀疏 top-k 只压后者</text>
+</svg>

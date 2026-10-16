@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 480" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#868e96"/></marker>
+  </defs>
+  <rect x="0" y="0" width="900" height="480" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">用算子的“动词”读公式</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">蓝 = 混合，紫 = 几何，青 = 约束范围，橙 = 选择；逐步追踪数值落在哪个范围</text>
+
+  <!-- Section A: softmax attention -->
+  <rect x="30" y="76" width="840" height="122" rx="10" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="46" y="98" font-size="14" font-weight="700" fill="#212529">Softmax Attention</text>
+  <rect x="49" y="112" width="88" height="34" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="93" y="134" text-anchor="middle" font-size="12" font-weight="700" fill="#3b5bdb">Linear q,k,v</text>
+  <rect x="151" y="112" width="88" height="34" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="195" y="134" text-anchor="middle" font-size="12" font-weight="700" fill="#5f3dc4">RoPE</text>
+  <rect x="253" y="112" width="88" height="34" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="297" y="134" text-anchor="middle" font-size="12" font-weight="700" fill="#3b5bdb" font-family="monospace">q · kᵀ</text>
+  <rect x="355" y="112" width="88" height="34" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="399" y="134" text-anchor="middle" font-size="12" font-weight="700" fill="#0b7285" font-family="monospace">× 1/√d</text>
+  <rect x="457" y="112" width="88" height="34" rx="8" fill="#fff9db" stroke="#f08c00"/>
+  <text x="501" y="134" text-anchor="middle" font-size="12" font-weight="700" fill="#e8590c">+ Mask</text>
+  <rect x="559" y="112" width="88" height="34" rx="8" fill="#fff9db" stroke="#f08c00"/>
+  <text x="603" y="134" text-anchor="middle" font-size="12" font-weight="700" fill="#e8590c">Softmax</text>
+  <rect x="661" y="112" width="88" height="34" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="705" y="134" text-anchor="middle" font-size="12" font-weight="700" fill="#3b5bdb" font-family="monospace">Σ wᵢ vᵢ</text>
+  <rect x="763" y="112" width="88" height="34" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="807" y="134" text-anchor="middle" font-size="12" font-weight="700" fill="#3b5bdb">Linear o</text>
+  <path d="M137 129 H148" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <path d="M239 129 H250" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <path d="M341 129 H352" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <path d="M443 129 H454" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <path d="M545 129 H556" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <path d="M647 129 H658" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <path d="M749 129 H760" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <text x="93" y="166" text-anchor="middle" font-size="11" fill="#495057">沿 D 投影</text>
+  <text x="195" y="166" text-anchor="middle" font-size="11" fill="#495057">位置写进角度</text>
+  <text x="297" y="166" text-anchor="middle" font-size="11" fill="#495057">相似度</text>
+  <text x="399" y="166" text-anchor="middle" font-size="11" fill="#495057">方差拉回 O(1)</text>
+  <text x="501" y="166" text-anchor="middle" font-size="11" fill="#495057">结构性排除</text>
+  <text x="603" y="166" text-anchor="middle" font-size="11" fill="#495057">竞争出权重</text>
+  <text x="705" y="166" text-anchor="middle" font-size="11" fill="#495057">沿 T 凸组合</text>
+  <text x="807" y="166" text-anchor="middle" font-size="11" fill="#495057">多头再混合</text>
+  <text x="603" y="186" text-anchor="middle" font-size="10.5" fill="#868e96" font-family="monospace">[0,1]，Σ=1</text>
+  <text x="297" y="186" text-anchor="middle" font-size="10.5" fill="#868e96" font-family="monospace">|q||k|cosθ</text>
+  <!-- Section B: GDN decay gate -->
+  <rect x="30" y="210" width="840" height="112" rx="10" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="46" y="232" font-size="14" font-weight="700" fill="#212529">Gated DeltaNet 的遗忘率 α：一条“保证落在 (0, 1)”的流水线</text>
+  <rect x="49" y="246" width="110" height="34" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="104" y="268" text-anchor="middle" font-size="12" font-weight="700" fill="#3b5bdb" font-family="monospace">a + dt_bias</text>
+  <rect x="185" y="246" width="110" height="34" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="240" y="268" text-anchor="middle" font-size="12" font-weight="700" fill="#0b7285">Softplus</text>
+  <rect x="321" y="246" width="150" height="34" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="396" y="268" text-anchor="middle" font-size="12" font-weight="700" fill="#0b7285" font-family="monospace">× (−exp(A_log))</text>
+  <rect x="497" y="246" width="110" height="34" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="552" y="268" text-anchor="middle" font-size="12" font-weight="700" fill="#0b7285">Exp</text>
+  <rect x="633" y="246" width="218" height="34" rx="8" fill="#fff9db" stroke="#f08c00"/>
+  <text x="742" y="268" text-anchor="middle" font-size="12" font-weight="700" fill="#e8590c" font-family="monospace">S ← α · S</text>
+  <path d="M159 263 H182" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <path d="M295 263 H318" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <path d="M471 263 H494" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <path d="M607 263 H630" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <text x="104" y="300" text-anchor="middle" font-size="11" fill="#868e96" font-family="monospace">ℝ</text>
+  <text x="240" y="300" text-anchor="middle" font-size="11" fill="#868e96" font-family="monospace">(0, +∞)</text>
+  <text x="396" y="300" text-anchor="middle" font-size="11" fill="#868e96" font-family="monospace">g ∈ (−∞, 0)</text>
+  <text x="552" y="300" text-anchor="middle" font-size="11" fill="#868e96" font-family="monospace">α = eᵍ ∈ (0, 1)</text>
+  <text x="742" y="300" text-anchor="middle" font-size="11" fill="#495057">记忆只会衰减，不会放大</text>
+  <text x="46" y="316" font-size="10.5" fill="#868e96">kernel 直接存 g（log 空间）：多步衰减 ∏α = exp(Σg)，乘法变成前缀和</text>
+  <!-- Section C: SwiGLU -->
+  <rect x="30" y="334" width="840" height="78" rx="10" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="46" y="356" font-size="14" font-weight="700" fill="#212529">SwiGLU MLP</text>
+  <rect x="160" y="368" width="150" height="30" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="235" y="388" text-anchor="middle" font-size="12" font-weight="700" fill="#3b5bdb" font-family="monospace">[gate|up] = W·x</text>
+  <rect x="336" y="368" width="200" height="30" rx="8" fill="#fff9db" stroke="#f08c00"/>
+  <text x="436" y="388" text-anchor="middle" font-size="12" font-weight="700" fill="#e8590c" font-family="monospace">SiLU(gate) ⊙ up</text>
+  <rect x="562" y="368" width="120" height="30" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="622" y="388" text-anchor="middle" font-size="12" font-weight="700" fill="#3b5bdb" font-family="monospace">W_down</text>
+  <path d="M310 383 H333" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <path d="M536 383 H559" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <text x="700" y="380" font-size="11" fill="#495057">升维 → 逐维开关 → 降维</text>
+  <text x="700" y="396" font-size="11" fill="#868e96">SiluAndMul 一个 kernel</text>
+  <text x="46" y="388" font-size="11" fill="#868e96">D → 2F → F → D</text>
+
+  <!-- note -->
+  <rect x="30" y="424" width="840" height="44" rx="10" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="46" y="451" font-size="12" fill="#495057">读新架构的套路：先找“沿 T 混合”的那一步，再看每个标量参数被哪个函数约束到了什么范围——范围就是语义。</text>
+</svg>

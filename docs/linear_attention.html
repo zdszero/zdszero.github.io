@@ -414,6 +414,10 @@
             \qquad \alpha_t = e^{g_t} \in (0, 1],\quad \alpha_t \text{
             是每个 head 一个标量}
             </span></p>
+            <p>展开括号：</p>
+            <p><span class="math display"> \boxed{ S_t=\alpha_t S_{t-1}
+            -\alpha_t\beta_t k_t^\top k_t S_{t-1} +\beta_t k_t^\top v_t
+            } </span></p>
             <p><span class="math inline">(I - \beta_t k_t^\top
             k_t)</span> 是一个“部分 Householder 变换”：只沿 <span
             class="math inline">k_t</span> 方向把旧记忆收缩 <span
@@ -425,19 +429,27 @@
             1)</span>，递归不会发散。</p>
             <p>门的参数化沿用 Mamba2：</p>
             <p><span class="math display">
-            g_t = -\exp(\texttt{A\_log}) \cdot \mathrm{softplus}(a_t +
-            \texttt{dt\_bias}),
-            \qquad \beta_t = \mathrm{sigmoid}(b_t)
+            g_t=-\exp(A_{\log})\cdot\operatorname{softplus}(a_t+dt_{\mathrm{bias}})
+            </span></p>
+            <p><span class="math display">
+            \beta_t=\operatorname{sigmoid}(b_t)
             </span></p>
             <p><code>A_log</code>、<code>dt_bias</code> 是每个 v-head
             一个的可学习参数，<span class="math inline">a_t, b_t</span>
             由输入投影 <code>in_proj_ba</code> 给出（每个 v-head
-            各一个数）。<span
-            class="math inline">\exp(\texttt{A\_log})</span> 决定这个
-            head 的基础衰减速率，<span
-            class="math inline">\mathrm{softplus}(a_t+\texttt{dt\_bias})</span>
+            各一个数）。<span class="math inline">\exp(A_{\log})</span>
+            决定这个 head 的基础衰减速率，<span
+            class="math inline">\operatorname{softplus}(a_t+dt_{\mathrm{bias}})</span>
             是数据相关的“步长”，两者相乘再取负保证 <span
             class="math inline">g_t \le 0</span>。</p>
+            <p><span class="math display"> \underbrace{S&#39; = \alpha
+            S_{t-1}}_{\text{遗忘}} \quad\longrightarrow\quad
+            \underbrace{\hat v=kS&#39;}_{\text{读取旧值}}
+            \quad\longrightarrow\quad \underbrace{\delta=\beta(v-\hat
+            v)}_{\text{计算修正}} \quad\longrightarrow\quad
+            \underbrace{S_t=S&#39;+k^\top\delta}_{\text{更新记忆}}
+            \quad\longrightarrow\quad \underbrace{o=qS_t}_{\text{输出}}
+            </span></p>
             <p>一个与 kernel 语义一致的逐 token 参考实现：</p>
             <div class="sourceCode" id="cb1"><pre
             class="sourceCode py"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> gated_delta_rule_ref(q, k, v, g, beta, S<span class="op">=</span><span class="va">None</span>):</span>
@@ -499,11 +511,12 @@
             <code>f_a_proj: hidden → head_dim</code>、<code>f_b_proj: head_dim → H·head_dim</code>；<code>A_log</code>
             每个 head 一个，<code>dt_bias</code> 每个通道一个（<span
             class="math inline">[H \cdot d_k]</span>）。部分模型（如
-            Kimi K3，config 中的 <code>gate_lower_bound</code>）改用
+            Kimi K3，config 中的 <code>gate_lower_bound=-5</code>）改用
             “safe gate”：<span class="math inline">g =
             \text{lower\_bound} \cdot
             \mathrm{sigmoid}(\exp(\texttt{A\_log}) \cdot (f +
-            \texttt{dt\_bias}))</span>，把衰减限制在一个有界区间内。</p>
+            \texttt{dt\_bias}))</span>，把衰减限制在一个有界区间内（见下文
+            Kimi K3 一节）。</p>
             <table>
             <colgroup>
             <col style="width: 33%" />
@@ -541,7 +554,8 @@
             <td><code>RMSNormGated(o, z)</code>，z 来自
             <code>in_proj_qkvz</code></td>
             <td><code>RMSNorm(o) ⊙ sigmoid(g)</code>，g 来自低秩
-            <code>g_a_proj → g_b_proj</code></td>
+            <code>g_a_proj → g_b_proj</code>（K3 改为满秩
+            <code>g_proj</code>）</td>
             </tr>
             <tr>
             <td>搭配的 full attention 层</td>
@@ -635,6 +649,271 @@
             state（最近 <span class="math inline">K-1=3</span>
             步的卷积输入）和 SSM state <span
             class="math inline">S</span>。</p>
+            <h3 id="实例kimi-k3-的-kda-权重如何对上计算流程">实例：Kimi
+            K3 的 KDA 权重如何对上计算流程</h3>
+            <p><a href="./kimi_k3_weight.html">Kimi K3 权重精算</a>
+            列出了一个 KDA 层的 20
+            个张量。光看名字和形状，很难说清哪个张量对应上面公式里的哪个符号，也看不出参数量都花在了哪里。这一节把它们逐个挂回计算流程。</p>
+            <p>K3 的 KDA 配置：96 个 head，<span class="math inline">d_k
+            = d_v = 128</span>，投影宽度 <span class="math inline">96
+            \times 128 = 12288</span>，短卷积核
+            4，<code>use_full_rank_gate=true</code>，<code>gate_lower_bound=-5</code>。</p>
+            <h4 id="先分角色再对形状">先分角色，再对形状</h4>
+            <p>20 个张量里有 6
+            个（<code>input_layernorm</code>、<code>post_attention_layernorm</code>
+            以及 <code>*_res_norm</code> /
+            <code>*_res_proj</code>）是每层都有的公共 norm 和 Attention
+            Residual 权重，MLA 层也有，与 KDA 无关。剩下 14 个
+            <code>self_attn.*</code>
+            按它们在递推里<strong>干什么</strong>可以分成四组：</p>
+            <ul>
+            <li><strong>内容</strong>：q / k / v
+            是记忆的“地址”和“数据”，决定读写什么。</li>
+            <li><strong>写入强度 <span
+            class="math inline">\beta</span></strong>：每个 head 每个
+            token 一个标量，决定这一步把误差写进记忆多少。</li>
+            <li><strong>遗忘门 <span
+            class="math inline">\alpha</span></strong>：每个 head
+            每个通道一个，决定旧记忆按行保留多少。</li>
+            <li><strong>输出</strong>：delta rule 读出 <span
+            class="math inline">o</span> 之后的门控 norm
+            和输出投影。</li>
+            </ul>
+            <p>另外有几步<strong>没有任何权重</strong>：q/k 的
+            L2Norm、<span class="math inline">d^{-1/2}</span>
+            缩放、状态递推本身。递推是纯计算，可学习的东西全在它的输入（q、k、v、β、α）和输出端。</p>
+            <figure>
+            <img
+            src="./WikiImage/linear_attention_k3_kda_weights.svg"
+            alt="Kimi K3 KDA 权重与计算流程" />
+            <figcaption aria-hidden="true">Kimi K3 KDA
+            权重与计算流程</figcaption>
+            </figure>
+            <p>写成公式（行向量，省略 head 下标；<span
+            class="math inline">\hat{\cdot}</span> 表示 L2
+            归一化）：</p>
+            <p><span class="math display">
+            \begin{aligned}
+            q_t, k_t, v_t &amp;=
+            \mathrm{SiLU}\big(\mathrm{Conv}_4(x\,W_{q,k,v}^\top)\big)_t
+            &amp;&amp;\texttt{q/k/v\_proj},\ \texttt{q/k/v\_conv1d}\\
+            \beta_t &amp;= \sigma(x_t W_b^\top) \in (0,1)^{96}
+            &amp;&amp;\texttt{b\_proj}\\
+            f_t &amp;= (x_t W_{f_a}^\top)\, W_{f_b}^\top \in
+            \mathbb{R}^{96\times 128} &amp;&amp;\texttt{f\_a\_proj},\
+            \texttt{f\_b\_proj}\\
+            g_t &amp;= -5\cdot\sigma\!\big(e^{\texttt{A\_log}[h]}\,(f_t
+            + \texttt{dt\_bias})\big),\quad \alpha_t = e^{g_t}
+            &amp;&amp;\texttt{A\_log},\ \texttt{dt\_bias}\\
+            S_t &amp;= (I-\beta_t \hat k_t^\top \hat
+            k_t)\,\mathrm{Diag}(\alpha_t)\,S_{t-1} + \beta_t \hat
+            k_t^\top v_t &amp;&amp;\text{无权重}\\
+            o_t &amp;= d^{-1/2}\,\hat q_t S_t &amp;&amp;\text{无权重}\\
+            y_t &amp;= \big(\mathrm{RMSNorm}_{w}(o_t)\odot\sigma(x_t
+            W_g^\top)\big)\,W_o^\top &amp;&amp;\texttt{o\_norm},\
+            \texttt{g\_proj},\ \texttt{o\_proj}
+            \end{aligned}
+            </span></p>
+            <table>
+            <colgroup>
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th style="text-align: left;">权重</th>
+            <th style="text-align: left;">形状 / dtype</th>
+            <th style="text-align: left;">对应操作</th>
+            <th style="text-align: left;">产物</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td style="text-align: left;"><code>q_proj</code> /
+            <code>k_proj</code> / <code>v_proj</code></td>
+            <td style="text-align: left;"><code>[12288, 7168]</code>
+            BF16 ×3</td>
+            <td style="text-align: left;"><span class="math inline">x
+            W^\top</span>，按 head 切成 <code>[96, 128]</code></td>
+            <td style="text-align: left;">卷积前的 q、k、v</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;"><code>q_conv1d</code> /
+            <code>k_conv1d</code> / <code>v_conv1d</code></td>
+            <td style="text-align: left;"><code>[12288, 1, 4]</code> F32
+            ×3</td>
+            <td style="text-align: left;">每通道 4 个 tap 的因果
+            depthwise 卷积，后接 SiLU</td>
+            <td style="text-align: left;">进入 delta rule 的
+            q、k、v</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;"><code>b_proj</code></td>
+            <td style="text-align: left;"><code>[96, 7168]</code>
+            BF16</td>
+            <td style="text-align: left;"><span
+            class="math inline">\sigma(x W_b^\top)</span></td>
+            <td style="text-align: left;"><span
+            class="math inline">\beta</span>，每 head 一个</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;"><code>f_a_proj</code></td>
+            <td style="text-align: left;"><code>[128, 7168]</code>
+            BF16</td>
+            <td style="text-align: left;">低秩下投影到 128 维</td>
+            <td style="text-align: left;">遗忘门的瓶颈表示</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;"><code>f_b_proj</code></td>
+            <td style="text-align: left;"><code>[12288, 128]</code>
+            BF16</td>
+            <td style="text-align: left;">上投影回每 head 每通道</td>
+            <td style="text-align: left;">原始门 <span
+            class="math inline">f</span>，<code>[96, 128]</code></td>
+            </tr>
+            <tr>
+            <td style="text-align: left;"><code>dt_bias</code></td>
+            <td style="text-align: left;"><code>[12288]</code> F32</td>
+            <td style="text-align: left;">加到 <span
+            class="math inline">f</span>
+            上，<strong>逐通道</strong></td>
+            <td style="text-align: left;">每个通道的基础门值</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;"><code>A_log</code></td>
+            <td style="text-align: left;"><code>[128]</code> F32（只用前
+            96）</td>
+            <td style="text-align: left;"><span
+            class="math inline">e^{\texttt{A\_log}[h]}</span> 作 sigmoid
+            的斜率，<strong>逐 head</strong></td>
+            <td style="text-align: left;">与上面一起得到 <span
+            class="math inline">g</span>、<span
+            class="math inline">\alpha=e^g</span></td>
+            </tr>
+            <tr>
+            <td style="text-align: left;"><code>g_proj</code></td>
+            <td style="text-align: left;"><code>[12288, 7168]</code>
+            BF16</td>
+            <td style="text-align: left;">满秩输出门，<span
+            class="math inline">\sigma(\cdot)</span></td>
+            <td style="text-align: left;">与 <span
+            class="math inline">o</span> 逐元素相乘的门</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;"><code>o_norm</code></td>
+            <td style="text-align: left;"><code>[128]</code> F32</td>
+            <td style="text-align: left;">head 内 RMSNorm 的缩放，96 个
+            head 共享</td>
+            <td style="text-align: left;">归一化后的 <span
+            class="math inline">o</span></td>
+            </tr>
+            <tr>
+            <td style="text-align: left;"><code>o_proj</code></td>
+            <td style="text-align: left;"><code>[7168, 12288]</code>
+            BF16</td>
+            <td style="text-align: left;">拼接各 head 后投影回
+            hidden</td>
+            <td style="text-align: left;">层输出
+            <code>[7168]</code></td>
+            </tr>
+            </tbody>
+            </table>
+            <p>把这 14 项加起来是每层 443,740,416，乘 69
+            层正好是精算总览里的
+            30,618,088,704，说明没有遗漏或重复的张量。</p>
+            <h4
+            id="几个从形状里读出来的细节">几个从形状里读出来的细节</h4>
+            <ul>
+            <li><strong>门很便宜，内容很贵。</strong> q/k/v/g/o 五个
+            <span class="math inline">7168\leftrightarrow 12288</span>
+            的大矩阵占 99.25% 的参数；真正决定“写多少、忘多少”的
+            <code>b_proj</code>、<code>f_a/f_b</code>、<code>A_log</code>、<code>dt_bias</code>
+            合计约 319 万，只占 0.72%。遗忘门用秩 128 的低秩分解（<span
+            class="math inline">7168\to128\to12288</span>，约 249
+            万），如果做成满秩会是 8800 万。</li>
+            <li><strong>门的粒度是三层叠加的。</strong>
+            <code>A_log</code> 是 head 级（96 个），<code>dt_bias</code>
+            是通道级（12288 个），<code>f_t</code> 是 token ×
+            通道级。于是每个通道的衰减 = head 的整体灵敏度 × (通道偏置 +
+            数据相关项)。</li>
+            <li><strong><code>A_log</code> 存了 128 个，只用 96
+            个。</strong> checkpoint 里它的形状是
+            <code>[head_dim]</code> 而不是
+            <code>[num_heads]</code>；加载时
+            <code>_a_log_weight_loader</code> 先截取前
+            <code>num_heads</code> 个，再按 TP 切分，后 32
+            个值从未参与计算。</li>
+            <li><strong>safe gate 给遗忘设了下限。</strong> GDN /
+            Kimi-Linear 的 <span
+            class="math inline">g=-e^{A}\cdot\mathrm{softplus}(\cdot)</span>
+            没有下界，一个 token 理论上能把某行记忆清零。K3 的 <span
+            class="math inline">g = -5\cdot\sigma(\cdot) \in (-5,
+            0)</span>，即 <span class="math inline">\alpha\in(e^{-5},
+            1)\approx(0.0067, 1)</span>：单步最多忘掉
+            99.3%，不会一步清空。这里 <span
+            class="math inline">e^{\texttt{A\_log}}</span>
+            的含义也变了，不再是“衰减速率”，而是 sigmoid
+            的斜率，决定门对输入有多敏感。</li>
+            <li><strong>K3 的输出门是满秩的。</strong> Kimi-Linear
+            用低秩 <code>g_a_proj → g_b_proj</code>，K3 换成了一个
+            <code>g_proj [12288, 7168]</code>（<code>use_full_rank_gate</code>），单这一项就占
+            KDA 参数的 19.8%，与 <code>o_proj</code>
+            一样大。它也是唯一绕过 delta rule 的支路：直接从 <span
+            class="math inline">x_t</span> 投影到
+            <code>o_norm</code>。</li>
+            <li><strong>精度分两档。</strong> 大矩阵是
+            BF16；卷积核、<code>A_log</code>、<code>dt_bias</code>、<code>o_norm</code>
+            是 F32。后几项会进入指数、sigmoid 或递推，而且参数量极小，存
+            F32 几乎不占空间。</li>
+            </ul>
+            <h4 id="在-sglang-里的落地">在 SGLang 里的落地</h4>
+            <p>模型类是
+            <code>KimiK3DeltaAttention</code>（<code>models/kimi_k3.py</code>），checkpoint
+            的张量名和运行时模块并不一一对应，<code>load_weights</code>
+            在加载时做了合并：</p>
+            <ul>
+            <li><code>q_proj</code> / <code>k_proj</code> /
+            <code>v_proj</code> / <code>g_proj</code> 作为 shard 0–3
+            合进 <strong><code>fused_qkvg_proj</code></strong>，一次
+            GEMM 算出 4×12288 列，再 split 成 <code>qkv</code>
+            和输出门。</li>
+            <li><code>q/k/v_conv1d</code> 合进
+            <strong><code>qkv_conv1d</code></strong>（<code>[3×12288, 1, 4]</code>），squeeze
+            成 <code>[36864, 4]</code> 交给
+            <code>RadixLinearAttention</code> 当
+            <code>conv_weights</code>。</li>
+            <li><code>b_proj</code>、<code>f_a_proj</code>
+            <strong>不并入</strong>宽 GEMM。源码注释的理由是：把 96 +
+            128 这种窄输出拼进去会让输出维度变得别扭，影响 GEMM kernel
+            选择。加载后 <code>_merge_bfa_weights</code>
+            把这两个同输入的小 GEMV 合成一个 <code>[f_a | b]</code>；在
+            CUDA graph 的 decode 中，它放在 side stream 上，与宽 GEMM
+            重叠执行。</li>
+            <li><code>A_log</code>、<code>dt_bias</code>、<code>lower_bound</code>
+            随 <code>RadixLinearAttention</code> 交给
+            <code>KDAAttnBackend</code>，门的激活在 kernel
+            内完成：prefill 时由 <code>kda_gate_chunk_cumsum</code> 把
+            safe gate、块内 cumsum 和 <span
+            class="math inline">\beta</span> 的 sigmoid 融成一个
+            kernel（<code>beta_is_raw=True</code>）；decode 时直接融进
+            recurrent kernel。q/k 的 L2Norm 同样在 kernel
+            内（<code>use_qk_l2norm_in_kernel=True</code>）。</li>
+            <li><code>o_norm</code> 是
+            <code>FusedRMSNormGated(head_dim, activation="sigmoid")</code>。decode
+            / verify 时，模型把门张量交给
+            backend（<code>_k3_onorm_gate</code>），能融合的 kernel
+            会把门控 RMSNorm 也一起算掉。</li>
+            <li>TP 按 head 切：TP8 时每张卡 12 个 head，对应
+            <code>A_log</code> 12 个、<code>dt_bias</code> 12×128
+            个、<code>b_proj</code> 12 行；<code>f_a_proj</code> 只有
+            128 个输出，用 <code>ReplicatedLinear</code>
+            每卡一份；<code>o_proj</code> 行并行，attention-TP
+            的求和不在 <code>o_proj</code>
+            内做（<code>reduce_results=False</code>），而是推迟到层边界，与
+            residual 相加一起融合进 all-reduce。</li>
+            </ul>
             <h3 id="在-sglang-中的实现">在 SGLang 中的实现</h3>
             <p>以下路径都相对于 <code>python/sglang/srt/</code>。</p>
             <h4 id="混合层结构">混合层结构</h4>
@@ -805,6 +1084,9 @@
             <li>遗忘门负责淘汰旧信息。GDN 用每 head 一个标量，KDA
             把它细化成逐通道向量，让不同特征有不同的时间尺度。</li>
             </ul>
+            <p>落到 Kimi K3 的权重上，可学习参数几乎全在递推的两端：99%
+            是搬运内容的 q/k/v/g/o 大矩阵，决定写入与遗忘的 β、α
+            只占不到 1%，而递推本身没有权重。</p>
             <p>工程上，chunkwise 算法让 prefill 能并行，recurrent kernel
             让 decode 只需常数开销。SGLang 用“full attention 层
             per-token KV + linear 层 per-request 状态
@@ -831,6 +1113,9 @@
       <li><a href="#一层-gdn-kda-的完整数据流"
       id="toc-一层-gdn-kda-的完整数据流">一层 GDN / KDA
       的完整数据流</a></li>
+      <li><a href="#实例kimi-k3-的-kda-权重如何对上计算流程"
+      id="toc-实例kimi-k3-的-kda-权重如何对上计算流程">实例：Kimi K3 的
+      KDA 权重如何对上计算流程</a></li>
       <li><a href="#在-sglang-中的实现" id="toc-在-sglang-中的实现">在
       SGLang 中的实现</a></li>
       <li><a href="#小结" id="toc-小结">小结</a></li>

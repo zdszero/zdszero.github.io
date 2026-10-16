@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 456" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#adb5bd"/></marker>
+    <marker id="ar_t" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#0ca678"/></marker>
+    <marker id="ar_g" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#7048e8"/></marker>
+    <marker id="ar_a" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#f08c00"/></marker>
+    <marker id="ar_b" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#4c6ef5"/></marker>
+  </defs>
+  <rect x="0" y="0" width="900" height="456" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">把向量看成“长度 × 方向”</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">灰色虚线是输入 x，彩色是变换后的结果；虚线圆代表固定长度</text>
+
+  <!-- P1 RMSNorm -->
+  <rect x="30" y="76" width="195" height="296" rx="10" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="46" y="100" font-size="14" font-weight="700" fill="#0b7285">RMSNorm</text>
+  <path d="M47 225 H207 M127 140 V300" stroke="#ced4da"/>
+  <circle cx="127" cy="225" r="50" fill="none" stroke="#0ca678" stroke-dasharray="4 3"/>
+  <path d="M127 225 L202 185" stroke="#adb5bd" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#ar)"/>
+  <path d="M127 225 L171 201.5" stroke="#0ca678" stroke-width="3" marker-end="url(#ar_t)"/>
+  <text x="46" y="322" font-size="12" fill="#0b7285" font-family="monospace">x / rms(x)</text>
+  <text x="46" y="340" font-size="12" fill="#495057">方向不变，长度归一到 √d</text>
+  <text x="46" y="358" font-size="11" fill="#868e96">LayerNorm 还会先减去均值</text>
+
+  <!-- P2 RoPE -->
+  <rect x="245" y="76" width="195" height="296" rx="10" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="261" y="100" font-size="14" font-weight="700" fill="#5f3dc4">RoPE</text>
+  <path d="M262 225 H422 M342 140 V300" stroke="#ced4da"/>
+  <circle cx="342" cy="225" r="85" fill="none" stroke="#7048e8" stroke-dasharray="4 3" opacity="0.5"/>
+  <path d="M342 225 L417 185" stroke="#adb5bd" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#ar)"/>
+  <path d="M342 225 L373.8 146.2" stroke="#7048e8" stroke-width="3" marker-end="url(#ar_g)"/>
+  <path d="M378 204 A40 40 0 0 0 357 188" fill="none" stroke="#5f3dc4" stroke-width="1.5"/>
+  <text x="381" y="186" font-size="12" font-weight="700" fill="#5f3dc4" font-family="monospace">mθ</text>
+  <text x="261" y="322" font-size="12" fill="#5f3dc4" font-family="monospace">R(mθ) · x</text>
+  <text x="261" y="340" font-size="12" fill="#495057">长度不变，只转角度</text>
+  <text x="261" y="358" font-size="11" fill="#868e96">q·k 只依赖相对位置 m − n</text>
+  <!-- P3 Gate -->
+  <rect x="460" y="76" width="195" height="296" rx="10" fill="#fff9db" stroke="#f08c00"/>
+  <text x="476" y="100" font-size="14" font-weight="700" fill="#e8590c">门控 ⊙</text>
+  <path d="M477 225 H637 M557 140 V300" stroke="#ced4da"/>
+  <path d="M557 225 L632 185" stroke="#adb5bd" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#ar)"/>
+  <path d="M557 225 L579.5 185" stroke="#f08c00" stroke-width="3" marker-end="url(#ar_a)"/>
+  <path d="M628 176 H588" stroke="#e8590c" stroke-width="1.2" stroke-dasharray="3 2" marker-end="url(#ar_a)"/>
+  <text x="643" y="164" text-anchor="end" font-size="11" fill="#e8590c" font-family="monospace">g = (0.3, 1.0)</text>
+  <text x="476" y="322" font-size="12" fill="#e8590c" font-family="monospace">g ⊙ x，g ∈ (0, 1)</text>
+  <text x="476" y="340" font-size="12" fill="#495057">沿坐标轴各自调音量</text>
+  <text x="476" y="358" font-size="11" fill="#868e96">长度和方向一起变</text>
+
+  <!-- P4 Linear -->
+  <rect x="675" y="76" width="195" height="296" rx="10" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="691" y="100" font-size="14" font-weight="700" fill="#3b5bdb">Linear</text>
+  <path d="M692 225 H852 M772 140 V300" stroke="#ced4da"/>
+  <circle cx="772" cy="225" r="40" fill="none" stroke="#adb5bd" stroke-dasharray="4 3"/>
+  <ellipse cx="772" cy="225" rx="72" ry="22" transform="rotate(-25 772 225)" fill="#4c6ef5" fill-opacity="0.12" stroke="#4c6ef5" stroke-width="2"/>
+  <path d="M706.7 255.4 L837.3 194.6" stroke="#3b5bdb" stroke-width="1.2" stroke-dasharray="2 3"/>
+  <text x="772" y="292" text-anchor="middle" font-size="10.5" fill="#3b5bdb">低秩：压扁成虚线</text>
+  <text x="691" y="322" font-size="12" fill="#3b5bdb" font-family="monospace">Wx = UΣVᵀx</text>
+  <text x="691" y="340" font-size="12" fill="#495057">旋转 → 拉伸 → 再旋转</text>
+  <text x="691" y="358" font-size="11" fill="#868e96">圆变椭圆；秩 = 留下几个方向</text>
+
+  <!-- note -->
+  <rect x="30" y="388" width="840" height="56" rx="10" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="46" y="411" font-size="12" fill="#495057">Norm 管长度，RoPE 管方向，门控逐维调音量，Linear 是一般情形：RoPE 是正交阵，门控是对角阵，Norm 则不是线性的。</text>
+  <text x="46" y="431" font-size="12" fill="#495057">打分 q·k = |q||k|cos θ 同时依赖长度和方向：QK-Norm 固定长度，RoPE 把位置写进角度，两者分工互不干扰。</text>
+</svg>

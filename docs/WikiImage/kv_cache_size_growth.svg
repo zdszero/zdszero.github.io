@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 500" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="500" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">单层 cache 随上下文长度 S 的增长形状</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">示意图，不对应具体模型；斜率 = 每 token 字节，起点高度 = 与 S 无关的固定状态</text>
+
+  <!-- axes -->
+  <path d="M80 92 V400 H596" fill="none" stroke="#adb5bd" stroke-width="1.5"/>
+  <text x="600" y="404" font-size="13" font-weight="700" fill="#495057" font-family="monospace">S</text>
+  <text x="56" y="250" font-size="12" fill="#868e96" transform="rotate(-90 56 250)" text-anchor="middle">单层、单请求的 cache 字节</text>
+
+  <!-- W tick -->
+  <path d="M125 400 V408" stroke="#adb5bd" stroke-width="1.5"/>
+  <text x="125" y="422" text-anchor="middle" font-size="12" fill="#495057" font-family="monospace">W</text>
+
+  <!-- S_eq markers -->
+  <path d="M218 320 V400" stroke="#0ca678" stroke-width="1" stroke-dasharray="4 3"/>
+  <circle cx="218" cy="320" r="3.5" fill="#0ca678"/>
+  <text x="218" y="422" text-anchor="middle" font-size="11.5" fill="#0b7285">S_eq（对 GQA）</text>
+  <path d="M480 320 V400" stroke="#0ca678" stroke-width="1" stroke-dasharray="4 3"/>
+  <circle cx="480" cy="320" r="3.5" fill="#0ca678"/>
+  <text x="480" y="422" text-anchor="middle" font-size="11.5" fill="#0b7285">S_eq（对 MLA）</text>
+
+  <!-- curves -->
+  <path d="M80 400 L580 110" fill="none" stroke="#fa5252" stroke-width="2.5"/>
+  <path d="M80 400 L580 282" fill="none" stroke="#7048e8" stroke-width="2" stroke-dasharray="6 4"/>
+  <path d="M80 400 L580 300" fill="none" stroke="#4c6ef5" stroke-width="2.5"/>
+  <path d="M80 320 H580" fill="none" stroke="#0ca678" stroke-width="2.5"/>
+  <path d="M80 396 L125 370 L580 336" fill="none" stroke="#f08c00" stroke-width="2.5"/>
+  <path d="M80 388 L125 362 L580 352" fill="none" stroke="#e8590c" stroke-width="2" stroke-dasharray="6 4"/>
+  <path d="M80 400 L125 374 H580" fill="none" stroke="#495057" stroke-width="2"/>
+
+  <!-- end labels -->
+  <text x="588" y="114" font-size="11.5" font-weight="700" fill="#c92a2a">MHA / GQA</text>
+  <text x="588" y="280" font-size="11.5" font-weight="700" fill="#5f3dc4">DSA</text>
+  <text x="588" y="300" font-size="11.5" font-weight="700" fill="#3b5bdb">MLA</text>
+  <text x="588" y="320" font-size="11.5" font-weight="700" fill="#0b7285">GDN / KDA</text>
+  <text x="588" y="338" font-size="11.5" font-weight="700" fill="#e8590c">CSA</text>
+  <text x="588" y="355" font-size="11.5" font-weight="700" fill="#e8590c">HCA</text>
+  <text x="588" y="377" font-size="11.5" font-weight="700" fill="#495057">SWA</text>
+
+  <!-- right panel -->
+  <rect x="690" y="92" width="180" height="96" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="702" y="113" font-size="12.5" font-weight="700" fill="#3b5bdb">斜率 α：每 token 字节</text>
+  <text x="702" y="133" font-size="11" fill="#495057">Full：2KH·e</text>
+  <text x="702" y="150" font-size="11" fill="#495057">MLA：(d_c+d_r)·e</text>
+  <text x="702" y="167" font-size="11" fill="#495057">CSA / HCA：E / m</text>
+  <text x="702" y="182" font-size="11" fill="#495057">SWA、GDN / KDA：0</text>
+
+  <rect x="690" y="200" width="180" height="96" rx="8" fill="#fff9db" stroke="#f08c00"/>
+  <text x="702" y="221" font-size="12.5" font-weight="700" fill="#e8590c">截距 γ：每请求字节</text>
+  <text x="702" y="241" font-size="11" fill="#495057">GDN / KDA：状态矩阵</text>
+  <text x="702" y="258" font-size="11" fill="#495057">CSA / HCA：压缩 ring</text>
+  <text x="702" y="275" font-size="11" fill="#495057">SWA 类：窗口 W·E</text>
+  <text x="702" y="290" font-size="11" fill="#868e96">（S &gt; W 后的平台高度）</text>
+
+  <rect x="690" y="308" width="180" height="92" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="702" y="329" font-size="12.5" font-weight="700" fill="#0b7285">交点 S_eq</text>
+  <text x="702" y="349" font-size="11" fill="#495057">S &lt; S_eq：linear 层更贵</text>
+  <text x="702" y="366" font-size="11" fill="#495057">S &gt; S_eq：linear 层更省</text>
+  <text x="702" y="385" font-size="11" fill="#495057">参照层越省，S_eq 越靠右</text>
+
+  <!-- note -->
+  <rect x="30" y="440" width="840" height="44" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="450" y="460" text-anchor="middle" font-size="12" fill="#495057">只有 Full / MLA / DSA 这类“全量条目”的层贡献陡峭斜率；SWA、CSA / HCA、linear 层都在把直线压平或换成常数</text>
+  <text x="450" y="476" text-anchor="middle" font-size="12" fill="#868e96">混合模型的总量 = 各层曲线相加 = B·(α·S + γ)</text>
+</svg>

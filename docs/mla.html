@@ -42,7 +42,73 @@
         </script>
         <link rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
-        <!-- wiki three-column layout styles/behavior, kept external so the ~5KB
+      <style type="text/css">
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+      <!-- wiki three-column layout styles/behavior, kept external so the ~5KB
        block isn't duplicated into every generated page -->
   <link rel="stylesheet" type="text/css" href="./WikiTheme/wiki-layout.css" />
   <script defer src="./WikiTheme/wiki-layout.js"></script>
@@ -63,50 +129,76 @@
     <div class="wiki-layout">
     <nav class="wiki-sidebar" id="wiki-sidebar" hidden></nav>
     <main class="wiki-main">
-            <h3 id="目的">目的</h3>
-            <p>MLA 是 deepseek 采用的 MHA
-            的优化方案，主要为了解决以下的痛点问题：</p>
-            <p>MHA 需要保存所有 head 的 kv
-            cache，这是一笔很大的显存开销。后来 MQA、GQA
-            对此问题有所优化，在 attention 阶段我们之保存部分 head 的 kv
-            cache，这样显存占用不就直接缩小 N 倍了么？</p>
-            <p>但是凡事有利必有弊，你减少了 kv head
-            数量，那么效果肯定也要有所打折扣。那么有没有什么方式，既可以实现尽量少保存
-            kv cache ，又可以尽量恢复 MHA 的效果呢。</p>
-            <p>Deepseek 团队从 lora 的设计思想中获得启发，设计了 MLA
-            这种方式。</p>
-            <h3 id="压缩">压缩</h3>
-            <p>MLA 的核心在于压缩，在传统的 MHA/MQA/GQA 中，我们直接通过
-            <span class="math inline">W_{Q}</span>、<span
-            class="math inline">W_{K}</span> 和 <span
-            class="math inline">W_{V}</span> 矩阵来得到 <span
+            <h3 id="问题kv-cache-成了推理的瓶颈">问题：KV cache
+            成了推理的瓶颈</h3>
+            <p>自回归推理时，每生成一个 token 都要和全部历史 token
+            做注意力，所以历史的 K、V 必须缓存下来。MHA
+            里每个头都有自己的 K、V，按 DeepSeek-V3 的维度（128 个头，K
+            192 维、V 128 维）算，<strong>一个 token 在一层里就要存
+            40960 个元素</strong>，61 层合计约 4.8 MB。KV cache
+            的大小直接决定了一张卡能同时服务多少请求、能支持多长的上下文；而
+            decode 阶段每一步都要把这些 cache
+            从显存完整读一遍，它又决定了 decode 的速度。</p>
+            <p>MQA、GQA 的办法是减少 KV 头的数量：让多个 query
+            头共用一组 K、V，cache
+            立刻缩小几倍到上百倍。代价也很直接——K、V
+            的表达能力跟着头数一起被砍掉了，模型效果会打折扣。</p>
+            <p>于是问题变成：<strong>能不能只缓存很少的东西，却仍然让每个头看到各不相同的
+            K、V？</strong></p>
+            <h3
+            id="核心思想缓存一个能还原所有头的-latent">核心思想：缓存一个能还原所有头的
+            latent</h3>
+            <p>MLA（Multi-head Latent Attention）的回答来自 LoRA
+            式的低秩分解。传统注意力直接用 <span
+            class="math inline">W_{Q}</span>、<span
+            class="math inline">W_{K}</span>、<span
+            class="math inline">W_{V}</span> 从输入 <span
+            class="math inline">X</span> 得到 <span
             class="math inline">Q</span>、<span
             class="math inline">K</span>、<span
-            class="math inline">V</span>，假设输入的表示为 <span
-            class="math inline">X</span>：</p>
-            <p><span class="math display">Q = X W_{Q}</span></p>
-            <p><span class="math display">K = X W_{K}</span></p>
-            <p><span class="math display">V = X W_{V}</span></p>
-            <p>MLA 在这里增加了一个中间步骤：</p>
-            <p><span class="math display">Q = X W_{qa} W_{qb}</span></p>
-            <p><span class="math display">[K, V] = X W_{kva}
-            W_{kvb}</span></p>
-            <p>当然，压缩过后得到的 tensor 一般我们称作
-            latent，所以上述公式可以表述为：</p>
-            <p><span class="math display">c_{q} = X W_{qa} \quad Q =
-            c_{q} W_{qb}</span></p>
-            <p><span class="math display">c_{KV} = X W_{kva} \quad [K,
-            V] = c_{KV} W_{kvb}</span></p>
-            <p>当然这里是简化过的公式，实际考虑到 rope
-            的处理，完整版的公式要复杂不少，这里主要说明思想，细节后面再说。</p>
-            <h3 id="normal-vs-absorb">Normal vs Absorb</h3>
-            <p>可以看到，<span class="math inline">W_{Q}</span>
-            被拆分成了 <span class="math inline">W_{qa}</span> 和 <span
-            class="math inline">W_{qb}</span> 这两个步骤，其中 <span
-            class="math inline">W_{qa}</span> 是压缩过程，<span
-            class="math inline">W_{qb}</span>
-            是反压缩过程。经过这两个步骤，其效果和 MHA 是一致的，KV 的
-            head 数量没有减少。</p>
+            class="math inline">V</span>：</p>
+            <p><span class="math display">Q = X W_{Q} \quad K = X W_{K}
+            \quad V = X W_{V}</span></p>
+            <p>MLA 在中间插入一个“先压缩、再展开”的步骤：</p>
+            <p><span class="math display">c_{Q} = X W_{DQ} \qquad Q =
+            c_{Q} W_{UQ}</span></p>
+            <p><span class="math display">c_{KV} = X W_{DKV} \qquad K =
+            c_{KV} W_{UK} \qquad V = c_{KV} W_{UV}</span></p>
+            <p><span class="math inline">D</span> 表示
+            down（压缩），<span class="math inline">U</span> 表示
+            up（展开）。压缩后的低维张量叫 latent：<span
+            class="math inline">c_{KV}</span> 只有 512 维，却能通过
+            <span class="math inline">W_{UK}</span>、<span
+            class="math inline">W_{UV}</span> 展开成 128 个头各不相同的
+            K、V。</p>
+            <p>关键在于<strong>缓存什么</strong>。展开后的 K、V 完全由
+            <span class="math inline">c_{KV}</span> 决定，所以只需要缓存
+            <span class="math inline">c_{KV}</span>
+            本身，需要时再展开。GQA/MQA 是“少存几个头”，MLA
+            是“存一个可以还原所有头的低秩表示”：</p>
+            <figure>
+            <img src="./WikiImage/mla_kv_cache_compare.svg"
+            alt="每 token 每层的 KV cache 大小对比" />
+            <figcaption aria-hidden="true">每 token 每层的 KV cache
+            大小对比</figcaption>
+            </figure>
+            <p>图里 MLA 的 576 比 512 多出来的 64 维是 RoPE
+            部分，原因见后文的 RoPE 一节。先忽略 RoPE，看看“只存
+            latent”之后注意力怎么算。</p>
+            <h3
+            id="同一个注意力两种算法normal-与-absorb">同一个注意力，两种算法：Normal
+            与 Absorb</h3>
+            <h4 id="normal先展开再做-mha">Normal：先展开，再做 MHA</h4>
+            <p>最直接的做法是把 cache 里的 <span
+            class="math inline">c_{KV}</span> 展开成每个头的
+            K、V，然后照常做 MHA。下面用 <span
+            class="math inline">W_{qb}</span> 表示 <span
+            class="math inline">W_{UQ}</span>，<span
+            class="math inline">W_{kb}</span>、<span
+            class="math inline">W_{vb}</span> 分别表示 <span
+            class="math inline">W_{UK}</span>、<span
+            class="math inline">W_{UV}</span>（合起来就是代码里的
+            <code>kv_b_proj</code>）：</p>
             <p><span class="math display">
             \begin{aligned}
             \text{MHA 路径} &amp;= \text{softmax}\left(
@@ -115,19 +207,15 @@
             W_{kb})^T}{\sqrt{k}} \right) (c_{KV} W_{vb})
             \end{aligned}
             </span></p>
-            <p>那你可能要问了，经过这一个步骤的目的又是什么呢？其实在
-            prefill 阶段 MLA 就是 “多此一举的 MHA”，MLA 在 prefill
-            的模式也叫做 Normal 模式，Normal 模式即使用 MHA。</p>
-            <p>在 decode 阶段可以才是 MLA 发挥威力的地方：</p>
-            <ul>
-            <li>在正常的 MHA/MQA/GQA 中的 decode
-            阶段，我们保存的是若干个头的 kv cache，但是在 MLA 中的
-            decode，我们只需要保存 latent <span
-            class="math inline">c_{KV}</span> 即可</li>
-            <li>在 MLA 的 decode
-            阶段，我们可以通过一个巧妙的数学变换来做
-            MQA，但是其效果上相当于 MHA</li>
-            </ul>
+            <p>这条路径叫 <strong>Normal 模式</strong>。它在效果上就是
+            MHA，cache 也确实只存了
+            latent。问题是每次计算都要把<strong>全部 S 个历史
+            token</strong> 的 latent 重新展开一遍，展开的代价随 KV 长度
+            S 增长。</p>
+            <h4
+            id="absorb把上投影吸收到-q-和输出上">Absorb：把上投影吸收到
+            q 和输出上</h4>
+            <p>矩阵乘法满足结合律，可以换一个结合顺序：</p>
             <p><span class="math display">
             \begin{aligned}
             \text{MQA 路径} &amp;= \text{softmax}\left(
@@ -138,50 +226,121 @@
             c_{KV}^T}{\sqrt{k}} \right) c_{KV}) W_{vb}
             \end{aligned}
             </span></p>
-            <p>可以看到，其中 <span class="math inline">W_{kb}</span> 被
-            absorb 到 <span class="math inline">W_{qb}</span>
-            中，实际上在做 decode 阶段的 attention 时 <span
-            class="math inline">K</span> 就等同于 <span
-            class="math inline">c_{KV}</span>，只有一个头，所以就相当于
-            MQA。</p>
-            <p>当然，上面的公式具备高度概括性，实际情况却要复杂不少，这种复杂性主要源
-            deepseek 在使用 MLA 时关于 rope 的处理。</p>
-            <h3 id="qk-rope">QK Rope</h3>
-            <p>首先给出 deepseek v2 论文中关于 MLA 的原版流程图：</p>
+            <p>最后一行里，<span class="math inline">W_{kb}</span>
+            被“吸收”进了 query：先算 <span class="math inline">\tilde{q}
+            = c_{q} W_{qb} W_{kb}^{T}</span>（每个头一个 512
+            维向量），再直接和 <span class="math inline">c_{KV}</span>
+            做点积；<span class="math inline">W_{vb}</span>
+            则挪到注意力之后，先对 latent
+            做加权求和，再展开到每个头。</p>
+            <p>这时所有头的 K 和 V 都是<strong>同一份</strong> <span
+            class="math inline">c_{KV}</span>——这正是 MQA 的形状：128 个
+            query 头，1 个 KV 头。这条路径叫 <strong>Absorb
+            模式</strong>。它数学上与 Normal
+            完全等价，却只需要把上投影乘在 T 个新 token 上，而不是 S
+            个历史 token 上。</p>
+            <h4 id="谁更省看-t-和-s-的比例">谁更省：看 T 和 S
+            的比例</h4>
+            <p>两种模式交换的是两笔开销：</p>
+            <ul>
+            <li><strong>上投影</strong>：Normal 每层要做 <span
+            class="math inline">S\times 512\times 128\times 256</span>
+            次乘加来展开 K、V；Absorb 换成 <span
+            class="math inline">T\times 2\times 128\times 128\times
+            512</span> 次来吸收 q、展开输出。两者系数都约是
+            16.8M，区别只是乘 S 还是乘 T。</li>
+            <li><strong>注意力本身</strong>：Normal 每个头的 qk 是 192
+            维、v 是 128 维；Absorb 每个头的 qk 是 576 维、v 是 512
+            维，注意力的计算量膨胀约 <span
+            class="math inline">(576+512)/(192+128)\approx 3.4</span>
+            倍。</li>
+            </ul>
+            <figure>
+            <img src="./WikiImage/mla_cost_tradeoff.svg"
+            alt="Normal 与 Absorb 的计算量权衡" />
+            <figcaption aria-hidden="true">Normal 与 Absorb
+            的计算量权衡</figcaption>
+            </figure>
+            <p>于是有了推理里的分工：</p>
+            <ul>
+            <li><strong>decode</strong>（<span
+            class="math inline">T=1\ll S</span>）：Absorb 碾压。而且
+            decode 本来就是访存瓶颈，Absorb 每从显存读一行 576 维的
+            latent，就被 128 个 query 头复用一次，算术强度远高于 MHA 的
+            decode；</li>
+            <li><strong>无前缀的 prefill</strong>（<span
+            class="math inline">T=S</span>）：上投影两边一样多，Absorb
+            只剩下注意力膨胀的劣势，Normal 胜出。所以 prefill 时 MLA
+            就是一个“多此一举的 MHA”——先压缩再展开，但不吃亏；</li>
+            <li><strong>带前缀的
+            extend</strong>：介于两者之间，取决于这一轮的 T 有多大。当 S
+            较大时分界线约在 <span class="math inline">T\approx
+            16.8\text{M}/(139264-40960)\approx 170</span>，几乎与 S
+            无关。</li>
+            </ul>
+            <h3 id="rope-为什么要单独拆出来">RoPE
+            为什么要单独拆出来</h3>
+            <p>上面的推导有个前提：<span class="math inline">Q</span> 和
+            <span class="math inline">K</span>
+            之间只隔着与位置无关的矩阵。RoPE 打破了这个前提。给 query
+            位置 <span class="math inline">i</span>、key 位置 <span
+            class="math inline">j</span> 加上旋转矩阵 <span
+            class="math inline">R_i</span>、<span
+            class="math inline">R_j</span> 之后：</p>
+            <p><span class="math display">q_i^{T} k_j = (R_i\, q_i)^{T}
+            (R_j\, W_{UK}^{T} c_j) = q_i^{T}\, R_{j-i}\, W_{UK}^{T}\,
+            c_j</span></p>
+            <p><span class="math inline">W_{UK}</span> 和 query
+            之间夹了一个随 <span class="math inline">j-i</span>
+            变化的旋转矩阵，没法再预先把 <span
+            class="math inline">W_{UK}</span> 吸收进
+            q；要算这一项，就只能对每个历史 token 展开 K，Absorb
+            的意义就没了。</p>
+            <p>DeepSeek 的解法叫 <strong>decoupled
+            RoPE</strong>：把每个头的 q、k 拆成两段——</p>
+            <ul>
+            <li><strong>nope 段</strong>（128
+            维）：不加位置编码，走上面的 latent 路径，可以吸收；</li>
+            <li><strong>rope 段</strong>（64
+            维）：单独承载位置信息。query 侧每个头一份，由 <span
+            class="math inline">c_Q</span> 经 <span
+            class="math inline">W_{QR}</span> 得到；key
+            侧<strong>所有头共享一份</strong>，由 <span
+            class="math inline">X</span> 经 <span
+            class="math inline">W_{KR}</span> 直接得到，并与 <span
+            class="math inline">c_{KV}</span> 一起缓存。</li>
+            </ul>
+            <p>两段的点积相加就是完整的注意力分数。这就是 cache 里每个
+            token 是 <span class="math inline">512 + 64 = 576</span>
+            维的原因。DeepSeek-V2 论文中的原始流程图如下：</p>
             <figure>
             <img src="./WikiImage/mla_naive_raw.png"
             alt="mla 流程" />
             <figcaption aria-hidden="true">mla 流程</figcaption>
             </figure>
-            <p>可以看到：<span class="math inline">Q</span> 的 rope
-            部分通过 <span class="math inline">c_{Q}</span> 乘上 <span
-            class="math inline">W_{UQ}</span> 得到，每个 head 使用不同的
-            rope，但是 <span class="math inline">K</span> 的所有 head
-            公用一个 rope，<span class="math inline">K</span> 的 rope
-            直接由 input hidden 乘上 <span
-            class="math inline">W_{KR}</span> 得到。</p>
-            <p>以上过程的完整数学公式表述如下：</p>
+            <p>Normal（MHA）路径的完整数学流程：</p>
             <p><span class="math display">c_{Q} = X W_{DQ}</span> <span
             class="math display">Q_{nope} = c_{Q} W_{UQ}</span> <span
             class="math display">Q_{rope} = \text{RoPE}(c_{Q}
             W_{QR})</span> <span class="math display">c_{KV} = X
-            W_{DKV}</span> <span class="math display">K_{nope} =
-            \text{RoPE}(c_{KV} W_{UK})</span> <span
-            class="math display">V = c_{KV} W_{UV}</span> <span
-            class="math display">K_{rope} = \text{RoPE}(X W_{KR})</span>
-            <span class="math display">Q = \text{Concat}(Q_{nope},
-            Q_{rope})</span> <span class="math display">K =
-            \text{Concat}(K_{nope}, K_{rope})</span> <span
-            class="math display">\text{MHA} =
+            W_{DKV}</span> <span class="math display">K_{nope} = c_{KV}
+            W_{UK}</span> <span class="math display">V = c_{KV}
+            W_{UV}</span> <span class="math display">K_{rope} =
+            \text{RoPE}(X W_{KR})</span> <span class="math display">Q =
+            \text{Concat}(Q_{nope}, Q_{rope})</span> <span
+            class="math display">K = \text{Concat}(K_{nope},
+            K_{rope})</span> <span class="math display">\text{MHA} =
             \text{softmax}(\frac{QK^T}{\sqrt{k}})V</span></p>
-            <p>对应的流程图如下：</p>
+            <p>注意 <span class="math inline">K_{nope}</span> 不加
+            RoPE，<span class="math inline">K_{rope}</span>
+            只有一份，拼接时在所有头之间广播。对应的流程图：</p>
             <figure>
             <img src="./WikiImage/mla_normal.drawio.svg"
             alt="MLA normal 流程" />
             <figcaption aria-hidden="true">MLA normal 流程</figcaption>
             </figure>
-            <p>在推理的 decode 阶段，实际上使用的是 MQA，这里也给出 MQA
-            的数学流程：</p>
+            <p>decode 阶段走的 Absorb（MQA）路径只改动 nope 段，rope
+            段原样保留：</p>
             <p><span class="math display">c_{Q} = X W_{DQ}</span> <span
             class="math display">Q_{nope} = c_{Q} W_{UQ}</span> <span
             class="math display">Q_{rope} = \text{RoPE}(c_{Q}
@@ -193,109 +352,336 @@
             K_{rope})</span> <span class="math display">V = c_{KV}
             W_{UV}</span> <span class="math display">\text{MQA} =
             \text{softmax}(\frac{QK^T}{\sqrt{k}})V</span></p>
-            <p>对应的流程图如下：</p>
+            <p>这里的 <span class="math inline">K</span>
+            只有一个头：所有 query 头共享同一个 576 维的
+            K。最后一行是简写，实际计算时先用 <span
+            class="math inline">c_{KV}</span>（即 K 的前 512
+            维）做加权求和，再乘 <span
+            class="math inline">W_{UV}</span>，与上一节 MQA
+            路径公式的最后一行一致。缩放因子 <span
+            class="math inline">\sqrt{k}</span> 仍按原始的 192
+            维计算，因为吸收不改变点积的值。对应的流程图：</p>
             <figure>
             <img src="./WikiImage/mla_absorb.drawio.svg"
             alt="MLA absorb 流程" />
             <figcaption aria-hidden="true">MLA absorb 流程</figcaption>
             </figure>
             <h3 id="计算量分析">计算量分析</h3>
-            <p>假设用 <span class="math inline">T</span> 表示 q_len，用
-            <span class="math inline">S</span> 表示 kv_len：</p>
+            <p>用 <span class="math inline">T</span> 表示 q_len，<span
+            class="math inline">S</span> 表示
+            kv_len（含前缀），单位为乘加次数，单层、不切 TP：</p>
             <p><span class="math display">
             \begin{aligned}
-            &amp;\text{MQA 和 MHA 共通的部分} \\
-            &amp;\quad \text{flops\_q\_a\_and\_kv\_a}: \quad \text{T}
-            \times 7168 \times (1536 + 512 + 64) \\
-            &amp;\quad \text{flops\_qb}: \quad \text{T} \times 1536
-            \times 128 \times 192 \\
-            &amp;\quad \text{flops\_oproj}: \quad \text{T} \times 128
-            \times 128 \times 7168 \\
+            &amp;\text{两条路径共有的部分} \\
+            &amp;\quad \text{flops\_q\_a\_and\_kv\_a}: \quad T \times
+            7168 \times (1536 + 512 + 64) \\
+            &amp;\quad \text{flops\_qb}: \quad T \times 1536 \times 128
+            \times 192 \\
+            &amp;\quad \text{flops\_oproj}: \quad T \times 128 \times
+            128 \times 7168 \\
             \\
-            &amp;\text{MHA 路径} \\
-            &amp;\quad \text{flops\_kb}: \quad \text{S} \times 512
-            \times 128 \times 128 \\
-            &amp;\quad \text{flops\_vb}: \quad \text{S} \times 512
-            \times 128 \times 128 \\
-            &amp;\quad \text{flops\_mha}: \quad 128 \times (\text{T}
-            \times \text{S} \times 192 + \text{T} \times \text{S} \times
-            128) \\
+            &amp;\text{Normal（MHA）路径} \\
+            &amp;\quad \text{flops\_kb}: \quad S \times 512 \times 128
+            \times 128 \\
+            &amp;\quad \text{flops\_vb}: \quad S \times 512 \times 128
+            \times 128 \\
+            &amp;\quad \text{flops\_mha}: \quad 128 \times (T \times S
+            \times 192 + T \times S \times 128) \\
             \\
-            &amp;\text{MQA 路径} \\
-            &amp;\quad \text{flops\_absorb\_kb}: \quad \text{T} \times
-            128 \times 128 \times 512 \\
-            &amp;\quad \text{flops\_absorb\_vb}: \quad \text{T} \times
-            128 \times 512 \times 128 \\
-            &amp;\quad \text{flops\_mqa}: \quad 128 \times (\text{T}
-            \times \text{S} \times 576 + \text{T} \times \text{S} \times
-            512)
+            &amp;\text{Absorb（MQA）路径} \\
+            &amp;\quad \text{flops\_absorb\_kb}: \quad T \times 128
+            \times 128 \times 512 \\
+            &amp;\quad \text{flops\_absorb\_vb}: \quad T \times 128
+            \times 512 \times 128 \\
+            &amp;\quad \text{flops\_mqa}: \quad 128 \times (T \times S
+            \times 576 + T \times S \times 512)
             \end{aligned}
             </span></p>
-            <p>再给出定性的差别：</p>
+            <p>定性结论：</p>
             <ul>
-            <li>在 prefill 阶段，如果用 MQA，除了 attention 的计算量变大
-            3 倍，其他无差别，因为 prefill 阶段 q_len == kv_len</li>
-            <li>在 decode 阶段，使用 MQA，attention
-            计算量虽然变大了，但是由于 decode 阶段 kv_len &lt;&lt;
-            q_len，所以 kv_b 的计算量被省下来了</li>
+            <li>prefill 阶段 <span class="math inline">T =
+            S</span>，两条路径的上投影一样多，Absorb 只多出约 3.4
+            倍的注意力计算，所以用 Normal；</li>
+            <li>decode 阶段 <span class="math inline">T \ll
+            S</span>，Absorb 的注意力虽然变贵，但省掉了与 <span
+            class="math inline">S</span> 成正比的 kv_b 展开，所以用
+            Absorb。</li>
             </ul>
-            <hr />
-            <p>很多人常常被理论（数学层面实现）和代码实现给绕晕，这主要是因为两方面：</p>
-            <ol type="1">
-            <li>代码会对流程进行优化</li>
-            <li>代码符号和数学符号的差异和语义差别</li>
-            </ol>
-            <p>首先说第一点，比如对于以上的流程，在实际代码执行过程中，我们完全可以将以下几个
-            gemm 合并为一个：</p>
-            <p><span class="math display">[c_{Q}, c_{KV}, K_{nope}] = X
-            [W_{DQ}, W_{DKV}, W_{KR}]</span></p>
-            <p>也就是说，首先将这个几个 gemm 的权重 <span
-            class="math inline">W_{DQ}, W_{DKV}, W_{KR}</span>
-            合并为一个，然后做完 gemm 之后我们再拆分所需要的不同目标
-            tensor。</p>
-            <h4 id="符号声明">符号声明</h4>
-            <h4 id="shape-说明">shape 说明</h4>
+            <h3 id="sglang-中的实现">SGLang 中的实现</h3>
+            <p>SGLang 里 DeepSeek V2/V3 的 MLA 层是
+            <code>DeepseekV2AttentionMLA</code>（<code>srt/models/deepseek_v2.py</code>）。它本身只负责初始化和分派，两条路径的前向分别放在
+            <code>srt/models/deepseek_common/attention_forward_methods/</code>
+            下的 mixin 里：<code>forward_mha.py</code>（Normal）和
+            <code>forward_mla.py</code>（Absorb），另有 ROCm、CPU、NPU
+            的变体。</p>
+            <figure>
+            <img src="./WikiImage/mla_sglang_paths.svg"
+            alt="SGLang 中一层 MLA 的两条路径" />
+            <figcaption aria-hidden="true">SGLang 中一层 MLA
+            的两条路径</figcaption>
+            </figure>
+            <h4
+            id="代码符号与数学符号的对应">代码符号与数学符号的对应</h4>
+            <p>读代码时最容易绕晕的是两套命名。代码按“合并后的
+            GEMM”命名，数学按“语义”命名，对应关系如下：</p>
+            <table>
+            <colgroup>
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>代码</th>
+            <th>数学</th>
+            <th>说明</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td><code>q_lora_rank</code> /
+            <code>kv_lora_rank</code></td>
+            <td><span class="math inline">c_Q</span> / <span
+            class="math inline">c_{KV}</span> 的维度</td>
+            <td>1536 / 512</td>
+            </tr>
+            <tr>
+            <td><code>qk_nope_head_dim</code> /
+            <code>qk_rope_head_dim</code> / <code>v_head_dim</code></td>
+            <td>nope 段 / rope 段 / v 的每头维度</td>
+            <td>128 / 64 / 128</td>
+            </tr>
+            <tr>
+            <td><code>fused_qkv_a_proj_with_mqa</code></td>
+            <td><span class="math inline">[W_{DQ}, W_{DKV},
+            W_{KR}]</span></td>
+            <td>三个 down 投影合成一个 GEMM，输出 1536 + 512 + 64</td>
+            </tr>
+            <tr>
+            <td><code>q_b_proj</code></td>
+            <td><span class="math inline">[W_{UQ}, W_{QR}]</span></td>
+            <td>每头输出 192 = 128 + 64</td>
+            </tr>
+            <tr>
+            <td><code>kv_b_proj</code></td>
+            <td><span class="math inline">[W_{UK}, W_{UV}]</span></td>
+            <td>每头输出 256 = 128 + 128，Normal 用</td>
+            </tr>
+            <tr>
+            <td><code>w_kc</code> / <code>w_vc</code></td>
+            <td><span class="math inline">W_{UK}</span> / <span
+            class="math inline">W_{UV}</span></td>
+            <td>从 <code>kv_b_proj</code> 拆出来的逐头矩阵，Absorb
+            用</td>
+            </tr>
+            <tr>
+            <td><code>kv_a_layernorm</code> 之后的 latent</td>
+            <td><span class="math inline">c_{KV}</span></td>
+            <td>缓存的前 512 维</td>
+            </tr>
+            <tr>
+            <td><code>k_pe</code></td>
+            <td><span class="math inline">k^{rope}</span></td>
+            <td>缓存的后 64 维</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>checkpoint 里 <code>q_a_proj</code> 和
+            <code>kv_a_proj_with_mqa</code>
+            仍是两个张量，加载时（<code>deepseek_common/deepseek_weight_loader.py</code>）先各自缓存，两者都到齐后沿输出维
+            <code>torch.cat</code> 成
+            <code>fused_qkv_a_proj_with_mqa</code> 的权重。前向时这次
+            GEMM 的结果按
+            <code>[q_lora_rank, kv_lora_rank + qk_rope_head_dim]</code>
+            切开，后一段再切成 <code>c_KV</code> 和
+            <code>k_pe</code>。V2-Lite 这类
+            <code>q_lora_rank is None</code> 的模型没有 q 压缩，走
+            <code>q_proj</code> + <code>kv_a_proj_with_mqa</code>
+            两个独立投影。</p>
+            <h4 id="两套权重从一份-checkpoint-而来">两套权重从一份
+            checkpoint 而来</h4>
+            <p>Normal 需要 <code>kv_b_proj</code> 这个大 GEMM，Absorb
+            需要逐头的 <code>w_kc</code>、<code>w_vc</code> 做 batched
+            matmul。它们是同一份权重的两种视图，在
+            <code>post_load_weights</code> 里派生：</p>
+            <div class="sourceCode" id="cb1"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>w_kc, w_vc <span class="op">=</span> w.unflatten(<span class="dv">0</span>, (<span class="op">-</span><span class="dv">1</span>, qk_nope_head_dim <span class="op">+</span> v_head_dim)).split(</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    [qk_nope_head_dim, v_head_dim], dim<span class="op">=</span><span class="dv">1</span>)   <span class="co"># 均为 [H, 128, 512]</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 之后 w_vc 转置为 [H, 512, 128]；w_kc 逻辑形状不变，只改成列主序存储</span></span></code></pre></div>
+            <p>Absorb 时
+            <code>torch.bmm(q_nope.transpose(0, 1), self.w_kc)</code> 把
+            <code>[H, T, 128]</code> 乘成
+            <code>[H, T, 512]</code>，注意力之后再用 <code>w_vc</code>
+            乘回 <code>[T, H·128]</code>。fp8 checkpoint
+            会在这里先反量化或转成 per-tensor scale，另有
+            <code>bmm_fp8</code>、DeepGEMM masked grouped GEMM
+            等变体，但逻辑上都是这两次 bmm。</p>
+            <h4 id="kv-cache一份-576-维的-latent">KV cache：一份 576
+            维的 latent</h4>
+            <p>MLA 的 cache 由
+            <code>MLATokenToKVPool</code>（<code>srt/mem_cache/memory_pool.py</code>）管理。与
+            MHA 的 pool 分别存 K、V 不同，它每层只有一个 buffer，形状是
+            <code>[size + page_size, 1, kv_lora_rank + qk_rope_head_dim]</code>：中间那个
+            1 就是“只有一个 KV 头”。写入用
+            <code>set_mla_kv_buffer(layer, loc, cache_k_nope, cache_k_rope)</code>，把归一化后的
+            <code>c_KV</code> 和<strong>已经加过 RoPE 的</strong>
+            <code>k_pe</code> 拼进同一行；读出用
+            <code>get_mla_kv_buffer</code> 再拆回两段。索引与分配和其他
+            pool 完全一样，详见<a
+            href="./memory_pool.html">显存池</a>。</p>
+            <p>两条路径读写的是同一份 cache，这是 Normal / Absorb 能逐
+            batch 自由切换的前提。在模型里它们对应两个
+            <code>RadixAttention</code> 实例：</p>
             <ul>
-            <li><span class="math inline">X</span>:
-            <code>[bs, q_len, hidden_size]</code>，即
-            <code>[bs, q_len, 7168]</code></li>
-            <li><span class="math inline">c_{Q}</span>:
-            <code>[bs, kv_len, q_lora_rank]</code>，即
-            <code>[bs, kv_len, 1536]</code></li>
-            <li><span class="math inline">c_{KV}</span>:
-            <code>[bs, kv_len, kv_lora_rank]</code>，即
-            <code>[bs, kv_len, 512]</code></li>
-            <li><span class="math inline">W_{DQ}</span>:
-            <code>[hidden_size, q_lora_rank]</code>，即
-            <code>[7168, 1536]</code></li>
-            <li><span class="math inline">W_{UQ}</span>:
-            <code>[q_lora_rank, q_heads, qk_nope_head_dim]</code>，即
-            <code>[1536, 128, 128]</code></li>
-            <li><span class="math inline">W_{QR}</span>:
-            <code>[q_lora_rank, q_heads, qk_rope_head_dim]</code>，即
-            <code>[1536, 128, 64]</code></li>
-            <li><span class="math inline">W_{DKV}</span>:
-            <code>[hidden_size, kv_lora_rank]</code>，即
-            <code>[7168, 512]</code></li>
-            <li><span class="math inline">W_{KR}</span>:
-            <code>[hidden_size, qk_rope_head_dim]</code>，即
-            <code>[7168, 64]</code></li>
-            <li><span class="math inline">W_{UK}</span>:
-            <code>[kv_lora_rank, kv_heads, qk_nope_head_dim]</code>，即
-            <code>[512, 128, 128]</code></li>
-            <li><span class="math inline">W_{UV}</span>:
-            <code>[kv_lora_rank, kv_heads, v_head_dim]</code>，即
-            <code>[512, 128, 128]</code></li>
+            <li><code>attn_mha</code>：<code>num_kv_heads = H</code>，qk
+            192 维、v 128 维，调用时
+            <code>save_kv_cache=False</code>，因为 cache 已在 prepare
+            阶段由模型自己写过；</li>
+            <li><code>attn_mqa</code>：<code>num_kv_heads = 1</code>，qk
+            576 维、v 512 维。V 就是 K 的前 512 维，所以调用时 v
+            传入的正是 k 中的 latent 部分。</li>
             </ul>
+            <p>这个设计也带来一个副作用：所有头共享同一份
+            latent，attention TP 无法再按头切分 KV，每个 rank
+            都持有完整副本，<a
+            href="./decode_context_parallelism.html">DCP</a> 正是为此沿
+            token 维度切分 cache。</p>
+            <h4 id="路径选择按-batch-决定而不是按阶段">路径选择：按
+            batch 决定，而不是按阶段</h4>
+            <p>前面说“prefill 用 Normal、decode 用
+            Absorb”是一个近似。SGLang 实际上对<strong>每个
+            batch</strong>调用
+            <code>dispatch_attn_forward_method</code>，返回一个
+            <code>AttnForwardMethod</code>（<code>deepseek_common/attention_forward_methods/forward_methods.py</code>），再由
+            <code>forward_prepare</code> / <code>forward_core</code>
+            分派。规则按 attention backend 注册在
+            <code>deepseek_common/attention_backend_handler.py</code>
+            中。fa3、flashinfer、flashmla 共用的规则大致是：</p>
+            <table>
+            <colgroup>
+            <col style="width: 50%" />
+            <col style="width: 50%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>batch 情况</th>
+            <th>结果</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>decode、投机解码的 verify / draft extend、CUDA graph
+            中</td>
+            <td><code>MLA</code>（Absorb）</td>
+            </tr>
+            <tr>
+            <td>普通 extend，前缀为 0</td>
+            <td><code>MHA_ONE_SHOT</code>；总长度超过单块容量时
+            <code>MHA_CHUNKED_KV</code></td>
+            </tr>
+            <tr>
+            <td>普通 extend，前缀 ≥
+            <code>SGLANG_CHUNKED_PREFIX_CACHE_THRESHOLD</code>（默认
+            8192）</td>
+            <td>同上</td>
+            </tr>
+            <tr>
+            <td>普通 extend，0 &lt; 前缀 &lt; 阈值</td>
+            <td><code>MLA</code>（Absorb）</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>三个 MHA 变体都是 Normal，区别在于前缀怎么处理：</p>
+            <ul>
+            <li><code>MHA</code>：只算本轮新 token 的
+            KV，用于没有前缀的情况（如 triton backend 下前缀为 0
+            时）；</li>
+            <li><code>MHA_ONE_SHOT</code>：把前缀的 latent 从 cache
+            一次读出，和新 token 一起展开，做一次完整的 MHA；</li>
+            <li><code>MHA_CHUNKED_KV</code>：前缀分块读出、分块用
+            <code>kv_b_proj</code> 展开、分块做注意力，再用
+            <code>merge_state</code> 按 LSE
+            合并，把展开前缀所需的临时显存限制在一个块的大小。</li>
+            </ul>
+            <p>短前缀走 Absorb
+            是工程上的取舍：为一小段前缀多做一次读出和展开得不偿失，并不是
+            flops 上的精确分界。不同 backend 的规则也不完全相同，例如
+            triton 只在前缀为 0 时走
+            <code>MHA</code>，<code>trtllm_mla</code> 在 extend 时倾向
+            <code>MHA_CHUNKED_KV</code>。</p>
+            <h4 id="一个容易踩的细节k_pe-的广播">一个容易踩的细节：k_pe
+            的广播</h4>
+            <p>Normal 路径里 <code>k_pe</code> 只有一份，而
+            <code>attn_mha</code> 要的是每个头一份完整的 192 维
+            K。<code>_concat_and_cast_mha_k</code> 负责把
+            <code>k_nope [S, H, 128]</code> 和广播后的
+            <code>k_pe [S, 1, 64]</code> 拼成
+            <code>[S, H, 192]</code>，并按需转成 fp8；对常见的 128 头 /
+            128 / 64 维组合有专门的 <code>concat_mla_k</code> CUDA
+            kernel。Absorb 路径则完全没有这一步，<code>q_pe</code> 和
+            <code>k_pe</code> 直接拼在 576 维的末尾——这也是 Absorb 在
+            decode 上更轻的原因之一。</p>
+            <h3 id="shape-速查">shape 速查</h3>
+            <p>以 DeepSeek-V3 为例，<span class="math inline">T</span>
+            为 q_len，<span class="math inline">S</span> 为
+            kv_len，均省略 batch 维：</p>
+            <ul>
+            <li><span
+            class="math inline">X</span>：<code>[T, hidden_size]</code>，即
+            <code>[T, 7168]</code></li>
+            <li><span
+            class="math inline">c_{Q}</span>：<code>[T, q_lora_rank]</code>，即
+            <code>[T, 1536]</code></li>
+            <li><span
+            class="math inline">c_{KV}</span>：<code>[S, kv_lora_rank]</code>，即
+            <code>[S, 512]</code>；<span
+            class="math inline">k^{rope}</span>：<code>[S, 64]</code></li>
+            <li><span
+            class="math inline">W_{DQ}</span>：<code>[7168, 1536]</code>；<span
+            class="math inline">W_{DKV}</span>：<code>[7168, 512]</code>；<span
+            class="math inline">W_{KR}</span>：<code>[7168, 64]</code></li>
+            <li><span
+            class="math inline">W_{UQ}</span>：<code>[1536, 128 heads, 128]</code>；<span
+            class="math inline">W_{QR}</span>：<code>[1536, 128 heads, 64]</code></li>
+            <li><span
+            class="math inline">W_{UK}</span>：<code>[512, 128 heads, 128]</code>；<span
+            class="math inline">W_{UV}</span>：<code>[512, 128 heads, 128]</code></li>
+            <li>Absorb 中的 <span
+            class="math inline">\tilde{q}</span>：<code>[T, 128 heads, 512 + 64]</code>；注意力输出：<code>[T, 128 heads, 512]</code></li>
+            </ul>
+            <h3 id="小结">小结</h3>
+            <p>MLA 的价值在于把“缓存多少”和“每个头看到什么”拆开了：cache
+            里只存一个 576 维的低秩 latent，体积接近 MQA；而通过 <span
+            class="math inline">W_{UK}</span>、<span
+            class="math inline">W_{UV}</span>
+            的展开，每个头仍然拥有不同的 K、V，表达能力接近
+            MHA。矩阵乘法的结合律让同一个注意力有两种算法：Normal
+            把上投影乘在 KV 侧，适合 <span class="math inline">T\approx
+            S</span> 的 prefill；Absorb 把上投影吸收进 q 和输出，适合
+            <span class="math inline">T\ll S</span> 的 decode。decoupled
+            RoPE 则让位置编码绕开 latent，保住了吸收的可能。SGLang
+            把这些落实为一份共享的 <code>MLATokenToKVPool</code>、两套由
+            <code>kv_b_proj</code> 派生的权重视图，以及按 batch
+            选择路径的 <code>AttnForwardMethod</code> 分派。</p>
           </main>
         <aside class="wiki-toc">
       <ul>
-      <li><a href="#目的" id="toc-目的">目的</a></li>
-      <li><a href="#压缩" id="toc-压缩">压缩</a></li>
-      <li><a href="#normal-vs-absorb" id="toc-normal-vs-absorb">Normal
-      vs Absorb</a></li>
-      <li><a href="#qk-rope" id="toc-qk-rope">QK Rope</a></li>
+      <li><a href="#问题kv-cache-成了推理的瓶颈"
+      id="toc-问题kv-cache-成了推理的瓶颈">问题：KV cache
+      成了推理的瓶颈</a></li>
+      <li><a href="#核心思想缓存一个能还原所有头的-latent"
+      id="toc-核心思想缓存一个能还原所有头的-latent">核心思想：缓存一个能还原所有头的
+      latent</a></li>
+      <li><a href="#同一个注意力两种算法normal-与-absorb"
+      id="toc-同一个注意力两种算法normal-与-absorb">同一个注意力，两种算法：Normal
+      与 Absorb</a></li>
+      <li><a href="#rope-为什么要单独拆出来"
+      id="toc-rope-为什么要单独拆出来">RoPE 为什么要单独拆出来</a></li>
       <li><a href="#计算量分析" id="toc-计算量分析">计算量分析</a></li>
+      <li><a href="#sglang-中的实现" id="toc-sglang-中的实现">SGLang
+      中的实现</a></li>
+      <li><a href="#shape-速查" id="toc-shape-速查">shape 速查</a></li>
+      <li><a href="#小结" id="toc-小结">小结</a></li>
       </ul>
     </aside>
       </div>

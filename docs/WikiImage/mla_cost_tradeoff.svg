@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 486" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="486" rx="12" fill="#ffffff"/>
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#868e96"/>
+    </marker>
+  </defs>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">同一个注意力，两种结合顺序：上投影的代价挂在哪一侧</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">T = 本次 query token 数，S = KV 总长度（含前缀）；单位为乘加次数（MAC），DeepSeek-V3 维度、单层、不切 TP</text>
+
+  <!-- left panel: Normal -->
+  <rect x="30" y="76" width="410" height="226" rx="10" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="48" y="101" font-size="14" font-weight="700" fill="#3b5bdb">Normal：先展开 K/V，再做 MHA</text>
+  <text x="48" y="123" font-size="11.5" fill="#495057" font-family="monospace">softmax(q·(c_KV·W_UK)ᵀ)·(c_KV·W_UV)</text>
+  <rect x="48" y="148" width="110" height="52" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="103" y="170" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0b7285">c_KV</text>
+  <text x="103" y="188" text-anchor="middle" font-size="11" fill="#868e96" font-family="monospace">[S, 512]</text>
+  <rect x="186" y="148" width="120" height="52" rx="8" fill="#ffffff" stroke="#4c6ef5"/>
+  <text x="246" y="170" text-anchor="middle" font-size="12.5" font-weight="700" fill="#3b5bdb">K_nope, V</text>
+  <text x="246" y="188" text-anchor="middle" font-size="11" fill="#868e96" font-family="monospace">[S, 128, 128]</text>
+  <rect x="330" y="148" width="96" height="52" rx="8" fill="#ffffff" stroke="#4c6ef5"/>
+  <text x="378" y="170" text-anchor="middle" font-size="12.5" font-weight="700" fill="#3b5bdb">MHA 核</text>
+  <text x="378" y="188" text-anchor="middle" font-size="11" fill="#868e96">128 个 KV 头</text>
+  <g stroke="#868e96" stroke-width="2" fill="none">
+    <path d="M158 174 H182" marker-end="url(#ar)"/>
+    <path d="M306 174 H326" marker-end="url(#ar)"/>
+  </g>
+  <text x="172" y="141" text-anchor="middle" font-size="10.5" fill="#868e96">W_UK, W_UV</text>
+  <text x="48" y="226" font-size="12" fill="#495057">上投影：512 × 128 × 256 ≈ 16.8M ×</text>
+  <text x="250" y="226" font-size="13" font-weight="700" fill="#e8590c">S</text>
+  <text x="48" y="250" font-size="12" fill="#495057">注意力：128 × (192 + 128) = 40960 × T × S</text>
+  <text x="48" y="282" font-size="11.5" fill="#868e96">每一步都要把全部 S 个历史 latent 重新展开一遍</text>
+
+  <!-- right panel: Absorb -->
+  <rect x="460" y="76" width="410" height="226" rx="10" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="478" y="101" font-size="14" font-weight="700" fill="#0b7285">Absorb：W_UK 吸收进 q，直接对 latent 做 MQA</text>
+  <text x="478" y="123" font-size="11.5" fill="#495057" font-family="monospace">softmax((q·W_UKᵀ)·c_KVᵀ)·c_KV·W_UV</text>
+  <rect x="478" y="148" width="110" height="52" rx="8" fill="#ffffff" stroke="#4c6ef5"/>
+  <text x="533" y="170" text-anchor="middle" font-size="12.5" font-weight="700" fill="#3b5bdb">q_nope</text>
+  <text x="533" y="188" text-anchor="middle" font-size="11" fill="#868e96" font-family="monospace">[T, 128, 128]</text>
+  <rect x="616" y="148" width="120" height="52" rx="8" fill="#ffffff" stroke="#0ca678"/>
+  <text x="676" y="170" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0b7285">q̃ = q·W_UKᵀ</text>
+  <text x="676" y="188" text-anchor="middle" font-size="11" fill="#868e96" font-family="monospace">[T, 128, 512]</text>
+  <rect x="760" y="148" width="96" height="52" rx="8" fill="#ffffff" stroke="#0ca678"/>
+  <text x="808" y="170" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0b7285">MQA 核</text>
+  <text x="808" y="188" text-anchor="middle" font-size="11" fill="#868e96">1 个 KV 头</text>
+  <g stroke="#868e96" stroke-width="2" fill="none">
+    <path d="M588 174 H612" marker-end="url(#ar)"/>
+    <path d="M736 174 H756" marker-end="url(#ar)"/>
+  </g>
+  <text x="602" y="141" text-anchor="middle" font-size="10.5" fill="#868e96">W_UKᵀ</text>
+  <text x="478" y="226" font-size="12" fill="#495057">上投影：2 × 128 × 128 × 512 ≈ 16.8M ×</text>
+  <text x="704" y="226" font-size="13" font-weight="700" fill="#e8590c">T</text>
+  <text x="478" y="250" font-size="12" fill="#495057">注意力：128 × (576 + 512) = 139264 × T × S</text>
+  <text x="478" y="282" font-size="11.5" fill="#868e96">上投影只随新 token 增长；代价是注意力维度膨胀约 3.4×</text>
+  <!-- worked examples -->
+  <rect x="30" y="318" width="840" height="104" rx="10" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="48" y="342" font-size="11.5" font-weight="700" fill="#868e96">场景（S = 4096）</text>
+  <text x="400" y="342" font-size="11.5" font-weight="700" fill="#3b5bdb">Normal</text>
+  <text x="560" y="342" font-size="11.5" font-weight="700" fill="#0b7285">Absorb</text>
+  <text x="720" y="342" font-size="11.5" font-weight="700" fill="#868e96">更省</text>
+  <path d="M44 350 H856" stroke="#e9ecef" stroke-width="1"/>
+  <text x="48" y="368" font-size="12" fill="#495057">decode，T = 1</text>
+  <text x="400" y="368" font-size="12" fill="#495057" font-family="monospace">68.9 G</text>
+  <text x="560" y="368" font-size="12" fill="#495057" font-family="monospace">0.59 G</text>
+  <text x="720" y="368" font-size="12" font-weight="700" fill="#0b7285">Absorb，≈ 117×</text>
+  <text x="48" y="390" font-size="12" fill="#495057">短 extend，T = 64（前缀 4032）</text>
+  <text x="400" y="390" font-size="12" fill="#495057" font-family="monospace">79.5 G</text>
+  <text x="560" y="390" font-size="12" fill="#495057" font-family="monospace">37.6 G</text>
+  <text x="720" y="390" font-size="12" font-weight="700" fill="#0b7285">Absorb，≈ 2.1×</text>
+  <text x="48" y="412" font-size="12" fill="#495057">无前缀 prefill，T = S = 4096</text>
+  <text x="400" y="412" font-size="12" fill="#495057" font-family="monospace">756 G</text>
+  <text x="560" y="412" font-size="12" fill="#495057" font-family="monospace">2405 G</text>
+  <text x="720" y="412" font-size="12" font-weight="700" fill="#3b5bdb">Normal，≈ 3.2×</text>
+
+  <!-- note -->
+  <rect x="30" y="434" width="840" height="40" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="450" y="459" text-anchor="middle" font-size="12" fill="#495057">两者数学上完全等价，只是 16.8M 的上投影乘在 S 还是 T 上：T ≪ S 选 Absorb，T 接近 S 选 Normal（S = 4096 时分界约在 T ≈ 164）</text>
+</svg>

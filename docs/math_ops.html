@@ -1,0 +1,816 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    Math Ops
+  </title>
+    <link rel="stylesheet" href="./WikiTheme/theme/bootstrap.css"  />
+        <script defer=""
+        src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+        <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+        </script>
+        <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+        <!-- wiki three-column layout styles/behavior, kept external so the ~5KB
+       block isn't duplicated into every generated page -->
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/wiki-layout.css" />
+  <script defer src="./WikiTheme/wiki-layout.js"></script>
+</head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">Math Ops</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="wiki-layout">
+    <nav class="wiki-sidebar" id="wiki-sidebar" hidden></nav>
+    <main class="wiki-main">
+            <h3
+            id="问题为什么要对基本算子建立直觉">问题：为什么要对基本算子建立直觉</h3>
+            <p>打开任何一个新架构（MLA、Gated
+            DeltaNet、KDA、DSA……），公式看起来都很长，但拆开以后，用到的基本算子不过二十来个：矩阵乘、softmax、sigmoid、exp、norm、旋转、逐元素乘……新架构的“新”，几乎总是<strong>同一批算子的不同组合</strong>。</p>
+            <p>如果只把这些算子记成“Sigmoid：映射到
+            (0,1)”，读公式时仍然要逐项硬啃。更有用的是给每个算子一个<strong>动词</strong>：它在<strong>混合</strong>信息、在<strong>选择</strong>信息、在<strong>约束</strong>某个数的范围，还是在改变向量的<strong>几何</strong>（长度或方向）。有了动词，一条公式就能读成一句话——比如
+            Gated DeltaNet 的遗忘率 <span class="math inline">\alpha =
+            \exp(-e^{A}\cdot\mathrm{softplus}(a+b))</span>，读作“把任意实数约束成一个
+            (0,1) 的衰减系数”，而不需要去记它的具体形状。</p>
+            <p>本页按动词把算子分成五组：</p>
+            <ol type="1">
+            <li><strong>混合</strong>：Linear、加权求和、Conv1D、Recurrent、外积——信息从哪里流到哪里；</li>
+            <li><strong>选择</strong>：Sigmoid、Softmax、温度、Mask、TopK、LogSumExp——谁多拿、谁少拿、谁出局；</li>
+            <li><strong>约束范围</strong>：Exp、Softplus、Tanh /
+            Softcap——把一个自由参数关进有语义的区间；</li>
+            <li><strong>几何</strong>：RMSNorm、L2Norm、RoPE、门控——管向量的长度和方向；</li>
+            <li><strong>非线性</strong>：SiLU、GELU——让层不能被合并成一个矩阵。</li>
+            </ol>
+            <h3
+            id="第一个问题沿哪个轴混合">第一个问题：沿哪个轴混合</h3>
+            <p>Transformer 里的 hidden states 是一个 <span
+            class="math inline">[T, D]</span> 的矩阵（暂时忽略 batch 和
+            head）：行是
+            token，列是特征。对任何一个算子，先问一个问题——<strong>它沿哪个轴把数混在一起</strong>：</p>
+            <ul>
+            <li><strong>沿 D 混合</strong>（token
+            内部）：Linear、MLP、RoPE、Norm、MoE Router、LM Head。每个
+            token 各算各的，所以天然可以按 token 并行，也不需要任何
+            cache。</li>
+            <li><strong>沿 T 混合</strong>（token
+            之间）：Attention、Conv1D、Recurrent /
+            前缀和。这是<strong>唯一</strong>能让 token
+            之间交换信息的一类算子；推理系统里所有关于 KV cache、state
+            cache、因果性、prefill/decode
+            不对称的复杂度，都来自这一类。</li>
+            <li><strong>逐元素</strong>（不混合）：Sigmoid、Exp、SiLU、门控乘法、残差加、Softcap、量化。计算量极小、纯粹
+            memory bound，所以总是被融合进前后的 kernel。</li>
+            </ul>
+            <figure>
+            <img src="./WikiImage/math_ops_axes.svg"
+            alt="沿哪个轴混合" />
+            <figcaption aria-hidden="true">沿哪个轴混合</figcaption>
+            </figure>
+            <p>有些算子是“混合型”：<strong>先沿某个轴 reduce
+            出一个统计量，再逐元素地作用回去</strong>。Softmax 沿行求
+            <span class="math inline">\sum e^{z}</span>，Norm 沿 D
+            求均方，TopK 沿候选求排名。识别出这个 reduce
+            的轴，就知道它在并行切分时需不需要通信（例如 TP 切了 D
+            维以后，RMSNorm 的均方就必须先 all-reduce）。</p>
+            <p>一个 Transformer 层因此可以概括为：<strong>沿 T
+            混合一次（Attention），沿 D
+            混合一次（MLP），中间用逐元素算子做门控和约束，用 Norm
+            管住尺度。</strong> Linear attention、SSM 替换的只是“沿 T
+            混合”那一步。</p>
+            <h3
+            id="混合信息从哪里流到哪里">混合：信息从哪里流到哪里</h3>
+            <h4
+            id="linear一组同时问的问题">Linear：一组同时问的“问题”</h4>
+            <p><span class="math inline">y = xW</span>，<span
+            class="math inline">W\in\mathbb{R}^{D_{in}\times
+            D_{out}}</span>。最有用的读法是<strong>按列看</strong>：<span
+            class="math inline">W</span> 的每一列 <span
+            class="math inline">w_j</span> 是一个方向，<span
+            class="math inline">y_j = x\cdot w_j</span> 是“<span
+            class="math inline">x</span> 在这个方向上有多少分量”。一个
+            Linear 就是<strong>同时问 <span
+            class="math inline">D_{out}</span>
+            个问题</strong>，每个输出维度是一个问题的答案。</p>
+            <ul>
+            <li>Q/K/V 投影：同一个 hidden
+            state，问三组不同的问题，分别得到“我在找什么”“我是什么”“我能提供什么”。</li>
+            <li>多头：把 <span class="math inline">D_{out}</span> 切成
+            <span class="math inline">H</span>
+            份，每份是一组独立的问题。</li>
+            <li>按行看则是另一面：<span class="math inline">y = \sum_i
+            x_i\, W_{i,:}</span>，输出是 <span
+            class="math inline">W</span> 各行的加权和，<span
+            class="math inline">x</span> 给出权重——Embedding 查表就是
+            <span class="math inline">x</span> 为 one-hot 的特例。</li>
+            </ul>
+            <h4
+            id="低秩投影强制经过一个瓶颈">低秩投影：强制经过一个瓶颈</h4>
+            <p><span class="math inline">W = AB</span>，<span
+            class="math inline">A\in\mathbb{R}^{D\times r}</span>，<span
+            class="math inline">B\in\mathbb{R}^{r\times
+            D&#39;}</span>，<span class="math inline">r \ll
+            D</span>。几何上，任何矩阵都可以写成 <span
+            class="math inline">U\Sigma V^\top</span>：先旋转、再沿
+            <span class="math inline">r</span>
+            个轴拉伸、再旋转（见下文几何一节的图）。秩 <span
+            class="math inline">r</span>
+            就是<strong>最多留下几个方向</strong>，其余方向被压成
+            0。</p>
+            <p>低秩不只是省参数，它是一个<strong>语义约束</strong>：所有信息必须先挤进
+            <span class="math inline">r</span> 维。MLA 把 K/V
+            压进一个共享 latent，LoRA
+            把权重增量限制在低维子空间，都是在利用“真正有用的方向远少于维度数”这一假设。</p>
+            <h4 id="加权求和凸组合-在插值">加权求和：凸组合 =
+            在“插值”</h4>
+            <p><span class="math inline">o = \sum_i w_i v_i</span>。当
+            <span class="math inline">w_i \ge 0</span> 且 <span
+            class="math inline">\sum w_i = 1</span>（softmax
+            的输出正好满足），<span class="math inline">o</span> 是
+            <span class="math inline">v_i</span>
+            的<strong>凸组合</strong>：结果一定落在这些 <span
+            class="math inline">v_i</span>
+            围成的凸包里，不会凭空跑出去。所以 attention
+            的输出可以理解为“在历史 value
+            之间插值”，权重越尖，越接近直接复制某一个 value。</p>
+            <h4
+            id="conv1d固定权重的局部混合">Conv1D：固定权重的局部混合</h4>
+            <p><span class="math inline">y_t = \sum_{j=0}^{K-1} w_j\,
+            x_{t-j}</span>，每个通道独立（depthwise）。它和 attention
+            都是沿 T
+            的加权求和，区别只有两点：权重<strong>与内容无关</strong>（是学出来的常数），窗口<strong>很短</strong>（Linear
+            Attention 层里通常是 4）。直觉上它给每个 token 补上“前几个
+            token 是什么”的局部上下文，让后面的 q/k
+            不必只靠自己。因果卷积在 decode 时只需缓存最近 <span
+            class="math inline">K-1</span> 个输入，是一个极小的
+            state。</p>
+            <h4 id="recurrent-前缀和把历史折叠成状态">Recurrent /
+            前缀和：把历史折叠成状态</h4>
+            <p><span class="math inline">S_t = \gamma_t S_{t-1} +
+            k_t^\top v_t</span>。纯累加（<span
+            class="math inline">\gamma=1</span>）就是前缀和
+            cumsum；带衰减就是指数滑动平均。这类算子把“沿 T
+            混合”从“每次回头看所有历史”变成“维护一个固定大小的摘要”，代价是摘要容量有限。详见
+            <a href="./linear_attention.html">Linear Attention</a>。</p>
+            <h4 id="外积一次写入">外积：一次“写入”</h4>
+            <p><span class="math inline">k^\top
+            v\in\mathbb{R}^{d_k\times d_v}</span> 是秩 1
+            矩阵，可以理解为“在 key 方向 <span
+            class="math inline">k</span> 上存入 value <span
+            class="math inline">v</span>”；之后用 <span
+            class="math inline">q</span> 去乘 <span
+            class="math inline">S</span> 就是“按 key 读出”。点积 <span
+            class="math inline">q\cdot k</span>
+            是<strong>比较</strong>（两个向量变一个数），外积 <span
+            class="math inline">k^\top v</span>
+            是<strong>存储</strong>（两个向量变一个矩阵）。Softmax
+            attention 只用点积，Linear attention 用外积把每个 token
+            写进状态。</p>
+            <h3
+            id="选择谁多拿谁少拿谁出局">选择：谁多拿、谁少拿、谁出局</h3>
+            <p>给一组分数 <span
+            class="math inline">z</span>，“选择”类算子决定每一项拿多少权重。区分它们只需要两个问题：<strong>各项之间是否竞争</strong>（总量是否固定），以及<strong>选择是软的还是硬的</strong>。</p>
+            <figure>
+            <img src="./WikiImage/math_ops_selection.svg"
+            alt="同一组分数，六种选择方式" />
+            <figcaption
+            aria-hidden="true">同一组分数，六种选择方式</figcaption>
+            </figure>
+            <h4 id="sigmoid各自独立的开关">Sigmoid：各自独立的开关</h4>
+            <p><span class="math inline">\sigma(z) =
+            \frac{1}{1+e^{-z}}\in(0,1)</span>。每个数独立决定自己开多大，加起来不等于
+            1。所以它适合<strong>门</strong>：每个通道 / 每个 head
+            自己决定放行多少，不需要和别人抢。Linear attention
+            的写入强度 <span class="math inline">\beta</span>、gated
+            attention 的输出门、部分 MoE 的路由打分都用它。</p>
+            <p>一个好记的等式：<span class="math inline">\sigma(z) =
+            \mathrm{softmax}([z, 0])_1</span>——sigmoid 就是“和一个固定为
+            0 的对手”做二选一的 softmax。</p>
+            <h4
+            id="softmax在固定预算里竞争">Softmax：在固定预算里竞争</h4>
+            <p><span class="math inline">p_i = e^{z_i}/\sum_j
+            e^{z_j}</span>。总量恒为
+            1，<strong>一个变大，其余必然变小</strong>。这正是“注意力”的含义：注意力是有限的，分给了这个
+            token 就少分给那个。</p>
+            <p>三个必须记住的性质：</p>
+            <ul>
+            <li><strong>只看差值</strong>：<span
+            class="math inline">z</span> 整体加常数，结果不变。所以
+            kernel 一定先减去 <span class="math inline">\max z</span>
+            再算 exp（数值稳定），这也是 Mask 能用 <span
+            class="math inline">-\infty</span> 实现的原因。</li>
+            <li><strong>差 1 意味着倍数 <span
+            class="math inline">e</span></strong>：<span
+            class="math inline">z_1 - z_2 = 1</span> 时 <span
+            class="math inline">p_1/p_2 = e \approx
+            2.7</span>。分数是<strong>对数尺度</strong>的权重。</li>
+            <li><strong>温度控制尖锐度</strong>：<span
+            class="math inline">\mathrm{softmax}(z/\tau)</span>。<span
+            class="math inline">\tau\to 0</span> 退化为
+            argmax（硬选一个），<span
+            class="math inline">\tau\to\infty</span>
+            退化为均匀平均。采样的 temperature 就是它。</li>
+            </ul>
+            <h4 id="缩放-1sqrtd其实是一个温度">缩放 <span
+            class="math inline">1/\sqrt{d}</span>：其实是一个温度</h4>
+            <p>如果 <span class="math inline">q, k</span>
+            的每一维独立、方差为 1，则 <span class="math inline">q\cdot
+            k = \sum_{i=1}^{d} q_ik_i</span> 的方差是 <span
+            class="math inline">d</span>。不缩放的话，<span
+            class="math inline">d=128</span> 时分数的标准差约
+            11，softmax 几乎总是 one-hot，梯度也几乎为 0。除以 <span
+            class="math inline">\sqrt{d}</span> 把方差拉回
+            1，等价于取温度 <span class="math inline">\tau = \sqrt
+            d</span>。</p>
+            <h4 id="mask结构性排除">Mask：结构性排除</h4>
+            <p>给分数加上 <span class="math inline">-\infty</span>，exp
+            之后精确为 0，且不影响其余项之间的相对比例。因果
+            mask、滑动窗口、padding、prefix-cache
+            的块边界都是这个操作——它表达的是“<strong>按规则</strong>不能看”，而不是“学出来不想看”。</p>
+            <h4 id="topk硬选择">TopK：硬选择</h4>
+            <p>按排名留下前 <span class="math inline">k</span>
+            个，其余直接丢弃（连计算都省掉），再在胜者内部做 softmax 或
+            sigmoid
+            归一化。它是唯一能<strong>真正省算力</strong>的选择：MoE
+            只激活 <span class="math inline">k</span> 个专家，DSA 只对
+            top-k 个 token 做
+            attention。代价是不可导、且容易“马太效应”，所以 MoE
+            路由常配合 bias 或负载均衡项来调整排名。</p>
+            <h4
+            id="logsumexp平滑的-max也是可合并的摘要">LogSumExp：平滑的
+            max，也是可合并的“摘要”</h4>
+            <p><span class="math inline">\mathrm{LSE}(z) = \log\sum_i
+            e^{z_i}</span>，满足 <span class="math inline">\max z \le
+            \mathrm{LSE}(z) \le \max z + \log n</span>。它是 softmax
+            的分母，也是一个“平滑版的 max”。</p>
+            <p>它在推理里的真正价值是<strong>可合并</strong>：把 key
+            分成两段分别算 attention，得到 <span
+            class="math inline">(o_a, \mathrm{lse}_a)</span> 和 <span
+            class="math inline">(o_b,
+            \mathrm{lse}_b)</span>，就能精确拼回整体结果：</p>
+            <p><span class="math display">
+            o = \frac{e^{\mathrm{lse}_a}\, o_a + e^{\mathrm{lse}_b}\,
+            o_b}{e^{\mathrm{lse}_a} + e^{\mathrm{lse}_b}},\qquad
+            \mathrm{lse} = \log\left(e^{\mathrm{lse}_a} +
+            e^{\mathrm{lse}_b}\right)
+            </span></p>
+            <p>Flash Attention 的 online softmax、split-KV
+            decode、cascade attention、DCP 跨卡合并都是这一个公式。</p>
+            <h3 id="约束范围值域就是语义">约束范围：值域就是语义</h3>
+            <p>网络里很多标量（遗忘率、写入强度、步长、门）都有天然的取值范围：遗忘率必须在
+            (0,1]，步长必须为正。网络直接输出的是任意实数，所以需要一个函数把它<strong>关进</strong>正确的区间。看到一个陌生公式时，<strong>先看最外层的函数决定了值域，值域基本就告诉你这个量的语义</strong>。</p>
+            <table>
+            <colgroup>
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>函数</th>
+            <th>值域</th>
+            <th>典型语义</th>
+            <th>直觉</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td><span class="math inline">\sigma(x)</span></td>
+            <td><span class="math inline">(0, 1)</span></td>
+            <td>门、写入强度 <span
+            class="math inline">\beta</span>、概率</td>
+            <td>软开关；<span class="math inline">x=0</span> 时半开</td>
+            </tr>
+            <tr>
+            <td><span class="math inline">e^{x}</span></td>
+            <td><span class="math inline">(0, +\infty)</span></td>
+            <td>正的尺度、步长、未归一化权重</td>
+            <td>加法 → 乘法；<span class="math inline">x</span> 加
+            1，结果乘 <span class="math inline">e</span></td>
+            </tr>
+            <tr>
+            <td><span
+            class="math inline">\mathrm{softplus}(x)=\log(1+e^x)</span></td>
+            <td><span class="math inline">(0, +\infty)</span></td>
+            <td>正的步长 <span class="math inline">\Delta
+            t</span>、强度</td>
+            <td>平滑的 ReLU；大 <span class="math inline">x</span> 时
+            <span class="math inline">\approx x</span>，不像 exp
+            那样爆炸</td>
+            </tr>
+            <tr>
+            <td><span
+            class="math inline">e^{-e^{A}\cdot\mathrm{softplus}(x)}</span></td>
+            <td><span class="math inline">(0, 1)</span></td>
+            <td>遗忘率 <span
+            class="math inline">\alpha</span>、衰减</td>
+            <td>正数取负再 exp，必然落在 (0,1)</td>
+            </tr>
+            <tr>
+            <td><span class="math inline">\tanh(x)</span></td>
+            <td><span class="math inline">(-1, 1)</span></td>
+            <td>有界的有符号值</td>
+            <td>中心对称的 sigmoid：<span class="math inline">\tanh x =
+            2\sigma(2x)-1</span></td>
+            </tr>
+            <tr>
+            <td><span class="math inline">c\cdot\tanh(x/c)</span></td>
+            <td><span class="math inline">(-c, c)</span></td>
+            <td>Softcap：限制 logit 上界</td>
+            <td>小值几乎不变，大值被平滑地压住</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>这几个函数之间关系很紧：<span
+            class="math inline">\frac{d}{dx}\mathrm{softplus}(x) =
+            \sigma(x)</span>，<span
+            class="math inline">\mathrm{SiLU}(x)=x\,\sigma(x)</span>，<span
+            class="math inline">\tanh</span> 是拉伸平移过的 <span
+            class="math inline">\sigma</span>。记住 <span
+            class="math inline">\sigma</span> 和 <span
+            class="math inline">\exp</span>，其余都能推出来。</p>
+            <h4 id="exp-与-log-空间把连乘变成前缀和">Exp 与 log
+            空间：把连乘变成前缀和</h4>
+            <p>衰减系数要跨很多步连乘：<span
+            class="math inline">\prod_{\tau=j+1}^{t}\alpha_\tau</span>。直接连乘既慢又会下溢；如果存的是
+            <span class="math inline">g = \log\alpha</span>，连乘就变成
+            <span class="math inline">\exp\left(\sum g\right)</span>，而
+            <span class="math inline">\sum g</span>
+            就是一个<strong>前缀和</strong>，可以按块并行计算。这就是为什么
+            Mamba2 / GDN / KDA 的 kernel 接口传的都是 <span
+            class="math inline">g</span>（log 空间的衰减），而不是 <span
+            class="math inline">\alpha</span> 本身。</p>
+            <p>同理，概率在 log 空间相加、softmax 在 log
+            空间合并（LSE）——<strong>乘法难并行、易溢出时，就换到 log
+            空间做加法</strong>，是一条反复出现的工程套路。</p>
+            <h4
+            id="softcap不让任何一个-logit-一家独大">Softcap：不让任何一个
+            logit 一家独大</h4>
+            <p><span class="math inline">\mathrm{softcap}(z) =
+            c\cdot\tanh(z/c)</span>。Gemma 2 对 attention 分数和最终
+            logits 都做了这一步。它和 <span class="math inline">1/\sqrt
+            d</span> 的区别在于：缩放对所有分数一视同仁，softcap
+            只压住<strong>极端值</strong>，小分数几乎不受影响。</p>
+            <h3 id="几何长度和方向分开管">几何：长度和方向分开管</h3>
+            <p>把向量写成“长度 × 方向”，<span class="math inline">x =
+            \lVert x\rVert\cdot \hat
+            x</span>，很多算子的作用就一目了然：有的只管长度，有的只管方向，有的两者一起改。</p>
+            <figure>
+            <img src="./WikiImage/math_ops_geometry.svg"
+            alt="把向量看成长度 × 方向" />
+            <figcaption aria-hidden="true">把向量看成长度 ×
+            方向</figcaption>
+            </figure>
+            <h4 id="rmsnorm-l2norm只管长度">RMSNorm /
+            L2Norm：只管长度</h4>
+            <p><span class="math display">
+            \mathrm{RMSNorm}(x) = \frac{x}{\sqrt{\frac1d\sum_i x_i^2 +
+            \epsilon}} \odot \gamma
+            </span></p>
+            <p>除以 RMS 等价于把 <span class="math inline">\lVert
+            x\rVert</span> 归一到 <span class="math inline">\sqrt
+            d</span>，<strong>方向完全保留</strong>，再用可学习的 <span
+            class="math inline">\gamma</span>
+            逐维重新缩放。它的意义是让下一层看到的输入尺度恒定：无论残差流累积到多大，进入
+            attention / MLP 的数都在 <span
+            class="math inline">O(1)</span>。LayerNorm
+            多做一步减均值（去掉沿全 1 方向的分量）；L2Norm 不带 <span
+            class="math inline">\gamma</span>、归一到 1，常用于 QK-Norm
+            和 linear attention 的 q/k。</p>
+            <p>为什么 linear attention 必须对 q/k 做
+            L2Norm？因为它的状态是外积累加，<span
+            class="math inline">\lVert k\rVert</span>
+            直接决定写入强度：key
+            长度失控，状态就会爆炸；固定长度后，写入强度只由 <span
+            class="math inline">\beta</span> 决定。</p>
+            <h4 id="rope只管方向">RoPE：只管方向</h4>
+            <p>把 <span class="math inline">D</span>
+            维两两配对，每对看成一个复数，按位置 <span
+            class="math inline">m</span> 旋转角度 <span
+            class="math inline">m\theta_i</span>：</p>
+            <p><span class="math display">
+            \begin{pmatrix} x_1&#39; \\ x_2&#39; \end{pmatrix} =
+            \begin{pmatrix} \cos m\theta &amp; -\sin m\theta \\ \sin
+            m\theta &amp; \cos m\theta \end{pmatrix}
+            \begin{pmatrix} x_1 \\ x_2 \end{pmatrix}
+            </span></p>
+            <p>旋转不改变长度。关键性质是：<span
+            class="math inline">q</span> 转 <span
+            class="math inline">m\theta</span>，<span
+            class="math inline">k</span> 转 <span
+            class="math inline">n\theta</span>，点积只剩下夹角之差，<span
+            class="math inline">\langle R_m q, R_n k\rangle = \langle q,
+            R_{n-m}
+            k\rangle</span>——<strong>绝对位置在点积中自动变成了相对位置</strong>。不同配对用不同频率
+            <span class="math inline">\theta_i =
+            b^{-2i/D}</span>：高频对分辨近距离，低频对编码远距离，像一个多指针的时钟。YaRN
+            等长度外推方法就是在改这些频率。</p>
+            <h4 id="门控-odot逐维调音量">门控 <span
+            class="math inline">\odot</span>：逐维调音量</h4>
+            <p><span class="math inline">g\odot x</span>
+            是对角矩阵乘法：每一维独立缩放，长度和方向都会变。和 Linear
+            的区别是<strong>不混合维度</strong>——它不产生新特征，只决定已有特征放行多少。门的取值来自
+            sigmoid（不竞争），所以每一维可以同时全开或同时全关。</p>
+            <h4
+            id="residual保留一条恒等通路">Residual：保留一条恒等通路</h4>
+            <p><span class="math inline">x_{l+1} = x_l +
+            f(x_l)</span>。每层只学一个<strong>增量</strong>，而不是重写整个表示；梯度可以沿恒等通路直接传回。由此，残差流可以看成所有层共享的一块“黑板”，每层读一部分、写一点增量。Pre-Norm（先
+            norm 再进 <span
+            class="math inline">f</span>）让黑板本身的尺度可以自由增长，而每层读到的都是归一化后的版本。</p>
+            <h4 id="linear一般情形">Linear：一般情形</h4>
+            <p>上面几种都是 Linear 的特例或近亲：RoPE
+            是正交矩阵（只转不拉），门控是对角矩阵（只拉不转），Norm
+            本身不是线性的（缩放系数依赖输入）。一般的 <span
+            class="math inline">W = U\Sigma V^\top</span>
+            把圆变成椭圆：先转、再沿主轴拉伸、再转；奇异值为 0
+            的方向被彻底丢弃。</p>
+            <p>打分 <span class="math inline">q\cdot k = \lVert
+            q\rVert\lVert k\rVert\cos\theta</span>
+            同时依赖长度和方向，于是可以清楚地分工：QK-Norm
+            固定长度（防止分数爆炸），RoPE
+            把位置写进角度，剩下的方向差异才是内容的相似度。</p>
+            <h3 id="非线性让层不能合并">非线性：让层不能合并</h3>
+            <p>如果只有线性层，<span class="math inline">W_2W_1</span>
+            可以合并成一个矩阵，堆多少层都没用。非线性函数插在中间打断这种合并（见
+            <a href="./activation.html">Activation</a>）。</p>
+            <ul>
+            <li><strong>ReLU</strong> <span
+            class="math inline">\max(0,x)</span>：硬开关，负半轴完全关闭。</li>
+            <li><strong>SiLU</strong> <span
+            class="math inline">x\,\sigma(x)</span>、<strong>GELU</strong>
+            <span
+            class="math inline">x\,\Phi(x)</span>：都可以读成“<strong>用自己给自己开门</strong>”——<span
+            class="math inline">x</span> 越大门越开，<span
+            class="math inline">x</span>
+            很负时门关上，中间平滑过渡。</li>
+            <li><strong>SwiGLU</strong> <span
+            class="math inline">\mathrm{SiLU}(xW_g)\odot(xW_u)</span>：把“开门”和“内容”拆成两路投影，门来自一路、内容来自另一路，再逐元素相乘。这比单路激活多了一个自由度：决定“放不放行”的特征和“放行什么”的特征可以不同。</li>
+            </ul>
+            <p>从这个角度看，门控 MLP 和 gated attention、linear
+            attention 的 <span class="math inline">\beta</span>
+            是同一种结构：<strong>一路算内容，一路算门，逐元素相乘</strong>。</p>
+            <h3 id="组合用动词读公式">组合：用动词读公式</h3>
+            <p>有了上面的动词，读一个新公式的套路是：<strong>先找沿 T
+            混合的那一步，再看每个标量被哪个函数约束到了什么范围。</strong></p>
+            <figure>
+            <img src="./WikiImage/math_ops_compose.svg"
+            alt="用算子的动词读公式" />
+            <figcaption
+            aria-hidden="true">用算子的动词读公式</figcaption>
+            </figure>
+            <ul>
+            <li><strong>Softmax attention</strong>：Linear 投影（沿 D）→
+            RoPE 写入位置（几何）→ 点积比较 → <span
+            class="math inline">1/\sqrt d</span> 控温 → Mask 排除 →
+            Softmax 竞争 → 加权求和（沿 T 的凸组合）→
+            输出投影。一句话：“按相似度在历史 value 之间插值”。</li>
+            <li><strong>Gated DeltaNet 的遗忘率</strong>：<span
+            class="math inline">g = -e^{A}\cdot\mathrm{softplus}(a +
+            b_{dt})</span>，<span class="math inline">\alpha =
+            e^{g}</span>。从右往左读：任意实数 → softplus 变正 →
+            乘一个可学习的正数再取负 → exp 落进 (0,1)。一句话：“每个
+            head 学一个保证不放大的衰减率”，而且以 log 形式 <span
+            class="math inline">g</span> 交给 kernel。</li>
+            <li><strong>SwiGLU MLP</strong>：升维 → 一路做门、一路做内容
+            → 逐维开关 →
+            降维。一句话：“在宽空间里有选择地放行特征”。</li>
+            </ul>
+            <h3 id="在-sglang-里的落点">在 SGLang 里的落点</h3>
+            <p>这些算子在 SGLang 中大多是独立的 layer 或融合
+            kernel，命名本身就体现了上面的分组（路径相对
+            <code>python/sglang/</code>）：</p>
+            <table>
+            <colgroup>
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>动词</th>
+            <th>算子</th>
+            <th>位置</th>
+            <th>值得知道的细节</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>混合（D）</td>
+            <td>Linear</td>
+            <td><code>srt/layers/linear.py</code>：<code>QKVParallelLinear</code>、<code>MergedColumnParallelLinear</code>、<code>RowParallelLinear</code></td>
+            <td>多个投影合并成一个大 GEMM：q/k/v 一次算完，gate/up
+            一次算完</td>
+            </tr>
+            <tr>
+            <td>混合（T）</td>
+            <td>Conv1D</td>
+            <td><code>srt/layers/attention/mamba/causal_conv1d.py</code>：<code>causal_conv1d_fn</code>
+            / <code>causal_conv1d_update</code></td>
+            <td>prefill 走整段卷积，decode 只用缓存的最近 <span
+            class="math inline">K-1</span> 个输入</td>
+            </tr>
+            <tr>
+            <td>选择</td>
+            <td>LSE 合并</td>
+            <td><code>srt/layers/attention/merge_state.py</code>：<code>merge_state</code></td>
+            <td>Triton 版先减去两者的 <code>max_lse</code> 再
+            exp，与上文合并公式一致</td>
+            </tr>
+            <tr>
+            <td>选择</td>
+            <td>TopK</td>
+            <td><code>srt/layers/moe/topk.py</code>：<code>TopK</code>、<code>fused_topk</code>、<code>biased_grouped_topk_gpu</code></td>
+            <td>分组 / 加 bias 后再排名，是对硬选择的修正</td>
+            </tr>
+            <tr>
+            <td>约束</td>
+            <td>Softplus / Exp / Sigmoid</td>
+            <td><code>kernels/ops/attention/fla/fused_gdn_gating.py</code></td>
+            <td>一个 kernel 同时算 <span
+            class="math inline">g=-e^{A}\,\mathrm{softplus}(a+b_{dt})</span>
+            与 <span
+            class="math inline">\beta=\sigma(b)</span>；softplus 在
+            <span class="math inline">x&gt;20</span> 时直接返回 <span
+            class="math inline">x</span>，避免 exp 溢出</td>
+            </tr>
+            <tr>
+            <td>约束</td>
+            <td>Softcap</td>
+            <td><code>srt/layers/logits_processor.py</code>（<code>final_logit_softcapping</code>）、<code>srt/layers/radix_attention.py</code>（<code>logit_cap</code>）</td>
+            <td>logits 上是 <span
+            class="math inline">c\cdot\tanh(z/c)</span>，GPU 上走融合
+            kernel</td>
+            </tr>
+            <tr>
+            <td>几何</td>
+            <td>RMSNorm</td>
+            <td><code>srt/layers/layernorm.py</code>：<code>RMSNorm</code>、<code>GemmaRMSNorm</code></td>
+            <td>传入 <code>residual</code> 时先做残差加再 norm，一个
+            kernel 完成；Gemma 的权重语义是 <span
+            class="math inline">1+\gamma</span></td>
+            </tr>
+            <tr>
+            <td>几何</td>
+            <td>RoPE</td>
+            <td><code>srt/layers/rotary_embedding/</code>：<code>RotaryEmbedding</code>，<code>utils.py</code>
+            的 <code>apply_rotary_emb</code></td>
+            <td><code>is_neox_style</code> 决定配对方式：前后两半配对 vs
+            相邻两维配对，数学相同、内存布局不同</td>
+            </tr>
+            <tr>
+            <td>非线性</td>
+            <td>SwiGLU</td>
+            <td><code>srt/layers/activation.py</code>：<code>SiluAndMul</code></td>
+            <td>输入是 gate、up 两半拼在一起的张量，native 实现就是
+            <code>silu(x[..., :d]) * x[..., d:]</code></td>
+            </tr>
+            </tbody>
+            </table>
+            <p>一个反复出现的工程模式：<strong>逐元素和“reduce +
+            逐元素”类算子几乎从不单独成
+            kernel</strong>。它们计算量可以忽略，成本全在读写显存，所以总是融合进相邻的算子（residual
+            + norm、norm + 量化、silu + mul、gating 的四步合一、softcap
+            + cast）。看到一个新的 fused
+            kernel，基本可以按“它把哪几个动词粘在了一起”来理解。</p>
+            <h3 id="速查表">速查表</h3>
+            <table>
+            <colgroup>
+            <col style="width: 20%" />
+            <col style="width: 20%" />
+            <col style="width: 20%" />
+            <col style="width: 20%" />
+            <col style="width: 20%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>操作</th>
+            <th>动词</th>
+            <th>混合的轴</th>
+            <th>值域 / 不变量</th>
+            <th>常见架构语义</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>Linear / MatMul</td>
+            <td>混合</td>
+            <td>D</td>
+            <td>—</td>
+            <td>投影、问 <span class="math inline">D_{out}</span>
+            个问题</td>
+            </tr>
+            <tr>
+            <td>Low-rank Projection</td>
+            <td>混合</td>
+            <td>D</td>
+            <td>秩 <span class="math inline">\le r</span></td>
+            <td>瓶颈、latent 压缩、LoRA</td>
+            </tr>
+            <tr>
+            <td>Weighted Sum</td>
+            <td>混合</td>
+            <td>T</td>
+            <td>凸组合（权重和为 1 时）</td>
+            <td>attention 读出、插值</td>
+            </tr>
+            <tr>
+            <td>Conv1D</td>
+            <td>混合</td>
+            <td>T（局部）</td>
+            <td>—</td>
+            <td>短程上下文</td>
+            </tr>
+            <tr>
+            <td>Recurrent / Cumsum</td>
+            <td>混合</td>
+            <td>T（因果）</td>
+            <td>状态大小固定</td>
+            <td>记忆、流式计算</td>
+            </tr>
+            <tr>
+            <td>Outer Product</td>
+            <td>混合</td>
+            <td>—</td>
+            <td>秩 1</td>
+            <td>向状态写入一个 key→value</td>
+            </tr>
+            <tr>
+            <td>Sigmoid</td>
+            <td>选择 / 约束</td>
+            <td>逐元素</td>
+            <td><span class="math inline">(0,1)</span>，不竞争</td>
+            <td>门、写入强度</td>
+            </tr>
+            <tr>
+            <td>Softmax</td>
+            <td>选择</td>
+            <td>沿候选 reduce</td>
+            <td><span class="math inline">\Sigma=1</span>，平移不变</td>
+            <td>竞争性分配</td>
+            </tr>
+            <tr>
+            <td>Temperature / <span class="math inline">1/\sqrt
+            d</span></td>
+            <td>选择</td>
+            <td>逐元素</td>
+            <td>—</td>
+            <td>控制尖锐度</td>
+            </tr>
+            <tr>
+            <td>Mask</td>
+            <td>选择</td>
+            <td>逐元素</td>
+            <td>被 mask 项精确为 0</td>
+            <td>因果、窗口、padding</td>
+            </tr>
+            <tr>
+            <td>TopK</td>
+            <td>选择</td>
+            <td>沿候选 reduce</td>
+            <td>只保留 <span class="math inline">k</span> 项</td>
+            <td>MoE 路由、稀疏 attention</td>
+            </tr>
+            <tr>
+            <td>LogSumExp</td>
+            <td>选择</td>
+            <td>沿候选 reduce</td>
+            <td><span class="math inline">\max \le \mathrm{LSE} \le
+            \max+\log n</span></td>
+            <td>分块 attention 合并</td>
+            </tr>
+            <tr>
+            <td>Exp</td>
+            <td>约束</td>
+            <td>逐元素</td>
+            <td><span class="math inline">(0,\infty)</span></td>
+            <td>正尺度、log 空间衰减</td>
+            </tr>
+            <tr>
+            <td>Softplus</td>
+            <td>约束</td>
+            <td>逐元素</td>
+            <td><span class="math inline">(0,\infty)</span></td>
+            <td>正的步长</td>
+            </tr>
+            <tr>
+            <td>Tanh / Softcap</td>
+            <td>约束</td>
+            <td>逐元素</td>
+            <td><span class="math inline">(-c, c)</span></td>
+            <td>限制 logit 上界</td>
+            </tr>
+            <tr>
+            <td>RMSNorm / L2Norm</td>
+            <td>几何</td>
+            <td>D 上 reduce</td>
+            <td>长度固定，方向不变</td>
+            <td>稳定尺度、QK-Norm</td>
+            </tr>
+            <tr>
+            <td>RoPE</td>
+            <td>几何</td>
+            <td>D 内两两配对</td>
+            <td>长度不变</td>
+            <td>相对位置</td>
+            </tr>
+            <tr>
+            <td>Elementwise Multiply</td>
+            <td>几何 / 门控</td>
+            <td>逐元素</td>
+            <td>—</td>
+            <td>门控、特征调制</td>
+            </tr>
+            <tr>
+            <td>Residual Add</td>
+            <td>几何</td>
+            <td>逐元素</td>
+            <td>保留恒等通路</td>
+            <td>增量更新、梯度通路</td>
+            </tr>
+            <tr>
+            <td>SiLU / GELU</td>
+            <td>非线性</td>
+            <td>逐元素</td>
+            <td>—</td>
+            <td>自门控、增强表达能力</td>
+            </tr>
+            </tbody>
+            </table>
+            <h3 id="小结">小结</h3>
+            <p>模型里的基本算子不多，难的是把它们读成意义而不是公式。先问“沿哪个轴混合”，就能区分出决定推理复杂度的那一步（沿
+            T）和可以随意并行的部分（沿
+            D、逐元素）；再问“这个数被约束到了什么范围”，值域几乎就是它的语义——(0,1)
+            是门或遗忘率，<span class="math inline">\Sigma=1</span>
+            是竞争性权重，正数是尺度或步长；最后把几何算子拆成“管长度”和“管方向”，Norm
+            和 RoPE
+            的分工就自然清楚了。新架构在这三个问题上的回答，通常就是它全部的设计。</p>
+          </main>
+        <aside class="wiki-toc">
+      <ul>
+      <li><a href="#问题为什么要对基本算子建立直觉"
+      id="toc-问题为什么要对基本算子建立直觉">问题：为什么要对基本算子建立直觉</a></li>
+      <li><a href="#第一个问题沿哪个轴混合"
+      id="toc-第一个问题沿哪个轴混合">第一个问题：沿哪个轴混合</a></li>
+      <li><a href="#混合信息从哪里流到哪里"
+      id="toc-混合信息从哪里流到哪里">混合：信息从哪里流到哪里</a></li>
+      <li><a href="#选择谁多拿谁少拿谁出局"
+      id="toc-选择谁多拿谁少拿谁出局">选择：谁多拿、谁少拿、谁出局</a></li>
+      <li><a href="#约束范围值域就是语义"
+      id="toc-约束范围值域就是语义">约束范围：值域就是语义</a></li>
+      <li><a href="#几何长度和方向分开管"
+      id="toc-几何长度和方向分开管">几何：长度和方向分开管</a></li>
+      <li><a href="#非线性让层不能合并"
+      id="toc-非线性让层不能合并">非线性：让层不能合并</a></li>
+      <li><a href="#组合用动词读公式"
+      id="toc-组合用动词读公式">组合：用动词读公式</a></li>
+      <li><a href="#在-sglang-里的落点" id="toc-在-sglang-里的落点">在
+      SGLang 里的落点</a></li>
+      <li><a href="#速查表" id="toc-速查表">速查表</a></li>
+      <li><a href="#小结" id="toc-小结">小结</a></li>
+      </ul>
+    </aside>
+      </div>
+</body>
+
+</html>

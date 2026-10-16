@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 450" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="450" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">每个 token、每层要缓存多少：MHA / GQA / MQA / MLA</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">按 DeepSeek-V3 的维度：128 头，qk_head_dim = 128 + 64，v_head_dim = 128，kv_lora_rank = 512；条长与元素数成正比</text>
+
+  <!-- column headers -->
+  <text x="40" y="92" font-size="11.5" font-weight="700" fill="#868e96">方案</text>
+  <text x="240" y="92" font-size="11.5" font-weight="700" fill="#868e96">缓存元素数 / token / 层</text>
+  <text x="760" y="92" font-size="11.5" font-weight="700" fill="#868e96">BF16</text>
+  <text x="826" y="92" font-size="11.5" font-weight="700" fill="#868e96">相对 MHA</text>
+  <path d="M30 102 H870" stroke="#e9ecef" stroke-width="1"/>
+
+  <!-- MHA -->
+  <rect x="30" y="114" width="190" height="56" rx="8" fill="#fff5f5" stroke="#fa5252"/>
+  <text x="44" y="137" font-size="13.5" font-weight="700" fill="#c92a2a">MHA</text>
+  <text x="44" y="157" font-size="11" fill="#495057">128 个头各存一份 K、V</text>
+  <rect x="240" y="124" width="500" height="36" rx="6" fill="#fff5f5" stroke="#fa5252"/>
+  <text x="490" y="147" text-anchor="middle" font-size="12" fill="#c92a2a" font-family="monospace">128 × (192 + 128) = 40960</text>
+  <text x="760" y="147" font-size="12" fill="#495057" font-family="monospace">80 KB</text>
+  <text x="826" y="147" font-size="12" fill="#495057" font-family="monospace">1</text>
+
+  <!-- GQA -->
+  <rect x="30" y="184" width="190" height="56" rx="8" fill="#fff9db" stroke="#f08c00"/>
+  <text x="44" y="207" font-size="13.5" font-weight="700" fill="#e8590c">GQA-8（示意）</text>
+  <text x="44" y="227" font-size="11" fill="#495057">每 16 个 q 头共享一组 K、V</text>
+  <rect x="240" y="194" width="31" height="36" rx="5" fill="#fff9db" stroke="#f08c00"/>
+  <text x="282" y="217" font-size="12" fill="#e8590c" font-family="monospace">8 × 320 = 2560</text>
+  <text x="760" y="217" font-size="12" fill="#495057" font-family="monospace">5 KB</text>
+  <text x="826" y="217" font-size="12" fill="#495057" font-family="monospace">1/16</text>
+
+  <!-- MQA -->
+  <rect x="30" y="254" width="190" height="56" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="44" y="277" font-size="13.5" font-weight="700" fill="#5f3dc4">MQA</text>
+  <text x="44" y="297" font-size="11" fill="#495057">所有头共享同一份 K、V</text>
+  <rect x="240" y="264" width="4" height="36" rx="1.5" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="256" y="287" font-size="12" fill="#5f3dc4" font-family="monospace">320</text>
+  <text x="760" y="287" font-size="12" fill="#495057" font-family="monospace">640 B</text>
+  <text x="826" y="287" font-size="12" fill="#495057" font-family="monospace">1/128</text>
+
+  <!-- MLA -->
+  <rect x="30" y="324" width="190" height="56" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="44" y="347" font-size="13.5" font-weight="700" fill="#0b7285">MLA</text>
+  <text x="44" y="367" font-size="11" fill="#495057">共享 latent c_KV + 共享 k_rope</text>
+  <rect x="240" y="334" width="7" height="36" rx="2" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="260" y="357" font-size="12" fill="#0b7285" font-family="monospace">512 + 64 = 576</text>
+  <text x="380" y="357" font-size="11.5" fill="#868e96">← 只比 MQA 大 1.8×，但 K、V 仍可按头展开成 128 份不同的值</text>
+  <text x="760" y="357" font-size="12" fill="#495057" font-family="monospace">1.1 KB</text>
+  <text x="826" y="357" font-size="12" fill="#495057" font-family="monospace">1/71</text>
+
+  <!-- note -->
+  <rect x="30" y="396" width="840" height="40" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="450" y="421" text-anchor="middle" font-size="12" fill="#495057">61 层合计：MHA ≈ 4.8 MB / token，MLA ≈ 69 KB / token。GQA/MQA 靠“少存几个头”省显存，MLA 靠“存一个可以还原所有头的低秩 latent”</text>
+</svg>

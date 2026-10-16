@@ -113,16 +113,27 @@ S_t = \alpha_t \left(I - \beta_t k_t^\top k_t\right) S_{t-1} + \beta_t k_t^\top 
 \qquad \alpha_t = e^{g_t} \in (0, 1],\quad \alpha_t \text{ 是每个 head 一个标量}
 \]
 
+展开括号：
+
+\[ \boxed{ S_t=\alpha_t S_{t-1} -\alpha_t\beta_t k_t^\top k_t S_{t-1} +\beta_t k_t^\top v_t } \]
+
+
 \((I - \beta_t k_t^\top k_t)\) 是一个“部分 Householder 变换”：只沿 \(k_t\) 方向把旧记忆收缩 \(\beta_t\)，其余方向不动。这也是 q、k 必须做 **L2 归一化**的原因：\(\lVert k_t\rVert = 1\) 时这个矩阵沿 \(k_t\) 方向的特征值是 \(1-\beta_t \in [0, 1)\)，递归不会发散。
 
 门的参数化沿用 Mamba2：
 
 \[
-g_t = -\exp(\texttt{A\_log}) \cdot \mathrm{softplus}(a_t + \texttt{dt\_bias}),
-\qquad \beta_t = \mathrm{sigmoid}(b_t)
+g_t=-\exp(A_{\log})\cdot\operatorname{softplus}(a_t+dt_{\mathrm{bias}})
 \]
 
-`A_log`、`dt_bias` 是每个 v-head 一个的可学习参数，\(a_t, b_t\) 由输入投影 `in_proj_ba` 给出（每个 v-head 各一个数）。\(\exp(\texttt{A\_log})\) 决定这个 head 的基础衰减速率，\(\mathrm{softplus}(a_t+\texttt{dt\_bias})\) 是数据相关的“步长”，两者相乘再取负保证 \(g_t \le 0\)。
+\[
+\beta_t=\operatorname{sigmoid}(b_t)
+\]
+
+`A_log`、`dt_bias` 是每个 v-head 一个的可学习参数，\(a_t, b_t\) 由输入投影 `in_proj_ba` 给出（每个 v-head 各一个数）。\(\exp(A_{\log})\) 决定这个 head 的基础衰减速率，\(\operatorname{softplus}(a_t+dt_{\mathrm{bias}})\) 是数据相关的“步长”，两者相乘再取负保证 \(g_t \le 0\)。
+
+\[ \underbrace{S' = \alpha S_{t-1}}_{\text{遗忘}} \quad\longrightarrow\quad \underbrace{\hat v=kS'}_{\text{读取旧值}} \quad\longrightarrow\quad \underbrace{\delta=\beta(v-\hat v)}_{\text{计算修正}} \quad\longrightarrow\quad \underbrace{S_t=S'+k^\top\delta}_{\text{更新记忆}} \quad\longrightarrow\quad \underbrace{o=qS_t}_{\text{输出}} \]
+
 
 一个与 kernel 语义一致的逐 token 参考实现：
 
@@ -168,14 +179,14 @@ f_t = W_{f_b}\,(W_{f_a}\, x_t) \in \mathbb{R}^{H \cdot d_k},\qquad
 g_t = -\exp(\texttt{A\_log}[h]) \cdot \mathrm{softplus}(f_t + \texttt{dt\_bias})
 \]
 
-其中 `f_a_proj: hidden → head_dim`、`f_b_proj: head_dim → H·head_dim`；`A_log` 每个 head 一个，`dt_bias` 每个通道一个（\([H \cdot d_k]\)）。部分模型（如 Kimi K3，config 中的 `gate_lower_bound`）改用 “safe gate”：\(g = \text{lower\_bound} \cdot \mathrm{sigmoid}(\exp(\texttt{A\_log}) \cdot (f + \texttt{dt\_bias}))\)，把衰减限制在一个有界区间内。
+其中 `f_a_proj: hidden → head_dim`、`f_b_proj: head_dim → H·head_dim`；`A_log` 每个 head 一个，`dt_bias` 每个通道一个（\([H \cdot d_k]\)）。部分模型（如 Kimi K3，config 中的 `gate_lower_bound=-5`）改用 “safe gate”：\(g = \text{lower\_bound} \cdot \mathrm{sigmoid}(\exp(\texttt{A\_log}) \cdot (f + \texttt{dt\_bias}))\)，把衰减限制在一个有界区间内（见下文 Kimi K3 一节）。
 
 | | Gated DeltaNet | KDA |
 |---|---|---|
 | 遗忘门 | 每 head 一个标量 \(\alpha_t\) | 每 head 一个 \(d_k\) 维向量 \(\alpha_t\) |
 | 门的来源 | `in_proj_ba` 直接投影 | `f_a_proj` → `f_b_proj` 低秩投影 |
 | 头数 | v-head 可多于 k-head（GVA） | q/k/v 头数相同 |
-| 输出门 | `RMSNormGated(o, z)`，z 来自 `in_proj_qkvz` | `RMSNorm(o) ⊙ sigmoid(g)`，g 来自低秩 `g_a_proj → g_b_proj` |
+| 输出门 | `RMSNormGated(o, z)`，z 来自 `in_proj_qkvz` | `RMSNorm(o) ⊙ sigmoid(g)`，g 来自低秩 `g_a_proj → g_b_proj`（K3 改为满秩 `g_proj`） |
 | 搭配的 full attention 层 | Gated Attention（GQA） | MLA |
 | SGLang 模型 | `Qwen3GatedDeltaNet`（`models/qwen3_next.py`） | `KimiDeltaAttention`（`models/kimi_linear.py`） |
 
@@ -208,6 +219,74 @@ delta rule 只是一层的核心，GDN 和 KDA 在它前后都包了一样的骨
 - **输出门**：delta rule 的输出要经过一个门控 RMSNorm。GDN 的门 z 由 `in_proj_qkvz` 一起投影出来，KDA 的门由低秩 `g_a → g_b` 得到、用 sigmoid 激活。
 
 结果是每个 linear 层有**两份**与序列长度无关的状态：conv state（最近 \(K-1=3\) 步的卷积输入）和 SSM state \(S\)。
+
+### 实例：Kimi K3 的 KDA 权重如何对上计算流程
+
+[Kimi K3 权重精算](./kimi_k3_weight.md) 列出了一个 KDA 层的 20 个张量。光看名字和形状，很难说清哪个张量对应上面公式里的哪个符号，也看不出参数量都花在了哪里。这一节把它们逐个挂回计算流程。
+
+K3 的 KDA 配置：96 个 head，\(d_k = d_v = 128\)，投影宽度 \(96 \times 128 = 12288\)，短卷积核 4，`use_full_rank_gate=true`，`gate_lower_bound=-5`。
+
+#### 先分角色，再对形状
+
+20 个张量里有 6 个（`input_layernorm`、`post_attention_layernorm` 以及 `*_res_norm` / `*_res_proj`）是每层都有的公共 norm 和 Attention Residual 权重，MLA 层也有，与 KDA 无关。剩下 14 个 `self_attn.*` 按它们在递推里**干什么**可以分成四组：
+
+- **内容**：q / k / v 是记忆的“地址”和“数据”，决定读写什么。
+- **写入强度 \(\beta\)**：每个 head 每个 token 一个标量，决定这一步把误差写进记忆多少。
+- **遗忘门 \(\alpha\)**：每个 head 每个通道一个，决定旧记忆按行保留多少。
+- **输出**：delta rule 读出 \(o\) 之后的门控 norm 和输出投影。
+
+另外有几步**没有任何权重**：q/k 的 L2Norm、\(d^{-1/2}\) 缩放、状态递推本身。递推是纯计算，可学习的东西全在它的输入（q、k、v、β、α）和输出端。
+
+![Kimi K3 KDA 权重与计算流程](../docs/WikiImage/linear_attention_k3_kda_weights.svg)
+
+写成公式（行向量，省略 head 下标；\(\hat{\cdot}\) 表示 L2 归一化）：
+
+\[
+\begin{aligned}
+q_t, k_t, v_t &= \mathrm{SiLU}\big(\mathrm{Conv}_4(x\,W_{q,k,v}^\top)\big)_t &&\texttt{q/k/v\_proj},\ \texttt{q/k/v\_conv1d}\\
+\beta_t &= \sigma(x_t W_b^\top) \in (0,1)^{96} &&\texttt{b\_proj}\\
+f_t &= (x_t W_{f_a}^\top)\, W_{f_b}^\top \in \mathbb{R}^{96\times 128} &&\texttt{f\_a\_proj},\ \texttt{f\_b\_proj}\\
+g_t &= -5\cdot\sigma\!\big(e^{\texttt{A\_log}[h]}\,(f_t + \texttt{dt\_bias})\big),\quad \alpha_t = e^{g_t} &&\texttt{A\_log},\ \texttt{dt\_bias}\\
+S_t &= (I-\beta_t \hat k_t^\top \hat k_t)\,\mathrm{Diag}(\alpha_t)\,S_{t-1} + \beta_t \hat k_t^\top v_t &&\text{无权重}\\
+o_t &= d^{-1/2}\,\hat q_t S_t &&\text{无权重}\\
+y_t &= \big(\mathrm{RMSNorm}_{w}(o_t)\odot\sigma(x_t W_g^\top)\big)\,W_o^\top &&\texttt{o\_norm},\ \texttt{g\_proj},\ \texttt{o\_proj}
+\end{aligned}
+\]
+
+| 权重 | 形状 / dtype | 对应操作 | 产物 |
+| :--- | :--- | :--- | :--- |
+| `q_proj` / `k_proj` / `v_proj` | `[12288, 7168]` BF16 ×3 | \(x W^\top\)，按 head 切成 `[96, 128]` | 卷积前的 q、k、v |
+| `q_conv1d` / `k_conv1d` / `v_conv1d` | `[12288, 1, 4]` F32 ×3 | 每通道 4 个 tap 的因果 depthwise 卷积，后接 SiLU | 进入 delta rule 的 q、k、v |
+| `b_proj` | `[96, 7168]` BF16 | \(\sigma(x W_b^\top)\) | \(\beta\)，每 head 一个 |
+| `f_a_proj` | `[128, 7168]` BF16 | 低秩下投影到 128 维 | 遗忘门的瓶颈表示 |
+| `f_b_proj` | `[12288, 128]` BF16 | 上投影回每 head 每通道 | 原始门 \(f\)，`[96, 128]` |
+| `dt_bias` | `[12288]` F32 | 加到 \(f\) 上，**逐通道** | 每个通道的基础门值 |
+| `A_log` | `[128]` F32（只用前 96） | \(e^{\texttt{A\_log}[h]}\) 作 sigmoid 的斜率，**逐 head** | 与上面一起得到 \(g\)、\(\alpha=e^g\) |
+| `g_proj` | `[12288, 7168]` BF16 | 满秩输出门，\(\sigma(\cdot)\) | 与 \(o\) 逐元素相乘的门 |
+| `o_norm` | `[128]` F32 | head 内 RMSNorm 的缩放，96 个 head 共享 | 归一化后的 \(o\) |
+| `o_proj` | `[7168, 12288]` BF16 | 拼接各 head 后投影回 hidden | 层输出 `[7168]` |
+
+把这 14 项加起来是每层 443,740,416，乘 69 层正好是精算总览里的 30,618,088,704，说明没有遗漏或重复的张量。
+
+#### 几个从形状里读出来的细节
+
+- **门很便宜，内容很贵。** q/k/v/g/o 五个 \(7168\leftrightarrow 12288\) 的大矩阵占 99.25% 的参数；真正决定“写多少、忘多少”的 `b_proj`、`f_a/f_b`、`A_log`、`dt_bias` 合计约 319 万，只占 0.72%。遗忘门用秩 128 的低秩分解（\(7168\to128\to12288\)，约 249 万），如果做成满秩会是 8800 万。
+- **门的粒度是三层叠加的。** `A_log` 是 head 级（96 个），`dt_bias` 是通道级（12288 个），`f_t` 是 token × 通道级。于是每个通道的衰减 = head 的整体灵敏度 × (通道偏置 + 数据相关项)。
+- **`A_log` 存了 128 个，只用 96 个。** checkpoint 里它的形状是 `[head_dim]` 而不是 `[num_heads]`；加载时 `_a_log_weight_loader` 先截取前 `num_heads` 个，再按 TP 切分，后 32 个值从未参与计算。
+- **safe gate 给遗忘设了下限。** GDN / Kimi-Linear 的 \(g=-e^{A}\cdot\mathrm{softplus}(\cdot)\) 没有下界，一个 token 理论上能把某行记忆清零。K3 的 \(g = -5\cdot\sigma(\cdot) \in (-5, 0)\)，即 \(\alpha\in(e^{-5}, 1)\approx(0.0067, 1)\)：单步最多忘掉 99.3%，不会一步清空。这里 \(e^{\texttt{A\_log}}\) 的含义也变了，不再是“衰减速率”，而是 sigmoid 的斜率，决定门对输入有多敏感。
+- **K3 的输出门是满秩的。** Kimi-Linear 用低秩 `g_a_proj → g_b_proj`，K3 换成了一个 `g_proj [12288, 7168]`（`use_full_rank_gate`），单这一项就占 KDA 参数的 19.8%，与 `o_proj` 一样大。它也是唯一绕过 delta rule 的支路：直接从 \(x_t\) 投影到 `o_norm`。
+- **精度分两档。** 大矩阵是 BF16；卷积核、`A_log`、`dt_bias`、`o_norm` 是 F32。后几项会进入指数、sigmoid 或递推，而且参数量极小，存 F32 几乎不占空间。
+
+#### 在 SGLang 里的落地
+
+模型类是 `KimiK3DeltaAttention`（`models/kimi_k3.py`），checkpoint 的张量名和运行时模块并不一一对应，`load_weights` 在加载时做了合并：
+
+- `q_proj` / `k_proj` / `v_proj` / `g_proj` 作为 shard 0–3 合进 **`fused_qkvg_proj`**，一次 GEMM 算出 4×12288 列，再 split 成 `qkv` 和输出门。
+- `q/k/v_conv1d` 合进 **`qkv_conv1d`**（`[3×12288, 1, 4]`），squeeze 成 `[36864, 4]` 交给 `RadixLinearAttention` 当 `conv_weights`。
+- `b_proj`、`f_a_proj` **不并入**宽 GEMM。源码注释的理由是：把 96 + 128 这种窄输出拼进去会让输出维度变得别扭，影响 GEMM kernel 选择。加载后 `_merge_bfa_weights` 把这两个同输入的小 GEMV 合成一个 `[f_a | b]`；在 CUDA graph 的 decode 中，它放在 side stream 上，与宽 GEMM 重叠执行。
+- `A_log`、`dt_bias`、`lower_bound` 随 `RadixLinearAttention` 交给 `KDAAttnBackend`，门的激活在 kernel 内完成：prefill 时由 `kda_gate_chunk_cumsum` 把 safe gate、块内 cumsum 和 \(\beta\) 的 sigmoid 融成一个 kernel（`beta_is_raw=True`）；decode 时直接融进 recurrent kernel。q/k 的 L2Norm 同样在 kernel 内（`use_qk_l2norm_in_kernel=True`）。
+- `o_norm` 是 `FusedRMSNormGated(head_dim, activation="sigmoid")`。decode / verify 时，模型把门张量交给 backend（`_k3_onorm_gate`），能融合的 kernel 会把门控 RMSNorm 也一起算掉。
+- TP 按 head 切：TP8 时每张卡 12 个 head，对应 `A_log` 12 个、`dt_bias` 12×128 个、`b_proj` 12 行；`f_a_proj` 只有 128 个输出，用 `ReplicatedLinear` 每卡一份；`o_proj` 行并行，attention-TP 的求和不在 `o_proj` 内做（`reduce_results=False`），而是推迟到层边界，与 residual 相加一起融合进 all-reduce。
 
 ### 在 SGLang 中的实现
 
@@ -280,5 +359,7 @@ Linear attention 的核心是把 softmax attention 随长度增长的 KV cache�
 
 - delta rule 用“只写误差”实现改写，相当于每个 token 对记忆做一步在线回归；
 - 遗忘门负责淘汰旧信息。GDN 用每 head 一个标量，KDA 把它细化成逐通道向量，让不同特征有不同的时间尺度。
+
+落到 Kimi K3 的权重上，可学习参数几乎全在递推的两端：99% 是搬运内容的 q/k/v/g/o 大矩阵，决定写入与遗忘的 β、α 只占不到 1%，而递推本身没有权重。
 
 工程上，chunkwise 算法让 prefill 能并行，recurrent kernel 让 decode 只需常数开销。SGLang 用“full attention 层 per-token KV + linear 层 per-request 状态 slot”的两种显存来服务混合模型；代价是状态不可切分，prefix cache 和投机解码都要靠显式的状态快照来补。

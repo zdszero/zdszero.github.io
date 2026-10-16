@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 540" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="540" rx="12" fill="#ffffff"/>
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#868e96"/>
+    </marker>
+    <marker id="arA" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#f08c00"/>
+    </marker>
+  </defs>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">SGLang 中一层 MLA：共用前半段与 cache，后半段分两条路</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">DeepseekV2AttentionMLA；H = 本 rank 的头数，形状省略 batch 维</text>
+
+  <!-- shared front -->
+  <rect x="30" y="100" width="100" height="64" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="80" y="126" text-anchor="middle" font-size="13" font-weight="700" fill="#495057">hidden X</text>
+  <text x="80" y="146" text-anchor="middle" font-size="11" fill="#868e96" font-family="monospace">[T, 7168]</text>
+  <rect x="156" y="100" width="210" height="64" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="261" y="124" text-anchor="middle" font-size="12.5" font-weight="700" fill="#495057">fused_qkv_a_proj_with_mqa</text>
+  <text x="261" y="144" text-anchor="middle" font-size="11" fill="#868e96" font-family="monospace">[T, 1536 + 512 + 64]</text>
+  <text x="261" y="158" text-anchor="middle" font-size="10.5" fill="#868e96">W_DQ、W_DKV、W_KR 合成一个 GEMM</text>
+
+  <rect x="400" y="76" width="230" height="40" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="414" y="101" font-size="12" fill="#495057">q_a_layernorm → q_b_proj → <tspan font-family="monospace">q</tspan></text>
+  <rect x="400" y="124" width="230" height="40" rx="8" fill="#fff9db" stroke="#f08c00"/>
+  <text x="414" y="149" font-size="12" fill="#495057">kv_a_layernorm → <tspan font-weight="700" fill="#e8590c">c_KV</tspan> <tspan font-family="monospace" fill="#868e96">[T, 512]</tspan></text>
+  <rect x="400" y="172" width="230" height="40" rx="8" fill="#fff9db" stroke="#f08c00"/>
+  <text x="414" y="197" font-size="12" fill="#495057">RoPE → <tspan font-weight="700" fill="#e8590c">k_pe</tspan> <tspan font-family="monospace" fill="#868e96">[T, 64]</tspan>，所有头共享</text>
+  <g stroke="#868e96" stroke-width="2" fill="none">
+    <path d="M130 132 H152" marker-end="url(#ar)"/>
+    <path d="M366 132 H376 V96 H396" marker-end="url(#ar)"/>
+    <path d="M376 132 V144 H396" marker-end="url(#ar)"/>
+    <path d="M376 144 V192 H396" marker-end="url(#ar)"/>
+  </g>
+  <text x="640" y="101" font-size="11" fill="#868e96" font-family="monospace">[T, H, 128 + 64]</text>
+
+  <!-- KV cache -->
+  <rect x="690" y="122" width="180" height="92" rx="10" fill="#fff4e6" stroke="#f08c00" stroke-width="1.5"/>
+  <text x="780" y="144" text-anchor="middle" font-size="12.5" font-weight="700" fill="#e8590c">MLATokenToKVPool</text>
+  <text x="780" y="164" text-anchor="middle" font-size="11" fill="#495057" font-family="monospace">kv_buffer[layer]</text>
+  <text x="780" y="182" text-anchor="middle" font-size="11" fill="#495057" font-family="monospace">[size, 1, 576]</text>
+  <text x="780" y="202" text-anchor="middle" font-size="11" fill="#868e96">唯一被缓存的东西</text>
+  <g stroke="#f08c00" stroke-width="2" fill="none">
+    <path d="M630 144 H686" marker-end="url(#arA)"/>
+    <path d="M630 192 H686" marker-end="url(#arA)"/>
+  </g>
+  <text x="658" y="174" text-anchor="middle" font-size="10.5" fill="#e8590c">写入</text>
+  <!-- Normal lane -->
+  <rect x="30" y="236" width="840" height="112" rx="10" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="48" y="259" font-size="13.5" font-weight="700" fill="#3b5bdb">Normal（MHA / MHA_ONE_SHOT / MHA_CHUNKED_KV）</text>
+  <text x="852" y="259" text-anchor="end" font-size="11" fill="#868e96">forward_mha.py：forward_normal_prepare / core</text>
+  <rect x="48" y="276" width="150" height="56" rx="8" fill="#ffffff" stroke="#4c6ef5"/>
+  <text x="123" y="299" text-anchor="middle" font-size="12" font-weight="700" fill="#3b5bdb">kv_b_proj(c_KV)</text>
+  <text x="123" y="318" text-anchor="middle" font-size="10.5" fill="#868e96" font-family="monospace">k_nope, v [S, H, 128]</text>
+  <rect x="220" y="276" width="150" height="56" rx="8" fill="#ffffff" stroke="#4c6ef5"/>
+  <text x="295" y="299" text-anchor="middle" font-size="12" font-weight="700" fill="#3b5bdb">k = k_nope ‖ k_pe</text>
+  <text x="295" y="318" text-anchor="middle" font-size="10.5" fill="#868e96">k_pe 广播到 H 个头</text>
+  <rect x="392" y="276" width="160" height="56" rx="8" fill="#ffffff" stroke="#4c6ef5"/>
+  <text x="472" y="299" text-anchor="middle" font-size="12" font-weight="700" fill="#3b5bdb">attn_mha</text>
+  <text x="472" y="318" text-anchor="middle" font-size="10.5" fill="#868e96">qk 192 / v 128，H 个 KV 头</text>
+  <rect x="574" y="276" width="150" height="56" rx="8" fill="#ffffff" stroke="#4c6ef5"/>
+  <text x="649" y="299" text-anchor="middle" font-size="12" font-weight="700" fill="#3b5bdb">输出已在头空间</text>
+  <text x="649" y="318" text-anchor="middle" font-size="10.5" fill="#868e96" font-family="monospace">[T, H·128]</text>
+  <rect x="746" y="276" width="108" height="56" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="800" y="309" text-anchor="middle" font-size="12" font-weight="700" fill="#495057">o_proj</text>
+
+  <!-- Absorb lane -->
+  <rect x="30" y="362" width="840" height="112" rx="10" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="48" y="385" font-size="13.5" font-weight="700" fill="#0b7285">Absorb（MLA）</text>
+  <text x="852" y="385" text-anchor="end" font-size="11" fill="#868e96">forward_mla.py：forward_absorb_prepare / core</text>
+  <rect x="48" y="402" width="150" height="56" rx="8" fill="#ffffff" stroke="#0ca678"/>
+  <text x="123" y="425" text-anchor="middle" font-size="12" font-weight="700" fill="#0b7285">bmm(q_nope, w_kc)</text>
+  <text x="123" y="444" text-anchor="middle" font-size="10.5" fill="#868e96" font-family="monospace">[T, H, 512]</text>
+  <rect x="220" y="402" width="150" height="56" rx="8" fill="#ffffff" stroke="#0ca678"/>
+  <text x="295" y="425" text-anchor="middle" font-size="12" font-weight="700" fill="#0b7285">q̃ ‖ q_pe</text>
+  <text x="295" y="444" text-anchor="middle" font-size="10.5" fill="#868e96" font-family="monospace">[T, H, 576]</text>
+  <rect x="392" y="402" width="160" height="56" rx="8" fill="#ffffff" stroke="#0ca678"/>
+  <text x="472" y="425" text-anchor="middle" font-size="12" font-weight="700" fill="#0b7285">attn_mqa</text>
+  <text x="472" y="444" text-anchor="middle" font-size="10.5" fill="#868e96">qk 576 / v 512，1 个 KV 头</text>
+  <rect x="574" y="402" width="150" height="56" rx="8" fill="#ffffff" stroke="#0ca678"/>
+  <text x="649" y="425" text-anchor="middle" font-size="12" font-weight="700" fill="#0b7285">bmm(·, w_vc)</text>
+  <text x="649" y="444" text-anchor="middle" font-size="10.5" fill="#868e96" font-family="monospace">→ [T, H·128]</text>
+  <rect x="746" y="402" width="108" height="56" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="800" y="435" text-anchor="middle" font-size="12" font-weight="700" fill="#495057">o_proj</text>
+
+  <g stroke="#868e96" stroke-width="2" fill="none">
+    <path d="M198 304 H216" marker-end="url(#ar)"/>
+    <path d="M370 304 H388" marker-end="url(#ar)"/>
+    <path d="M552 304 H570" marker-end="url(#ar)"/>
+    <path d="M724 304 H742" marker-end="url(#ar)"/>
+    <path d="M198 430 H216" marker-end="url(#ar)"/>
+    <path d="M370 430 H388" marker-end="url(#ar)"/>
+    <path d="M552 430 H570" marker-end="url(#ar)"/>
+    <path d="M724 430 H742" marker-end="url(#ar)"/>
+  </g>
+
+  <!-- note -->
+  <rect x="30" y="486" width="840" height="40" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="450" y="511" text-anchor="middle" font-size="12" fill="#495057">两条路径读写同一份 576 维 cache；差别只是 W_UK、W_UV 乘在 KV 侧（kv_b_proj），还是乘在 q / 输出侧（w_kc、w_vc）</text>
+</svg>
