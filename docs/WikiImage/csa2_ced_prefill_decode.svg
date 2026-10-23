@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 560" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="560" rx="12" fill="#ffffff"/>
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#868e96"/>
+    </marker>
+  </defs>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">CED：encoder / decoder 是层的划分，prefill 与 decode 走不同的路径</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">横轴是 token，纵轴是层（下 20 层 encoder、上 20 层 decoder）；着色的区域才真正被计算，宽度为示意</text>
+
+  <!-- Prefill panel -->
+  <rect x="30" y="76" width="530" height="400" rx="10" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="50" y="101" font-size="14" font-weight="700" fill="#212529">Prefill：一次处理 N 个 prompt token</text>
+  <text x="60" y="186" text-anchor="middle" font-size="11" font-family="monospace" fill="#5f3dc4">L21</text>
+  <text x="60" y="200" text-anchor="middle" font-size="11" font-family="monospace" fill="#5f3dc4">–L40</text>
+  <text x="60" y="262" text-anchor="middle" font-size="11" font-family="monospace" fill="#0b7285">④</text>
+  <text x="60" y="332" text-anchor="middle" font-size="11" font-family="monospace" fill="#3b5bdb">L1</text>
+  <text x="60" y="346" text-anchor="middle" font-size="11" font-family="monospace" fill="#3b5bdb">–L20</text>
+
+  <!-- decoder band: skipped region -->
+  <rect x="90" y="128" width="398" height="110" rx="8" fill="#ffffff" stroke="#adb5bd" stroke-dasharray="5 4"/>
+  <text x="250" y="174" text-anchor="middle" font-size="12.5" font-weight="700" fill="#495057">decoder 跳过：绝大多数 prompt token</text>
+  <text x="250" y="193" text-anchor="middle" font-size="11.5" fill="#868e96">不进入 L21–L40 的 attention / MoE</text>
+  <!-- decoder band: bounded replay -->
+  <rect x="492" y="128" width="38" height="110" rx="6" fill="#fff4e6" stroke="#f08c00" stroke-width="1.5"/>
+  <text x="511" y="178" text-anchor="middle" font-size="10.5" font-weight="700" fill="#e8590c">实</text>
+  <text x="511" y="192" text-anchor="middle" font-size="10.5" font-weight="700" fill="#e8590c">算</text>
+  <!-- exact-recovery receptive field -->
+  <rect x="410" y="124" width="124" height="118" rx="8" fill="none" stroke="#fa5252" stroke-width="1.2" stroke-dasharray="3 3"/>
+  <text x="534" y="119" text-anchor="end" font-size="11" fill="#c92a2a">精确重建需要的范围：L/2 × n_win = 2560 个 token</text>
+
+  <!-- cache 4 projection strip -->
+  <rect x="90" y="248" width="440" height="22" rx="5" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="310" y="263" text-anchor="middle" font-size="11.5" fill="#0b7285">cache ④ = H₂₀ · W<tspan baseline-shift="super" font-size="8">KV</tspan>：L21 只为全部 N 个位置写 global KV，其余计算留给尾段</text>
+
+  <!-- encoder band -->
+  <rect x="90" y="280" width="440" height="110" rx="8" fill="#edf2ff" stroke="#4c6ef5" stroke-width="1.5"/>
+  <text x="310" y="328" text-anchor="middle" font-size="13" font-weight="700" fill="#3b5bdb">Encoder L1–L20：N 个 token 全部计算</text>
+  <text x="310" y="348" text-anchor="middle" font-size="11.5" fill="#495057">产出 cache ①②③（m = 2）+ 各层 SWA KV + 每个位置的 H₂₀</text>
+
+  <!-- token axis -->
+  <path d="M90 404 L528 404" fill="none" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <text x="90" y="420" font-size="11" font-family="monospace" fill="#868e96">token 1</text>
+  <text x="300" y="420" text-anchor="middle" font-size="11" fill="#868e96">prompt</text>
+  <text x="530" y="420" text-anchor="end" font-size="11" font-family="monospace" fill="#868e96">N</text>
+  <text x="530" y="438" text-anchor="end" font-size="11" fill="#e8590c">↑ 橙色：最后 n_win = 128 个 token 过 decoder（Bounded Replay）</text>
+  <text x="50" y="462" font-size="12" font-weight="700" fill="#495057">计算量 O(N·L/2 + n_win·L/2)，每个 prompt token 约激活 8B 参数</text>
+
+  <!-- Decode panel -->
+  <rect x="580" y="76" width="290" height="400" rx="10" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="600" y="101" font-size="14" font-weight="700" fill="#212529">Decode：每步 1 个新 token</text>
+  <text x="650" y="186" text-anchor="middle" font-size="11" font-family="monospace" fill="#5f3dc4">L21</text>
+  <text x="650" y="200" text-anchor="middle" font-size="11" font-family="monospace" fill="#5f3dc4">–L40</text>
+  <text x="650" y="332" text-anchor="middle" font-size="11" font-family="monospace" fill="#3b5bdb">L1</text>
+  <text x="650" y="346" text-anchor="middle" font-size="11" font-family="monospace" fill="#3b5bdb">–L20</text>
+  <rect x="680" y="128" width="40" height="110" rx="6" fill="#f3f0ff" stroke="#7048e8" stroke-width="1.5"/>
+  <rect x="680" y="248" width="40" height="22" rx="5" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="680" y="280" width="40" height="110" rx="6" fill="#edf2ff" stroke="#4c6ef5" stroke-width="1.5"/>
+  <text x="732" y="176" font-size="11.5" fill="#5f3dc4">读 cache ④ 中的</text>
+  <text x="732" y="192" font-size="11.5" fill="#5f3dc4">Top-512 + 本层 SWA</text>
+  <text x="732" y="263" font-size="11.5" fill="#0b7285">H₂₀ 投影，追加 ④</text>
+  <text x="732" y="326" font-size="11.5" fill="#3b5bdb">读 cache ①②③</text>
+  <text x="732" y="342" font-size="11.5" fill="#3b5bdb">+ 本层 SWA</text>
+  <path d="M700 404 L700 398" fill="none" stroke="#868e96" stroke-width="2"/>
+  <text x="700" y="420" text-anchor="middle" font-size="11" font-family="monospace" fill="#868e96">token t</text>
+  <text x="600" y="462" font-size="12" font-weight="700" fill="#495057">走满 40 层，约激活 16B 参数</text>
+
+  <!-- note strip -->
+  <rect x="30" y="490" width="840" height="56" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="50" y="512" font-size="12" fill="#495057">encoder / decoder 指同一个 causal 栈的下 20 层与上 20 层，和 PD 分离里的 prefill / decode 阶段是两个维度。</text>
+  <text x="50" y="532" font-size="12" fill="#495057">CED 让 decoder 在 prefill 中的计算与 prompt 长度 N 无关：decoder 的 global KV 只依赖 H₂₀，剩下的依赖只有 decoder 自己的 SWA。</text>
+</svg>

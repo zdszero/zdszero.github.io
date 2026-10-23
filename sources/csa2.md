@@ -2,7 +2,7 @@
 
 **CSA2 = 会跨层复用的 CSA + 两级稀疏检索。**
 
-DeepSeek-V4.1 的全局 attention 分支。前置知识见 [CSA HCA](./hca_csa.md)：V4 的 CSA 已经在**序列方向**把 KV 压成"每 \(m\) 个 token 一条"，CSA2 接着在**层方向**压——让大部分层不再持有自己的一份 cache，也不再自己跑 indexer。下文先讲为什么要往层维度压，再讲把"共享"拆成两个开关的核心设计，然后是三种模式、层次化 indexer 和 V4.1-Flash 的实际排布，最后讨论代价、训练侧支撑与 SGLang 的落点。
+DeepSeek-V4.1 的全局 attention 分支。前置知识见 [CSA HCA](./hca_csa.md)：V4 的 CSA 已经在**序列方向**把 KV 压成"每 \(m\) 个 token 一条"，CSA2 接着在**层方向**压——让大部分层不再持有自己的一份 cache，也不再自己跑 indexer。下文先讲为什么要往层维度压，再讲把"共享"拆成两个开关的核心设计，然后是三种模式、一层 attention 的具体计算、与 CED 的配合、层次化 indexer 和 V4.1-Flash 的实际排布，最后讨论代价、训练侧支撑与 SGLang 的落点。
 
 ### 问题：前两个维度已经压过了，剩下的是层
 
@@ -85,13 +85,69 @@ CSA2 用的就是 Full / Reindex / Reuse 这三格，并且是**静态**分配�
 - **Reindex 不产出 cache，只产出 Top-K**：decoder 的 5 组共用同一份 cache，但每组开头的那一层都会重新选一次；
 - **Reuse 是绝大多数**：30 层既不写 cache 也不跑 indexer。论文给的数字是，一个 Reuse 层 prefill 只需要 **15 个 kernel**、decode 只需要 **11 个**。
 
-**decoder 的 cache 从哪来**：结合 encoder–decoder 结构时（文中记作 CED），decoder 里那个 Full 层的 global KV 不是从本层 hidden state 算的，而是从第 \(L/2\) 层——causal encoder 最后一层——的 hidden state 投影出来：
+### 一层 CSA2 的 attention 具体怎么算
+
+**结论：core attention 本身和 V4 的 CSA 层是同一个形状，仍是"SWA + 稀疏 top-k"。** 每个 query head 在三段 key 上做**一次联合 softmax**：本层 SWA 的最近 128 条、indexer 选中的至多 512 条 main KV，以及一个只进分母的 `attn_sink`：
+
+\[
+\mathbf{o}_{t,i} = \mathrm{softmax}\!\left(\frac{\mathbf{q}_{t,i}\,\big[\,K^{\text{swa}}_t \,\Vert\, K^{\text{main}}_{\text{top-}k}\,\big]^{\top}}{\sqrt{d}} \;\Vert\; s_i\right) \cdot \big[\,V^{\text{swa}}_t \,\Vert\, V^{\text{main}}_{\text{top-}k} \,\Vert\, 0\,\big]
+\]
+
+其余部分也和 V4 一样：MQA（1 个 KV 头，K 与 V 共用同一个 512 维向量）、MLA 风格的低秩 Q、RoPE 只作用在最后 64 维、输出先逆 RoPE 再走 Grouped Output Projection。公式各项的含义见 [CSA HCA](./hca_csa.md)。
+
+**变的是喂给它的四条输入线由谁来算。** 把一层 attention 拆开看：
+
+![一层 CSA2 的 attention](../docs/WikiImage/csa2_layer_attention.svg)
+
+1. **Query**：每层都算，`x → wq_a → q_norm → wq_b`，64 个头 × 512 维；
+2. **SWA KV**：每层都算，来自本层 hidden state 的 `wkv → kv_norm → RoPE`，以 FP8 写入本层的 SWA cache。这是层私有的部分，所以 CED 下 decoder 仍然要 replay（见下一节）；
+3. **main KV**：只有 Full 层算。\(m=1\) 时就是一次线性投影，没有池化；\(m=2\) 时是相邻两个 token 的逐通道 softmax 加权和，两两不重叠、没有 APE。结果过 RMSNorm 得到一个 **RoPE 之前的 latent**，它分两路：加 RoPE 后量化成 FP4，写进压缩 KV cache；再过 `wk → k_norm → RoPE → FP4`，得到 index K。"indexer K 由 main KV 投影"具体指的就是这一步；
+4. **Top-K**：只有 Full / Reindex 层算。打分公式与 V4 的 Lightning Indexer 相同，\(I_{t,s} = \sum_h w_{t,h}\,\mathrm{ReLU}(q_{t,h}\cdot k_s)\)，32 个头 × 128 维，取 top-512。Full 层对全部可见位置打分；Reindex 层先把候选池以外的分数置为 \(-\infty\)，再走同样的 top-k。
+
+| 层类型 | ① Q | ② SWA KV | ③ main KV | ④ Top-K |
+| --- | --- | --- | --- | --- |
+| Full | 本层 | 本层 | 本层 | 本层，全量打分 |
+| Reindex | 本层 | 本层 | 读最近的 Full | 本层，只在候选池内打分 |
+| Reuse | 本层 | 本层 | 读最近的 Full | 沿用最近一次 |
+| 纯 SWA（L1、L2） | 本层 | 本层 | 无 | 无，只有 SWA + sink |
+
+和 V4 相比，core attention 之外的差别有四处：
+
+- **HCA 消失了**。V4 里 HCA 层不做选择、读全部 \(n/128\) 条压缩 KV；V4.1 里所有带 global 分支的层都是 top-k 稀疏；
+- **\(m=1\) 时同一个 token 有两份 KV**：一份是本层的 SWA KV（层私有、FP8），一份是 Full 层投影出的 main KV（跨层共享、FP4）。两者来自不同的投影矩阵，不是同一个向量存了两次；
+- **index K 不再有自己的压缩路径**，直接从 main KV 的 latent 投影，因此和 main KV 一一对应，可以一起被 Reindex / Reuse 层共享；
+- **缓存格式更窄**：main KV 和 index K 都是 FP4。报告说训练时就用 FP4，所以存成 FP4 不会再多一次舍入。
+
+CSA2 本身只规定层与层之间怎么共享，至于 decoder 那份 cache ④ 从哪来、prefill 要算多少层，要看 V4.1 的另一半设计：CED。
+
+### CED：encoder / decoder 是层的划分，不是推理阶段
+
+**先澄清名字。** V4.1 的 Causal Encoder-Decoder（CED）里的 "encoder / decoder"，指的是**同一个 causal Transformer 栈的下 20 层和上 20 层**。两半都是因果的、都是 decoder-only 意义上的自回归层，没有 T5 那种双向 encoder，也没有 cross-attention 的另一路输入。它和 PD 分离里的 prefill / decode 是**两个正交的维度**：
+
+- encoder / decoder 是**层**的划分（纵轴）；
+- prefill / decode 是**推理阶段**（横轴上处理的是 prompt 还是新 token）。
+
+两者的联系只有一条：CED 的划分让 prefill 阶段可以**不让大多数 prompt token 进入 decoder 层**，decode 阶段仍然走满 40 层。报告给出的数字是 prefill 每 token 激活约 8B 参数，decode 每 token 激活约 16B 参数。
+
+**问题：prompt token 为什么要过上半栈？** 普通 decoder-only 模型的 prefill 必须让每个 prompt token 走完全部 \(L\) 层，因为第 \(l\) 层的 KV 来自第 \(l\) 层自己的 hidden state，decode 时每一层都要读这份 KV。如果能让上半栈的 KV 不依赖上半栈自己的计算，prompt token 就可以在 encoder 顶部停下。
+
+**设计：让 decoder 的 global KV 只依赖 \(H_{L/2}\)。** CED 规定 decoder 层的 global KV 不从本层 hidden state 算，而是从第 \(L/2\) 层（encoder 最后一层）的输出投影：
 
 \[
 C_l = H_{L/2}\,W^{KV}_l, \qquad Z_l = H_{L/2}\,W^{Z}_l, \qquad l > \frac{L}{2}
 \]
 
-\(C, Z\) 分别是 KV 条目及其压缩打分，\(W^{KV}_l, W^{Z}_l\) 是逐层不同的投影。Reindex 与 Reuse 不受影响——它们本来就只负责复用。笔者的理解：这样一来，decoder 全部 20 层读的 global KV 只依赖 encoder 的输出，结构上接近 [YOCO](./yoco.md) 的"self-decoder 产出一份 KV、cross-decoder 全部共用"；区别是 CSA2 的 decoder 每层仍有自己的 SWA，且 Top-K 还会在 Reindex 层更新。
+\(C, Z\) 分别是 KV 条目及其压缩打分，\(W^{KV}_l, W^{Z}_l\) 是逐层不同的投影。和 CSA2 合起来看，这个约束在 V4.1-Flash 上几乎是"免费"满足的：decoder 只有 L21 一个 Full 层，它的输入恰好就是 \(H_{20}\)；Reindex 与 Reuse 层本来就只复用 cache ④，不产出 KV。于是 decoder 全部 20 层读的 global KV 只依赖 encoder 的输出，结构上接近 [YOCO](./yoco.md) 的"self-decoder 产出一份 KV、cross-decoder 全部共用"。
+
+**剩下的依赖是 SWA。** CED 只改了 global 分支；SWA 仍然**逐层计算**，每个 decoder 层都有自己的 SWA KV，而它来自本层自己的 hidden state。decode 第一步要读每个 decoder 层最近 \(n_{\text{win}}=128\) 个位置的 SWA KV，所以 prefill 不能完全停在 encoder。精确算出这 128 个位置的 SWA KV 需要它们在上一层的 hidden state，而那又依赖再往前 128 个位置。感受野每层向前扩 128，20 层就是 \(L/2 \times n_{\text{win}} = 2560\) 个 token。对短的多轮追加 prompt，这部分开销不可忽略。
+
+**Decoder SWA Bounded Replay** 的做法是只让 prompt 的**最后 \(n_{\text{win}}\) 个 token** 过 decoder，并把这段的 SWA 截断在段内：位置 \(i\) 的 query 只看 \([\max(s,\, i-W+1),\, i]\) 的 SWA key，\(s\) 是这一段的起点。这样得到的 decoder SWA KV 是近似值，只供后续 decode 使用，不进 prefix cache。报告称对回答质量的影响可以忽略，并在 post-training 中模拟了同样的 replay 做训练适配。prefill 的复杂度因此从 \(O(NL)\) 降到 \(O(NL/2 + n_{\text{win}}\cdot L/2) \approx O(NL/2)\)。
+
+![CED 下 prefill 与 decode 的计算区域](../docs/WikiImage/csa2_ced_prefill_decode.svg)
+
+所以回答"prefill 是否要算完整的 40 层"：**深度上仍然穿过 40 层，宽度上不是**。encoder 20 层处理全部 \(N\) 个 token；decoder 20 层只处理最后 128 个 token。这条尾段有两个用途，一是写出 decode 要用的 decoder SWA KV，二是产生最后一个 prompt token 的 logits，也就是第一个输出 token。decoder 的 global KV（cache ④）覆盖全部 \(N\) 个位置，但它只需要 \(H_{20}\) 的一次投影，不需要 decoder 层的 attention 与 MoE。
+
+放回 PD 分离的语境：prefill 节点跑"encoder 全量 + decoder 尾段"，把 4 份 global cache 和各层最后一个窗口的 SWA KV 交给 decode 节点；decode 节点对每个新 token 走满 40 层，decoder 层读 cache ④ 的 Top-512 加本层 SWA。CED 改变的是 prefill 节点要算多少，PD 的交接对象（global KV + 最后一窗 SWA）和普通 SWA 混合模型没有本质区别。
 
 ### Hierarchical Sparse Indexer
 
@@ -105,6 +161,79 @@ C_l = H_{L/2}\,W^{KV}_l, \qquad Z_l = H_{L/2}\,W^{Z}_l, \qquad l > \frac{L}{2}
 ![层次化 indexer](../docs/WikiImage/csa2_hierarchical_indexer.svg)
 
 候选池在索引层之间**共享**，但每层最终的 Top-K 可以不同。池的大小固定之后，**后续 indexer 每 query 要打分的位置数与 context 长度无关**，只有第一个 Full 层还在扫描全量。复杂度从"每次都是 \(O(N)\)"变成了"**一次 \(O(N)\) + 若干次 \(O(1)\)**"。
+
+#### 分块不是压缩
+
+"每 8 个位置一块"容易和压缩率 \(m\) 混在一起，两者其实是不同粒度上的事：
+
+- **压缩率 \(m\) 是存储粒度**：决定一条 main KV 由几个 token 池化而来。encoder 的 \(m=2\) 会合并 KV，decoder 的 \(m=1\) 不合并，一条 main KV 就是一个 token；
+- **block size 8 是检索粒度**：决定后续层可以在哪些 main KV 里挑。它只对 L21 的分数行做 max-pool，产出一个"哪些位置可以打分"的 mask，**不产生新的 KV**，attention 读的仍然是一条条独立的 main KV。
+
+L21 的一次打分因此有两个产物：
+
+```
+分数行（decoder 里每格 = 一个位置 = 一个 token）
+| 0.1 0.3 0.2 0.9 0.1 0.0 0.2 0.1 | 0.1 0.1 0.2 0.1 0.0 0.1 0.2 0.1 | 0.4 0.8 0.7 ...
+└────────── 块 0：max = 0.9 ──────┘ └────────── 块 1：max = 0.2 ──────┘ └── 块 2：max = 0.8
+
+产物 A：L21 自己的 top-512 个位置     → 本层 attention 用
+产物 B：按块分数取前 2048 块           → 候选池，交给后面的 Reindex 层
+```
+
+块分数取**最大值**而不是均值，是因为一个块里只要有一个位置重要，这个块就该留下；取均值的话，一个 0.9 配七个 0.1 的块会输给一块全是 0.3 的平庸区域。由此还能推出一个性质（笔者的推导，报告未写）：不考虑同分，**池子一定包含 L21 自己的 top-512**。这 512 个位置最多落在 512 个块里，这些块的 max 都不低于第 512 名的分数，而其余块的 max 都比它低，所以它们必然排进前 2048 块。
+
+至于为什么按块召回、而不是直接取分数最高的 16384 个位置，报告没有解释。笔者的理解有两点：一是把重要位置的邻居一起带进池子，后面的层用自己的 Q 可能更需要这些邻居；二是候选集合用 2048 个块号就能表示，同一块的 8 条 KV 在内存里连续，打分时读取更规整。
+
+#### 池里的 16384 个位置是哪些
+
+16384 是池子的**容量上限**，不是序列里固定的某一段：
+
+- **序列不超过 16384**：块数 \(\lceil N/8 \rceil \le 2048\)，所有块都进池，候选池就是全部可见位置，池内打分与全量打分没有区别；
+- **序列超过 16384**：只保留块分数最高的 2048 块。这些块可以散落在整段序列的任何地方，此外最新位置所在的块总会被保留。以 1M context 为例：
+
+```
+位置:  0 ─────────────────────────────────────────────────────── 1M
+块:   [b0][b1][b2] ...                    共 125,000 块           ... [b124999]
+
+池子（举例）:  b37  b38  b2051  b9000  ...  b88123  ...  b124999
+              └ 开头的指令      └ 中间被引用的代码        └ 最近的内容（强制保留）
+              2048 块 × 8 = 16384 个位置，约占全部位置的 1.6%
+```
+
+池子是**每个 query 一份、每步重选**的。decode 时每生成一个新 token，L21 都用这个 token 的 Q 重新对全部历史打分、重新选块，所以第 \(t\) 步和第 \(t+1\) 步的池子可以完全不同；prefill 时每个 prompt token 也各有一份池子，只从它因果可见的位置里选。Reindex 层（L25 / L29 / L33 / L37）在这份池子里各自打分、各自取 top-512，结果可以互不相同，但都出不了 L21 圈定的范围。这就是"召回决定上限"的具体含义。
+
+#### encoder 没有候选池
+
+候选池只存在于 decoder，所以上面的 16384 指的是 decoder 里**未压缩**的位置，一个位置就是一个 token，与 encoder 的 \(m=2\) 压缩无关。encoder 里也没有 Reindex 层：它的 3 组都是 1 Full + 5 Reuse，只有 L3 / L9 / L15 这 3 个 Full 层打分。每个 Full 层都对本层可见的**全部** \(N/2\) 条压缩条目打分，直接选出 top-512（1M context 下约 50 万条），后面的 5 个 Reuse 层沿用这次选择，中间没有候选池这一级。
+
+| | encoder（L1–L20） | decoder（L21–L40） |
+| --- | --- | --- |
+| 压缩率 | \(m=2\)，一条 = 2 个 token | \(m=1\)，一条 = 1 个 token |
+| 打分的层 | 3 个 Full，各自全量打分 | 1 个 Full 全量打分，4 个 Reindex 只在池内打分 |
+| 每次打分的范围 | 全部 \(N/2\) 条 | Full：全部 \(N\) 个；Reindex：≤ 16384 个 |
+| 候选池 | 无 | 有，由 L21 产出 |
+
+只在 decoder 用候选池，是因为那里收益最大：encoder 每组只打一次分，\(m=2\) 又把条目数减半；decoder 不压缩，候选数最多，并且还有 4 次 Reindex 要打分。代码里的判断是 `DeepseekV41Indexer` 的 `uses_candidates = 0 <= candidate_source_layer_id < layer_id`，只有候选池来源层（L21）之后的 index source 层才使用候选池，encoder 层的编号都在它之前。
+
+#### 候选池不减少存储：存多少、打分多少、读多少
+
+候选池容易被误读成"decoder 只保留 16384 条 main KV"。实际上 L21 为全部 \(N\) 个位置都写 main KV，cache ④ 始终有 \(N\) 条，一条也不删。候选池只是**每个 query 的一个 mask**，标出这一步 Reindex 层可以在哪些位置里挑。它必须是 mask 而不是删除：池子每步都重选，第 \(t\) 步没进池子的位置，第 \(t+1\) 步可能就进了；如果真的只保留 16384 条，被丢掉的内容就再也找不回来，模型等于只剩一个有限窗口。
+
+一个 decode step 里的几个数字要分开看：
+
+| | encoder Full（L3 / L9 / L15） | decoder Full（L21） | decoder Reindex |
+| --- | --- | --- | --- |
+| cache 里存多少条 main KV | \(\lfloor N/2 \rfloor\)，3 份各存一份 | \(N\)，一份，20 层共用 | 不存，读 L21 那份 |
+| 每个 query 给多少条打分 | 全部 \(\lfloor N/2 \rfloor\) | 全部 \(N\) | 池内 ≤ 16384 |
+| attention 实际读多少条 | top-512 | top-512 | top-512 |
+
+encoder 是 \(\lfloor N/2 \rfloor\) 而不是 \(N/2\)：\(m=2\) 时两个 token 凑齐才写一条（代码里只在 `seq_len % 2 == 0` 时写入）。\(N\) 为奇数时，最后一个 token 暂时没有 main KV，只能靠 SWA 看到，等下一个 token 到来凑成一对才写入。可见条目数在代码里就是 `(pos + 1) // ratio`。
+
+由此也能分清 CSA2 各部分分别省了什么：
+
+- **省显存靠"40 层只存 4 份"**：每 token 常驻 \(3 \times \tfrac12 + 1 \times 1 = 2.5\) 条 global KV，与候选池无关；
+- **省打分靠候选池**：只缩小 Reindex 层的打分范围。本地 SGLang 默认的 torch 路径仍是先全量打分再遮掉池外，这部分计算只有在 DeepGEMM 候选 indexer 路径下才真正省下（见"attention 计算的落点"）；
+- **省 attention 读取靠 top-512**：无论存了多少、打分了多少，每层每个 query 最终只读 512 条 main KV 加 128 条 SWA。
 
 **训练一致性**：这个机制是 *training-aware* 的，在 post-training 阶段引入，训练与推理使用完全相同的候选域。否则深层 indexer 训练时见过全量位置、推理时只看得到池子，会产生明显的 domain shift。
 
@@ -166,7 +295,7 @@ C_l = H_{L/2}\,W^{KV}_l, \qquad Z_l = H_{L/2}\,W^{Z}_l, \qquad l > \frac{L}{2}
 
 ### 落到 SGLang：从 V4 的实现看要改哪里
 
-**当前本地的 SGLang 代码里没有 CSA2 / V4.1 的实现。** 仓库中 `deepseek_v4_dspark.py` 是投机解码的 draft 模型，代码里的 "reindex" 只出现在 context parallel 的 `apply_cp_reindex`，"hierarchical sparse" 指的是 HiSparse 的 host/device 分层——都与本文无关。所以本节不是"代码在哪"，而是**以 V4 的现有结构为参照，指出 CSA2 会动到的地方**。以下改法都是笔者的推断：
+**本地 SGLang 已经有 V4.1（代码里记作 `dsv41`）的实现**：`DeepseekV41Config`（`srt/configs/deepseek_v41.py`），`DeepseekV41Compressor` / `DeepseekV41Indexer`（`srt/layers/attention/dsv4/dsv41_sparse.py`），以及候选池 indexer（`candidate_indexer.py`）。本页早先版本写的"没有实现"已经过时。下表是实现落地之前，以 V4 结构为参照做的推断，保留作对照；表后的"attention 计算的落点"一小节已对照 `dsv41` 代码核对：
 
 | V4 的现状（已核对代码） | CSA2 需要的变化（推断） |
 | --- | --- |
@@ -181,6 +310,17 @@ C_l = H_{L/2}\,W^{KV}_l, \qquad Z_l = H_{L/2}\,W^{Z}_l, \qquad l > \frac{L}{2}
 
 - **跨层传递的状态**。Top-K 下标和候选池要在一次 forward 里从产出层传到消费层。V4 的每层 attention 是自包含的，CSA2 需要在 forward batch 上挂一份"最近一次 Full / Reindex 的结果"；
 - **decoder 的 KV 来自 \(H_{L/2}\)**。这让 decoder 那份 cache 的写入时机落在 encoder 跑完之后，与逐层写 cache 的现有流程不同。
+
+#### attention 计算的落点（已核对代码）
+
+推断表的方向大体成立，但实现比"新增模式字段"更隐式：代码里**没有 Full / Reindex / Reuse 的枚举**，层的角色由 hf config 的列表决定。`MqaAttentionBase` 构造时，只有 `kv_source_layer_ids` 里的层挂 `DeepseekV41Compressor`，只有 `index_source_layer_ids` 里的层挂 `DeepseekV41Indexer`。两样都没有的层就是 Reuse，它通过内存池的 `source_layer_of` 读最近一个 kv_source 层的压缩 KV 与 index K。Q、SWA KV、`attn_sink` 在 `MqaAttentionBase` 里每层都有。
+
+- **Reindex 没有专门的 kernel**（默认路径）：`candidate_source_layer_id` 指定的层打完分后，用 `select_candidate_blocks`（`dsv4/candidate_indexer.py`）按 `candidate_block_size` 取块内最大分，保留前 `candidate_topk_blocks` 块，并强制保留最新位置所在的块。之后的 index source 层把池外分数 `masked_fill` 成 \(-\infty\)，再走普通 `topk`。要注意，这条默认的 torch 路径是**先对全部可见位置算出分数再遮掉池外**，所以 Reindex 层打分的计算量仍是 \(O(N)\)，候选池只限制了选择范围。真正"只算池内"的是 `SGLANG_DSV41_DEEP_GEMM_CANDIDATE_INDEXER`（默认关，需要 SM100 和带 `fp8_fp4_paged_sparse_mqa_logits` 的 DeepGEMM），它只对候选块计算 logits。所有请求都短到放得下时（`_every_request_fits`），decode 会跳过候选池；
+- **decode 与小 prefill**：仍是 V4 那一个 `flash_mla_with_kvcache` 调用。SWA 下标走 `indices`，top-k 下标走 `extra_indices_in_kvcache`，分别指向两份 cache，在 kernel 里拼接；
+- **大 prefill**：`flash_mla_sparse_fwd` 需要单一 KV 序列，所以先把压缩 KV 和 SWA KV 反量化进同一块 bf16 workspace，再用 `combine_topk_swa_indices`（`dsv4/sparse_prefill_utils.py`）把两组下标合成一张表。`SGLANG_OPT_DSV41_PREFILL_KV_REUSE` 让读同一 kv_source 的后续层跳过重复 gather，并在 top-k 没变时复用这张合并下标表；
+- **FP4 缓存有硬件前提**：`KVLayout.V41_FP4`（256 B 数据 + 32 B scale = 288 B/条）只在 SM100 / SM103 且 FlashMLA 支持时启用，此时 SWA cache 用 `KVLayout.V41`（528 B 的 FP8）。SM90 / SM120 会退回 V4 的 584 B 布局。
+
+64 头、`q_lora` 1280、32 个 indexer 头、2048 块 × 8 这些数字来自报告的配置表，代码只从 checkpoint 的 config 读入，`DeepseekV41Config` 里的默认值都是 0 或 −1。
 
 ### 笔者的分析与开放问题
 

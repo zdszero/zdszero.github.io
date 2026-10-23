@@ -93,6 +93,7 @@
         - [H200 迁移 B200](./h200_to_b200_mig.md)
         - [Kimi K25/K26 B200](./kimi_k25_b200.md)
         - [Kimi K3 B200](./kimi_k3_b200.md)
+        - [Prefill batch overlap](./prefill_forward_thread_overlap.md)
 - [A 股事件史](./stages.md)
     - [2005-2007](./2005-2007.md)
     - [2008](./2008.md)

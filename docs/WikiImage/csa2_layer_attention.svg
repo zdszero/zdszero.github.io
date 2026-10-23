@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 600" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="940" height="600" rx="12" fill="#ffffff"/>
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#868e96"/>
+    </marker>
+  </defs>
+  <text x="470" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">一层 CSA2 的 attention：四条输入线，一次联合 softmax</text>
+  <text x="470" y="56" text-anchor="middle" font-size="13" fill="#868e96">①② 每层都算；③ 只有 Full 层算；④ 只有 Full / Reindex 层算。Reuse 层只剩 ①②，③④ 的结果从前层读</text>
+
+  <!-- lane 1: Query -->
+  <rect x="30" y="76" width="620" height="62" rx="9" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="44" y="100" font-size="13.5" font-weight="700" fill="#3b5bdb">① Query</text>
+  <text x="44" y="120" font-size="11" fill="#868e96">每层都算</text>
+  <text x="150" y="100" font-size="11.5" font-family="monospace" fill="#495057">x → wq_a → q_norm → q_lora(1280) → wq_b → RoPE</text>
+  <text x="150" y="122" font-size="11.5" fill="#3b5bdb">产出 Q：64 个头 × 512 维，RoPE 只作用在最后 64 维</text>
+
+  <!-- lane 2: SWA KV -->
+  <rect x="30" y="150" width="620" height="62" rx="9" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="44" y="174" font-size="13.5" font-weight="700" fill="#0b7285">② SWA KV</text>
+  <text x="44" y="194" font-size="11" fill="#868e96">每层都算</text>
+  <text x="150" y="174" font-size="11.5" font-family="monospace" fill="#495057">x → wkv → kv_norm → RoPE → FP8</text>
+  <text x="150" y="196" font-size="11.5" fill="#0b7285">写入本层 SWA cache，attention 读最近 128 个 token</text>
+  <!-- lane 3: main KV (Full only) -->
+  <rect x="30" y="224" width="620" height="84" rx="9" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="44" y="248" font-size="13.5" font-weight="700" fill="#5f3dc4">③ main KV</text>
+  <text x="44" y="268" font-size="11" fill="#868e96">只有 Full 层</text>
+  <text x="44" y="284" font-size="11" fill="#868e96">（Compressor）</text>
+  <text x="150" y="248" font-size="11.5" font-family="monospace" fill="#495057">m=1: wkv(x)   m=2: Σ softmax(wgate·x) ⊙ wkv·x（两两不重叠）</text>
+  <text x="150" y="268" font-size="11.5" font-family="monospace" fill="#495057">→ RMSNorm → latent → RoPE → FP4 → 压缩 KV cache</text>
+  <text x="150" y="288" font-size="11.5" font-family="monospace" fill="#495057">           latent → wk → k_norm → RoPE → FP4 → index K</text>
+  <text x="150" y="303" font-size="10.5" fill="#868e96">index K 由 RoPE 之前的 latent 投影得到；Reindex / Reuse 层读最近的 Full 层写的这两份</text>
+
+  <!-- lane 4: indexer (Full/Reindex) -->
+  <rect x="30" y="320" width="620" height="84" rx="9" fill="#fff4e6" stroke="#f08c00"/>
+  <text x="44" y="344" font-size="13.5" font-weight="700" fill="#e8590c">④ Top-K</text>
+  <text x="44" y="364" font-size="11" fill="#868e96">Full / Reindex</text>
+  <text x="44" y="380" font-size="11" fill="#868e96">（Indexer）</text>
+  <text x="150" y="344" font-size="11.5" font-family="monospace" fill="#495057">score(t,s) = Σ_h  w_h(x) · ReLU(q_h · k_s)，32 个头 × 128 维，FP4</text>
+  <text x="150" y="364" font-size="11.5" fill="#495057">Full：对全部可见位置打分；Reindex：候选池外的分数置为 −∞</text>
+  <text x="150" y="384" font-size="11.5" fill="#e8590c">→ 取 top-512 个 main KV 下标；Reuse 层沿用最近一次的选择</text>
+  <text x="150" y="399" font-size="10.5" fill="#868e96">Full（候选池来源层）同时按 8 位一块取块内最大分，保留前 2048 块作为候选池</text>
+
+  <!-- arrows into core -->
+  <path d="M650 107 L700 107 L700 300 L716 300" fill="none" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <path d="M650 181 L686 181 L686 330 L716 330" fill="none" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <path d="M650 266 L672 266 L672 360 L716 360" fill="none" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <path d="M650 362 L660 362 L660 390 L716 390" fill="none" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+
+  <!-- core attention -->
+  <rect x="720" y="250" width="196" height="186" rx="10" fill="#f8f9fa" stroke="#495057" stroke-width="1.5"/>
+  <text x="818" y="274" text-anchor="middle" font-size="13.5" font-weight="700" fill="#212529">core attention</text>
+  <text x="818" y="292" text-anchor="middle" font-size="10.5" fill="#868e96">每个头一次 softmax</text>
+  <rect x="734" y="302" width="168" height="24" rx="5" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="818" y="318" text-anchor="middle" font-size="11" fill="#0b7285">SWA：≤ 128 条（FP8）</text>
+  <rect x="734" y="332" width="168" height="24" rx="5" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="818" y="348" text-anchor="middle" font-size="11" fill="#5f3dc4">main KV：≤ 512 条（FP4）</text>
+  <rect x="734" y="362" width="168" height="24" rx="5" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="818" y="378" text-anchor="middle" font-size="11" fill="#495057">attn_sink：每头 1 个 logit</text>
+  <text x="818" y="404" text-anchor="middle" font-size="10.5" fill="#495057">MQA：1 个 KV 头，K = V</text>
+  <text x="818" y="422" text-anchor="middle" font-size="10.5" fill="#495057">输出每头 512 维</text>
+  <path d="M818 436 L818 462" fill="none" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <rect x="720" y="466" width="196" height="46" rx="9" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="818" y="486" text-anchor="middle" font-size="11.5" font-weight="700" fill="#3b5bdb">逆 RoPE → 分 8 组</text>
+  <text x="818" y="503" text-anchor="middle" font-size="11" font-family="monospace" fill="#495057">wo_a(组内) → wo_b</text>
+
+  <!-- comparison strip -->
+  <rect x="30" y="420" width="660" height="92" rx="9" fill="#ffffff" stroke="#e9ecef"/>
+  <text x="44" y="442" font-size="12.5" font-weight="700" fill="#212529">与 V4 对比：core attention 的形状不变，变的是输入线由谁来画</text>
+  <text x="44" y="462" font-size="11.5" fill="#495057">V4：每个 CSA 层都自己画 ③④（③ 有 overlap 和 APE），HCA 层不画 ④，读全部压缩条目</text>
+  <text x="44" y="481" font-size="11.5" fill="#495057">V4.1：③ 只在 4 个 Full 层画，④ 只在 8 个 Full / Reindex 层画，30 个 Reuse 层只画 ①②</text>
+  <text x="44" y="500" font-size="11.5" fill="#495057">缓存格式：压缩 KV 从 FP8（584 B）改为 FP4（288 B），index K 也是 FP4</text>
+
+  <!-- note strip -->
+  <rect x="30" y="526" width="886" height="56" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="44" y="548" font-size="12" fill="#495057">仍是 SWA + 稀疏 top-k：每个 query 在「本层 SWA ≤128 条 + 选中的 main KV ≤512 条 + sink」上做一次 softmax，与 V4 同一个 FlashMLA 调用。</text>
+  <text x="44" y="568" font-size="12" fill="#495057">CSA2 的变化全在上游：谁产出 main KV、谁打分选 top-k，以及打分的范围有多大。</text>
+</svg>
