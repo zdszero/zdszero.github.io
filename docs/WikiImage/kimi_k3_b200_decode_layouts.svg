@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 560" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="920" height="560" rx="12" fill="#ffffff"/>
+  <text x="460" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">两种 decode 布局下，一张 B200 上装着什么</text>
+  <text x="460" y="56" text-anchor="middle" font-size="13" fill="#868e96">专家侧完全相同（EP16）；差别全在 attention 侧：按请求切（DP16）还是按 head + token 切（DP2 × DCP8）</text>
+
+  <!-- column headers -->
+  <rect x="210" y="74" width="340" height="34" rx="8" fill="#0ca678"/>
+  <text x="380" y="96" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">A · DP16（attn_tp = 1）</text>
+  <rect x="560" y="74" width="340" height="34" rx="8" fill="#7048e8"/>
+  <text x="730" y="96" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">B · DP2 × DCP8（attn_tp = 8）</text>
+
+  <!-- row labels -->
+  <g font-size="12.5" font-weight="700" fill="#495057">
+    <text x="24" y="138">一张卡服务谁</text>
+    <text x="24" y="194">路由专家</text>
+    <text x="24" y="250">非专家权重</text>
+    <text x="24" y="306">KDA state</text>
+    <text x="24" y="362">MLA latent KV</text>
+    <text x="24" y="418">每层额外通信</text>
+  </g>
+  <g font-size="10.5" fill="#868e96">
+    <text x="24" y="155">请求归属</text>
+    <text x="24" y="211">896 × 92 层，MXFP4</text>
+    <text x="24" y="267">attn / shared / latent proj</text>
+    <text x="24" y="323">69 层 × 96 head，fp32</text>
+    <text x="24" y="379">24 层，fp8，576 B/层/token</text>
+    <text x="24" y="435">decode 一步</text>
+  </g>
+
+  <!-- DP16 cells -->
+  <g font-size="11.5">
+    <rect x="210" y="118" width="340" height="46" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+    <text x="224" y="138" fill="#0b7285" font-weight="700">本卡独占 24 个请求</text>
+    <text x="224" y="155" fill="#495057">16 个 rank 各走各的 batch，总并发 384</text>
+
+    <rect x="210" y="174" width="340" height="46" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+    <text x="224" y="194" fill="#495057" font-weight="700">1/16 的专家 ≈ 90 GB</text>
+    <text x="224" y="211" fill="#868e96">DeepEP low_latency + deep_gemm masked GEMM</text>
+
+    <rect x="210" y="230" width="340" height="46" rx="8" fill="#fff5f5" stroke="#fa5252"/>
+    <text x="224" y="250" fill="#c92a2a" font-weight="700">本来是完整副本 ≈ 60 GB（FP8）</text>
+    <text x="224" y="267" fill="#495057">→ weight shard：机内 8 卡各存 1/8，用时 AllGather</text>
+
+    <rect x="210" y="286" width="340" height="46" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+    <text x="224" y="306" fill="#0b7285" font-weight="700">每请求全部 96 head ≈ 0.43 GB</text>
+    <text x="224" y="323" fill="#495057">24 + extra 8 个 slot，全在本卡</text>
+
+    <rect x="210" y="342" width="340" height="46" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+    <text x="224" y="362" fill="#0b7285" font-weight="700">本卡请求的全部 token：13.5 KB / token</text>
+    <text x="224" y="379" fill="#495057">单请求上下文受单卡 HBM 限制</text>
+
+    <rect x="210" y="398" width="340" height="46" rx="8" fill="#fff4e6" stroke="#f08c00"/>
+    <text x="224" y="418" fill="#e8590c" font-weight="700">权重 AllGather（侧流预取下一层）</text>
+    <text x="224" y="435" fill="#495057">DeepEP 每卡 dispatch 24 × 6 = 144 行</text>
+  </g>
+
+  <!-- DCP cells -->
+  <g font-size="11.5">
+    <rect x="560" y="118" width="340" height="46" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+    <text x="574" y="138" fill="#5f3dc4" font-weight="700">本机 8 卡共同服务 32 个请求</text>
+    <text x="574" y="155" fill="#495057">2 个 DP 组 = 2 台机器，总并发 64</text>
+
+    <rect x="560" y="174" width="340" height="46" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+    <text x="574" y="194" fill="#495057" font-weight="700">1/16 的专家 ≈ 90 GB</text>
+    <text x="574" y="211" fill="#868e96">masked GEMM block M 降到 32</text>
+
+    <rect x="560" y="230" width="340" height="46" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+    <text x="574" y="250" fill="#5f3dc4" font-weight="700">attention 按 head 天然切成 1/8</text>
+    <text x="574" y="267" fill="#495057">复制 Q 多存 q_b / w_kc，删 kv_b 补回</text>
+
+    <rect x="560" y="286" width="340" height="46" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+    <text x="574" y="306" fill="#5f3dc4" font-weight="700">每请求 12 个 head ≈ 54 MB</text>
+    <text x="574" y="323" fill="#495057">KDA 不做 DCP，就是普通的 head TP</text>
+
+    <rect x="560" y="342" width="340" height="46" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+    <text x="574" y="362" fill="#5f3dc4" font-weight="700">1/8 的 token（slot % 8）：1.7 KB / token</text>
+    <text x="574" y="379" fill="#495057">没有 DCP 时这份 latent 会在 8 卡上各存一份</text>
+
+    <rect x="560" y="398" width="340" height="46" rx="8" fill="#fff4e6" stroke="#f08c00"/>
+    <text x="574" y="418" fill="#e8590c" font-weight="700">每个 MLA 层 1 次机内 A2A（O + LSE）</text>
+    <text x="574" y="435" fill="#495057">SP-MoE 的 RS / AG；DeepEP 每卡只发 1/8 行</text>
+  </g>
+
+  <rect x="20" y="462" width="880" height="80" rx="10" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="36" y="484" font-size="12" font-weight="700" fill="#212529">怎么读</text>
+  <text x="36" y="503" font-size="11.5" fill="#495057">A 把“一个请求的全部状态”放在一张卡上，用 batch 换吞吐，要解决的是重复权重吃掉 HBM；B 把一个请求摊到 8 张卡，</text>
+  <text x="36" y="521" font-size="11.5" fill="#495057">每张卡每步只读 1/8 的 KDA state 和 1/8 的 MLA KV，用通信换单请求带宽和上下文容量。显存数字为按权重表和 config 的估算值。</text>
+</svg>

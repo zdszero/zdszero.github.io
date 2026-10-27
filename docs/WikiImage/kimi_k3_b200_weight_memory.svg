@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 430" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="920" height="430" rx="12" fill="#ffffff"/>
+  <text x="460" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">Decode A（DP16）单卡权重显存：一步步收回来</text>
+  <text x="460" y="56" text-anchor="middle" font-size="13" fill="#868e96">按 safetensors 头估算（GiB，不含 scale、draft 与激活）；路由专家 EP16 后每卡 84.2 GiB 不变，变的全是非专家权重</text>
+
+  <!-- axis: x0=210, 3 px / GiB -->
+  <g font-size="10" fill="#868e96" text-anchor="middle">
+    <text x="210" y="84">0</text>
+    <text x="360" y="84">50</text>
+    <text x="510" y="84">100</text>
+    <text x="660" y="84">150</text>
+    <text x="810" y="84">200</text>
+  </g>
+  <g stroke="#e9ecef" stroke-width="1">
+    <path d="M210 90 L210 340"/><path d="M360 90 L360 340"/><path d="M510 90 L510 340"/>
+    <path d="M660 90 L660 340"/><path d="M810 90 L810 340"/>
+  </g>
+  <path d="M711 88 L711 342" stroke="#fa5252" stroke-width="1.6" stroke-dasharray="5 3"/>
+  <text x="716" y="100" font-size="10.5" fill="#c92a2a">单卡 HBM ≈ 167 GiB（180 GB）</text>
+
+  <!-- row labels -->
+  <g font-size="11.5" fill="#495057">
+    <text x="24" y="118" font-weight="700">BF16，全部副本</text>
+    <text x="24" y="168" font-weight="700">+ 去 vision、MoE shard</text>
+    <text x="24" y="218" font-weight="700">+ ATTN / MoE FP8</text>
+    <text x="24" y="268" font-weight="700">+ attention shard</text>
+    <text x="24" y="318" font-weight="700">+ vocab TP 8</text>
+  </g>
+  <g font-size="10" fill="#868e96">
+    <text x="24" y="132">7 月</text>
+    <text x="24" y="182">luno-4793 / 4801</text>
+    <text x="24" y="232">luno-4914</text>
+    <text x="24" y="282">luno-4912</text>
+    <text x="24" y="332">luno-5003</text>
+  </g>
+
+  <!-- experts (teal), constant 84.2 GiB = 252.6 px -->
+  <g fill="#e6fcf5" stroke="#0ca678">
+    <rect x="210" y="104" width="252.6" height="30" rx="4"/>
+    <rect x="210" y="154" width="252.6" height="30" rx="4"/>
+    <rect x="210" y="204" width="252.6" height="30" rx="4"/>
+    <rect x="210" y="254" width="252.6" height="30" rx="4"/>
+    <rect x="210" y="304" width="252.6" height="30" rx="4"/>
+  </g>
+  <text x="336" y="123" text-anchor="middle" font-size="11" fill="#0b7285" font-weight="700">路由专家 84.2</text>
+
+  <!-- non-expert weights -->
+  <rect x="462.6" y="104" width="319.5" height="30" rx="4" fill="#fff5f5" stroke="#fa5252"/>
+  <text x="622" y="123" text-anchor="middle" font-size="11" fill="#c92a2a" font-weight="700">非专家 106.5（attention 67.4）</text>
+  <text x="790" y="123" font-size="11" fill="#c92a2a" font-weight="700">190.7 装不下</text>
+
+  <rect x="462.6" y="154" width="234.6" height="30" rx="4" fill="#fff4e6" stroke="#f08c00"/>
+  <text x="580" y="173" text-anchor="middle" font-size="11" fill="#e8590c" font-weight="700">78.2（latent + shared 只存 1/8）</text>
+  <text x="705" y="173" font-size="11" fill="#495057" font-weight="700">162.4</text>
+
+  <rect x="462.6" y="204" width="126" height="30" rx="4" fill="#fff4e6" stroke="#f08c00"/>
+  <text x="525.6" y="223" text-anchor="middle" font-size="11" fill="#e8590c" font-weight="700">42.0</text>
+  <text x="597" y="223" font-size="11" fill="#495057" font-weight="700">126.2　非专家 105.7 → 55.8，MoE 部分再 shard</text>
+
+  <rect x="462.6" y="254" width="39.3" height="30" rx="4" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="510" y="273" font-size="11" fill="#495057" font-weight="700">97.3　KDA 28.5 + MLA 4.6 GiB 的投影也只存 1/8</text>
+
+  <rect x="462.6" y="304" width="27.9" height="30" rx="4" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="498" y="323" font-size="11" fill="#495057" font-weight="700">93.5　embedding + lm_head 4.4 → 0.55 GiB</text>
+
+  <rect x="20" y="352" width="880" height="62" rx="10" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="36" y="374" font-size="12" fill="#495057">关键点：纯 DP 下非专家权重比专家还大，BF16 全副本连权重都放不下。FP8 先砍掉一半，weight shard 再把剩下的副本变成</text>
+  <text x="36" y="392" font-size="12" fill="#495057">机内 1/8，最终非专家只剩约 9 GiB，单卡权重从 190 GiB 降到约 94 GiB，腾出约 70 GiB 给 MLA KV、KDA state 和 draft 池。</text>
+  <text x="36" y="408" font-size="10.5" fill="#868e96">draft 的 5 层另有 3.56 GiB，draft weight shard 再省约 3.1 GiB；图中顺序按逻辑叠加，与提交时间不完全一致。</text>
+</svg>

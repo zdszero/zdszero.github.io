@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 440" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="920" height="440" rx="12" fill="#ffffff"/>
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#868e96"/>
+    </marker>
+    <marker id="ara" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#e8590c"/>
+    </marker>
+  </defs>
+  <text x="460" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">Kimi K3 B200 部署形态：P 走流水线，D 走数据并行</text>
+  <text x="460" y="56" text-anchor="middle" font-size="13" fill="#868e96">每个实例 2 机 × 8 卡；P/D 之间用 Mooncake 搬 MLA KV、KDA state 与 draft KV</text>
+
+  <!-- prefill -->
+  <rect x="20" y="80" width="360" height="270" rx="10" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="36" y="104" font-size="14" font-weight="700" fill="#3b5bdb">Prefill · PP16 × TP1</text>
+  <text x="36" y="122" font-size="11" fill="#495057">每卡一段连续层，层内零通信</text>
+  <text x="36" y="148" font-size="11" fill="#868e96">node 0</text>
+  <g font-size="10.5" text-anchor="middle" fill="#3b5bdb">
+    <rect x="36" y="156" width="36" height="30" rx="5" fill="#ffffff" stroke="#4c6ef5"/><text x="54" y="175">s0</text>
+    <rect x="78" y="156" width="36" height="30" rx="5" fill="#ffffff" stroke="#4c6ef5"/><text x="96" y="175">s1</text>
+    <rect x="120" y="156" width="36" height="30" rx="5" fill="#ffffff" stroke="#4c6ef5"/><text x="138" y="175">s2</text>
+    <rect x="162" y="156" width="36" height="30" rx="5" fill="#ffffff" stroke="#4c6ef5"/><text x="180" y="175">s3</text>
+    <rect x="204" y="156" width="36" height="30" rx="5" fill="#ffffff" stroke="#4c6ef5"/><text x="222" y="175">s4</text>
+    <rect x="246" y="156" width="36" height="30" rx="5" fill="#ffffff" stroke="#4c6ef5"/><text x="264" y="175">s5</text>
+    <rect x="288" y="156" width="36" height="30" rx="5" fill="#ffffff" stroke="#4c6ef5"/><text x="306" y="175">s6</text>
+    <rect x="330" y="156" width="36" height="30" rx="5" fill="#fff4e6" stroke="#f08c00"/><text x="348" y="175" fill="#e8590c">s7</text>
+  </g>
+  <text x="36" y="222" font-size="11" fill="#868e96">node 1</text>
+  <g font-size="10.5" text-anchor="middle" fill="#3b5bdb">
+    <rect x="36" y="230" width="36" height="30" rx="5" fill="#ffffff" stroke="#4c6ef5"/><text x="54" y="249">s8</text>
+    <rect x="78" y="230" width="36" height="30" rx="5" fill="#ffffff" stroke="#4c6ef5"/><text x="96" y="249">s9</text>
+    <rect x="120" y="230" width="36" height="30" rx="5" fill="#ffffff" stroke="#4c6ef5"/><text x="138" y="249">s10</text>
+    <rect x="162" y="230" width="36" height="30" rx="5" fill="#ffffff" stroke="#4c6ef5"/><text x="180" y="249">s11</text>
+    <rect x="204" y="230" width="36" height="30" rx="5" fill="#ffffff" stroke="#4c6ef5"/><text x="222" y="249">s12</text>
+    <rect x="246" y="230" width="36" height="30" rx="5" fill="#ffffff" stroke="#4c6ef5"/><text x="264" y="249">s13</text>
+    <rect x="288" y="230" width="36" height="30" rx="5" fill="#ffffff" stroke="#4c6ef5"/><text x="306" y="249">s14</text>
+    <rect x="330" y="230" width="36" height="30" rx="5" fill="#ffffff" stroke="#4c6ef5"/><text x="348" y="249">s15</text>
+  </g>
+  <path d="M348 188 C348 205 54 205 54 226" fill="none" stroke="#e8590c" stroke-width="1.8" stroke-dasharray="4 3" marker-end="url(#ara)"/>
+  <text x="200" y="214" text-anchor="middle" font-size="10" fill="#e8590c">唯一一次跨机：hidden + attn-res bank</text>
+  <text x="36" y="290" font-size="11" fill="#495057">trtllm_mla · flashkda(CuTe) · flashinfer_mxfp4</text>
+  <text x="36" y="308" font-size="11" fill="#495057">chunk 16K · fp8 KV · 无 radix cache</text>
+  <text x="36" y="326" font-size="11" fill="#495057">DSPARK：只算 draft 的 context KV，不出 draft</text>
+
+  <!-- transfer arrow -->
+  <path d="M384 215 L472 165" stroke="#868e96" stroke-width="2" fill="none" marker-end="url(#ar)"/>
+  <path d="M384 215 L472 275" stroke="#868e96" stroke-width="2" fill="none" marker-end="url(#ar)"/>
+  <text x="428" y="212" text-anchor="middle" font-size="10.5" font-weight="700" fill="#e8590c">Mooncake</text>
+  <text x="428" y="228" text-anchor="middle" font-size="9.5" fill="#868e96">KV / state</text>
+
+  <!-- decode A -->
+  <rect x="478" y="80" width="422" height="130" rx="10" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="494" y="104" font-size="14" font-weight="700" fill="#0b7285">Decode A · DP16 × EP16（dcp=1）</text>
+  <text x="494" y="122" font-size="11" fill="#495057">每卡是独立 attention DP rank，attn_tp = 1</text>
+  <g font-size="9.5" text-anchor="middle" fill="#0b7285">
+    <rect x="494" y="134" width="44" height="26" rx="5" fill="#ffffff" stroke="#0ca678"/><text x="516" y="151">24 req</text>
+    <rect x="544" y="134" width="44" height="26" rx="5" fill="#ffffff" stroke="#0ca678"/><text x="566" y="151">24 req</text>
+    <rect x="594" y="134" width="44" height="26" rx="5" fill="#ffffff" stroke="#0ca678"/><text x="616" y="151">24 req</text>
+    <text x="664" y="151" fill="#868e96">… ×16</text>
+  </g>
+  <text x="494" y="182" font-size="11" fill="#495057">总并发 384 · gamma=5 · 吞吐优先</text>
+  <text x="494" y="199" font-size="11" fill="#868e96">难点：非专家权重每卡一份 → weight shard</text>
+
+  <!-- decode B -->
+  <rect x="478" y="222" width="422" height="128" rx="10" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="494" y="246" font-size="14" font-weight="700" fill="#5f3dc4">Decode B · DP2 × DCP8 × EP16</text>
+  <text x="494" y="264" font-size="11" fill="#495057">每机一个 DP 组：KDA 按 head 切，MLA KV 按 token 切</text>
+  <g font-size="9.5" text-anchor="middle" fill="#5f3dc4">
+    <rect x="494" y="276" width="190" height="26" rx="5" fill="#ffffff" stroke="#7048e8"/><text x="589" y="293">node 0：32 req，8 卡共享</text>
+    <rect x="694" y="276" width="190" height="26" rx="5" fill="#ffffff" stroke="#7048e8"/><text x="789" y="293">node 1：32 req，8 卡共享</text>
+  </g>
+  <text x="494" y="324" font-size="11" fill="#495057">总并发 64 · gamma=4 · 单请求延迟 / 长上下文优先</text>
+  <text x="494" y="341" font-size="11" fill="#868e96">难点：MLA latent KV 不能按 head 切 → DCP</text>
+
+  <rect x="20" y="368" width="880" height="54" rx="10" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="36" y="390" font-size="12" fill="#495057">核心取舍：prefill 是算力密集，用 PP 把 93 层摊到 16 卡，层内没有 TP/EP 通信；</text>
+  <text x="36" y="409" font-size="12" fill="#495057">decode 是访存密集，用 EP16 摊开 1.45 TB 的 MXFP4 专家，再在 attention 侧二选一：拼 batch（DP16）或拼单请求带宽（DCP8）。</text>
+</svg>

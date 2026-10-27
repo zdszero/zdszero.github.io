@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 470" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="920" height="470" rx="12" fill="#ffffff"/>
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#868e96"/>
+    </marker>
+  </defs>
+  <text x="460" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">DSPARK draft KV：从“按上下文附加”到“按窗口独立成池”</text>
+  <text x="460" y="56" text-anchor="middle" font-size="13" fill="#868e96">draft 是窗口 2048 的 SWA，只读最近 2048 个 token；数字按 DP16 脚本（每 rank 24 请求、page 64、gamma+1 = 6）计算</text>
+
+  <!-- before -->
+  <rect x="20" y="76" width="880" height="140" rx="10" fill="#fff5f5" stroke="#fa5252"/>
+  <text x="36" y="100" font-size="14" font-weight="700" fill="#c92a2a">之前：draft 的字节数加在 target 每个 token 上</text>
+  <text x="36" y="122" font-size="11.5" fill="#495057">token 池每个 slot 的字节数 = target MLA 13312 B + draft 10240 B = 23552 B</text>
+  <rect x="36" y="134" width="480" height="30" rx="5" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="276" y="154" text-anchor="middle" font-size="11.5" fill="#0b7285" font-weight="700">target MLA latent · 13312 B（56.5%）</text>
+  <rect x="516" y="134" width="369" height="30" rx="5" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="700" y="154" text-anchor="middle" font-size="11.5" fill="#5f3dc4" font-weight="700">draft 5 层 K/V · 10240 B（43.5%）</text>
+  <text x="36" y="186" font-size="11.5" fill="#495057">draft slot 数 = target slot 数，跟上下文一起涨：1M 上下文的请求光 draft 就要 1M × 10240 B ≈ 10 GiB，</text>
+  <text x="36" y="204" font-size="11.5" fill="#868e96">其中窗口外的 99.8% 永远不会被读到；PD 传输也要把整段 draft KV 发过去（128K 上下文 ≈ 1.25 GiB / 请求）</text>
+
+  <!-- after -->
+  <rect x="20" y="230" width="880" height="170" rx="10" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="36" y="254" font-size="14" font-weight="700" fill="#0b7285">之后：target 池只装 target，draft 单独一个按窗口定大小的池</text>
+  <rect x="36" y="268" width="480" height="30" rx="5" fill="#ffffff" stroke="#0ca678"/>
+  <text x="276" y="288" text-anchor="middle" font-size="11.5" fill="#0b7285" font-weight="700">target 池 · 13312 B / token（同样字节约 1.77× 的 token）</text>
+  <rect x="560" y="268" width="325" height="30" rx="5" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="722" y="288" text-anchor="middle" font-size="11.5" fill="#5f3dc4" font-weight="700">draft 紧凑池 · 固定 ≈ 1.50 GiB / rank</text>
+  <path d="M516 283 L556 283" stroke="#868e96" stroke-width="2" stroke-dasharray="4 3" marker-end="url(#ar)"/>
+  <text x="538" y="316" text-anchor="middle" font-size="10" fill="#868e96">slot map</text>
+
+  <g font-size="11" fill="#495057">
+    <text x="36" y="334">每请求页数 = ⌈(2048 + 2 × 6 + 64) / 64⌉ = 34 页 ≈ 2176 token ≈ 21 MiB</text>
+    <text x="36" y="352">池子 = (24 请求 × 34 页 + 1) × 64 × 倍数 3 = 156,864 slot × 10240 B ≈ 1.50 GiB</text>
+    <text x="36" y="370">倍数（A 为 3，B 为 4）给 PD 下重叠的传输 / 重试生命周期留余量</text>
+    <text x="36" y="388" fill="#868e96">PD 只传窗口内的 draft KV：每请求 ≤ 约 21 MiB，与上下文长度无关</text>
+  </g>
+  <g font-size="11" fill="#5f3dc4">
+    <text x="560" y="334" font-weight="700">slot map 的两条约定</text>
+    <text x="560" y="352">draft_id % 64 == full_id % 64（页内偏移不变）</text>
+    <text x="560" y="370">只按页分配，空闲页栈放在 GPU 上</text>
+    <text x="560" y="388" fill="#868e96">去重、出栈、回收都不读回 host</text>
+  </g>
+
+  <rect x="20" y="414" width="880" height="44" rx="10" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="36" y="434" font-size="12" fill="#495057">关键点：draft 池的大小只和“请求数 × 窗口”有关，和上下文长度脱钩；target 每 token 少付 43.5% 的字节。映射表全在 GPU 上维护，</text>
+  <text x="36" y="450" font-size="12" fill="#495057">因为任何一次 pageable 读写都会让 host 等完上一次 forward（注释里实测约 1.6 ms），会打断 decode 的异步调度。</text>
+</svg>

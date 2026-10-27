@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 470" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="920" height="470" rx="12" fill="#ffffff"/>
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#868e96"/>
+    </marker>
+  </defs>
+  <text x="460" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">DSPARK 在 PD 两侧各做什么</text>
+  <text x="460" y="56" text-anchor="middle" font-size="13" fill="#868e96">P 只负责把 draft 的 context KV 准备好；D 每步「一次出 gamma 个 draft → target 验 gamma+1 个」</text>
+
+  <!-- prefill lane -->
+  <text x="24" y="90" font-size="13" font-weight="700" fill="#3b5bdb">Prefill（每个请求一次）</text>
+  <rect x="24" y="100" width="200" height="72" rx="10" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="124" y="124" text-anchor="middle" font-size="12.5" font-weight="700" fill="#3b5bdb">抓 aux hidden</text>
+  <text x="124" y="143" text-anchor="middle" font-size="11" fill="#495057">target 层 7/23/51/67/83</text>
+  <text x="124" y="160" text-anchor="middle" font-size="11" fill="#868e96">分布在 s1/s3/s8/s11/s13</text>
+
+  <rect x="262" y="100" width="200" height="72" rx="10" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="362" y="124" text-anchor="middle" font-size="12.5" font-weight="700" fill="#3b5bdb">就地投影并累加</text>
+  <text x="362" y="143" text-anchor="middle" font-size="11" fill="#495057">dspark_ctx_acc 随 PP proxy 走</text>
+  <text x="362" y="160" text-anchor="middle" font-size="11" fill="#868e96">原始 aux 不上线（luno-4885）</text>
+
+  <rect x="500" y="100" width="200" height="72" rx="10" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="600" y="124" text-anchor="middle" font-size="12.5" font-weight="700" fill="#3b5bdb">s15 写 draft KV</text>
+  <text x="600" y="143" text-anchor="middle" font-size="11" fill="#495057">5 层 SWA，窗口 2048</text>
+  <text x="600" y="160" text-anchor="middle" font-size="11" fill="#868e96">其余 stage 只留 1 页 draft pool</text>
+
+  <rect x="738" y="100" width="160" height="72" rx="10" fill="#fff4e6" stroke="#f08c00"/>
+  <text x="818" y="124" text-anchor="middle" font-size="12.5" font-weight="700" fill="#e8590c">Mooncake</text>
+  <text x="818" y="143" text-anchor="middle" font-size="11" fill="#495057">draft KV 跟 target</text>
+  <text x="818" y="160" text-anchor="middle" font-size="11" fill="#495057">同一批 page 一起发</text>
+
+  <path d="M224 136 L258 136" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <path d="M462 136 L496 136" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <path d="M700 136 L734 136" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <path d="M818 172 L818 210" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+
+  <!-- decode lane -->
+  <text x="24" y="206" font-size="13" font-weight="700" fill="#0b7285">Decode（每一步）</text>
+  <rect x="24" y="216" width="200" height="72" rx="10" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="124" y="240" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0b7285">draft 一次前向</text>
+  <text x="124" y="259" text-anchor="middle" font-size="11" fill="#495057">并行吐出 gamma 个 token</text>
+  <text x="124" y="276" text-anchor="middle" font-size="11" fill="#868e96">A: gamma=5 · B: gamma=4</text>
+
+  <rect x="262" y="216" width="200" height="72" rx="10" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="362" y="240" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0b7285">target verify</text>
+  <text x="362" y="259" text-anchor="middle" font-size="11" fill="#495057">gamma+1 个 token，线性链</text>
+  <text x="362" y="276" text-anchor="middle" font-size="11" fill="#868e96">RAGGED_VERIFY_MODE=static</text>
+
+  <rect x="500" y="216" width="200" height="72" rx="10" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="600" y="240" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0b7285">接受最长前缀</text>
+  <text x="600" y="259" text-anchor="middle" font-size="11" fill="#495057">MLA 直接回收多写的 slot</text>
+  <text x="600" y="276" text-anchor="middle" font-size="11" fill="#868e96">KDA 需要回到前缀末尾的 state</text>
+
+  <rect x="738" y="216" width="160" height="72" rx="10" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="818" y="240" text-anchor="middle" font-size="12.5" font-weight="700" fill="#5f3dc4">compact SWA pool</text>
+  <text x="818" y="259" text-anchor="middle" font-size="11" fill="#495057">≈ reqs × (2048 + gamma)</text>
+  <text x="818" y="276" text-anchor="middle" font-size="11" fill="#868e96">× POOL_MULTIPLIER 3 / 4</text>
+
+  <path d="M224 252 L258 252" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <path d="M462 252 L496 252" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <path d="M818 288 L818 302 L124 302 L124 292" fill="none" stroke="#7048e8" stroke-width="1.6" stroke-dasharray="5 3" marker-end="url(#ar)"/>
+  <text x="470" y="316" text-anchor="middle" font-size="10.5" fill="#5f3dc4">draft 只看最近 2048 个 target token 的 KV</text>
+
+  <!-- replayssm -->
+  <rect x="24" y="330" width="430" height="66" rx="10" fill="#fff5f5" stroke="#fa5252"/>
+  <text x="40" y="352" font-size="12.5" font-weight="700" fill="#c92a2a">朴素 KDA verify：每个 draft 位置存一份 state</text>
+  <text x="40" y="371" font-size="11" fill="#495057">回滚到任意前缀都要有完整 128×128×96 head 的快照</text>
+  <text x="40" y="387" font-size="11" fill="#868e96">每请求每层 gamma+1 份，state 显存与 HBM 写入都翻倍</text>
+
+  <rect x="468" y="330" width="430" height="66" rx="10" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="484" y="352" font-size="12.5" font-weight="700" fill="#0b7285">ReplaySSM：只记输入，接受后再重放</text>
+  <text x="484" y="371" font-size="11" fill="#495057">环里只存 (v, k, gate, beta)；commit 时折进 fp32 checkpoint</text>
+  <text x="484" y="387" font-size="11" fill="#868e96">环长 16 = 不小于 2 × (gamma+1) 的最小 2 的幂</text>
+
+  <rect x="24" y="410" width="874" height="44" rx="10" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="40" y="430" font-size="12" fill="#495057">关键点：draft 的 KV 是 SWA，只需窗口内的 token，所以池子按 window 而不是上下文长度分配；KDA 的回滚不靠快照</text>
+  <text x="40" y="446" font-size="12" fill="#495057">而靠「输入小、可重放」，把 verify 的 state 开销从 O(gamma × state) 降到 O(ring × 输入向量)。</text>
+</svg>

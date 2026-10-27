@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 420" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="920" height="420" rx="12" fill="#ffffff"/>
+  <text x="460" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">PP16 层切分：SGLANG_PP_LAYER_PARTITION = 7,5,7,5,…,6,3</text>
+  <text x="460" y="56" text-anchor="middle" font-size="13" fill="#868e96">每两段恰好是一个 attn-res block（12 层）；7 层段只有 1 个 MLA，5 层段有 2 个 MLA</text>
+  <rect x="28" y="76" width="12" height="12" rx="2" fill="#4c6ef5"/><text x="46" y="86" font-size="11.5" fill="#495057">MLA 层（其余为 KDA；layer 0 是 dense FFN）</text>
+  <path d="M330 76 L340 82 L330 88 z" fill="#7048e8"/><text x="346" y="86" font-size="11.5" fill="#495057">attn-res bank 写入层（idx % 12 == 0）</text>
+  <circle cx="606" cy="82" r="5" fill="#f08c00"/><text x="616" y="86" font-size="11.5" fill="#495057">DSPARK 抓 aux hidden 的层 7/23/51/67/83</text>
+  <path d="M460 112 L460 296" stroke="#e8590c" stroke-width="1.5" stroke-dasharray="5 4"/>
+  <text x="463" y="108" font-size="10.5" fill="#e8590c">← node 0 | node 1 →</text>
+  <text x="52" y="136" text-anchor="middle" font-size="11" font-weight="700" fill="#212529">s0</text>
+  <rect x="28" y="146" width="48" height="112" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <path d="M25 148 L33 154 L25 160 z" fill="#7048e8"/>
+  <rect x="29" y="195" width="46" height="14" rx="2" fill="#4c6ef5"/>
+  <text x="52" y="274" text-anchor="middle" font-size="9.5" fill="#495057" font-family="monospace">0-6</text>
+  <text x="106" y="136" text-anchor="middle" font-size="11" font-weight="700" fill="#212529">s1</text>
+  <rect x="82" y="146" width="48" height="80" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="83" y="147" width="46" height="14" rx="2" fill="#4c6ef5"/>
+  <circle cx="122" cy="154" r="4.5" fill="#f08c00" stroke="#ffffff"/>
+  <rect x="83" y="211" width="46" height="14" rx="2" fill="#4c6ef5"/>
+  <text x="106" y="242" text-anchor="middle" font-size="9.5" fill="#495057" font-family="monospace">7-11</text>
+  <text x="160" y="136" text-anchor="middle" font-size="11" font-weight="700" fill="#212529">s2</text>
+  <rect x="136" y="146" width="48" height="112" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <path d="M133 148 L141 154 L133 160 z" fill="#7048e8"/>
+  <rect x="137" y="195" width="46" height="14" rx="2" fill="#4c6ef5"/>
+  <text x="160" y="274" text-anchor="middle" font-size="9.5" fill="#495057" font-family="monospace">12-18</text>
+  <text x="214" y="136" text-anchor="middle" font-size="11" font-weight="700" fill="#212529">s3</text>
+  <rect x="190" y="146" width="48" height="80" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="191" y="147" width="46" height="14" rx="2" fill="#4c6ef5"/>
+  <rect x="191" y="211" width="46" height="14" rx="2" fill="#4c6ef5"/>
+  <circle cx="230" cy="218" r="4.5" fill="#f08c00" stroke="#ffffff"/>
+  <text x="214" y="242" text-anchor="middle" font-size="9.5" fill="#495057" font-family="monospace">19-23</text>
+  <text x="268" y="136" text-anchor="middle" font-size="11" font-weight="700" fill="#212529">s4</text>
+  <rect x="244" y="146" width="48" height="112" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <path d="M241 148 L249 154 L241 160 z" fill="#7048e8"/>
+  <rect x="245" y="195" width="46" height="14" rx="2" fill="#4c6ef5"/>
+  <text x="268" y="274" text-anchor="middle" font-size="9.5" fill="#495057" font-family="monospace">24-30</text>
+  <text x="322" y="136" text-anchor="middle" font-size="11" font-weight="700" fill="#212529">s5</text>
+  <rect x="298" y="146" width="48" height="80" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="299" y="147" width="46" height="14" rx="2" fill="#4c6ef5"/>
+  <rect x="299" y="211" width="46" height="14" rx="2" fill="#4c6ef5"/>
+  <text x="322" y="242" text-anchor="middle" font-size="9.5" fill="#495057" font-family="monospace">31-35</text>
+  <text x="376" y="136" text-anchor="middle" font-size="11" font-weight="700" fill="#212529">s6</text>
+  <rect x="352" y="146" width="48" height="112" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <path d="M349 148 L357 154 L349 160 z" fill="#7048e8"/>
+  <rect x="353" y="195" width="46" height="14" rx="2" fill="#4c6ef5"/>
+  <text x="376" y="274" text-anchor="middle" font-size="9.5" fill="#495057" font-family="monospace">36-42</text>
+  <text x="430" y="136" text-anchor="middle" font-size="11" font-weight="700" fill="#212529">s7</text>
+  <rect x="406" y="146" width="48" height="80" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="407" y="147" width="46" height="14" rx="2" fill="#4c6ef5"/>
+  <rect x="407" y="211" width="46" height="14" rx="2" fill="#4c6ef5"/>
+  <text x="430" y="242" text-anchor="middle" font-size="9.5" fill="#495057" font-family="monospace">43-47</text>
+  <text x="484" y="136" text-anchor="middle" font-size="11" font-weight="700" fill="#212529">s8</text>
+  <rect x="460" y="146" width="48" height="112" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <path d="M457 148 L465 154 L457 160 z" fill="#7048e8"/>
+  <rect x="461" y="195" width="46" height="14" rx="2" fill="#4c6ef5"/>
+  <circle cx="500" cy="202" r="4.5" fill="#f08c00" stroke="#ffffff"/>
+  <text x="484" y="274" text-anchor="middle" font-size="9.5" fill="#495057" font-family="monospace">48-54</text>
+  <text x="538" y="136" text-anchor="middle" font-size="11" font-weight="700" fill="#212529">s9</text>
+  <rect x="514" y="146" width="48" height="80" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="515" y="147" width="46" height="14" rx="2" fill="#4c6ef5"/>
+  <rect x="515" y="211" width="46" height="14" rx="2" fill="#4c6ef5"/>
+  <text x="538" y="242" text-anchor="middle" font-size="9.5" fill="#495057" font-family="monospace">55-59</text>
+  <text x="592" y="136" text-anchor="middle" font-size="11" font-weight="700" fill="#212529">s10</text>
+  <rect x="568" y="146" width="48" height="112" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <path d="M565 148 L573 154 L565 160 z" fill="#7048e8"/>
+  <rect x="569" y="195" width="46" height="14" rx="2" fill="#4c6ef5"/>
+  <text x="592" y="274" text-anchor="middle" font-size="9.5" fill="#495057" font-family="monospace">60-66</text>
+  <text x="646" y="136" text-anchor="middle" font-size="11" font-weight="700" fill="#212529">s11</text>
+  <rect x="622" y="146" width="48" height="80" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="623" y="147" width="46" height="14" rx="2" fill="#4c6ef5"/>
+  <circle cx="662" cy="154" r="4.5" fill="#f08c00" stroke="#ffffff"/>
+  <rect x="623" y="211" width="46" height="14" rx="2" fill="#4c6ef5"/>
+  <text x="646" y="242" text-anchor="middle" font-size="9.5" fill="#495057" font-family="monospace">67-71</text>
+  <text x="700" y="136" text-anchor="middle" font-size="11" font-weight="700" fill="#212529">s12</text>
+  <rect x="676" y="146" width="48" height="112" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <path d="M673 148 L681 154 L673 160 z" fill="#7048e8"/>
+  <rect x="677" y="195" width="46" height="14" rx="2" fill="#4c6ef5"/>
+  <text x="700" y="274" text-anchor="middle" font-size="9.5" fill="#495057" font-family="monospace">72-78</text>
+  <text x="754" y="136" text-anchor="middle" font-size="11" font-weight="700" fill="#212529">s13</text>
+  <rect x="730" y="146" width="48" height="80" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="731" y="147" width="46" height="14" rx="2" fill="#4c6ef5"/>
+  <rect x="731" y="211" width="46" height="14" rx="2" fill="#4c6ef5"/>
+  <circle cx="770" cy="218" r="4.5" fill="#f08c00" stroke="#ffffff"/>
+  <text x="754" y="242" text-anchor="middle" font-size="9.5" fill="#495057" font-family="monospace">79-83</text>
+  <text x="808" y="136" text-anchor="middle" font-size="11" font-weight="700" fill="#212529">s14</text>
+  <rect x="784" y="146" width="48" height="96" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <path d="M781 148 L789 154 L781 160 z" fill="#7048e8"/>
+  <rect x="785" y="195" width="46" height="14" rx="2" fill="#4c6ef5"/>
+  <text x="808" y="258" text-anchor="middle" font-size="9.5" fill="#495057" font-family="monospace">84-89</text>
+  <text x="862" y="136" text-anchor="middle" font-size="11" font-weight="700" fill="#212529">s15</text>
+  <rect x="838" y="146" width="48" height="48" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="839" y="163" width="46" height="14" rx="2" fill="#4c6ef5"/>
+  <rect x="839" y="179" width="46" height="14" rx="2" fill="#4c6ef5"/>
+  <text x="862" y="210" text-anchor="middle" font-size="9.5" fill="#495057" font-family="monospace">90-92</text>
+  <rect x="28" y="306" width="864" height="96" rx="10" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="44" y="328" font-size="12" font-weight="700" fill="#212529">为什么这样切</text>
+  <text x="44" y="347" font-size="11.5" fill="#495057">· 偶数段从 bank 写入层开始，奇数段只透传 bank → 跨机边 s7→s8 可在 s7 forward 前先发 bank（eager bank）。</text>
+  <text x="44" y="366" font-size="11.5" fill="#495057">· 长前缀下 MLA 的代价随 prefix 增长，KDA 不随之增长；5 层段多 1 个 MLA，层数少 2 层，让两种段在负载上大致持平。</text>
+  <text x="44" y="385" font-size="11.5" fill="#495057">· s15 只放 3 层：它还要做输出侧 attn-res 聚合、final norm、lm_head 采样，以及把 DSPARK draft context KV 写进 draft pool。</text>
+</svg>
