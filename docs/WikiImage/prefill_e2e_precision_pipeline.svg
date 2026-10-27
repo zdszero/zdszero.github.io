@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 470" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="470" rx="12" fill="#ffffff"/>
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#868e96"/>
+    </marker>
+  </defs>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">Prefill 精度对比：固定输入，逐位置对齐</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">两个引擎吃同一条 token 序列，每个位置都在完全相同的上下文上给出一次预测</text>
+
+  <!-- input -->
+  <rect x="30" y="150" width="170" height="130" rx="10" fill="#f8f9fa" stroke="#adb5bd"/>
+  <text x="115" y="176" text-anchor="middle" font-size="13.5" font-weight="700" fill="#495057">同一条输入序列</text>
+  <text x="115" y="204" text-anchor="middle" font-size="12" font-family="monospace" fill="#495057">x₁ x₂ x₃ … x_N</text>
+  <text x="115" y="232" text-anchor="middle" font-size="11.5" fill="#868e96">max_new_tokens = 0</text>
+  <text x="115" y="250" text-anchor="middle" font-size="11.5" fill="#868e96">只做 prefill，不采样</text>
+  <text x="115" y="268" text-anchor="middle" font-size="11.5" fill="#868e96">teacher forcing</text>
+
+  <!-- engines -->
+  <rect x="250" y="90" width="190" height="110" rx="10" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="345" y="116" text-anchor="middle" font-size="13.5" font-weight="700" fill="#0b7285">Base 引擎</text>
+  <text x="345" y="138" text-anchor="middle" font-size="11.5" fill="#495057">已充分验证的版本</text>
+  <text x="345" y="156" text-anchor="middle" font-size="11.5" fill="#495057">= Golden Baseline</text>
+  <text x="345" y="184" text-anchor="middle" font-size="11" font-family="monospace" fill="#0b7285">log p_ref[i, :]</text>
+
+  <rect x="250" y="230" width="190" height="110" rx="10" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="345" y="256" text-anchor="middle" font-size="13.5" font-weight="700" fill="#3b5bdb">Target 引擎</text>
+  <text x="345" y="278" text-anchor="middle" font-size="11.5" fill="#495057">换了 kernel / 并行 / 量化</text>
+  <text x="345" y="296" text-anchor="middle" font-size="11.5" fill="#495057">/ attention backend …</text>
+  <text x="345" y="324" text-anchor="middle" font-size="11" font-family="monospace" fill="#3b5bdb">log p_tgt[i, :]</text>
+
+  <path d="M200 195 L246 150" fill="none" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <path d="M200 235 L246 280" fill="none" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <path d="M440 145 L486 190" fill="none" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <path d="M440 285 L486 240" fill="none" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+
+  <!-- align -->
+  <rect x="490" y="180" width="84" height="70" rx="10" fill="#f8f9fa" stroke="#adb5bd"/>
+  <text x="532" y="208" text-anchor="middle" font-size="12.5" font-weight="700" fill="#495057">逐位置</text>
+  <text x="532" y="228" text-anchor="middle" font-size="12.5" font-weight="700" fill="#495057">求差 Δ</text>
+  <path d="M574 205 L606 130" fill="none" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <path d="M574 215 L606 225" fill="none" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <path d="M574 225 L606 318" fill="none" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+
+  <!-- lanes -->
+  <rect x="610" y="80" width="262" height="86" rx="10" fill="#fff9db" stroke="#f08c00"/>
+  <text x="626" y="104" font-size="13" font-weight="700" fill="#e8590c">① 实际 token 的 logprob</text>
+  <text x="626" y="124" font-size="11" font-family="monospace" fill="#495057">log p(x_{i+1} | x_≤i)，每位置 1 个数</text>
+  <text x="626" y="146" font-size="11.5" fill="#495057">→ MSE（整体）+ Max |Δ|（局部）</text>
+
+  <rect x="610" y="180" width="262" height="86" rx="10" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="626" y="204" font-size="13" font-weight="700" fill="#5f3dc4">② 完整预测分布</text>
+  <text x="626" y="224" font-size="11" font-family="monospace" fill="#495057">P[i, 1..V]，每位置 V 个数</text>
+  <text x="626" y="246" font-size="11.5" fill="#495057">→ KL（整体）+ Max KL（局部）</text>
+
+  <rect x="610" y="280" width="262" height="86" rx="10" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="626" y="304" font-size="13" font-weight="700" fill="#495057">③ 每层 hidden state</text>
+  <text x="626" y="324" font-size="11" font-family="monospace" fill="#495057">h_l[i, :]，每层一个张量</text>
+  <text x="626" y="346" font-size="11.5" fill="#495057">→ rel_diff，定位从哪一层开始偏</text>
+
+  <!-- note -->
+  <rect x="30" y="392" width="842" height="60" rx="10" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="48" y="416" font-size="12" fill="#495057">Prefill 的输入完全固定，N 个位置一次给出 N 次预测，天然可以逐位置对齐；decode 一旦采样出不同 token，后续序列就分叉了。</text>
+  <text x="48" y="436" font-size="12" fill="#495057">均值类指标回答「整体偏了多少」，Max 类指标回答「有没有某个位置坏掉」，两类要一起看。</text>
+</svg>

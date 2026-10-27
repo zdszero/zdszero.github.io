@@ -1,0 +1,740 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    Prefill Logprob MSE
+  </title>
+    <link rel="stylesheet" href="./WikiTheme/theme/bootstrap.css"  />
+        <script defer=""
+        src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+        <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+        </script>
+        <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+        <!-- wiki three-column layout styles/behavior, kept external so the ~5KB
+       block isn't duplicated into every generated page -->
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/wiki-layout.css" />
+  <script defer src="./WikiTheme/wiki-layout.js"></script>
+</head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">Prefill Logprob MSE</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="wiki-layout">
+    <nav class="wiki-sidebar" id="wiki-sidebar" hidden></nav>
+    <main class="wiki-main">
+            <h3
+            id="问题怎么判断新引擎算得还对">问题：怎么判断“新引擎算得还对”</h3>
+            <p>推理引擎几乎每天都在变：换 attention backend、上新的融合
+            kernel、改 TP/DP/CP 切分、调整 chunked prefill 的切法、开
+            radix cache 复用
+            KV。每一处改动都可能引入数值偏差，而偏差几乎从不以“报错”的形式出现——服务照常返回，只是模型悄悄变笨了一点。</p>
+            <p>最直接的检测手段是跑
+            benchmark（GSM8K、MMLU……），但它有两个问题：</p>
+            <ul>
+            <li><strong>不灵敏</strong>：分数是大量样本的离散统计，0.5
+            分的波动可能是噪声，也可能是一个 kernel 在某种 shape
+            下算错了。</li>
+            <li><strong>不可定位</strong>：分数掉了，不知道是哪个请求、哪个位置、哪一层出的问题。</li>
+            </ul>
+            <p>所以需要一种<strong>端到端、连续、可逐位置定位</strong>的数值信号：拿同一份输入分别喂给“可信的版本”和“待测的版本”，直接比较它们算出来的概率。</p>
+            <h3
+            id="抽象固定输入逐位置对齐">抽象：固定输入，逐位置对齐</h3>
+            <p>关键观察是 <strong>prefill
+            天然适合做对比</strong>。一条长度为 <span
+            class="math inline">N</span> 的序列做一次 prefill（teacher
+            forcing），模型在每个位置 <span class="math inline">i</span>
+            都基于完全相同的上下文 <span class="math inline">x_{\le
+            i}</span> 给出一次下一个 token 的预测，一次 forward 就得到
+            <span class="math inline">N</span>
+            组可以一一对齐的结果。</p>
+            <p>Decode 则不同：只要某一步采样出的 token
+            不同，后面的上下文就分叉了，之后的比较失去意义。因此即使要验证
+            decode 路径，常见做法也是把 decode 生成的序列再用 prefill
+            重算一遍，回到“固定输入”的框架里（见后文 SGLang
+            的自洽测试）。</p>
+            <p>在每个对齐的位置上，可以从三个粒度取数据来比：</p>
+            <ol type="1">
+            <li><strong>实际 token 的 logprob</strong>：<span
+            class="math inline">\log p(x_{i+1}\mid x_{\le
+            i})</span>，每个位置一个数，几乎所有引擎都能直接返回。对应
+            <strong>Logprob MSE / Max Error</strong>。</li>
+            <li><strong>完整预测分布</strong>：每个位置一个 <span
+            class="math inline">V</span> 维分布。对应 <strong>KL
+            Divergence / Max KL</strong>。</li>
+            <li><strong>每层 hidden
+            state</strong>：用来定位“从哪一层开始偏”，而不是判断结果好坏。</li>
+            </ol>
+            <figure>
+            <img
+            src="./WikiImage/prefill_e2e_precision_pipeline.svg"
+            alt="Prefill 精度对比：固定输入，逐位置对齐" />
+            <figcaption aria-hidden="true">Prefill
+            精度对比：固定输入，逐位置对齐</figcaption>
+            </figure>
+            <p>每个粒度都要同时看两类统计量：<strong>均值类</strong>（MSE、平均
+            KL）回答“整体偏了多少”，<strong>最大值类</strong>（Max
+            Error、Max KL）回答“有没有某个位置坏掉”。一个只在 chunk
+            边界上出错的
+            bug，可能一万个位置里只坏一两个，均值几乎不动，但 Max
+            会立刻跳出来。</p>
+            <table>
+            <thead>
+            <tr>
+            <th style="text-align: left;">目标</th>
+            <th style="text-align: left;">合适的指标</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td style="text-align: left;">检测新旧引擎输出是否变化</td>
+            <td style="text-align: left;">Logprob MSE</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">衡量完整预测分布的变化</td>
+            <td style="text-align: left;">KL Divergence</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">检测局部严重数值异常</td>
+            <td style="text-align: left;">Max Logprob Error / Max
+            KL</td>
+            </tr>
+            <tr>
+            <td
+            style="text-align: left;">判断新版本是否更接近高精度结果</td>
+            <td style="text-align: left;">相对于 Reference 的 MSE / KL
+            变化</td>
+            </tr>
+            </tbody>
+            </table>
+            <h3
+            id="基准选谁golden-baseline-与高精度-reference">基准选谁：Golden
+            Baseline 与高精度 Reference</h3>
+            <p>“和谁比”决定了指标能回答什么问题：</p>
+            <ul>
+            <li><strong>高精度 Reference</strong>（例如 FP32 /
+            不做激进融合的实现）：回答“新版本是否<strong>更接近真值</strong>”。代价是每次都要跑一遍昂贵的参考实现。</li>
+            <li><strong>Golden
+            Baseline</strong>（已经充分验证过的上一个版本）：回答“新版本<strong>有没有变</strong>”。它不是真值，但工程上足够。</li>
+            </ul>
+            <p>对于 Prefill 测试，如果 Base
+            版本已经经过充分验证，那么将它作为工程上的 Golden Baseline
+            是合理的。此时 Logprob MSE 可以作为非常有效的 Numerical
+            Regression Signal，不需要每次都重新运行高精度
+            Reference；只有当 MSE
+            报警、需要判断“这次变化是变好还是变坏”时，才拿高精度
+            Reference 做裁决。</p>
+            <p>一个容易忽略的前提：logprob 对 GPU 型号、kernel、torch
+            版本都很敏感，<strong>Golden Baseline 必须和 Target
+            在同一套硬件与软件环境下生成</strong>，跨机器的 baseline
+            没有意义。SGLang 的
+            <code>test/manual/test_logprobs.py</code>
+            在文件头就明确说了这一点，所以它要求贡献者先在本机
+            <code>gen</code> 一份 baseline 再 <code>test</code>。</p>
+            <h3 id="logprob-mse">Logprob MSE</h3>
+            <p>Logprob 的 MSE（Mean Squared
+            Error，均方误差），就是对两个推理引擎在相同位置、相同 Token
+            上计算出的 Log Probability 求差、平方，再取平均。</p>
+            <p>假设 Reference 和 Target 引擎分别输出：</p>
+            <p><span class="math display"> \log p_i^{ref},\quad \log
+            p_i^{target} </span></p>
+            <p>那么：</p>
+            <p><span class="math display"> \boxed{
+            \mathrm{MSE}=\frac{1}{N}\sum_{i=1}^{N} \left(\log
+            p_i^{target}-\log p_i^{ref}\right)^2 } </span></p>
+            <p>其中 <span class="math inline">N</span> 是参与比较的
+            Token 预测位置数量。RMSE 就是 <span
+            class="math inline">\sqrt{\mathrm{MSE}}</span>，量纲回到
+            logprob，更直观。</p>
+            <p>例如：</p>
+            <table>
+            <thead>
+            <tr>
+            <th>Token 位置</th>
+            <th>Reference logprob</th>
+            <th>Target logprob</th>
+            <th>平方误差</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>1</td>
+            <td>-1.2</td>
+            <td>-1.3</td>
+            <td>0.0100</td>
+            </tr>
+            <tr>
+            <td>2</td>
+            <td>-2.5</td>
+            <td>-2.4</td>
+            <td>0.0100</td>
+            </tr>
+            <tr>
+            <td>3</td>
+            <td>-0.8</td>
+            <td>-0.85</td>
+            <td>0.0025</td>
+            </tr>
+            <tr>
+            <td>4</td>
+            <td>-3.0</td>
+            <td>-3.2</td>
+            <td>0.0400</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>因此：</p>
+            <p><span class="math display">
+            \mathrm{MSE}=\frac{0.01+0.01+0.0025+0.04}{4} =0.015625
+            </span></p>
+            <p>同一组数据的 Max Error 是 <span
+            class="math inline">\max_i |\Delta_i| = 0.2</span>（位置
+            4）。MSE
+            只需要每个位置一个数，计算便宜、对任何数值变化都很灵敏，因此是最常用的回归信号。</p>
+            <h3 id="kl-divergence">KL Divergence</h3>
+            <p><strong>KL Divergence（Kullback–Leibler Divergence，KL
+            散度）</strong> 衡量的是两个概率分布之间的差异。</p>
+            <p>假设 Reference 和 Target 引擎在同一个 Token 位置输出两个
+            vocabulary 概率分布：</p>
+            <p><span class="math display"> P_{ref}=(p_1,p_2,\ldots,p_V)
+            </span></p>
+            <p><span class="math display">
+            P_{target}=(q_1,q_2,\ldots,q_V) </span></p>
+            <p>KL Divergence 定义为：</p>
+            <p><span class="math display"> \boxed{ D_{KL}(P_{ref}\Vert
+            P_{target}) =\sum_{i=1}^{V}p_i\log\frac{p_i}{q_i} }
+            </span></p>
+            <p>也可以写成：</p>
+            <p><span class="math display"> D_{KL}(P_{ref}\Vert
+            P_{target}) =\sum_{i=1}^{V}p_i(\log p_i-\log q_i)
+            </span></p>
+            <p>这里的 <span class="math inline">V</span> 是 vocabulary
+            size。第二种写法揭示了它和 MSE 的关系：同样是 logprob
+            的差，只是<strong>用 Reference 概率 <span
+            class="math inline">p_i</span>
+            加权</strong>后求和，而不是平方后等权平均。</p>
+            <p>注意，KL 不对称：</p>
+            <p><span class="math display"> D_{KL}(P\Vert Q)\neq
+            D_{KL}(Q\Vert P) </span></p>
+            <p>通常把高精度 Reference 放在前面——“以参考分布的视角，看
+            Target 偏了多少”。</p>
+            <p>假设只有三个 Token：</p>
+            <table>
+            <thead>
+            <tr>
+            <th>Token</th>
+            <th>Reference 概率</th>
+            <th>Target 概率</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>A</td>
+            <td>0.7</td>
+            <td>0.6</td>
+            </tr>
+            <tr>
+            <td>B</td>
+            <td>0.2</td>
+            <td>0.3</td>
+            </tr>
+            <tr>
+            <td>C</td>
+            <td>0.1</td>
+            <td>0.1</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>KL Divergence：</p>
+            <p><span class="math display"> D_{KL}
+            =0.7\log\frac{0.7}{0.6} +0.2\log\frac{0.2}{0.3}
+            +0.1\log\frac{0.1}{0.1} </span></p>
+            <p><span class="math display"> \boxed{D_{KL}\approx0.0268}
+            </span></p>
+            <h3 id="mse-与-kl看到的误差不一样">MSE 与
+            KL：看到的误差不一样</h3>
+            <p>两者最大的区别是：</p>
+            <ul>
+            <li>Logprob MSE：对参与比较的 Logprob
+            误差直接平方平均，<strong>每个 logprob
+            一视同仁</strong>。</li>
+            <li>KL Divergence：按照 Reference
+            概率加权，<strong>更关注高概率 Token
+            的分布变化</strong>。</li>
+            </ul>
+            <p>下图用一个 4-token 的玩具词表构造了两种“误差”：A
+            只动了一个概率 0.001 的尾部 token，B 在两个头部 token
+            之间挪了 0.05 的概率。</p>
+            <figure>
+            <img
+            src="./WikiImage/prefill_e2e_precision_mse_vs_kl.svg"
+            alt="同样是“有误差”，MSE 和 KL 看到的不一样" />
+            <figcaption aria-hidden="true">同样是“有误差”，MSE 和 KL
+            看到的不一样</figcaption>
+            </figure>
+            <p>情况 A 中尾部 token 概率减半，log 差高达 0.69，MSE
+            被平方放大到 0.12；但这个 token 几乎不可能被采到，KL 只有
+            0.0002。情况 B 的 log 差都不大，MSE 不到 A
+            的十分之一，但它实实在在地改变了模型“更想说哪个词”，KL 高出
+            A 三十多倍。</p>
+            <p>这正是两种指标的分工：低概率尾巴里的数值噪声（bf16 下
+            softmax 尾部本来就不精确）会让 MSE
+            显得很吓人，却不影响生成；KL
+            对模型最终预测行为的衡量通常更有意义。反过来，MSE
+            的“过度灵敏”在回归检测里恰恰是优点——任何数值路径的改变它都能看到。</p>
+            <table>
+            <colgroup>
+            <col style="width: 27%" />
+            <col style="width: 48%" />
+            <col style="width: 24%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>对比维度</th>
+            <th>Logprob MSE</th>
+            <th>KL Divergence</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>需要完整 vocabulary</td>
+            <td>不需要，可以只比较 selected logprob</td>
+            <td>需要</td>
+            </tr>
+            <tr>
+            <td>衡量数值一致性</td>
+            <td>很适合</td>
+            <td>适合</td>
+            </tr>
+            <tr>
+            <td>衡量概率分布差异</td>
+            <td>有限</td>
+            <td>很适合</td>
+            </tr>
+            <tr>
+            <td>对低概率 Token 敏感性</td>
+            <td>较高</td>
+            <td>通常较低</td>
+            </tr>
+            <tr>
+            <td>计算成本</td>
+            <td>低</td>
+            <td>较高</td>
+            </tr>
+            <tr>
+            <td>发现少量异常位置</td>
+            <td>结合 Max Error</td>
+            <td>结合 Max KL</td>
+            </tr>
+            </tbody>
+            </table>
+            <h3 id="只用一个-logprob-估-klk3-估计量">只用一个 logprob 估
+            KL：k3 估计量</h3>
+            <p>完整 KL 需要每个位置取回 <span
+            class="math inline">V</span> 维分布（<span
+            class="math inline">V</span>
+            动辄十几万），对线上引擎的接口和带宽都不友好。一个折中是：<strong>只用实际
+            token 的 logprob，构造一个期望等于 KL
+            的估计量</strong>。</p>
+            <p>设实际 token <span class="math inline">x</span> 来自分布
+            <span class="math inline">P</span>，两边对它的 logprob
+            之差为 <span class="math inline">\delta=\log Q(x)-\log
+            P(x)</span>，令</p>
+            <p><span class="math display"> \boxed{
+            k_3(\delta)=(e^{\delta}-1)-\delta } </span></p>
+            <p>则 <span class="math inline">\mathbb{E}_{x\sim
+            P}[k_3]=\mathbb{E}_{P}\!\left[\tfrac{Q}{P}\right]-1-\mathbb{E}_{P}\!\left[\log\tfrac{Q}{P}\right]=0+D_{KL}(P\Vert
+            Q)</span>。它有三个好性质：</p>
+            <ul>
+            <li><strong>无偏</strong>：期望恰好是
+            KL，且只需要每个位置一个数。</li>
+            <li><strong>恒非负</strong>：<span
+            class="math inline">e^\delta\ge
+            1+\delta</span>，正负误差不会像直接平均 <span
+            class="math inline">\delta</span> 那样相互抵消。</li>
+            <li><strong>小误差下就是半个平方误差</strong>：泰勒展开
+            <span
+            class="math inline">k_3=\tfrac12\delta^2+O(\delta^3)</span>。在数值噪声的量级里，它和
+            Logprob MSE 只差一个常数 <span
+            class="math inline">\tfrac12</span>。</li>
+            </ul>
+            <figure>
+            <img src="./WikiImage/prefill_e2e_precision_k3.svg"
+            alt="k3 估计量与 ½δ² 的对比" />
+            <figcaption aria-hidden="true">k3 估计量与 ½δ²
+            的对比</figcaption>
+            </figure>
+            <p>最后一点把前文两个指标串了起来：<strong>MSE
+            之所以是有效的回归信号，是因为在误差小的时候它本身就近似（两倍的）KL</strong>；只有误差大到
+            <span class="math inline">|\delta|</span> 接近 1
+            时两者才分道扬镳，此时 k3 对 <span
+            class="math inline">\delta&gt;0</span>
+            一侧惩罚更重。需要注意，greedy（temperature = 0）生成的
+            token 不是从分布中采样的，严格说期望不再等于 KL，k3
+            只能当作“近似 KL 信号”使用。</p>
+            <h3 id="每个输入-token-的-logprob-是怎么算出来的">每个输入
+            token 的 logprob 是怎么算出来的</h3>
+            <p>前面所有指标都假设“每个输入位置都有一个
+            logprob”。这个数的来历值得单独讲清楚，因为它有一个容易弄错的错位。</p>
+            <p>Causal attention 下，位置 <span
+            class="math inline">j</span> 的 hidden state <span
+            class="math inline">h_j</span> 只看过 <span
+            class="math inline">x_{\le j}</span>。它经过 lm_head
+            得到的分布 <span class="math inline">P(\cdot\mid x_{\le
+            j})</span> 预测的是<strong>下一个</strong>
+            token，所以这一行能打分的是 <span
+            class="math inline">x_{j+1}</span>，而不是 <span
+            class="math inline">x_j</span> 自己：</p>
+            <p><span class="math display"> \log p(x_{j+1}\mid x_{\le j})
+            = z_j[x_{j+1}] - \operatorname{logsumexp}(z_j) </span></p>
+            <p>其中 <span class="math inline">z_j</span> 是第 <span
+            class="math inline">j</span> 行的原始 logits。于是一次长度为
+            <span class="math inline">N</span> 的 prefill：</p>
+            <ul>
+            <li>产出 <span class="math inline">N</span> 行分布，前 <span
+            class="math inline">N-1</span> 行分别给 <span
+            class="math inline">x_1,\ldots,x_{N-1}</span> 打分；</li>
+            <li>第一个 token <span class="math inline">x_0</span>
+            没有上文，没有 logprob，返回 None；</li>
+            <li>最后一行没有“下一个输入”可以打分，它正是用来采样第一个输出
+            token 的那一行。</li>
+            </ul>
+            <figure>
+            <img
+            src="./WikiImage/prefill_e2e_precision_input_logprob.svg"
+            alt="一次 prefill 如何给每个输入 token 算出 logprob" />
+            <figcaption aria-hidden="true">一次 prefill 如何给每个输入
+            token 算出 logprob</figcaption>
+            </figure>
+            <p>实现上就是两次错位：GPU 上第 <span
+            class="math inline">j</span> 行 gather 的是
+            <code>x[j+1]</code>；返回给用户前再右移一位，把结果挂到
+            <span class="math inline">x_{j+1}</span> 下面，使
+            <code>input_token_logprobs[i]</code> 和
+            <code>input_ids[i]</code> 一一对应。</p>
+            <h4 id="一个可以手算的例子">一个可以手算的例子</h4>
+            <p>为了好算，假设词表只有 4 个 token：A、B、C、D。输入是
+            <code>[A, C, B]</code>，<code>logprob_start_len = 0</code>。</p>
+            <table style="width:100%;">
+            <colgroup>
+            <col style="width: 16%" />
+            <col style="width: 16%" />
+            <col style="width: 16%" />
+            <col style="width: 16%" />
+            <col style="width: 16%" />
+            <col style="width: 16%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th style="text-align: left;">返回位置 <span
+            class="math inline">i</span></th>
+            <th style="text-align: left;">用哪个 hidden</th>
+            <th style="text-align: left;">logits (A, B, C, D)</th>
+            <th style="text-align: left;">log_softmax 后 (A, B, C,
+            D)</th>
+            <th style="text-align: left;">真实 token <span
+            class="math inline">x_i</span></th>
+            <th style="text-align: left;">返回值</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td style="text-align: left;">0</td>
+            <td style="text-align: left;">-</td>
+            <td style="text-align: left;">-</td>
+            <td style="text-align: left;">-</td>
+            <td style="text-align: left;">A</td>
+            <td style="text-align: left;">None</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">1</td>
+            <td style="text-align: left;"><span
+            class="math inline">h_0</span>（只看过 A）</td>
+            <td style="text-align: left;">2.0, 1.0, 0.5, −1.0</td>
+            <td style="text-align: left;">−0.50, −1.50, −2.00,
+            −3.50</td>
+            <td style="text-align: left;">C</td>
+            <td style="text-align: left;">−2.00</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">2</td>
+            <td style="text-align: left;"><span
+            class="math inline">h_1</span>（看过 A C）</td>
+            <td style="text-align: left;">0.0, 3.0, 1.0, 0.0</td>
+            <td style="text-align: left;">−3.21, −0.21, −2.21,
+            −3.21</td>
+            <td style="text-align: left;">B</td>
+            <td style="text-align: left;">−0.21</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">（丢弃）</td>
+            <td style="text-align: left;"><span
+            class="math inline">h_2</span>（看过 A C B）</td>
+            <td style="text-align: left;">…</td>
+            <td style="text-align: left;">…</td>
+            <td style="text-align: left;">第一个输出 token</td>
+            <td style="text-align: left;">属于
+            <code>output_token_logprobs</code></td>
+            </tr>
+            </tbody>
+            </table>
+            <p>位置 1 的计算：</p>
+            <p><span class="math display"> \operatorname{logsumexp} =
+            \log\left(e^{2}+e^{1}+e^{0.5}+e^{-1}\right)\approx 2.50
+            </span></p>
+            <p>所以 C 的 logprob 是 <span
+            class="math inline">0.5-2.50=-2.00</span>。位置 2
+            同理，<span
+            class="math inline">\operatorname{logsumexp}\approx
+            3.21</span>，B 的 logprob 是 <span
+            class="math inline">3.0-3.21=-0.21</span>。</p>
+            <p>如果请求里带 <code>top_logprobs_num=2</code>，位置 1
+            还会在 <code>input_top_logprobs</code>
+            里返回分布中最高的两个
+            token：<code>[(A, −0.50), (B, −1.50)]</code>（实际接口返回的是
+            <code>(logprob, token_id, text)</code>
+            三元组，这里简写）。注意 top-k 看的是 <span
+            class="math inline">h_0</span> 这一行的整个分布，和真实
+            token C 是否在其中无关。</p>
+            <h4 id="sglang-的计算路径">SGLang 的计算路径</h4>
+            <ol type="1">
+            <li><p><strong>要 logprob 的 token
+            必须真正算一遍</strong>（<code>managers/schedule_batch.py</code>）。<code>logprob_start_len</code>
+            指定从哪个输入位置开始返回 logprob，-1 表示不要输入
+            logprob。命中 radix cache 的前缀不会重新 forward，也就没有
+            hidden state，所以 <code>Req._compute_max_prefix_len</code>
+            把可复用的前缀限制在
+            <code>min(input_len - 1, logprob_start_len)</code>
+            以内。随后为本次 extend 准备错一位的目标
+            id：<code>origin_input_ids[start+1 : end+1]</code>，序列末尾不够的位置补
+            0（图中的 pad 0），id 还会 clamp 到
+            <code>vocab_size - 1</code>，防止多模态的 hash token
+            越界。Chunked prefill 下这一步按 chunk
+            做，源码注释的例子是输入 <code>[1,2,3,4]</code> 切成
+            <code>[1,2]</code>、<code>[3,4]</code>，目标 id 分别是
+            <code>[2,3]</code> 和 <code>[4,0]</code>。</p></li>
+            <li><p><strong>只把需要的行送进
+            lm_head</strong>（<code>LogitsProcessor._get_pruned_states</code>，<code>layers/logits_processor.py</code>）。不要
+            logprob 时，每条序列只保留最后一个 token 的 hidden，lm_head
+            只算 batch size 行。要 logprob 时保留每条序列
+            <code>[start_len, extend_len)</code>
+            这一段，并生成三组索引：<code>sample_indices</code>
+            指向每条序列的最后一行，交给采样；<code>input_logprob_indices</code>
+            指向参与 input logprob 的行；<code>token_to_seq_idx</code>
+            记录每行属于哪条序列。如果某个 chunk 里一个要 logprob
+            的位置都没有（<code>extend_len == start_len</code>），会把
+            <code>start_len</code> 减
+            1，保证最后一行仍然留给采样。</p></li>
+            <li><p><strong>只算需要的那一个数，不展开整个
+            log_softmax</strong>（<code>InputLogprobProcessor</code>，<code>layers/logprob_processor.py</code>）。logits
+            是 <code>[行数, V]</code> 的矩阵，32k token × 15 万词表的
+            fp32 log_softmax 约 20
+            GB。所以这里按行分块（<code>SGLANG_LOGPROB_CHUNK_SIZE</code>，默认
+            2048），并默认走快路径：每行只在 fp32
+            下算一个归一化常数（<code>row_max</code> 加
+            <code>logsumexp</code>），再用目标 token 的 logit
+            减去它，不物化 <span class="math inline">V</span>
+            维结果；需要 top-k 时，一个融合 kernel 在一次读 logits
+            的过程中同时得到归一化常数和 top-k。开启 deterministic
+            inference 时退回精确的
+            <code>log_softmax</code>，因为换一种规约顺序，prefill 和
+            decode 算出的 logprob 就不再 bit-exact。</p></li>
+            <li><p><strong>跨 chunk
+            拼接，最后右移</strong>（<code>SchedulerLogprobResultProcessor</code>，<code>managers/scheduler_components/logprob_result_processor.py</code>）。Chunked
+            prefill 每一轮把本 chunk 的结果追加到请求上，只在最后一个
+            chunk 收尾：返回值是
+            <code>[None] + logprobs[:-1]</code>，丢掉的末尾元素就是 pad
+            0 那一行；对应的 token id 是
+            <code>origin_input_ids[logprob_start_len:]</code>，最后断言两者等长。Top-k
+            和指定 token id 的 logprob 也做同样的处理。</p></li>
+            </ol>
+            <p>还有一个和精度测试直接相关的细节：<strong>input logprob
+            不受采样参数影响</strong>，它直接用 lm_head 的原始
+            logits，只经过
+            <code>logit_scale</code>、<code>final_logit_softcapping</code>
+            这类模型自带的变换。Output logprob
+            则不同：<code>layers/sampler.py</code> 在非 greedy 时先把
+            logits 原地除以 temperature 再算 logprob（除非设置
+            <code>SGLANG_RETURN_ORIGINAL_LOGPROB</code>）。所以 decode
+            的 output logprob 和 prefill 的 input logprob 只有在
+            temperature = 0 时才是同一个量，这也是下面的自洽测试用
+            greedy 生成的原因。</p>
+            <h3 id="sglang-里的实现">SGLang 里的实现</h3>
+            <p>SGLang
+            的测试代码里同时存在上面几种思路，按“和谁比”可以分成两类：<strong>自身对照</strong>（同一个
+            server 的两条计算路径互为参照）和<strong>滚动 Golden
+            Baseline</strong>（今天的结果和上一次通过的版本比）。</p>
+            <figure>
+            <img
+            src="./WikiImage/prefill_e2e_precision_sglang_tests.svg"
+            alt="SGLang 里的两种基准" />
+            <figcaption aria-hidden="true">SGLang
+            里的两种基准</figcaption>
+            </figure>
+            <h4 id="decode-prefill-自洽kl_test_utils.py">decode ↔︎
+            prefill 自洽：<code>kl_test_utils.py</code></h4>
+            <p><code>python/sglang/test/kl_test_utils.py</code> 里的
+            <code>test_input_output_logprobs_match_helper</code>
+            不需要任何外部 baseline：</p>
+            <ol type="1">
+            <li><code>flush_cache</code> 后用 <code>/generate</code> 以
+            <code>temperature=0</code>、<code>ignore_eos</code>
+            生成，记下 <code>output_ids</code> 和每个输出 token 的
+            logprob——这是 <strong>decode 路径</strong>算出的值；</li>
+            <li>把 <code>prompt + output_ids</code> 作为新输入，再次
+            <code>flush_cache</code>，以
+            <code>max_new_tokens=0</code>、<code>logprob_start_len=0</code>
+            做一次纯 prefill，取 <code>input_token_logprobs</code>
+            的末尾 <code>len(output)</code> 个——这是 <strong>prefill
+            路径</strong>对同一批 token 算出的值；</li>
+            <li><code>compare_kl_divergence</code> 对每条样本逐位置算 k3
+            并取均值，再对样本取均值，要求小于
+            <code>ACC_THRESHOLDS[model]["kl_div"]</code>。</li>
+            </ol>
+            <p>第二次之前的 <code>flush_cache</code> 是关键：否则
+            prefill 会命中 radix cache，直接复用 decode 时写下的
+            KV，等于拿结果和自己比。两个变体
+            <code>..._prefill_cache_hit_helper</code> /
+            <code>..._decode_cache_hit_helper</code>
+            则反过来<strong>故意</strong>先把 prefix
+            写进缓存、在命中时生成，再用无缓存的 prefill
+            做参照，专门检验“复用的 KV
+            是否和重算一致”；它们还会断言命中率超过一半，避免一次没命中的“空跑”被当成通过。</p>
+            <p>阈值随场景而定：radix cache 系列的测试大多在
+            <code>0.0025 ~ 0.03</code> 之间，强调 bit-exact
+            的混合模型测试则用 <code>1e-9</code>。</p>
+            <h4
+            id="top-k-logprob-的-max-mean-误差test_logprobs.py">Top-k
+            logprob 的 Max / Mean
+            误差：<code>test_logprobs.py</code></h4>
+            <p><code>test/manual/test_logprobs.py</code> 是“Golden
+            Baseline + Max Error”的直接体现：先在本机生成一份
+            baseline（ShareGPT 采样，记录 top-20
+            logprob），改代码后在不同 <code>chunked_prefill_size</code>
+            × <code>max_running_requests</code>
+            组合下重跑，对两边<strong>共同出现</strong>的 top-k token 取
+            <code>|Δlogprob|</code>，每条样本的 max 和 mean 都必须
+            <code>≤ 1e-5</code>。扫 chunk 大小和并发，本质是在检验
+            prefill 结果对 batch 组成和切块方式是否不变。</p>
+            <h4 id="逐层-hidden-state-回归nightly-precision">逐层 hidden
+            state 回归：nightly precision</h4>
+            <p><code>test/registered/debug_utils/test_nightly_precision_regression.py</code>
+            走的是第三个粒度。它用固定
+            prompt、<code>temperature=0</code>、<code>max_tokens=2</code>
+            请求 server，通过 dumper 抓取首层、末层和每隔 8 层的
+            <code>self_attn</code> 输入 hidden state，再交给
+            <code>sglang.srt.debug_utils.comparator</code>
+            逐张量计算</p>
+            <p><span class="math display">
+            \mathrm{rel\_diff}=1-\frac{2\langle x,y\rangle}{\Vert
+            x\Vert^2+\Vert y\Vert^2}=\frac{\Vert x-y\Vert^2}{\Vert
+            x\Vert^2+\Vert y\Vert^2} </span></p>
+            <p>默认阈值
+            <code>1e-3</code>（<code>SGLANG_PRECISION_DIFF_THRESHOLD</code>
+            可调）。这个指标对整体缩放不敏感、只看方向和相对大小，适合比较量级差异很大的各层激活。</p>
+            <p>Baseline 的管理在
+            <code>python/sglang/test/precision_baseline_store.py</code>，存放在
+            HF dataset 上，有两处设计值得一提：</p>
+            <ul>
+            <li><strong>只有可比的才比</strong>：manifest 里每次 run
+            带一个 <code>capture_signature</code>（采集了哪些层、TP
+            大小等），取 baseline 时只选同 model、同 signature
+            的记录；对不上就重新建立
+            baseline，而不是拿形状不同的张量硬比。</li>
+            <li><strong>失败的 run
+            不能成为下一次的基准</strong>：<code>_select_latest_run</code>
+            优先跳过 <code>pass_label == "failed"</code>
+            的记录。否则一次回归被上传后会成为第二天的
+            baseline，持续存在的回归就被“洗白”了。失败的张量照样上传，只是作为诊断证据。另外，comparator
+            实际比较了 0
+            层也判失败，防止张量命名对不上导致的“空通过”。</li>
+            </ul>
+            <p>逐层 rel_diff
+            只能说明“从哪一层开始不一样”，不直接回答输出质量；它负责定位，logprob
+            层面的指标负责下结论。</p>
+            <h3 id="小结">小结</h3>
+            <p>Prefill
+            端到端精度测试的核心是一个很朴素的抽象：<strong>固定输入，让两个版本在每个位置上给出可对齐的预测，然后比较概率</strong>。这些概率来自
+            prefill 的逐行 logits：第 <span class="math inline">j</span>
+            行给 <span class="math inline">x_{j+1}</span> 打分，用原始
+            logits、不受 temperature
+            影响，所以同一份输入在两个版本上得到的是严格可比的同一个量。Logprob
+            MSE 便宜、灵敏，配合一份同环境下充分验证过的 Golden Baseline
+            就是好用的回归信号；KL
+            用参考概率加权，更贴近“模型行为有没有变”；k3
+            估计量让我们只用一个 logprob 就拿到近似
+            KL，并解释了为什么小误差下 MSE 和 KL 说的是同一件事。再配上
+            Max 类指标抓局部异常、逐层 rel_diff
+            定位源头，就构成了从“有没有变”到“哪里变了”的完整链条。</p>
+          </main>
+        <aside class="wiki-toc">
+      <ul>
+      <li><a href="#问题怎么判断新引擎算得还对"
+      id="toc-问题怎么判断新引擎算得还对">问题：怎么判断“新引擎算得还对”</a></li>
+      <li><a href="#抽象固定输入逐位置对齐"
+      id="toc-抽象固定输入逐位置对齐">抽象：固定输入，逐位置对齐</a></li>
+      <li><a href="#基准选谁golden-baseline-与高精度-reference"
+      id="toc-基准选谁golden-baseline-与高精度-reference">基准选谁：Golden
+      Baseline 与高精度 Reference</a></li>
+      <li><a href="#logprob-mse" id="toc-logprob-mse">Logprob
+      MSE</a></li>
+      <li><a href="#kl-divergence" id="toc-kl-divergence">KL
+      Divergence</a></li>
+      <li><a href="#mse-与-kl看到的误差不一样"
+      id="toc-mse-与-kl看到的误差不一样">MSE 与
+      KL：看到的误差不一样</a></li>
+      <li><a href="#只用一个-logprob-估-klk3-估计量"
+      id="toc-只用一个-logprob-估-klk3-估计量">只用一个 logprob 估
+      KL：k3 估计量</a></li>
+      <li><a href="#每个输入-token-的-logprob-是怎么算出来的"
+      id="toc-每个输入-token-的-logprob-是怎么算出来的">每个输入 token
+      的 logprob 是怎么算出来的</a></li>
+      <li><a href="#sglang-里的实现" id="toc-sglang-里的实现">SGLang
+      里的实现</a></li>
+      <li><a href="#小结" id="toc-小结">小结</a></li>
+      </ul>
+    </aside>
+      </div>
+</body>
+
+</html>

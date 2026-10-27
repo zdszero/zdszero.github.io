@@ -26,6 +26,7 @@
         - [Paged Attention](./paged_attention.md)
         - [Chunked Prefill](./chunked_prefill.md)
         - [KV Cache](./kv_cache_size.md)
+    - [Prefill Logprob MSE](./prefill_e2e_precision.md)
     - [Math Ops](./math_ops.md)
         - [Norm](./normalization.md)
     - [MLP](./mlp.md)
@@ -117,6 +118,7 @@
     - 2026
         - [先进封装](./advanced_packaging.md)
         - [ODM](./2026-ODM.md)
+        - [算力租赁](./gpu_rent.md)
 - 随笔
     - [读书学习投资有用么](./should_i_learn_by_books.md)
     - [谈一谈历史的失真](./wrong_history_record.md)

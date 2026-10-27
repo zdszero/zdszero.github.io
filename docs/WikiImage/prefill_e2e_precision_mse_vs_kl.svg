@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 500" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="500" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">同样是「有误差」，MSE 和 KL 看到的不一样</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">一个位置、4 个 token 的玩具词表；Reference = (0.70, 0.25, 0.049, 0.001)；Δ = log p_target − log p_ref</text>
+
+  <!-- legend -->
+  <rect x="330" y="72" width="14" height="10" rx="2" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="350" y="81" font-size="11" fill="#495057">Reference</text>
+  <rect x="430" y="72" width="14" height="10" rx="2" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="450" y="81" font-size="11" fill="#495057">Target</text>
+  <rect x="510" y="72" width="14" height="10" rx="2" fill="#fff9db" stroke="#f08c00"/>
+  <text x="530" y="81" font-size="11" fill="#495057">误差主要来源</text>
+
+  <!-- Panel A -->
+  <rect x="30" y="94" width="410" height="300" rx="10" fill="#ffffff" stroke="#dee2e6"/>
+  <text x="46" y="118" font-size="13.5" font-weight="700" fill="#343a40">情况 A：尾部 token 概率减半</text>
+  <text x="46" y="136" font-size="11" fill="#868e96">D: 0.001 → 0.0005，A/B 不变，C 吸收差额</text>
+  <line x1="50" y1="290" x2="420" y2="290" stroke="#adb5bd" stroke-width="1"/>
+  <!-- A -->
+  <rect x="82" y="150" width="16" height="140" rx="2" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="102" y="150" width="16" height="140" rx="2" fill="#edf2ff" stroke="#4c6ef5"/>
+  <!-- B -->
+  <rect x="172" y="240" width="16" height="50" rx="2" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="192" y="240" width="16" height="50" rx="2" fill="#edf2ff" stroke="#4c6ef5"/>
+  <!-- C -->
+  <rect x="262" y="280.2" width="16" height="9.8" rx="2" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="282" y="280.1" width="16" height="9.9" rx="2" fill="#edf2ff" stroke="#4c6ef5"/>
+  <!-- D -->
+  <rect x="324" y="240" width="92" height="50" rx="6" fill="#fff9db" stroke="#f08c00" stroke-dasharray="4 3"/>
+  <rect x="352" y="288" width="16" height="2" fill="#0ca678"/>
+  <rect x="372" y="289" width="16" height="1" fill="#4c6ef5"/>
+  <text x="370" y="258" text-anchor="middle" font-size="10.5" fill="#e8590c">几乎看不见</text>
+  <text x="370" y="273" text-anchor="middle" font-size="10.5" fill="#e8590c">但 log 差 0.69</text>
+  <text x="100" y="308" text-anchor="middle" font-size="12" font-weight="700" fill="#495057">A</text>
+  <text x="190" y="308" text-anchor="middle" font-size="12" font-weight="700" fill="#495057">B</text>
+  <text x="280" y="308" text-anchor="middle" font-size="12" font-weight="700" fill="#495057">C</text>
+  <text x="370" y="308" text-anchor="middle" font-size="12" font-weight="700" fill="#495057">D</text>
+  <text x="46" y="328" font-size="11" fill="#868e96">Δ</text>
+  <text x="100" y="328" text-anchor="middle" font-size="11" font-family="monospace" fill="#495057">0</text>
+  <text x="190" y="328" text-anchor="middle" font-size="11" font-family="monospace" fill="#495057">0</text>
+  <text x="280" y="328" text-anchor="middle" font-size="11" font-family="monospace" fill="#495057">+0.010</text>
+  <text x="370" y="328" text-anchor="middle" font-size="11" font-family="monospace" fill="#e8590c">−0.693</text>
+  <rect x="46" y="342" width="378" height="40" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="62" y="367" font-size="12.5" font-family="monospace" fill="#e8590c">MSE = 0.120</text>
+  <text x="200" y="367" font-size="12.5" font-family="monospace" fill="#495057">KL = 0.0002</text>
+  <text x="330" y="367" font-size="11" fill="#868e96">MSE 报警</text>
+
+  <!-- Panel B -->
+  <rect x="460" y="94" width="410" height="300" rx="10" fill="#ffffff" stroke="#dee2e6"/>
+  <text x="476" y="118" font-size="13.5" font-weight="700" fill="#343a40">情况 B：头部两个 token 互相挪了 0.05</text>
+  <text x="476" y="136" font-size="11" fill="#868e96">A: 0.70 → 0.65，B: 0.25 → 0.30，C/D 不变</text>
+  <line x1="480" y1="290" x2="850" y2="290" stroke="#adb5bd" stroke-width="1"/>
+  <rect x="500" y="144" width="140" height="150" rx="6" fill="#fff9db" stroke="#f08c00" stroke-dasharray="4 3"/>
+  <!-- A -->
+  <rect x="512" y="150" width="16" height="140" rx="2" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="532" y="160" width="16" height="130" rx="2" fill="#edf2ff" stroke="#4c6ef5"/>
+  <!-- B -->
+  <rect x="602" y="240" width="16" height="50" rx="2" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="622" y="230" width="16" height="60" rx="2" fill="#edf2ff" stroke="#4c6ef5"/>
+  <!-- C -->
+  <rect x="692" y="280.2" width="16" height="9.8" rx="2" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="712" y="280.2" width="16" height="9.8" rx="2" fill="#edf2ff" stroke="#4c6ef5"/>
+  <!-- D -->
+  <rect x="782" y="288" width="16" height="2" fill="#0ca678"/>
+  <rect x="802" y="288" width="16" height="2" fill="#4c6ef5"/>
+  <text x="530" y="308" text-anchor="middle" font-size="12" font-weight="700" fill="#495057">A</text>
+  <text x="620" y="308" text-anchor="middle" font-size="12" font-weight="700" fill="#495057">B</text>
+  <text x="710" y="308" text-anchor="middle" font-size="12" font-weight="700" fill="#495057">C</text>
+  <text x="800" y="308" text-anchor="middle" font-size="12" font-weight="700" fill="#495057">D</text>
+  <text x="476" y="328" font-size="11" fill="#868e96">Δ</text>
+  <text x="530" y="328" text-anchor="middle" font-size="11" font-family="monospace" fill="#e8590c">−0.074</text>
+  <text x="620" y="328" text-anchor="middle" font-size="11" font-family="monospace" fill="#e8590c">+0.182</text>
+  <text x="710" y="328" text-anchor="middle" font-size="11" font-family="monospace" fill="#495057">0</text>
+  <text x="800" y="328" text-anchor="middle" font-size="11" font-family="monospace" fill="#495057">0</text>
+  <rect x="476" y="342" width="378" height="40" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="492" y="367" font-size="12.5" font-family="monospace" fill="#495057">MSE = 0.0097</text>
+  <text x="630" y="367" font-size="12.5" font-family="monospace" fill="#5f3dc4">KL = 0.0063</text>
+  <text x="760" y="367" font-size="11" fill="#868e96">KL 报警</text>
+
+  <!-- note -->
+  <rect x="30" y="410" width="840" height="70" rx="10" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="48" y="434" font-size="12" fill="#495057">A 的 MSE 是 B 的 12 倍，但 A 几乎不改变采样结果；B 的 KL 是 A 的 30 多倍，它真的改变了模型「更想说哪个词」。</text>
+  <text x="48" y="454" font-size="12" fill="#495057">MSE 对每个 logprob 一视同仁，低概率尾巴里的数值噪声会被平方放大；KL 用 Reference 概率加权，</text>
+  <text x="48" y="472" font-size="12" fill="#495057">只在高概率 token 上计较。数值回归用 MSE 很灵敏，判断「行为是否改变」用 KL 更贴切。</text>
+</svg>

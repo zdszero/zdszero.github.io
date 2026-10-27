@@ -1,0 +1,145 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 570" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="570" rx="12" fill="#ffffff"/>
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#868e96"/>
+    </marker>
+    <marker id="arR" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#fa5252"/>
+    </marker>
+  </defs>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">一次 prefill 如何给每个输入 token 算出 logprob</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">输入 6 个 token，logprob_start_len = 0；位置 j 的输出预测的是下一个 token x[j+1]</text>
+
+  <!-- words -->
+  <text x="245" y="82" text-anchor="middle" font-size="11" fill="#868e96">The</text>
+  <text x="349" y="82" text-anchor="middle" font-size="11" fill="#868e96">capital</text>
+  <text x="453" y="82" text-anchor="middle" font-size="11" fill="#868e96">of</text>
+  <text x="557" y="82" text-anchor="middle" font-size="11" fill="#868e96">France</text>
+  <text x="661" y="82" text-anchor="middle" font-size="11" fill="#868e96">is</text>
+  <text x="765" y="82" text-anchor="middle" font-size="11" fill="#868e96">Paris</text>
+
+  <!-- row labels -->
+  <text x="30" y="104" font-size="12.5" font-weight="700" fill="#3b5bdb">input_ids</text>
+  <text x="30" y="118" font-size="10.5" fill="#868e96">一次 forward 全部送入</text>
+  <text x="30" y="168" font-size="12.5" font-weight="700" fill="#0b7285">hidden h_j</text>
+  <text x="30" y="182" font-size="10.5" fill="#868e96">causal：只看过 x[0..j]</text>
+  <text x="30" y="232" font-size="12.5" font-weight="700" fill="#5f3dc4">lm_head → 分布</text>
+  <text x="30" y="246" font-size="10.5" fill="#868e96">每行一个 V 维 logits</text>
+  <text x="30" y="296" font-size="12.5" font-weight="700" fill="#e8590c">gather 的 token id</text>
+  <text x="30" y="310" font-size="10.5" font-family="monospace" fill="#868e96">origin_input_ids[j+1]</text>
+  <text x="30" y="360" font-size="12.5" font-weight="700" fill="#495057">GPU 侧 logprob</text>
+  <text x="30" y="374" font-size="10.5" fill="#868e96">每行取 1 个数</text>
+  <text x="30" y="444" font-size="12.5" font-weight="700" fill="#3b5bdb">返回 input_token_</text>
+  <text x="30" y="458" font-size="12.5" font-weight="700" fill="#3b5bdb">logprobs</text>
+  <text x="96" y="458" font-size="10.5" fill="#868e96">右移对齐到 x[j+1]</text>
+
+  <rect x="201" y="90" width="88" height="34" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="245" y="111" text-anchor="middle" font-size="11.5" font-family="monospace" fill="#3b5bdb">x₀</text>
+  <rect x="201" y="154" width="88" height="34" rx="6" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="245" y="175" text-anchor="middle" font-size="11.5" font-family="monospace" fill="#0b7285">h₀</text>
+  <rect x="201" y="218" width="88" height="34" rx="6" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="245" y="239" text-anchor="middle" font-size="11" font-family="monospace" fill="#5f3dc4">P(·|x≤0)</text>
+  <rect x="201" y="282" width="88" height="34" rx="6" fill="#fff9db" stroke="#f08c00"/>
+  <text x="245" y="303" text-anchor="middle" font-size="11.5" font-family="monospace" fill="#e8590c">x₁</text>
+  <rect x="201" y="346" width="88" height="34" rx="6" fill="#f8f9fa" stroke="#adb5bd"/>
+  <text x="245" y="367" text-anchor="middle" font-size="11" font-family="monospace" fill="#495057">log P(x₁)</text>
+  <path d="M245 124 L245 148" fill="none" stroke="#ced4da" stroke-width="1.5" marker-end="url(#ar)"/>
+  <path d="M245 188 L245 212" fill="none" stroke="#ced4da" stroke-width="1.5" marker-end="url(#ar)"/>
+  <path d="M245 252 L245 276" fill="none" stroke="#ced4da" stroke-width="1.5" marker-end="url(#ar)"/>
+  <path d="M245 316 L245 340" fill="none" stroke="#ced4da" stroke-width="1.5" marker-end="url(#ar)"/>
+  <rect x="305" y="90" width="88" height="34" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="349" y="111" text-anchor="middle" font-size="11.5" font-family="monospace" fill="#3b5bdb">x₁</text>
+  <rect x="305" y="154" width="88" height="34" rx="6" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="349" y="175" text-anchor="middle" font-size="11.5" font-family="monospace" fill="#0b7285">h₁</text>
+  <rect x="305" y="218" width="88" height="34" rx="6" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="349" y="239" text-anchor="middle" font-size="11" font-family="monospace" fill="#5f3dc4">P(·|x≤1)</text>
+  <rect x="305" y="282" width="88" height="34" rx="6" fill="#fff9db" stroke="#f08c00"/>
+  <text x="349" y="303" text-anchor="middle" font-size="11.5" font-family="monospace" fill="#e8590c">x₂</text>
+  <rect x="305" y="346" width="88" height="34" rx="6" fill="#f8f9fa" stroke="#adb5bd"/>
+  <text x="349" y="367" text-anchor="middle" font-size="11" font-family="monospace" fill="#495057">log P(x₂)</text>
+  <path d="M349 124 L349 148" fill="none" stroke="#ced4da" stroke-width="1.5" marker-end="url(#ar)"/>
+  <path d="M349 188 L349 212" fill="none" stroke="#ced4da" stroke-width="1.5" marker-end="url(#ar)"/>
+  <path d="M349 252 L349 276" fill="none" stroke="#ced4da" stroke-width="1.5" marker-end="url(#ar)"/>
+  <path d="M349 316 L349 340" fill="none" stroke="#ced4da" stroke-width="1.5" marker-end="url(#ar)"/>
+  <rect x="409" y="90" width="88" height="34" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="453" y="111" text-anchor="middle" font-size="11.5" font-family="monospace" fill="#3b5bdb">x₂</text>
+  <rect x="409" y="154" width="88" height="34" rx="6" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="453" y="175" text-anchor="middle" font-size="11.5" font-family="monospace" fill="#0b7285">h₂</text>
+  <rect x="409" y="218" width="88" height="34" rx="6" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="453" y="239" text-anchor="middle" font-size="11" font-family="monospace" fill="#5f3dc4">P(·|x≤2)</text>
+  <rect x="409" y="282" width="88" height="34" rx="6" fill="#fff9db" stroke="#f08c00"/>
+  <text x="453" y="303" text-anchor="middle" font-size="11.5" font-family="monospace" fill="#e8590c">x₃</text>
+  <rect x="409" y="346" width="88" height="34" rx="6" fill="#f8f9fa" stroke="#adb5bd"/>
+  <text x="453" y="367" text-anchor="middle" font-size="11" font-family="monospace" fill="#495057">log P(x₃)</text>
+  <path d="M453 124 L453 148" fill="none" stroke="#ced4da" stroke-width="1.5" marker-end="url(#ar)"/>
+  <path d="M453 188 L453 212" fill="none" stroke="#ced4da" stroke-width="1.5" marker-end="url(#ar)"/>
+  <path d="M453 252 L453 276" fill="none" stroke="#ced4da" stroke-width="1.5" marker-end="url(#ar)"/>
+  <path d="M453 316 L453 340" fill="none" stroke="#ced4da" stroke-width="1.5" marker-end="url(#ar)"/>
+  <rect x="513" y="90" width="88" height="34" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="557" y="111" text-anchor="middle" font-size="11.5" font-family="monospace" fill="#3b5bdb">x₃</text>
+  <rect x="513" y="154" width="88" height="34" rx="6" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="557" y="175" text-anchor="middle" font-size="11.5" font-family="monospace" fill="#0b7285">h₃</text>
+  <rect x="513" y="218" width="88" height="34" rx="6" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="557" y="239" text-anchor="middle" font-size="11" font-family="monospace" fill="#5f3dc4">P(·|x≤3)</text>
+  <rect x="513" y="282" width="88" height="34" rx="6" fill="#fff9db" stroke="#f08c00"/>
+  <text x="557" y="303" text-anchor="middle" font-size="11.5" font-family="monospace" fill="#e8590c">x₄</text>
+  <rect x="513" y="346" width="88" height="34" rx="6" fill="#f8f9fa" stroke="#adb5bd"/>
+  <text x="557" y="367" text-anchor="middle" font-size="11" font-family="monospace" fill="#495057">log P(x₄)</text>
+  <path d="M557 124 L557 148" fill="none" stroke="#ced4da" stroke-width="1.5" marker-end="url(#ar)"/>
+  <path d="M557 188 L557 212" fill="none" stroke="#ced4da" stroke-width="1.5" marker-end="url(#ar)"/>
+  <path d="M557 252 L557 276" fill="none" stroke="#ced4da" stroke-width="1.5" marker-end="url(#ar)"/>
+  <path d="M557 316 L557 340" fill="none" stroke="#ced4da" stroke-width="1.5" marker-end="url(#ar)"/>
+  <rect x="617" y="90" width="88" height="34" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="661" y="111" text-anchor="middle" font-size="11.5" font-family="monospace" fill="#3b5bdb">x₄</text>
+  <rect x="617" y="154" width="88" height="34" rx="6" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="661" y="175" text-anchor="middle" font-size="11.5" font-family="monospace" fill="#0b7285">h₄</text>
+  <rect x="617" y="218" width="88" height="34" rx="6" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="661" y="239" text-anchor="middle" font-size="11" font-family="monospace" fill="#5f3dc4">P(·|x≤4)</text>
+  <rect x="617" y="282" width="88" height="34" rx="6" fill="#fff9db" stroke="#f08c00"/>
+  <text x="661" y="303" text-anchor="middle" font-size="11.5" font-family="monospace" fill="#e8590c">x₅</text>
+  <rect x="617" y="346" width="88" height="34" rx="6" fill="#f8f9fa" stroke="#adb5bd"/>
+  <text x="661" y="367" text-anchor="middle" font-size="11" font-family="monospace" fill="#495057">log P(x₅)</text>
+  <path d="M661 124 L661 148" fill="none" stroke="#ced4da" stroke-width="1.5" marker-end="url(#ar)"/>
+  <path d="M661 188 L661 212" fill="none" stroke="#ced4da" stroke-width="1.5" marker-end="url(#ar)"/>
+  <path d="M661 252 L661 276" fill="none" stroke="#ced4da" stroke-width="1.5" marker-end="url(#ar)"/>
+  <path d="M661 316 L661 340" fill="none" stroke="#ced4da" stroke-width="1.5" marker-end="url(#ar)"/>
+  <rect x="721" y="90" width="88" height="34" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="765" y="111" text-anchor="middle" font-size="11.5" font-family="monospace" fill="#3b5bdb">x₅</text>
+  <rect x="721" y="154" width="88" height="34" rx="6" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="765" y="175" text-anchor="middle" font-size="11.5" font-family="monospace" fill="#0b7285">h₅</text>
+  <rect x="721" y="218" width="88" height="34" rx="6" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="765" y="239" text-anchor="middle" font-size="11" font-family="monospace" fill="#5f3dc4">P(·|x≤5)</text>
+  <rect x="721" y="282" width="88" height="34" rx="6" fill="#f1f3f5" stroke="#ced4da" stroke-dasharray="4 3"/>
+  <text x="765" y="303" text-anchor="middle" font-size="11.5" font-family="monospace" fill="#868e96">pad 0</text>
+  <rect x="721" y="346" width="88" height="34" rx="6" fill="#fff5f5" stroke="#fa5252" stroke-dasharray="4 3"/>
+  <text x="765" y="367" text-anchor="middle" font-size="11.5" fill="#c92a2a">无意义</text>
+  <path d="M765 124 L765 148" fill="none" stroke="#ced4da" stroke-width="1.5" marker-end="url(#ar)"/>
+  <path d="M765 188 L765 212" fill="none" stroke="#ced4da" stroke-width="1.5" marker-end="url(#ar)"/>
+  <path d="M765 252 L765 276" fill="none" stroke="#ced4da" stroke-width="1.5" marker-end="url(#ar)"/>
+  <path d="M765 316 L765 340" fill="none" stroke="#ced4da" stroke-width="1.5" marker-end="url(#ar)"/>
+  <rect x="201" y="430" width="88" height="34" rx="6" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="245" y="451" text-anchor="middle" font-size="11.5" font-family="monospace" fill="#868e96">None</text>
+  <rect x="305" y="430" width="88" height="34" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="349" y="451" text-anchor="middle" font-size="11" font-family="monospace" fill="#3b5bdb">log P(x₁)</text>
+  <rect x="409" y="430" width="88" height="34" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="453" y="451" text-anchor="middle" font-size="11" font-family="monospace" fill="#3b5bdb">log P(x₂)</text>
+  <rect x="513" y="430" width="88" height="34" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="557" y="451" text-anchor="middle" font-size="11" font-family="monospace" fill="#3b5bdb">log P(x₃)</text>
+  <rect x="617" y="430" width="88" height="34" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="661" y="451" text-anchor="middle" font-size="11" font-family="monospace" fill="#3b5bdb">log P(x₄)</text>
+  <rect x="721" y="430" width="88" height="34" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="765" y="451" text-anchor="middle" font-size="11" font-family="monospace" fill="#3b5bdb">log P(x₅)</text>
+  <path d="M255 380 L337 426" fill="none" stroke="#868e96" stroke-width="1.5" marker-end="url(#ar)"/>
+  <path d="M359 380 L441 426" fill="none" stroke="#868e96" stroke-width="1.5" marker-end="url(#ar)"/>
+  <path d="M463 380 L545 426" fill="none" stroke="#868e96" stroke-width="1.5" marker-end="url(#ar)"/>
+  <path d="M567 380 L649 426" fill="none" stroke="#868e96" stroke-width="1.5" marker-end="url(#ar)"/>
+  <path d="M671 380 L753 426" fill="none" stroke="#868e96" stroke-width="1.5" marker-end="url(#ar)"/>
+  <path d="M809 235 L838 235 L838 398" fill="none" stroke="#fa5252" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <text x="856" y="316" font-size="10.5" fill="#c92a2a" transform="rotate(90 856 316)" text-anchor="middle">最后一行 logits → 采样首个输出 token</text>
+  <text x="765" y="396" text-anchor="middle" font-size="10.5" fill="#c92a2a">[:-1] 丢掉</text>
+  <rect x="30" y="486" width="840" height="68" rx="10" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="48" y="510" font-size="12" fill="#495057">位置 j 的 hidden 已经看过 x[0..j]，所以第 j 行分布打分的是下一个输入 x[j+1]：错开一位 gather，再右移一位挂回 x[j+1]。</text>
+  <text x="48" y="530" font-size="12" fill="#495057">第一个 token 没有上文，返回 None；最后一行没有“下一个输入”，它的 logits 用来采样第一个输出 token。</text>
+  <text x="48" y="546" font-size="11" fill="#868e96">logprob = logit[x] − logsumexp(logits)，直接用模型原始 logits，不经过 temperature / top-p 等采样变换。</text>
+</svg>
