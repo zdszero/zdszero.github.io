@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 540" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="920" height="540" rx="12" fill="#ffffff"/>
+  <text x="460" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">一个 decode step 里各方案在跑什么</text>
+  <text x="460" y="56" text-anchor="middle" font-size="13" fill="#868e96">块宽只示意相对耗时；括号里是 SGLang 的默认或典型参数</text>
+
+  <!-- legend -->
+  <rect x="240" y="72" width="14" height="14" rx="3" fill="#f3f0ff" stroke="#7048e8"/><text x="260" y="84" font-size="11.5" fill="#495057">draft 前向</text>
+  <rect x="340" y="72" width="14" height="14" rx="3" fill="#edf2ff" stroke="#4c6ef5"/><text x="360" y="84" font-size="11.5" fill="#495057">target verify</text>
+  <rect x="456" y="72" width="14" height="14" rx="3" fill="#e6fcf5" stroke="#0ca678"/><text x="476" y="84" font-size="11.5" fill="#495057">draft extend 前向</text>
+  <rect x="590" y="72" width="14" height="14" rx="3" fill="#fff4e6" stroke="#f08c00"/><text x="610" y="84" font-size="11.5" fill="#495057">只写 draft KV（无注意力）</text>
+  <rect x="770" y="72" width="14" height="14" rx="3" fill="#f1f3f5" stroke="#adb5bd"/><text x="790" y="84" font-size="11.5" fill="#495057">CPU / 调度</text>
+
+  <g font-size="11" text-anchor="middle">
+  <!-- r1 NGRAM -->
+  <text x="40" y="118" font-size="12.5" font-weight="700" fill="#212529" text-anchor="start">NGRAM</text>
+  <text x="40" y="134" fill="#868e96" text-anchor="start">无模型 · topk=bfs 宽度</text>
+  <rect x="240" y="104" width="60" height="30" rx="6" fill="#f1f3f5" stroke="#adb5bd"/><text x="270" y="123" fill="#495057">查 trie</text>
+  <rect x="306" y="104" width="150" height="30" rx="6" fill="#edf2ff" stroke="#4c6ef5"/><text x="381" y="123" fill="#3b5bdb">verify 树（12 token）</text>
+  <text x="664" y="123" fill="#868e96" text-anchor="start">没有 draft 模型，也没有 draft KV</text>
+
+  <!-- r2 EAGLE topk=1 -->
+  <text x="40" y="170" font-size="12.5" font-weight="700" fill="#212529" text-anchor="start">EAGLE / NEXTN 链</text>
+  <text x="40" y="186" fill="#868e96" text-anchor="start">(steps 3, topk 1, 4 token)</text>
+  <rect x="240" y="156" width="44" height="30" rx="6" fill="#f3f0ff" stroke="#7048e8"/><text x="262" y="175" fill="#5f3dc4">d</text>
+  <rect x="290" y="156" width="44" height="30" rx="6" fill="#f3f0ff" stroke="#7048e8"/><text x="312" y="175" fill="#5f3dc4">d</text>
+  <rect x="340" y="156" width="130" height="30" rx="6" fill="#edf2ff" stroke="#4c6ef5"/><text x="405" y="175" fill="#3b5bdb">verify 链（4）</text>
+  <rect x="476" y="156" width="110" height="30" rx="6" fill="#e6fcf5" stroke="#0ca678"/><text x="531" y="175" fill="#0b7285">extend（4）</text>
+  <text x="664" y="168" fill="#495057" text-anchor="start">steps−1 次 draft 前向 + 1 次 extend</text>
+  <text x="664" y="184" fill="#868e96" text-anchor="start">第 1 个 draft 来自上一轮 extend</text>
+
+  <!-- r3 EAGLE tree -->
+  <text x="40" y="222" font-size="12.5" font-weight="700" fill="#212529" text-anchor="start">EAGLE 树</text>
+  <text x="40" y="238" fill="#868e96" text-anchor="start">(steps 5, topk 4, 8 token)</text>
+  <rect x="240" y="208" width="36" height="30" rx="6" fill="#f3f0ff" stroke="#7048e8"/><text x="258" y="227" fill="#5f3dc4">d</text>
+  <rect x="280" y="208" width="36" height="30" rx="6" fill="#f3f0ff" stroke="#7048e8"/><text x="298" y="227" fill="#5f3dc4">d</text>
+  <rect x="320" y="208" width="36" height="30" rx="6" fill="#f3f0ff" stroke="#7048e8"/><text x="338" y="227" fill="#5f3dc4">d</text>
+  <rect x="360" y="208" width="36" height="30" rx="6" fill="#f3f0ff" stroke="#7048e8"/><text x="378" y="227" fill="#5f3dc4">d</text>
+  <rect x="402" y="208" width="140" height="30" rx="6" fill="#edf2ff" stroke="#4c6ef5"/><text x="472" y="227" fill="#3b5bdb">verify 树 mask（8）</text>
+  <rect x="548" y="208" width="104" height="30" rx="6" fill="#e6fcf5" stroke="#0ca678"/><text x="600" y="227" fill="#0b7285">extend（8）</text>
+  <text x="664" y="220" fill="#495057" text-anchor="start">每次 draft 前向跑 bs×topk 行</text>
+  <text x="664" y="236" fill="#868e96" text-anchor="start">从 topk² 个候选里留分数最高的</text>
+  <!-- r4 MULTI_LAYER -->
+  <text x="40" y="274" font-size="12.5" font-weight="700" fill="#212529" text-anchor="start">Multi-layer EAGLE</text>
+  <text x="40" y="290" fill="#868e96" text-anchor="start">(MiMoV2 / Step3p5 多 MTP 层)</text>
+  <rect x="240" y="260" width="130" height="30" rx="6" fill="#edf2ff" stroke="#4c6ef5"/><text x="305" y="279" fill="#3b5bdb">verify 链（steps+1）</text>
+  <rect x="376" y="260" width="72" height="30" rx="6" fill="#e6fcf5" stroke="#0ca678"/><text x="412" y="279" fill="#0b7285">MTP 1</text>
+  <rect x="454" y="260" width="72" height="30" rx="6" fill="#e6fcf5" stroke="#0ca678"/><text x="490" y="279" fill="#0b7285">MTP 2</text>
+  <rect x="532" y="260" width="72" height="30" rx="6" fill="#e6fcf5" stroke="#0ca678"/><text x="568" y="279" fill="#0b7285">MTP 3</text>
+  <text x="664" y="272" fill="#495057" text-anchor="start">draft 阶段不前向，只取上轮结果</text>
+  <text x="664" y="288" fill="#868e96" text-anchor="start">每个 MTP 层一个 runner、一份 KV</text>
+
+  <!-- r5 FROZEN_KV_MTP -->
+  <text x="40" y="326" font-size="12.5" font-weight="700" fill="#212529" text-anchor="start">FROZEN_KV_MTP</text>
+  <text x="40" y="342" fill="#868e96" text-anchor="start">(Gemma4 assistant draft)</text>
+  <rect x="240" y="312" width="44" height="30" rx="6" fill="#f3f0ff" stroke="#7048e8"/><text x="262" y="331" fill="#5f3dc4">seed</text>
+  <rect x="290" y="312" width="44" height="30" rx="6" fill="#f3f0ff" stroke="#7048e8"/><text x="312" y="331" fill="#5f3dc4">d</text>
+  <rect x="340" y="312" width="44" height="30" rx="6" fill="#f3f0ff" stroke="#7048e8"/><text x="362" y="331" fill="#5f3dc4">d</text>
+  <rect x="390" y="312" width="130" height="30" rx="6" fill="#edf2ff" stroke="#4c6ef5"/><text x="455" y="331" fill="#3b5bdb">verify</text>
+  <text x="664" y="324" fill="#495057" text-anchor="start">draft 只读 target 的 KV，自己不写</text>
+  <text x="664" y="340" fill="#868e96" text-anchor="start">所以不需要 extend</text>
+
+  <!-- r6 DFLASH -->
+  <text x="40" y="378" font-size="12.5" font-weight="700" fill="#212529" text-anchor="start">DFLASH</text>
+  <text x="40" y="394" fill="#868e96" text-anchor="start">(topk 1, block 16)</text>
+  <rect x="240" y="364" width="80" height="30" rx="6" fill="#f3f0ff" stroke="#7048e8"/><text x="280" y="383" fill="#5f3dc4">1 次块前向</text>
+  <rect x="326" y="364" width="150" height="30" rx="6" fill="#edf2ff" stroke="#4c6ef5"/><text x="401" y="383" fill="#3b5bdb">verify 链（block）</text>
+  <rect x="482" y="364" width="60" height="30" rx="6" fill="#fff4e6" stroke="#f08c00"/><text x="512" y="383" fill="#e8590c">注入</text>
+  <text x="664" y="376" fill="#495057" text-anchor="start">一次前向出整块 draft</text>
+  <text x="664" y="392" fill="#868e96" text-anchor="start">接受的 target hidden 投影进 draft KV</text>
+
+  <!-- r7 DSPARK -->
+  <text x="40" y="430" font-size="12.5" font-weight="700" fill="#212529" text-anchor="start">DSPARK</text>
+  <text x="40" y="446" fill="#868e96" text-anchor="start">(topk 1, γ 7, 校验 ≤ γ+1)</text>
+  <rect x="240" y="416" width="96" height="30" rx="6" fill="#f3f0ff" stroke="#7048e8"/><text x="288" y="435" fill="#5f3dc4">块前向+Markov</text>
+  <rect x="342" y="416" width="40" height="30" rx="6" fill="#f1f3f5" stroke="#adb5bd"/><text x="362" y="435" fill="#495057">plan</text>
+  <rect x="388" y="416" width="120" height="30" rx="6" fill="#edf2ff" stroke="#4c6ef5"/><text x="448" y="435" fill="#3b5bdb">verify 每请求变长</text>
+  <rect x="514" y="416" width="60" height="30" rx="6" fill="#fff4e6" stroke="#f08c00"/><text x="544" y="435" fill="#e8590c">注入</text>
+  <text x="664" y="428" fill="#495057" text-anchor="start">在 DFLASH 上加 Markov 头和置信度头</text>
+  <text x="664" y="444" fill="#868e96" text-anchor="start">按置信度和 SPS 表裁剪 verify 长度</text>
+  </g>
+
+  <rect x="40" y="474" width="840" height="48" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="460" y="494" text-anchor="middle" font-size="12" fill="#495057">串行方案的 draft 开销随 k 线性增长，并行块方案固定为 1 次前向，所以后者敢把 k 开到 7～16。</text>
+  <text x="460" y="512" text-anchor="middle" font-size="12" fill="#495057">「extend」与「注入」的差别：前者是一次完整 draft 前向，后者只做投影和写 KV。</text>
+</svg>

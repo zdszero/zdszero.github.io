@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 500" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="500" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">竞争只发生在「同一段链路的同一个方向」</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">把 GPU 0 的 PCIe ×16 拆成两条单向车道，再把每种流量的需求放上去（假设实测单向上限 55 GB/s）</text>
+
+  <!-- capacity line -->
+  <path d="M570 84 L570 252" stroke="#495057" stroke-width="1.5" stroke-dasharray="5 3"/>
+  <text x="570" y="80" text-anchor="middle" font-size="11" font-weight="700" fill="#495057">55 GB/s</text>
+
+  <!-- inbound lane -->
+  <text x="40" y="112" font-size="13" font-weight="700" fill="#212529">入站车道</text>
+  <text x="40" y="130" font-size="11" fill="#868e96">Host / NIC → GPU 0</text>
+  <rect x="240" y="96" width="330" height="48" rx="6" fill="#f1f3f5" stroke="#ced4da"/>
+  <rect x="240" y="96" width="240" height="48" rx="6" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="360" y="125" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0b7285">H2D 40</text>
+  <rect x="480" y="96" width="90" height="48" fill="#fff4e6" stroke="#f08c00"/>
+  <rect x="570" y="96" width="120" height="48" rx="6" fill="#fff5f5" stroke="#fa5252" stroke-dasharray="5 3"/>
+  <text x="525" y="125" text-anchor="middle" font-size="11" font-weight="700" fill="#e8590c">RDMA Recv 35</text>
+  <text x="630" y="125" text-anchor="middle" font-size="11.5" font-weight="700" fill="#c92a2a">超出 20</text>
+  <text x="706" y="114" font-size="12.5" font-weight="700" fill="#c92a2a">40 + 35 = 75 &gt; 55</text>
+  <text x="706" y="132" font-size="11.5" fill="#495057">两者都达不到各自的独立峰值</text>
+
+  <!-- outbound lane -->
+  <text x="40" y="190" font-size="13" font-weight="700" fill="#212529">出站车道</text>
+  <text x="40" y="208" font-size="11" fill="#868e96">GPU 0 → Host / NIC</text>
+  <rect x="240" y="174" width="330" height="48" rx="6" fill="#f1f3f5" stroke="#ced4da"/>
+  <rect x="240" y="174" width="210" height="48" rx="6" fill="#fff4e6" stroke="#f08c00"/>
+  <text x="345" y="203" text-anchor="middle" font-size="12.5" font-weight="700" fill="#e8590c">RDMA Send 35</text>
+  <text x="706" y="192" font-size="12.5" font-weight="700" fill="#0b7285">与 H2D 方向相反</text>
+  <text x="706" y="210" font-size="11.5" fill="#495057">链路层面不抢同一份带宽</text>
+
+  <!-- NVLink -->
+  <text x="40" y="272" font-size="13" font-weight="700" fill="#212529">另一张网</text>
+  <text x="40" y="290" font-size="11" fill="#868e96">GPU 0 ↔ GPU 1</text>
+  <rect x="240" y="256" width="450" height="44" rx="6" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="465" y="283" text-anchor="middle" font-size="12.5" font-weight="700" fill="#5f3dc4">NVLink AllReduce：不在这两条 PCIe 车道上</text>
+  <text x="706" y="274" font-size="12.5" font-weight="700" fill="#5f3dc4">与 H2D 无链路竞争</text>
+  <text x="706" y="292" font-size="11.5" fill="#495057">仍共享 HBM 与 SM</text>
+  <!-- method -->
+  <line x1="40" y1="322" x2="860" y2="322" stroke="#e9ecef"/>
+  <text x="40" y="348" font-size="13" font-weight="700" fill="#212529">判断两个传输会不会互相拖慢</text>
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#868e96"/></marker>
+  </defs>
+  <rect x="40" y="362" width="250" height="56" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="56" y="385" font-size="12.5" font-weight="700" fill="#3b5bdb">① 写出每个传输的路径</text>
+  <text x="56" y="405" font-size="11" fill="#495057">起点、终点、经过哪些链路</text>
+  <rect x="325" y="362" width="250" height="56" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="341" y="385" font-size="12.5" font-weight="700" fill="#3b5bdb">② 给每段链路标方向</text>
+  <text x="341" y="405" font-size="11" fill="#495057">同一段链路的两个方向分开记</text>
+  <rect x="610" y="362" width="250" height="56" rx="8" fill="#fff4e6" stroke="#f08c00"/>
+  <text x="626" y="385" font-size="12.5" font-weight="700" fill="#e8590c">③ 同方向需求求和</text>
+  <text x="626" y="405" font-size="11" fill="#495057">和实测上限比，而不是和规格比</text>
+  <path d="M292 390 L321 390" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <path d="M577 390 L606 390" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+
+  <rect x="40" y="434" width="820" height="50" rx="10" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="56" y="455" font-size="12" fill="#495057">链路只是第一个可能的瓶颈。Copy Engine 数量、Host DRAM 带宽、Switch 上行口、UPI、IOMMU 都可能先饱和，</text>
+  <text x="56" y="474" font-size="12" fill="#495057">所以这张图给出的是“必然冲突”的下限判断；“不冲突”的结论要靠并发实测确认。</text>
+</svg>

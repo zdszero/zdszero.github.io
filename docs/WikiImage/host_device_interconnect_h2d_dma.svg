@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 610" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="610" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">一次 H2D 拷贝：CPU 只发指令，Copy Engine 搬数据</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">控制平面是一次轻量提交；数据平面是 GPU 主动发起的大量 PCIe 读请求</text>
+
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#868e96"/></marker>
+    <marker id="art" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#0ca678"/></marker>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#fa5252"/></marker>
+  </defs>
+
+  <!-- control plane -->
+  <text x="40" y="92" font-size="13" font-weight="700" fill="#3b5bdb">控制平面（Control Plane）</text>
+  <rect x="40" y="104" width="240" height="58" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="56" y="127" font-size="13" font-weight="700" fill="#3b5bdb">CPU 线程</text>
+  <text x="56" y="148" font-size="11" font-family="monospace" fill="#495057">copy_(src, non_blocking=True)</text>
+  <rect x="330" y="104" width="240" height="58" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="346" y="127" font-size="13" font-weight="700" fill="#3b5bdb">CUDA Driver</text>
+  <text x="346" y="148" font-size="11.5" fill="#495057">地址翻译 · 写传输描述符入队</text>
+  <rect x="620" y="104" width="240" height="58" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="636" y="127" font-size="13" font-weight="700" fill="#3b5bdb">GPU Copy Engine</text>
+  <text x="636" y="148" font-size="11.5" fill="#495057">收到门铃，按描述符开始搬运</text>
+  <path d="M282 133 L326 133" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <path d="M572 133 L616 133" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <text x="40" y="184" font-size="11.5" fill="#868e96">CPU 提交完立即返回，继续调度、组 batch、发 kernel；它从不逐字节搬数据。</text>
+
+  <!-- data plane -->
+  <text x="40" y="222" font-size="13" font-weight="700" fill="#0b7285">数据平面（Data Plane）</text>
+  <rect x="40" y="234" width="170" height="100" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="56" y="258" font-size="13" font-weight="700" fill="#0b7285">Pinned Host DRAM</text>
+  <text x="56" y="280" font-size="11" fill="#495057">页面已锁定</text>
+  <text x="56" y="296" font-size="11" fill="#495057">物理地址稳定</text>
+  <rect x="270" y="234" width="190" height="100" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="286" y="258" font-size="13" font-weight="700" fill="#495057">Root Complex / IOMMU</text>
+  <text x="286" y="280" font-size="11" fill="#495057">IOVA → 物理地址</text>
+  <text x="286" y="296" font-size="11" fill="#495057">DMA 访问权限检查</text>
+  <rect x="520" y="234" width="150" height="100" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="536" y="258" font-size="13" font-weight="700" fill="#3b5bdb">Copy Engine</text>
+  <text x="536" y="280" font-size="11" fill="#495057">同时保持大量</text>
+  <text x="536" y="296" font-size="11" fill="#495057">在途读请求</text>
+  <rect x="730" y="234" width="130" height="100" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="746" y="258" font-size="13" font-weight="700" fill="#3b5bdb">GPU HBM</text>
+  <text x="746" y="280" font-size="11" fill="#495057">最终目的地</text>
+  <!-- request (leftward) -->
+  <path d="M518 266 L464 266" stroke="#868e96" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#ar)"/>
+  <path d="M268 266 L214 266" stroke="#868e96" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#ar)"/>
+  <!-- completion (rightward) -->
+  <path d="M212 306 L266 306" stroke="#0ca678" stroke-width="3" marker-end="url(#art)"/>
+  <path d="M462 306 L516 306" stroke="#0ca678" stroke-width="3" marker-end="url(#art)"/>
+  <path d="M672 286 L726 286" stroke="#0ca678" stroke-width="3" marker-end="url(#art)"/>
+  <text x="40" y="358" font-size="11.5" fill="#495057"><tspan fill="#868e96" font-weight="700">← MemRd Request</tspan>：只带地址和长度。单个请求往返要微秒级，Copy Engine 必须让很多请求同时在途才能填满链路。</text>
+  <text x="40" y="378" font-size="11.5" fill="#495057"><tspan fill="#0b7285" font-weight="700">→ Completion with Data</tspan>：真正的数据，被切成许多小包沿原路返回，最后写进 HBM。</text>
+  <!-- pageable vs pinned -->
+  <line x1="40" y1="398" x2="860" y2="398" stroke="#e9ecef"/>
+  <text x="40" y="424" font-size="13" font-weight="700" fill="#212529">为什么源端必须是 Pinned Memory</text>
+  <!-- row pageable -->
+  <rect x="40" y="436" width="150" height="40" rx="8" fill="#fff5f5" stroke="#fa5252"/>
+  <text x="115" y="461" text-anchor="middle" font-size="12.5" font-weight="700" fill="#c92a2a">Pageable DRAM</text>
+  <path d="M192 456 L286 456" stroke="#fa5252" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="240" y="449" text-anchor="middle" font-size="11" fill="#c92a2a">CPU 拷贝</text>
+  <rect x="290" y="436" width="150" height="40" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="365" y="461" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0b7285">Driver 的 Pinned 缓冲</text>
+  <path d="M442 456 L536 456" stroke="#0ca678" stroke-width="2" marker-end="url(#art)"/>
+  <text x="490" y="449" text-anchor="middle" font-size="11" fill="#0b7285">DMA</text>
+  <rect x="540" y="436" width="120" height="40" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="600" y="461" text-anchor="middle" font-size="12.5" font-weight="700" fill="#3b5bdb">GPU HBM</text>
+  <text x="680" y="452" font-size="11.5" fill="#c92a2a">两次搬运，第一次吃 CPU</text>
+  <text x="680" y="468" font-size="11.5" fill="#c92a2a">内存带宽，且难以真正异步</text>
+  <!-- row pinned -->
+  <rect x="40" y="488" width="150" height="40" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="115" y="513" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0b7285">Pinned DRAM</text>
+  <path d="M192 508 L536 508" stroke="#0ca678" stroke-width="2" marker-end="url(#art)"/>
+  <text x="365" y="501" text-anchor="middle" font-size="11" fill="#0b7285">DMA（一次）</text>
+  <rect x="540" y="488" width="120" height="40" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="600" y="513" text-anchor="middle" font-size="12.5" font-weight="700" fill="#3b5bdb">GPU HBM</text>
+  <text x="680" y="504" font-size="11.5" fill="#0b7285">一次搬运，可在独立 stream</text>
+  <text x="680" y="520" font-size="11.5" fill="#0b7285">上与计算重叠</text>
+
+  <!-- note -->
+  <rect x="40" y="544" width="820" height="50" rx="10" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="56" y="565" font-size="12" fill="#495057">Pageable 页随时可能被 OS 迁移或换出，而设备 DMA 需要一段在传输期间不变的映射，所以驱动只能先拷进自己锁定的缓冲。</text>
+  <text x="56" y="584" font-size="11.5" fill="#868e96">Pinned 的代价：锁定的页不能被 OS 回收。pin 上百 GB 之前，先确认机器还剩多少可用内存。</text>
+</svg>

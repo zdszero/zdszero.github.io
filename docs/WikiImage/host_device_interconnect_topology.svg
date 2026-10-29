@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 590" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="590" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">双路服务器的 Host / Device 互连（示意）</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">每次传输都是一条路径：先找出它经过哪些链路、走哪个方向，再谈带宽</text>
+
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#868e96"/></marker>
+    <marker id="arl" markerWidth="9" markerHeight="9" refX="1" refY="4" orient="auto"><path d="M8 0 L0 4 L8 8 z" fill="#868e96"/></marker>
+    <marker id="art" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#0ca678"/></marker>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#fa5252"/></marker>
+    <marker id="ara" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#f08c00"/></marker>
+  </defs>
+
+  <!-- Socket 0 -->
+  <rect x="40" y="76" width="390" height="190" rx="10" fill="#f8f9fa" stroke="#adb5bd"/>
+  <rect x="40" y="76" width="390" height="28" rx="10" fill="#495057"/>
+  <text x="56" y="95" font-size="12.5" font-weight="700" fill="#ffffff">CPU Socket 0（NUMA 0）</text>
+  <rect x="80" y="114" width="330" height="36" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="94" y="137" font-size="12.5" font-weight="700" fill="#0b7285">Local DRAM 0</text>
+  <text x="396" y="137" text-anchor="end" font-size="11" fill="#868e96">DDR5 多通道</text>
+  <rect x="80" y="160" width="330" height="36" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="94" y="183" font-size="12.5" font-weight="700" fill="#495057">Cores · LLC · Memory Controller</text>
+  <rect x="80" y="206" width="330" height="44" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="94" y="225" font-size="12.5" font-weight="700" fill="#495057">PCIe Root Complex 0</text>
+  <text x="94" y="241" font-size="11" fill="#868e96">多个 Root Port，每个下接一条 ×16 链路</text>
+
+  <!-- Socket 1 -->
+  <rect x="470" y="76" width="390" height="190" rx="10" fill="#f8f9fa" stroke="#adb5bd"/>
+  <rect x="470" y="76" width="390" height="28" rx="10" fill="#495057"/>
+  <text x="486" y="95" font-size="12.5" font-weight="700" fill="#ffffff">CPU Socket 1（NUMA 1）</text>
+  <rect x="510" y="114" width="330" height="36" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="524" y="137" font-size="12.5" font-weight="700" fill="#0b7285">Local DRAM 1</text>
+  <text x="826" y="137" text-anchor="end" font-size="11" fill="#868e96">DDR5 多通道</text>
+  <rect x="510" y="160" width="330" height="36" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="524" y="183" font-size="12.5" font-weight="700" fill="#495057">Cores · LLC · Memory Controller</text>
+  <rect x="510" y="206" width="330" height="44" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="524" y="225" font-size="12.5" font-weight="700" fill="#495057">PCIe Root Complex 1</text>
+  <text x="524" y="241" font-size="11" fill="#868e96">多个 Root Port，每个下接一条 ×16 链路</text>
+
+  <!-- UPI -->
+  <text x="450" y="170" text-anchor="middle" font-size="11" font-weight="700" fill="#495057">UPI</text>
+  <path d="M414 180 L486 180" stroke="#868e96" stroke-width="2" marker-start="url(#arl)" marker-end="url(#ar)"/>
+  <!-- RC -> Switch uplinks -->
+  <path d="M245 250 L245 296" stroke="#adb5bd" stroke-width="3"/>
+  <text x="254" y="278" font-size="11" fill="#868e96">PCIe 5.0 ×16 上行</text>
+  <path d="M675 250 L675 296" stroke="#adb5bd" stroke-width="3"/>
+  <text x="684" y="278" font-size="11" fill="#868e96">PCIe 5.0 ×16 上行</text>
+
+  <!-- Switches -->
+  <rect x="80" y="296" width="330" height="36" rx="8" fill="#f1f3f5" stroke="#868e96"/>
+  <text x="245" y="319" text-anchor="middle" font-size="12.5" font-weight="700" fill="#495057">PCIe Switch</text>
+  <rect x="510" y="296" width="330" height="36" rx="8" fill="#f1f3f5" stroke="#868e96"/>
+  <text x="675" y="319" text-anchor="middle" font-size="12.5" font-weight="700" fill="#495057">PCIe Switch</text>
+
+  <!-- downlinks -->
+  <g stroke="#adb5bd" stroke-width="2">
+    <path d="M93 332 L93 368"/><path d="M189 332 L189 368"/><path d="M285 332 L285 368"/><path d="M381 332 L381 368"/>
+    <path d="M523 332 L523 368"/><path d="M619 332 L619 368"/><path d="M715 332 L715 368"/><path d="M811 332 L811 368"/>
+  </g>
+
+  <!-- Endpoints -->
+  <g font-size="12.5" font-weight="700" text-anchor="middle">
+    <rect x="50" y="368" width="86" height="54" rx="8" fill="#edf2ff" stroke="#4c6ef5"/><text x="93" y="391" fill="#3b5bdb">GPU 0</text>
+    <rect x="146" y="368" width="86" height="54" rx="8" fill="#edf2ff" stroke="#4c6ef5"/><text x="189" y="391" fill="#3b5bdb">GPU 1</text>
+    <rect x="242" y="368" width="86" height="54" rx="8" fill="#fff4e6" stroke="#f08c00"/><text x="285" y="391" fill="#e8590c">NIC 0</text>
+    <rect x="338" y="368" width="86" height="54" rx="8" fill="#e6fcf5" stroke="#0ca678"/><text x="381" y="391" fill="#0b7285">NVMe SSD</text>
+    <rect x="480" y="368" width="86" height="54" rx="8" fill="#edf2ff" stroke="#4c6ef5"/><text x="523" y="391" fill="#3b5bdb">GPU 2</text>
+    <rect x="576" y="368" width="86" height="54" rx="8" fill="#edf2ff" stroke="#4c6ef5"/><text x="619" y="391" fill="#3b5bdb">GPU 3</text>
+    <rect x="672" y="368" width="86" height="54" rx="8" fill="#fff4e6" stroke="#f08c00"/><text x="715" y="391" fill="#e8590c">NIC 1</text>
+    <rect x="768" y="368" width="86" height="54" rx="8" fill="#e6fcf5" stroke="#0ca678"/><text x="811" y="391" fill="#0b7285">NVMe SSD</text>
+  </g>
+  <g font-size="11" fill="#868e96" text-anchor="middle">
+    <text x="93" y="410">HBM</text><text x="189" y="410">HBM</text><text x="285" y="410">RDMA</text><text x="381" y="410">存储</text>
+    <text x="523" y="410">HBM</text><text x="619" y="410">HBM</text><text x="715" y="410">RDMA</text><text x="811" y="410">存储</text>
+  </g>
+
+  <!-- NVLink -->
+  <g stroke="#7048e8" stroke-width="2">
+    <path d="M93 422 L93 452"/><path d="M189 422 L189 452"/><path d="M523 422 L523 452"/><path d="M619 422 L619 452"/>
+  </g>
+  <rect x="50" y="452" width="612" height="32" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="356" y="473" text-anchor="middle" font-size="12.5" font-weight="700" fill="#5f3dc4">④ NVLink / NVSwitch：GPU ↔ GPU，与 PCIe 是两张独立的网</text>
+
+  <!-- path 1: local H2D -->
+  <path d="M80 132 L62 132 L62 364" fill="none" stroke="#0ca678" stroke-width="2.5" marker-end="url(#art)"/>
+  <text x="45" y="290" font-size="13" font-weight="700" fill="#0b7285">①</text>
+  <!-- path 2: remote H2D -->
+  <path d="M510 144 C 470 150, 450 205, 414 226" fill="none" stroke="#fa5252" stroke-width="2.5" stroke-dasharray="6 4" marker-end="url(#arr)"/>
+  <text x="458" y="222" font-size="13" font-weight="700" fill="#c92a2a">②</text>
+  <!-- path 3: GPUDirect RDMA through switch -->
+  <path d="M285 368 L285 350 L112 350 L112 365" fill="none" stroke="#f08c00" stroke-width="2.5" marker-end="url(#ara)"/>
+  <text x="200" y="346" font-size="13" font-weight="700" fill="#e8590c">③</text>
+
+  <!-- note -->
+  <rect x="40" y="500" width="820" height="74" rx="10" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="56" y="522" font-size="12" fill="#495057"><tspan fill="#0b7285" font-weight="700">① 本地 H2D</tspan>：DRAM 0 → Memory Controller → RC 0 → Switch → GPU 0　<tspan fill="#c92a2a" font-weight="700">② 远端 H2D</tspan>：DRAM 1 → UPI → RC 0 → …，多跨一跳</text>
+  <text x="56" y="543" font-size="12" fill="#495057"><tspan fill="#e8590c" font-weight="700">③ GPUDirect RDMA</tspan>：NIC 0 ↔ GPU 0 在 Switch 内转发，不碰 DRAM，但仍占用 GPU 0 自己那条 PCIe 链路</text>
+  <text x="56" y="564" font-size="11.5" fill="#868e96">拓扑为示意：几颗 GPU / NIC / SSD 共用一个 Switch、Switch 挂在哪个 Socket，以 nvidia-smi topo -m 为准</text>
+</svg>

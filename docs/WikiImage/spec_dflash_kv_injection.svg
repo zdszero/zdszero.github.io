@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 470" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="920" height="470" rx="12" fill="#ffffff"/>
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#868e96"/>
+    </marker>
+    <linearGradient id="fade" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#f08c00" stop-opacity="1"/>
+      <stop offset="1" stop-color="#f08c00" stop-opacity="0.08"/>
+    </linearGradient>
+  </defs>
+  <text x="460" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">target 特征怎么进 draft：输入融合 vs KV 注入</text>
+  <text x="460" y="56" text-anchor="middle" font-size="13" fill="#868e96">橙色 = 来自 target 的上下文特征；紫色 = draft 自己的计算</text>
+
+  <!-- panel A: EAGLE-3 input fusion -->
+  <rect x="24" y="74" width="428" height="270" rx="10" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="40" y="98" font-size="14" font-weight="700" fill="#495057">EAGLE-3：只在输入处融合一次</text>
+  <rect x="40" y="116" width="8" height="172" rx="3" fill="url(#fade)"/>
+  <g font-size="11.5" text-anchor="middle">
+    <rect x="60" y="116" width="250" height="28" rx="6" fill="#f3f0ff" stroke="#b197fc" stroke-dasharray="4 3"/><text x="185" y="134" fill="#9775fa">layer n（假设加深）</text>
+    <rect x="60" y="160" width="250" height="28" rx="6" fill="#f3f0ff" stroke="#9775fa" stroke-dasharray="4 3"/><text x="185" y="178" fill="#7950f2">layer 2（假设加深）</text>
+    <rect x="60" y="204" width="250" height="28" rx="6" fill="#f3f0ff" stroke="#7048e8"/><text x="185" y="222" fill="#5f3dc4">layer 1：qkv 输入 = cat(e, g)</text>
+    <rect x="60" y="262" width="140" height="26" rx="6" fill="#fff4e6" stroke="#f08c00"/><text x="130" y="279" fill="#e8590c">g（3 层融合）</text>
+    <rect x="210" y="262" width="100" height="26" rx="6" fill="#e7f5ff" stroke="#1c7ed6"/><text x="260" y="279" fill="#1864ab">e(token)</text>
+  </g>
+  <g stroke="#868e96" stroke-width="1.3">
+    <path d="M130 262 L130 236" marker-end="url(#ar)"/><path d="M260 262 L260 236" marker-end="url(#ar)"/>
+    <path d="M185 204 L185 192" marker-end="url(#ar)"/><path d="M185 160 L185 148" marker-end="url(#ar)" stroke-dasharray="3 2"/>
+  </g>
+  <g font-size="11.5" fill="#495057">
+    <text x="326" y="160">target 特征只在</text>
+    <text x="326" y="178">第 1 层进入；</text>
+    <text x="326" y="204">draft 一加深，</text>
+    <text x="326" y="222">信号随深度稀释</text>
+  </g>
+  <text x="40" y="314" font-size="10.5" fill="#868e96">EAGLE-3 实际只有 1 层，问题不明显；但它也因此</text>
+  <text x="40" y="330" font-size="10.5" fill="#868e96">没法靠加层变强。串行 draft 每加一层，k 步就多 k 份代价</text>
+  <!-- panel B: DFlash KV injection -->
+  <rect x="468" y="74" width="428" height="270" rx="10" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="484" y="98" font-size="14" font-weight="700" fill="#e8590c">DFlash：每一层都把特征注入 K/V</text>
+  <path d="M496 262 L496 130" stroke="#f08c00" stroke-width="2" fill="none"/>
+  <g font-size="11.5" text-anchor="middle">
+    <rect x="516" y="116" width="96" height="28" rx="6" fill="#fff4e6" stroke="#f08c00"/><text x="564" y="134" fill="#e8590c">K/V ← W·H_t</text>
+    <rect x="516" y="160" width="96" height="28" rx="6" fill="#fff4e6" stroke="#f08c00"/><text x="564" y="178" fill="#e8590c">K/V ← W·H_t</text>
+    <rect x="516" y="204" width="96" height="28" rx="6" fill="#fff4e6" stroke="#f08c00"/><text x="564" y="222" fill="#e8590c">K/V ← W·H_t</text>
+    <rect x="628" y="116" width="150" height="28" rx="6" fill="#f3f0ff" stroke="#7048e8"/><text x="703" y="134" fill="#5f3dc4">layer n：块的 Q</text>
+    <rect x="628" y="160" width="150" height="28" rx="6" fill="#f3f0ff" stroke="#7048e8"/><text x="703" y="178" fill="#5f3dc4">layer 2：块的 Q</text>
+    <rect x="628" y="204" width="150" height="28" rx="6" fill="#f3f0ff" stroke="#7048e8"/><text x="703" y="222" fill="#5f3dc4">layer 1：块的 Q</text>
+    <rect x="484" y="262" width="128" height="26" rx="6" fill="#fff4e6" stroke="#f08c00"/><text x="548" y="279" fill="#e8590c">H_t（5 层融合）</text>
+    <rect x="628" y="262" width="150" height="26" rx="6" fill="#e7f5ff" stroke="#1c7ed6"/><text x="703" y="279" fill="#1864ab">块 [b, M, M, …, M]</text>
+  </g>
+  <g stroke="#f08c00" stroke-width="1.3">
+    <path d="M496 130 L512 130" marker-end="url(#ar)"/><path d="M496 174 L512 174" marker-end="url(#ar)"/><path d="M496 218 L512 218" marker-end="url(#ar)"/>
+  </g>
+  <g stroke="#868e96" stroke-width="1.3">
+    <path d="M612 130 L624 130" marker-end="url(#ar)"/><path d="M612 174 L624 174" marker-end="url(#ar)"/><path d="M612 218 L624 218" marker-end="url(#ar)"/>
+    <path d="M703 262 L703 236" marker-end="url(#ar)"/><path d="M703 204 L703 192" marker-end="url(#ar)"/><path d="M703 160 L703 148" marker-end="url(#ar)"/>
+  </g>
+  <g font-size="11" fill="#495057">
+    <text x="790" y="160">特征只过</text>
+    <text x="790" y="176">K/V 投影，</text>
+    <text x="790" y="192">不过 Q、O</text>
+    <text x="790" y="208">和 FFN</text>
+  </g>
+  <text x="484" y="314" font-size="10.5" fill="#868e96">每层都能直接看到 target 上下文，加层就真的变强；</text>
+  <text x="484" y="330" font-size="10.5" fill="#868e96">块是一次前向，加层的代价不乘 k</text>
+
+  <rect x="24" y="358" width="872" height="94" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="44" y="382" font-size="12" font-weight="700" fill="#212529">两件事互相成全</text>
+  <text x="44" y="404" font-size="12" fill="#495057">· 并行块让「加层」变便宜（5 层 draft 生成 16 个 token 只要 1 次前向）；KV 注入让「加层」有用（深层不会丢掉 target 信息）。</text>
+  <text x="44" y="424" font-size="12" fill="#495057">· 论文消融：同样结构下，KV 注入 τ 4.2 / 3.3× 对比只在输入融合 τ 3.5 / 2.9×。</text>
+  <text x="44" y="444" font-size="12" fill="#495057">· 上下文特征存进 draft KV cache，下一轮只需投影新被接受位置的 H_t，不必重跑 draft。</text>
+</svg>

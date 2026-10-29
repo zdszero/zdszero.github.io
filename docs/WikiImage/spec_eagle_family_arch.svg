@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 560" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="920" height="560" rx="12" fill="#ffffff"/>
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#868e96"/>
+    </marker>
+  </defs>
+  <text x="460" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">三种「读 target hidden」的 draft 结构</text>
+  <text x="460" y="56" text-anchor="middle" font-size="13" fill="#868e96">灰色 = 借用 target 的权重；彩色 = draft 自己的权重。三者都只有 1 层 decoder</text>
+
+  <!-- column template: x0 = 30 / 330 / 630, width 260 -->
+  <!-- EAGLE -->
+  <text x="160" y="88" text-anchor="middle" font-size="14" font-weight="700" fill="#3b5bdb">EAGLE（llama_eagle.py）</text>
+  <rect x="40" y="104" width="100" height="34" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="90" y="125" text-anchor="middle" font-size="11.5" fill="#495057">embed(t+1)</text>
+  <rect x="180" y="104" width="100" height="34" rx="8" fill="#fff4e6" stroke="#f08c00"/>
+  <text x="230" y="120" text-anchor="middle" font-size="11.5" fill="#e8590c">f_t</text>
+  <text x="230" y="133" text-anchor="middle" font-size="10" fill="#868e96">target 末层特征</text>
+  <path d="M90 138 L150 168" stroke="#868e96" stroke-width="1.5" marker-end="url(#ar)"/>
+  <path d="M230 138 L170 168" stroke="#868e96" stroke-width="1.5" marker-end="url(#ar)"/>
+  <rect x="90" y="170" width="140" height="34" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="160" y="191" text-anchor="middle" font-size="11.5" fill="#3b5bdb">concat → fc (2h→h)</text>
+  <path d="M160 204 L160 222" stroke="#868e96" stroke-width="1.5" marker-end="url(#ar)"/>
+  <rect x="70" y="224" width="180" height="48" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="160" y="244" text-anchor="middle" font-size="11.5" font-weight="700" fill="#3b5bdb">1 层 Llama decoder</text>
+  <text x="160" y="262" text-anchor="middle" font-size="10.5" fill="#868e96">首层去掉 input_layernorm</text>
+  <path d="M160 272 L160 290" stroke="#868e96" stroke-width="1.5" marker-end="url(#ar)"/>
+  <rect x="90" y="292" width="140" height="34" rx="8" fill="#fff4e6" stroke="#f08c00"/>
+  <text x="160" y="313" text-anchor="middle" font-size="11.5" fill="#e8590c">f̂_{t+1}（回归目标）</text>
+  <path d="M160 326 L160 344" stroke="#868e96" stroke-width="1.5" marker-end="url(#ar)"/>
+  <rect x="90" y="346" width="140" height="34" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="160" y="367" text-anchor="middle" font-size="11.5" fill="#495057">target lm_head</text>
+  <path d="M230 309 C 285 309, 285 121, 282 121" stroke="#f08c00" stroke-width="1.3" fill="none" stroke-dasharray="4 3" marker-end="url(#ar)"/>
+  <text x="290" y="220" font-size="10" fill="#e8590c" transform="rotate(90 290 220)" text-anchor="middle">下一步的输入特征</text>
+  <!-- MTP -->
+  <text x="460" y="88" text-anchor="middle" font-size="14" font-weight="700" fill="#0b7285">DeepSeek MTP（deepseek_nextn.py）</text>
+  <rect x="340" y="104" width="100" height="34" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="390" y="125" text-anchor="middle" font-size="11.5" fill="#495057">embed(t+1)</text>
+  <rect x="480" y="104" width="100" height="34" rx="8" fill="#fff4e6" stroke="#f08c00"/>
+  <text x="530" y="120" text-anchor="middle" font-size="11.5" fill="#e8590c">h_t</text>
+  <text x="530" y="133" text-anchor="middle" font-size="10" fill="#868e96">主干末层 hidden</text>
+  <rect x="340" y="146" width="100" height="22" rx="6" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="390" y="161" text-anchor="middle" font-size="10.5" fill="#0b7285">enorm</text>
+  <rect x="480" y="146" width="100" height="22" rx="6" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="530" y="161" text-anchor="middle" font-size="10.5" fill="#0b7285">hnorm</text>
+  <path d="M390 168 L450 182" stroke="#868e96" stroke-width="1.5" marker-end="url(#ar)"/>
+  <path d="M530 168 L470 182" stroke="#868e96" stroke-width="1.5" marker-end="url(#ar)"/>
+  <rect x="380" y="184" width="160" height="30" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="460" y="203" text-anchor="middle" font-size="11.5" fill="#0b7285">concat → eh_proj (2h→h)</text>
+  <path d="M460 214 L460 230" stroke="#868e96" stroke-width="1.5" marker-end="url(#ar)"/>
+  <rect x="370" y="232" width="180" height="48" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="460" y="252" text-anchor="middle" font-size="11.5" font-weight="700" fill="#0b7285">1 层 DeepSeek block</text>
+  <text x="460" y="270" text-anchor="middle" font-size="10.5" fill="#868e96">MLA + MoE，和主干同构</text>
+  <path d="M460 280 L460 298" stroke="#868e96" stroke-width="1.5" marker-end="url(#ar)"/>
+  <rect x="390" y="300" width="140" height="30" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="460" y="319" text-anchor="middle" font-size="11.5" fill="#0b7285">shared_head.norm</text>
+  <path d="M460 330 L460 344" stroke="#868e96" stroke-width="1.5" marker-end="url(#ar)"/>
+  <rect x="390" y="346" width="140" height="34" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="460" y="367" text-anchor="middle" font-size="11.5" fill="#495057">共享 lm_head</text>
+
+  <!-- EAGLE3 -->
+  <text x="760" y="88" text-anchor="middle" font-size="14" font-weight="700" fill="#5f3dc4">EAGLE3（llama_eagle3.py）</text>
+  <rect x="640" y="104" width="64" height="34" rx="8" fill="#fff4e6" stroke="#f08c00"/>
+  <text x="672" y="120" text-anchor="middle" font-size="11" fill="#e8590c">l</text>
+  <text x="672" y="133" text-anchor="middle" font-size="9.5" fill="#868e96">低层</text>
+  <rect x="710" y="104" width="64" height="34" rx="8" fill="#fff4e6" stroke="#f08c00"/>
+  <text x="742" y="120" text-anchor="middle" font-size="11" fill="#e8590c">m</text>
+  <text x="742" y="133" text-anchor="middle" font-size="9.5" fill="#868e96">中层</text>
+  <rect x="780" y="104" width="64" height="34" rx="8" fill="#fff4e6" stroke="#f08c00"/>
+  <text x="812" y="120" text-anchor="middle" font-size="11" fill="#e8590c">h</text>
+  <text x="812" y="133" text-anchor="middle" font-size="9.5" fill="#868e96">高层</text>
+  <path d="M742 138 L742 150" stroke="#868e96" stroke-width="1.5" marker-end="url(#ar)"/>
+  <rect x="680" y="152" width="124" height="28" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="742" y="170" text-anchor="middle" font-size="11" fill="#5f3dc4">fc (3h→h) 仅首步</text>
+  <rect x="820" y="152" width="70" height="28" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="855" y="170" text-anchor="middle" font-size="11" fill="#495057">embed</text>
+  <path d="M742 180 L742 196" stroke="#868e96" stroke-width="1.5" marker-end="url(#ar)"/>
+  <path d="M855 180 L800 196" stroke="#868e96" stroke-width="1.5" marker-end="url(#ar)"/>
+  <rect x="650" y="198" width="220" height="30" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="760" y="217" text-anchor="middle" font-size="11" fill="#5f3dc4">cat(norm(emb), norm(g)) → 2h 宽 qkv</text>
+  <path d="M760 228 L760 238" stroke="#868e96" stroke-width="1.5" marker-end="url(#ar)"/>
+  <rect x="670" y="240" width="180" height="40" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="760" y="258" text-anchor="middle" font-size="11.5" font-weight="700" fill="#5f3dc4">1 层 decoder + norm</text>
+  <text x="760" y="273" text-anchor="middle" font-size="10.5" fill="#868e96">不再回归特征，只学 token</text>
+  <path d="M760 280 L760 298" stroke="#868e96" stroke-width="1.5" marker-end="url(#ar)"/>
+  <rect x="680" y="300" width="160" height="30" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="760" y="319" text-anchor="middle" font-size="11" fill="#5f3dc4">g'（draft 自己的 hidden）</text>
+  <path d="M760 330 L760 344" stroke="#868e96" stroke-width="1.5" marker-end="url(#ar)"/>
+  <rect x="670" y="346" width="180" height="34" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="760" y="362" text-anchor="middle" font-size="11.5" fill="#5f3dc4">小词表 lm_head</text>
+  <text x="760" y="375" text-anchor="middle" font-size="10" fill="#868e96">d2t 映射回 target 词表</text>
+  <path d="M840 315 C 900 315, 900 225, 872 213" stroke="#7048e8" stroke-width="1.3" fill="none" stroke-dasharray="4 3" marker-end="url(#ar)"/>
+
+  <!-- compare strip -->
+  <g font-size="11.5" fill="#495057">
+    <rect x="30" y="400" width="860" height="96" rx="10" fill="#f8f9fa" stroke="#e9ecef"/>
+    <text x="50" y="424" font-weight="700" fill="#212529">差在哪</text>
+    <text x="50" y="446">· EAGLE：输入是特征，输出也要逼近下一个特征（L1 回归 + CE），所以下一步可以把预测的特征再喂回来。</text>
+    <text x="50" y="466">· MTP：结构几乎同 EAGLE，但和主干一起预训练，decoder 就是一层完整的主干 block（含 MoE），所以更准也更贵。</text>
+    <text x="50" y="486">· EAGLE3：去掉特征回归，hidden 不再被约束成「像 target 的特征」；输入换成多层融合，训练时就模拟多步自回归。</text>
+  </g>
+  <rect x="30" y="508" width="860" height="36" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="460" y="531" text-anchor="middle" font-size="12" fill="#495057">共同点：draft 的「脑子」是 target 的 hidden；自己只负责把它往前推一步，所以 1 层就够。</text>
+</svg>

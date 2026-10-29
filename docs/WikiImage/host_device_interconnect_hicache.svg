@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="600" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">SGLang HiCache：把 H2D 藏进前向计算里</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">KV 在三级存储间移动；加载按层切开，第 i 层 attention 只等第 i 层的 H2D</text>
+
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#868e96"/></marker>
+    <marker id="art" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#0ca678"/></marker>
+    <marker id="ara" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#f08c00"/></marker>
+  </defs>
+
+  <!-- tiers -->
+  <rect x="40" y="80" width="250" height="96" rx="10" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="40" y="80" width="250" height="28" rx="10" fill="#4c6ef5"/>
+  <text x="56" y="99" font-size="12.5" font-weight="700" fill="#ffffff">L1 · GPU HBM</text>
+  <text x="56" y="130" font-size="11.5" fill="#495057">设备 KV Pool（MHATokenToKVPool 等）</text>
+  <text x="56" y="150" font-size="11.5" fill="#495057">前向计算直接读写</text>
+
+  <rect x="325" y="80" width="250" height="96" rx="10" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="325" y="80" width="250" height="28" rx="10" fill="#0ca678"/>
+  <text x="341" y="99" font-size="12.5" font-weight="700" fill="#ffffff">L2 · Pinned Host DRAM</text>
+  <text x="341" y="130" font-size="11.5" fill="#495057">HostKVCache：mmap + MAP_POPULATE</text>
+  <text x="341" y="150" font-size="11.5" fill="#495057">再 cudaHostRegister 锁页</text>
+  <text x="341" y="168" font-size="11" fill="#868e96">容量：--hicache-ratio / --hicache-size</text>
+
+  <rect x="610" y="80" width="250" height="96" rx="10" fill="#f1f3f5" stroke="#adb5bd"/>
+  <rect x="610" y="80" width="250" height="28" rx="10" fill="#495057"/>
+  <text x="626" y="99" font-size="12.5" font-weight="700" fill="#ffffff">L3 · 外部存储</text>
+  <text x="626" y="130" font-size="11.5" fill="#495057">mooncake / nixl / hf3fs / file …</text>
+  <text x="626" y="150" font-size="11.5" fill="#495057">只与 L2 交换，不直达 HBM</text>
+  <text x="626" y="168" font-size="11" fill="#868e96">--hicache-storage-backend</text>
+
+  <!-- tier arrows -->
+  <path d="M325 118 L294 118" stroke="#0ca678" stroke-width="2" marker-end="url(#art)"/>
+  <path d="M292 142 L321 142" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <text x="308" y="196" text-anchor="middle" font-size="11" fill="#0b7285">H2D：load_stream</text>
+  <text x="308" y="212" text-anchor="middle" font-size="11" fill="#868e96">D2H：write_stream</text>
+  <path d="M610 118 L579 118" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <path d="M577 142 L606 142" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <text x="592" y="196" text-anchor="middle" font-size="11" fill="#868e96">RDMA / 文件 I/O</text>
+  <text x="592" y="212" text-anchor="middle" font-size="11" fill="#868e96">注册的是 Host 内存</text>
+  <!-- timeline -->
+  <line x1="40" y1="230" x2="860" y2="230" stroke="#e9ecef"/>
+  <text x="40" y="256" font-size="13" font-weight="700" fill="#212529">一次命中前缀的加载（5 层示意）</text>
+
+  <text x="40" y="290" font-size="12" font-weight="700" fill="#0b7285">load_stream</text>
+  <g font-size="11" font-family="monospace" text-anchor="middle" fill="#0b7285">
+    <rect x="180" y="272" width="50" height="28" rx="5" fill="#e6fcf5" stroke="#0ca678"/><text x="205" y="290">H2D 0</text>
+    <rect x="230" y="272" width="50" height="28" rx="5" fill="#e6fcf5" stroke="#0ca678"/><text x="255" y="290">H2D 1</text>
+    <rect x="280" y="272" width="50" height="28" rx="5" fill="#e6fcf5" stroke="#0ca678"/><text x="305" y="290">H2D 2</text>
+    <rect x="330" y="272" width="50" height="28" rx="5" fill="#e6fcf5" stroke="#0ca678"/><text x="355" y="290">H2D 3</text>
+    <rect x="380" y="272" width="50" height="28" rx="5" fill="#e6fcf5" stroke="#0ca678"/><text x="405" y="290">H2D 4</text>
+  </g>
+
+  <text x="40" y="336" font-size="12" font-weight="700" fill="#3b5bdb">计算 stream</text>
+  <text x="40" y="351" font-size="10.5" fill="#868e96">按层等待（SGLang）</text>
+  <g font-size="11" font-family="monospace" text-anchor="middle" fill="#3b5bdb">
+    <rect x="230" y="318" width="70" height="28" rx="5" fill="#edf2ff" stroke="#4c6ef5"/><text x="265" y="336">Layer 0</text>
+    <rect x="300" y="318" width="70" height="28" rx="5" fill="#edf2ff" stroke="#4c6ef5"/><text x="335" y="336">Layer 1</text>
+    <rect x="370" y="318" width="70" height="28" rx="5" fill="#edf2ff" stroke="#4c6ef5"/><text x="405" y="336">Layer 2</text>
+    <rect x="440" y="318" width="70" height="28" rx="5" fill="#edf2ff" stroke="#4c6ef5"/><text x="475" y="336">Layer 3</text>
+    <rect x="510" y="318" width="70" height="28" rx="5" fill="#edf2ff" stroke="#4c6ef5"/><text x="545" y="336">Layer 4</text>
+  </g>
+  <g stroke="#f08c00" stroke-width="1.5" stroke-dasharray="3 2">
+    <path d="M230 301 L230 316" marker-end="url(#ara)"/>
+    <path d="M280 301 L300 316" marker-end="url(#ara)"/>
+    <path d="M330 301 L370 316" marker-end="url(#ara)"/>
+  </g>
+  <text x="596" y="330" font-size="11" fill="#e8590c">虚线 = wait_event(第 i 层)</text>
+  <text x="596" y="345" font-size="11" fill="#868e96">后几层的 H2D 被计算盖住</text>
+
+  <text x="40" y="392" font-size="12" font-weight="700" fill="#868e96">计算 stream</text>
+  <text x="40" y="407" font-size="10.5" fill="#868e96">整体等待（对照）</text>
+  <rect x="180" y="374" width="250" height="28" rx="5" fill="#f8f9fa" stroke="#ced4da" stroke-dasharray="4 3"/>
+  <text x="305" y="392" text-anchor="middle" font-size="11" fill="#868e96">空等全部 H2D</text>
+  <rect x="430" y="374" width="350" height="28" rx="5" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="605" y="392" text-anchor="middle" font-size="11" font-family="monospace" fill="#495057">Layer 0 … Layer 4</text>
+  <path d="M580 418 L580 424 L780 424 L780 418" fill="none" stroke="#c92a2a" stroke-width="1.5"/>
+  <text x="680" y="440" text-anchor="middle" font-size="11.5" font-weight="700" fill="#c92a2a">按层等待省下的时间 ≈ 前 N−1 层的 H2D</text>
+
+  <!-- note -->
+  <rect x="40" y="460" width="820" height="122" rx="10" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="56" y="483" font-size="12" font-weight="700" fill="#212529">实现上的三个关键点</text>
+  <text x="56" y="504" font-size="12" fill="#495057">① 生产者：HiCacheController.start_loading 在 load_stream 上逐层调用 load_to_device_per_layer，每层结束记一个 CUDA event。</text>
+  <text x="56" y="524" font-size="12" fill="#495057">② 消费者：设备 KV Pool 的 get_key_buffer 先调 layer_transfer_counter.wait_until(layer)，即计算 stream 等该层 event。</text>
+  <text x="56" y="544" font-size="12" fill="#495057">③ 搬运方式：--hicache-io-backend=kernel 用 SM 做 gather/scatter（一次启动处理任意离散页）；</text>
+  <text x="76" y="564" font-size="12" fill="#495057">direct 把连续页合并后逐段 cudaMemcpyAsync（走 Copy Engine，不占 SM，但每段一次调用）。</text>
+</svg>

@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 470" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="920" height="470" rx="12" fill="#ffffff"/>
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#868e96"/>
+    </marker>
+  </defs>
+  <text x="460" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">DFLASH 与 DSPARK：并行块 draft</text>
+  <text x="460" y="56" text-anchor="middle" font-size="13" fill="#868e96">DFLASH 用一次前向换掉串行 draft；DSPARK 补回块内依赖，并按置信度决定每个请求验多长</text>
+
+  <!-- panel A -->
+  <rect x="24" y="74" width="428" height="300" rx="10" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="40" y="98" font-size="14" font-weight="700" fill="#5f3dc4">DFLASH：一次前向出一整块</text>
+
+  <text x="40" y="125" font-size="11.5" fill="#495057">draft KV（context）</text>
+  <g font-family="monospace" font-size="11" text-anchor="middle">
+    <rect x="170" y="110" width="30" height="22" rx="4" fill="#fff4e6" stroke="#f08c00"/><text x="185" y="125" fill="#e8590c">c</text>
+    <rect x="204" y="110" width="30" height="22" rx="4" fill="#fff4e6" stroke="#f08c00"/><text x="219" y="125" fill="#e8590c">c</text>
+    <rect x="238" y="110" width="30" height="22" rx="4" fill="#fff4e6" stroke="#f08c00"/><text x="253" y="125" fill="#e8590c">c</text>
+    <rect x="272" y="110" width="30" height="22" rx="4" fill="#fff4e6" stroke="#f08c00"/><text x="287" y="125" fill="#e8590c">c</text>
+  </g>
+  <text x="312" y="119" font-size="10.5" fill="#868e96">target 多层 hidden</text>
+  <text x="312" y="132" font-size="10.5" fill="#868e96">→ fc → 只算 K/V</text>
+
+  <text x="40" y="178" font-size="11.5" fill="#495057">block 输入</text>
+  <path d="M170 157 L170 153 L302 153 L302 157" fill="none" stroke="#7048e8" stroke-width="1.2"/>
+  <text x="236" y="149" text-anchor="middle" font-size="10.5" fill="#5f3dc4">块内双向注意力</text>
+  <g font-family="monospace" font-size="12" text-anchor="middle">
+    <rect x="170" y="160" width="30" height="26" rx="4" fill="#e6fcf5" stroke="#0ca678"/><text x="185" y="178" fill="#0b7285">b</text>
+    <rect x="204" y="160" width="30" height="26" rx="4" fill="#f3f0ff" stroke="#7048e8"/><text x="219" y="178" fill="#5f3dc4">M</text>
+    <rect x="238" y="160" width="30" height="26" rx="4" fill="#f3f0ff" stroke="#7048e8"/><text x="253" y="178" fill="#5f3dc4">M</text>
+    <rect x="272" y="160" width="30" height="26" rx="4" fill="#f3f0ff" stroke="#7048e8"/><text x="287" y="178" fill="#5f3dc4">M</text>
+  </g>
+  <text x="312" y="172" font-size="10.5" fill="#868e96">b = 上轮 bonus</text>
+  <text x="312" y="185" font-size="10.5" fill="#868e96">M = <tspan font-family="monospace">&lt;|MASK|&gt;</tspan></text>
+
+  <path d="M236 192 L236 216" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <text x="246" y="208" font-size="10.5" fill="#868e96">共享 target 的 lm_head，取 argmax</text>
+
+  <text x="40" y="242" font-size="11.5" fill="#495057">draft 输出</text>
+  <g font-family="monospace" font-size="12" text-anchor="middle">
+    <rect x="204" y="226" width="30" height="26" rx="4" fill="#f3f0ff" stroke="#7048e8"/><text x="219" y="244" fill="#5f3dc4">t1</text>
+    <rect x="238" y="226" width="30" height="26" rx="4" fill="#f3f0ff" stroke="#7048e8"/><text x="253" y="244" fill="#5f3dc4">t2</text>
+    <rect x="272" y="226" width="30" height="26" rx="4" fill="#f3f0ff" stroke="#7048e8"/><text x="287" y="244" fill="#5f3dc4">t3</text>
+  </g>
+  <text x="312" y="243" font-size="10.5" fill="#868e96">各位置互相看不到彼此的取值</text>
+
+  <text x="40" y="286" font-size="12" font-weight="700" fill="#495057">verify 之后</text>
+  <text x="40" y="306" font-size="11.5" fill="#495057">target 对 [b, t1, t2, t3] 做一次链式 verify；</text>
+  <text x="40" y="324" font-size="11.5" fill="#495057">被接受位置的 target hidden 投影成新的 c，</text>
+  <text x="40" y="342" font-size="11.5" fill="#495057">直接写进 draft KV，不需要额外的 draft 前向。</text>
+  <text x="40" y="362" font-size="10.5" fill="#868e96">sliding 层的 draft KV 只保留最近 window 个 token</text>
+  <!-- panel B -->
+  <rect x="468" y="74" width="428" height="300" rx="10" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="484" y="98" font-size="14" font-weight="700" fill="#e8590c">DSPARK：补依赖 + 变长 verify</text>
+
+  <text x="484" y="122" font-size="11.5" fill="#495057">① Markov 头：每个位置的 logits 加上「前一个 token」的偏置</text>
+  <g font-family="monospace" font-size="11" text-anchor="middle">
+    <rect x="484" y="132" width="70" height="26" rx="4" fill="#f3f0ff" stroke="#7048e8"/><text x="519" y="149" fill="#5f3dc4">ℓ1+B(b)</text>
+    <rect x="570" y="132" width="30" height="26" rx="4" fill="#fff4e6" stroke="#f08c00"/><text x="585" y="149" fill="#e8590c">t1</text>
+    <rect x="616" y="132" width="70" height="26" rx="4" fill="#f3f0ff" stroke="#7048e8"/><text x="651" y="149" fill="#5f3dc4">ℓ2+B(t1)</text>
+    <rect x="702" y="132" width="30" height="26" rx="4" fill="#fff4e6" stroke="#f08c00"/><text x="717" y="149" fill="#e8590c">t2</text>
+    <rect x="748" y="132" width="70" height="26" rx="4" fill="#f3f0ff" stroke="#7048e8"/><text x="783" y="149" fill="#5f3dc4">ℓ3+B(t2)</text>
+    <rect x="834" y="132" width="30" height="26" rx="4" fill="#fff4e6" stroke="#f08c00"/><text x="849" y="149" fill="#e8590c">t3</text>
+  </g>
+  <path d="M554 145 L566 145" stroke="#868e96" stroke-width="1.5" marker-end="url(#ar)"/>
+  <path d="M600 145 L612 145" stroke="#868e96" stroke-width="1.5" marker-end="url(#ar)"/>
+  <path d="M686 145 L698 145" stroke="#868e96" stroke-width="1.5" marker-end="url(#ar)"/>
+  <path d="M732 145 L744 145" stroke="#868e96" stroke-width="1.5" marker-end="url(#ar)"/>
+  <path d="M818 145 L830 145" stroke="#868e96" stroke-width="1.5" marker-end="url(#ar)"/>
+  <text x="484" y="176" font-size="10.5" fill="#868e96">ℓi 来自同一次块前向；B(x) = W2·W1[x] 是低秩查表，串行 γ 步但不是模型前向</text>
+
+  <text x="484" y="204" font-size="11.5" fill="#495057">② 置信度头给每个位置的「生存概率」，planner 决定各验几个</text>
+  <g font-family="monospace" font-size="10.5" text-anchor="middle">
+    <text x="510" y="232" fill="#495057" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11">req A</text>
+    <rect x="540" y="218" width="40" height="22" rx="4" fill="#edf2ff" stroke="#4c6ef5"/><text x="560" y="233" fill="#3b5bdb">1</text>
+    <rect x="584" y="218" width="40" height="22" rx="4" fill="#edf2ff" stroke="#4c6ef5"/><text x="604" y="233" fill="#3b5bdb">.92</text>
+    <rect x="628" y="218" width="40" height="22" rx="4" fill="#edf2ff" stroke="#4c6ef5"/><text x="648" y="233" fill="#3b5bdb">.85</text>
+    <rect x="672" y="218" width="40" height="22" rx="4" fill="#edf2ff" stroke="#4c6ef5"/><text x="692" y="233" fill="#3b5bdb">.77</text>
+    <rect x="716" y="218" width="40" height="22" rx="4" fill="#edf2ff" stroke="#4c6ef5"/><text x="736" y="233" fill="#3b5bdb">.70</text>
+    <rect x="760" y="218" width="40" height="22" rx="4" fill="#edf2ff" stroke="#4c6ef5"/><text x="780" y="233" fill="#3b5bdb">.62</text>
+
+    <text x="510" y="262" fill="#495057" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11">req B</text>
+    <rect x="540" y="248" width="40" height="22" rx="4" fill="#edf2ff" stroke="#4c6ef5"/><text x="560" y="263" fill="#3b5bdb">1</text>
+    <rect x="584" y="248" width="40" height="22" rx="4" fill="#edf2ff" stroke="#4c6ef5"/><text x="604" y="263" fill="#3b5bdb">.71</text>
+    <rect x="628" y="248" width="40" height="22" rx="4" fill="#edf2ff" stroke="#4c6ef5"/><text x="648" y="263" fill="#3b5bdb">.43</text>
+    <rect x="672" y="248" width="40" height="22" rx="4" fill="#f1f3f5" stroke="#ced4da" stroke-dasharray="3 2"/><text x="692" y="263" fill="#adb5bd">.18</text>
+    <rect x="716" y="248" width="40" height="22" rx="4" fill="#f1f3f5" stroke="#ced4da" stroke-dasharray="3 2"/><text x="736" y="263" fill="#adb5bd">.07</text>
+    <rect x="760" y="248" width="40" height="22" rx="4" fill="#f1f3f5" stroke="#ced4da" stroke-dasharray="3 2"/><text x="780" y="263" fill="#adb5bd">.02</text>
+
+    <text x="510" y="292" fill="#495057" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11">req C</text>
+    <rect x="540" y="278" width="40" height="22" rx="4" fill="#edf2ff" stroke="#4c6ef5"/><text x="560" y="293" fill="#3b5bdb">1</text>
+    <rect x="584" y="278" width="40" height="22" rx="4" fill="#f1f3f5" stroke="#ced4da" stroke-dasharray="3 2"/><text x="604" y="293" fill="#adb5bd">.24</text>
+    <rect x="628" y="278" width="40" height="22" rx="4" fill="#f1f3f5" stroke="#ced4da" stroke-dasharray="3 2"/><text x="648" y="293" fill="#adb5bd">.06</text>
+    <rect x="672" y="278" width="40" height="22" rx="4" fill="#f1f3f5" stroke="#ced4da" stroke-dasharray="3 2"/><text x="692" y="293" fill="#adb5bd">.01</text>
+    <rect x="716" y="278" width="40" height="22" rx="4" fill="#f1f3f5" stroke="#ced4da" stroke-dasharray="3 2"/><text x="736" y="293" fill="#adb5bd">0</text>
+    <rect x="760" y="278" width="40" height="22" rx="4" fill="#f1f3f5" stroke="#ced4da" stroke-dasharray="3 2"/><text x="780" y="293" fill="#adb5bd">0</text>
+  </g>
+  <text x="812" y="233" font-size="11" fill="#3b5bdb">验 6</text>
+  <text x="812" y="263" font-size="11" fill="#3b5bdb">验 3</text>
+  <text x="812" y="293" font-size="11" fill="#3b5bdb">只验 anchor</text>
+  <text x="560" y="314" text-anchor="middle" font-size="10" fill="#868e96">anchor</text>
+
+  <text x="484" y="340" font-size="11.5" fill="#495057">预算 k* = argmax_k (N + 前 k 大生存概率之和) × SPS(N + k)</text>
+  <text x="484" y="360" font-size="10.5" fill="#868e96">N = 请求数；SPS = 离线测的「batch token 数 → 每秒步数」表</text>
+
+  <rect x="24" y="392" width="872" height="58" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="460" y="414" text-anchor="middle" font-size="12" fill="#495057">并行块的弱点是块内位置互相独立，越靠后越容易错：Markov 头用很小的代价把「前一个 token」重新接回来。</text>
+  <text x="460" y="434" text-anchor="middle" font-size="12" fill="#495057">变长 verify 只影响验哪些位置，不影响接受规则，所以仍是无损的；SPS 表为空时它退化成全部验证。</text>
+</svg>

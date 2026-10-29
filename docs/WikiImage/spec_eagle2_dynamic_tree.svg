@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 440" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="920" height="440" rx="12" fill="#ffffff"/>
+  <text x="460" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">EAGLE-2 的动态树：先按价值扩展，再全局重排</text>
+  <text x="460" y="56" text-anchor="middle" font-size="13" fill="#868e96">节点上的数字是价值 V = 根到该节点的置信度乘积；示例取 k = 2、m = 5</text>
+
+  <!-- panel A: expand -->
+  <rect x="24" y="74" width="540" height="270" rx="10" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="40" y="98" font-size="14" font-weight="700" fill="#3b5bdb">① 扩展：每层只展开价值最高的 k 个</text>
+  <g stroke="#adb5bd" stroke-width="1.3">
+    <line x1="80" y1="210" x2="190" y2="150"/><line x1="80" y1="210" x2="190" y2="270"/>
+    <line x1="210" y1="150" x2="320" y2="122"/><line x1="210" y1="150" x2="320" y2="178"/>
+    <line x1="210" y1="270" x2="320" y2="242"/><line x1="210" y1="270" x2="320" y2="298"/>
+    <line x1="340" y1="122" x2="450" y2="104"/><line x1="340" y1="122" x2="450" y2="148"/>
+    <line x1="340" y1="178" x2="450" y2="196"/><line x1="340" y1="178" x2="450" y2="240"/>
+  </g>
+  <g font-size="11" text-anchor="middle">
+    <circle cx="70" cy="210" r="18" fill="#e6fcf5" stroke="#0ca678"/><text x="70" y="214" fill="#0b7285">root</text>
+    <circle cx="210" cy="150" r="20" fill="#edf2ff" stroke="#4c6ef5"/><text x="210" y="154" fill="#3b5bdb">.80</text>
+    <circle cx="210" cy="270" r="20" fill="#edf2ff" stroke="#4c6ef5"/><text x="210" y="274" fill="#3b5bdb">.15</text>
+    <circle cx="340" cy="122" r="20" fill="#edf2ff" stroke="#4c6ef5"/><text x="340" y="126" fill="#3b5bdb">.72</text>
+    <circle cx="340" cy="178" r="20" fill="#edf2ff" stroke="#4c6ef5"/><text x="340" y="182" fill="#3b5bdb">.09</text>
+    <circle cx="340" cy="242" r="20" fill="#f1f3f5" stroke="#ced4da" stroke-dasharray="3 2"/><text x="340" y="246" fill="#adb5bd">.06</text>
+    <circle cx="340" cy="298" r="20" fill="#f1f3f5" stroke="#ced4da" stroke-dasharray="3 2"/><text x="340" y="302" fill="#adb5bd">.04</text>
+    <circle cx="470" cy="104" r="20" fill="#edf2ff" stroke="#4c6ef5"/><text x="470" y="108" fill="#3b5bdb">.61</text>
+    <circle cx="470" cy="148" r="20" fill="#edf2ff" stroke="#4c6ef5"/><text x="470" y="152" fill="#3b5bdb">.08</text>
+    <circle cx="470" cy="196" r="20" fill="#edf2ff" stroke="#4c6ef5"/><text x="470" y="200" fill="#3b5bdb">.05</text>
+    <circle cx="470" cy="240" r="20" fill="#edf2ff" stroke="#4c6ef5"/><text x="470" y="244" fill="#3b5bdb">.02</text>
+  </g>
+  <text x="40" y="330" font-size="11" fill="#868e96">第 2 层 4 个候选 {.72, .09, .06, .04} 只展开价值最高的 .72 和 .09；灰色节点保留但不再展开。</text>
+  <!-- panel B: rerank -->
+  <rect x="580" y="74" width="316" height="270" rx="10" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="596" y="98" font-size="14" font-weight="700" fill="#e8590c">② 重排：全部节点按 V 取前 m 个</text>
+  <g font-size="11.5" font-family="monospace">
+    <rect x="600" y="114" width="120" height="22" rx="4" fill="#fff4e6" stroke="#f08c00"/><text x="612" y="129" fill="#e8590c">.80  层 1</text>
+    <rect x="600" y="140" width="120" height="22" rx="4" fill="#fff4e6" stroke="#f08c00"/><text x="612" y="155" fill="#e8590c">.72  层 2</text>
+    <rect x="600" y="166" width="120" height="22" rx="4" fill="#fff4e6" stroke="#f08c00"/><text x="612" y="181" fill="#e8590c">.61  层 3</text>
+    <rect x="600" y="192" width="120" height="22" rx="4" fill="#fff4e6" stroke="#f08c00"/><text x="612" y="207" fill="#e8590c">.15  层 1</text>
+    <rect x="600" y="218" width="120" height="22" rx="4" fill="#fff4e6" stroke="#f08c00"/><text x="612" y="233" fill="#e8590c">.09  层 2</text>
+    <rect x="600" y="244" width="120" height="22" rx="4" fill="#f1f3f5" stroke="#ced4da" stroke-dasharray="3 2"/><text x="612" y="259" fill="#adb5bd">.08  层 3</text>
+    <rect x="600" y="270" width="120" height="22" rx="4" fill="#f1f3f5" stroke="#ced4da" stroke-dasharray="3 2"/><text x="612" y="285" fill="#adb5bd">.06 …</text>
+  </g>
+  <line x1="596" y1="241" x2="880" y2="241" stroke="#c92a2a" stroke-dasharray="4 3"/>
+  <text x="736" y="236" font-size="11" fill="#c92a2a">m = 5</text>
+  <text x="736" y="140" font-size="11" fill="#495057">深层的 .61 排在</text>
+  <text x="736" y="156" font-size="11" fill="#495057">浅层的 .15 前面：</text>
+  <text x="736" y="172" font-size="11" fill="#495057">容易的上下文自动</text>
+  <text x="736" y="188" font-size="11" fill="#495057">长得深，难的长得宽</text>
+  <text x="596" y="316" font-size="11" fill="#868e96">子节点 V ≤ 父节点 V，前 m 个必然连通</text>
+
+  <rect x="24" y="360" width="872" height="62" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="460" y="384" text-anchor="middle" font-size="12" fill="#495057">SGLang：① 对应 select_top_k_tokens（topk² 个候选留 topk 个），② 对应 organize_draft_results（取前 num_draft_tokens − 1 个）。</text>
+  <text x="460" y="404" text-anchor="middle" font-size="12" fill="#495057">三个参数 num_steps / eagle_topk / num_draft_tokens 就是论文里的深度、k、m。</text>
+</svg>
