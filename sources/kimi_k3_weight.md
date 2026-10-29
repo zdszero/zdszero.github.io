@@ -91,6 +91,8 @@ MLA、KDA 两表均包含每层的 6 个公共向量（合计 43,008 参数 / 86
 
 ### KDA
 
+每个张量在 KDA 计算流程里的位置和作用（`b_proj` 是写入强度 β，`f_a/f_b_proj`、`dt_bias`、`A_log` 合成逐通道遗忘门 α，`g_proj` 是输出门），见 [Linear Attention 的 Kimi K3 一节](./linear_attention.md)。
+
 | 参数字段                        | 张量形状      | 数据类型 | 参数量     | 总字节数    |
 | :---                            | :---          | :---     | :---       | :---        |
 | input_layernorm.weight          | [7168]        | BF16     | 7,168      | 14,336      |

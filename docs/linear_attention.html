@@ -824,6 +824,111 @@
             层正好是精算总览里的
             30,618,088,704，说明没有遗漏或重复的张量。</p>
             <h4
+            id="逐个看每个权重控制什么">逐个看：每个权重控制什么</h4>
+            <p>把 KDA 当成一块容量固定的记忆，q/k/v
+            决定“按什么地址、写什么内容”，其余小张量是三个旋钮：<strong>写多少</strong>（β）、<strong>忘多少</strong>（α）、<strong>读多少</strong>（输出门）。</p>
+            <figure>
+            <img
+            src="./WikiImage/linear_attention_k3_kda_gates.svg"
+            alt="KDA 的三个旋钮" />
+            <figcaption aria-hidden="true">KDA 的三个旋钮</figcaption>
+            </figure>
+            <p><strong>q / k / v 与短卷积：地址和内容。</strong> <span
+            class="math inline">k_t</span> 是写入地址，<span
+            class="math inline">v_t</span> 是写入内容，<span
+            class="math inline">q_t</span> 是读取地址，角色与 softmax
+            attention 相同；区别是 k、v 不进 KV cache，而是当场压进
+            <span
+            class="math inline">S</span>。<code>q/k/v_conv1d</code>
+            让每个通道看到当前和前 3 个 token 的投影（4 个 tap
+            的因果卷积），补上 linear 层没有
+            RoPE、分不清相邻顺序的缺口。</p>
+            <p><strong><code>b_proj</code> → β：这一步写多少。</strong>
+            <code>b_proj</code> 是 <code>[96, 7168]</code>，每个 head
+            一行：对当前 token 的 hidden 做一次点积再取
+            sigmoid，就是这个 head
+            在这一步的写入强度。它的效果可以精确写出来。记衰减后的状态为
+            <span class="math inline">S&#39;</span>、旧值 <span
+            class="math inline">\hat v = \hat k_t
+            S&#39;</span>，写入后再用同一个 key 读回：</p>
+            <p><span class="math display">
+            \hat k_t S_t = \hat k_t S&#39; + \beta_t\,(\hat k_t \hat
+            k_t^\top)(v_t - \hat v) = (1-\beta_t)\,\hat v + \beta_t\,
+            v_t
+            </span></p>
+            <p>这里用到了 <span class="math inline">\lVert \hat
+            k_t\rVert = 1</span>。所以 β 是新旧值之间的插值系数：β≈0
+            时这个 token 对记忆没有影响，β=1 时这个 key
+            下的旧值被完全改写，与 <span class="math inline">\hat
+            k_t</span> 正交的方向始终不动。如果把 β 固定为 1，每个 token
+            都会强行覆盖自己 key 方向上的记忆；有了
+            <code>b_proj</code>，模型可以按内容决定哪些 token
+            值得占用有限的容量。β 缩放的是整个 rank-1 更新，所以每个
+            head 一个数就够了。</p>
+            <p><strong><code>f_a_proj</code> / <code>f_b_proj</code> /
+            <code>dt_bias</code> / <code>A_log</code> →
+            α：每个通道忘多少。</strong>
+            这四个张量合起来算一个逐通道的门：</p>
+            <p><span class="math display">
+            z_t = \underbrace{(x_t W_{f_a}^\top)\, W_{f_b}^\top}_{f_t} +
+            \texttt{dt\_bias},\qquad
+            g_t = -5\cdot\sigma\big(e^{\texttt{A\_log}[h]}\cdot
+            z_t\big),\qquad \alpha_t = e^{g_t}
+            </span></p>
+            <p>用“每步半衰期” <span class="math inline">\ln
+            2/|g|</span>（记忆衰减到一半要经过多少个
+            token）来读最直观，即图中右侧的曲线：</p>
+            <ul>
+            <li><strong><code>dt_bias</code></strong>（12288
+            个，逐通道）决定 <span class="math inline">f=0</span>
+            时这个通道停在曲线的哪一点，也就是它<strong>默认</strong>记多久。<span
+            class="math inline">e^{A}=1</span> 时，<code>dt_bias</code>
+            取 −8、−4、0 分别对应约 413、7.7、0.28 个 token
+            的半衰期。同一个 head 的 128
+            个通道取不同偏置，就同时拥有长期和短期记忆。</li>
+            <li><strong><span
+            class="math inline">f_t</span></strong>（逐
+            token、逐通道）是数据相关的部分，把这个点左右推：往右是加速遗忘，往左是延长保留。它来自秩
+            128 的低秩投影，所以 12288 个通道的遗忘决策，都是同一组 128
+            个“当前 token 是什么情况”的特征的线性组合。</li>
+            <li><strong><code>A_log</code></strong>（每 head
+            一个）决定曲线的陡度。<span class="math inline">e^{A}</span>
+            大时门像开关，<span class="math inline">z</span>
+            稍有变化就在“几乎不忘”和“几乎清空”之间切换；<span
+            class="math inline">e^{A}</span> 小时门对 <span
+            class="math inline">z</span> 不敏感，要很大的负 <span
+            class="math inline">z</span> 才能记得久。</li>
+            <li><strong>下限 −5</strong> 把曲线右端压平：单步 <span
+            class="math inline">\alpha \ge e^{-5}\approx
+            0.0067</span>，一个 token 不能把某行记忆一次清零。</li>
+            </ul>
+            <p><strong><code>o_norm</code> +
+            <code>g_proj</code>：读多少。</strong> 读出 <span
+            class="math inline">o_t = d^{-1/2}\hat q_t S_t</span> 没有
+            softmax
+            那样的归一化，幅度随记忆里写了多少、写了什么而漂移。<code>o_norm</code>
+            先在每个 head 内做 RMSNorm（权重 <code>[128]</code>，96 个
+            head 共享），把幅度拉回统一尺度；再乘 <span
+            class="math inline">\sigma(x_t
+            W_g^\top)</span>，逐通道决定当前 token
+            要用多少读出结果，门接近 0
+            时这一层对残差几乎没有贡献。输出门只看 <span
+            class="math inline">x_t</span>，不参与记忆的读写。K3 的 MLA
+            层也有一个同形状的 <code>g_proj</code>（见<a
+            href="./kimi_k3_weight.html">权重精算</a>的 MLA 表），两种
+            attention 层都在 <code>o_proj</code> 之前乘一个 sigmoid
+            输出门。</p>
+            <p><strong>每层公共的 6 个张量不属于 KDA。</strong>
+            <code>input_layernorm</code>、<code>post_attention_layernorm</code>
+            是 attention / MLP 输入前的
+            RMSNorm。<code>self_attention_res_*</code>、<code>mlp_res_*</code>
+            是 <a href="./attention_residuals.html">Attention
+            Residuals</a> 的参数：<code>*_res_proj [1, 7168]</code>
+            是一个 <span class="math inline">H\to 1</span>
+            的打分向量，<code>*_res_norm</code> 是打分前的
+            RMSNorm，两者一起给前面各个 block 的残差快照打分，再按
+            softmax 权重混合，代替普通的残差相加。</p>
+            <h4
             id="几个从形状里读出来的细节">几个从形状里读出来的细节</h4>
             <ul>
             <li><strong>门很便宜，内容很贵。</strong> q/k/v/g/o 五个
@@ -845,17 +950,17 @@
             <code>_a_log_weight_loader</code> 先截取前
             <code>num_heads</code> 个，再按 TP 切分，后 32
             个值从未参与计算。</li>
-            <li><strong>safe gate 给遗忘设了下限。</strong> GDN /
-            Kimi-Linear 的 <span
+            <li><strong>safe gate 改变了 <code>A_log</code>
+            的含义。</strong> GDN / Kimi-Linear 的 <span
             class="math inline">g=-e^{A}\cdot\mathrm{softplus}(\cdot)</span>
-            没有下界，一个 token 理论上能把某行记忆清零。K3 的 <span
-            class="math inline">g = -5\cdot\sigma(\cdot) \in (-5,
-            0)</span>，即 <span class="math inline">\alpha\in(e^{-5},
-            1)\approx(0.0067, 1)</span>：单步最多忘掉
-            99.3%，不会一步清空。这里 <span
-            class="math inline">e^{\texttt{A\_log}}</span>
-            的含义也变了，不再是“衰减速率”，而是 sigmoid
-            的斜率，决定门对输入有多敏感。</li>
+            没有下界，<span class="math inline">e^{A}</span>
+            是衰减速率的倍数；K3 的 <span class="math inline">g =
+            -5\cdot\sigma(\cdot) \in (-5, 0)</span>，<span
+            class="math inline">e^{A}</span> 变成 sigmoid
+            的斜率，单步最多忘掉 99.3%。两种门在 kernel 里由
+            <code>lower_bound</code>
+            是否为空来切换（<code>kda_gate_chunk_cumsum</code> 的
+            <code>USE_LOWER_BOUND</code>）。</li>
             <li><strong>K3 的输出门是满秩的。</strong> Kimi-Linear
             用低秩 <code>g_a_proj → g_b_proj</code>，K3 换成了一个
             <code>g_proj [12288, 7168]</code>（<code>use_full_rank_gate</code>），单这一项就占

@@ -588,61 +588,205 @@
             kernel 知道自己只负责其中 <span
             class="math inline">1/N</span>。容量收益也直接体现在这里：<code>logical_token_capacity</code>
             返回的是物理行数乘以 <code>attn_dcp_size</code>。</p>
-            <h4 id="decode-路径">decode 路径</h4>
-            <p>以 DeepSeek 系列的 MLA
-            为例（<code>srt/models/deepseek_common/attention_forward_methods/forward_mla.py</code>）：</p>
-            <ol type="1">
-            <li>若未复制 q 投影，调用
-            <code>all_gather_q_for_mla_decode</code>，把
-            <code>q_nope</code> 与 <code>q_pe</code> 拼在一起只做一次
-            AllGather；</li>
-            <li>attention 层以 <code>num_local_heads * dcp_size</code>
-            个 head
-            构建（<code>srt/models/deepseek_v2.py</code>），backend 在
-            DCP decode 时返回 <code>(output, lse)</code>；</li>
-            <li>按 <code>dcp_comm_backend</code>
-            选择合并方式：<code>a2a</code> / <code>fi_a2a</code> 走
-            <code>dcp_a2a_lse_reduce</code>，否则走
-            <code>cp_lse_ag_out_rs_mla</code>。</li>
-            </ol>
-            <p>两个值得注意的细节：</p>
+            <h4 id="decode-路径以-kimi-k3-的-mla-为例">decode 路径：以
+            Kimi K3 的 MLA 为例</h4>
+            <p>K3 的 MLA 层有 96 个 head，部署形态是 attention TP8 ×
+            DCP8，两个组是同一组 8 卡。同一张卡因此同时属于两种切分：按
+            head 它只负责 12 个 head，按 token 它只持有 1/8 的
+            KV。每个权重该存多少 head，取决于它在 attention
+            的哪一侧：</p>
             <ul>
-            <li><strong>LSE 底数</strong>：FlashInfer MLA 返回 <span
-            class="math inline">\log_2</span> 的
-            LSE，FlashMLA、cutedsl_mla、aiter
-            返回自然对数。<code>is_mla_dcp_lse_base_on_e</code> 按
-            backend 判断底数，合并 kernel 据此选择 <code>exp/log</code>
-            或
-            <code>exp2/log2</code>，用错会悄无声息地算出错误权重；</li>
-            <li><strong>一次打包</strong>：<code>a2a</code> 后端把
-            output 和 fp32 LSE 打包进同一个 buffer（LSE 被重解释为若干个
-            output dtype 的列），整层只发一次
-            <code>all_to_all_single</code>，而且按 uint8 字节传输，因此
-            fp8 output 也能直接走 pynccl。</li>
+            <li><strong>Q 侧（attention 之前）要全部 96
+            head</strong>。本卡的 1/8 token 对每个 head
+            都有贡献，所以送进 attention 的 query 必须覆盖整个组的
+            head。产出 query 的 <code>q_b_proj</code> 和
+            <code>w_kc</code> 要么每层 AllGather 结果，要么常驻一份全
+            head 副本。</li>
+            <li><strong>V 侧（A2A 合并之后）只要本卡 12
+            head</strong>。All-to-All 在合并 LSE 的同时把 head
+            分回各卡，所以
+            <code>w_vc</code>、<code>g_proj</code>、<code>o_proj</code>
+            始终按 TP8 切分，从不需要全 head 副本。</li>
+            <li><strong>与 head
+            无关的权重整份复制</strong>：<code>fused_qkv_a_proj_with_mqa</code>
+            与两个 RMSNorm 的输出是 q_lora 和 latent，不带 head
+            维。</li>
+            <li><strong>KV cache 按 token 切</strong>，与 head
+            无关。</li>
             </ul>
-            <p>GQA/MHA 也有 DCP 路径：Triton backend 用
-            <code>cp_lse_ag_out_rs_mha</code>（AllGather LSE 后
-            AllReduce，再切出本 rank 的 head），例如 Qwen3.5；其 K/V
-            投影在 DCP 组内复制，KV 再按 token 切分。</p>
-            <h4 id="prefill-extend">prefill / extend</h4>
-            <p>prefill 时 query 很多，按 token 切 KV 就不划算了。非稀疏
-            MLA 的 extend 路径反过来做：每个 rank
-            读出自己持有的那部分<strong>前缀</strong> KV，用
-            <code>all_gather_kv_cache_for_mla_extend</code> 在 DCP
-            组内拼回完整前缀，再与本次新 token 的 KV 拼接后做一次完整
-            attention。新 token 的 KV 仍然只写入各自的 owner
-            rank，所以下一步 decode 看到的依旧是交错分布的
-            cache。拼接用的 buffer 与索引由 <code>planner.py</code> 的
-            <code>prepare_decode_context_parallel_metadata</code>
-            预先构造，装在 <code>DecodeContextParallelMetadata</code>
-            里。</p>
-            <p>例外有两个：DSA 让 indexer 的 K cache 在每个 rank
-            上保持完整复制，每个 rank
-            都能独立对全序列打分、选出同一个全局
-            top-k，再只对其中自己拥有的 token 算 partial attention 并按
-            LSE 合并，因此 decode、verify、extend 都不需要 gather
-            前缀；Triton MHA 的 extend 也是本地算前缀 partial attention
-            后按 LSE 合并。</p>
+            <figure>
+            <img
+            src="./WikiImage/decode_context_parallelism_mla_weights.svg"
+            alt="K3 MLA decode 两条路径：默认路径每层 AllGather Q，replicate-Q 用全 head 副本跳过这次通信；两者在 A2A 之后都回到本卡 12 head" />
+            <figcaption aria-hidden="true">K3 MLA decode
+            两条路径：默认路径每层 AllGather Q，replicate-Q 用全 head
+            副本跳过这次通信；两者在 A2A 之后都回到本卡 12
+            head</figcaption>
+            </figure>
+            <p>下表是每张卡常驻的形状（BF16 大小按单层计）。K3 的
+            checkpoint 是 FP8，<code>kv_b_proj</code> 在加载后被反量化成
+            bf16 再拆成 <code>w_kc</code> / <code>w_vc</code>。</p>
+            <table>
+            <colgroup>
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th style="text-align: left;">权重</th>
+            <th style="text-align: left;">本卡常驻</th>
+            <th style="text-align: left;">切分方式</th>
+            <th style="text-align: left;">说明</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td
+            style="text-align: left;"><code>fused_qkv_a_proj_with_mqa</code></td>
+            <td style="text-align: left;">7168 → 1536 + 512 + 64</td>
+            <td style="text-align: left;">整份复制</td>
+            <td
+            style="text-align: left;"><code>ReplicatedLinear</code>，输出
+            q_lora 与 latent（含 64 维 rope 部分）</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;"><code>q_a_layernorm</code> /
+            <code>kv_a_layernorm</code></td>
+            <td style="text-align: left;">1536 / 512</td>
+            <td style="text-align: left;">整份复制</td>
+            <td style="text-align: left;"></td>
+            </tr>
+            <tr>
+            <td style="text-align: left;"><code>q_b_proj</code></td>
+            <td style="text-align: left;">1536 → 12 × 192</td>
+            <td style="text-align: left;">TP8 按 head</td>
+            <td style="text-align: left;">extend 仍走这一份</td>
+            </tr>
+            <tr>
+            <td
+            style="text-align: left;"><code>q_b_proj_qrep_*</code></td>
+            <td style="text-align: left;">1536 → 96 × 192</td>
+            <td style="text-align: left;">全 head 副本</td>
+            <td style="text-align: left;">仅 replicate-Q；保持 block-FP8
+            并带 gather 后的 scale，约 27 MiB</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;"><code>w_kc</code></td>
+            <td style="text-align: left;">[12, 128, 512]</td>
+            <td style="text-align: left;">TP8 按 head</td>
+            <td style="text-align: left;">来自 <code>kv_b_proj</code> 的
+            K 部分</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;"><code>w_kc_qrep</code></td>
+            <td style="text-align: left;">[96, 128, 512]</td>
+            <td style="text-align: left;">全 head 副本</td>
+            <td style="text-align: left;">仅 replicate-Q；必须是
+            bf16/fp16，约 12 MiB</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;"><code>w_vc</code></td>
+            <td style="text-align: left;">[12, 512, 128]</td>
+            <td style="text-align: left;">TP8 按 head</td>
+            <td style="text-align: left;">来自 <code>kv_b_proj</code> 的
+            V 部分</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;"><code>g_proj</code></td>
+            <td style="text-align: left;">7168 → 1536</td>
+            <td style="text-align: left;">TP8 列切</td>
+            <td style="text-align: left;">输出门
+            <code>x · sigmoid(g)</code>，作用在 o_proj 的输入上</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;"><code>o_proj</code></td>
+            <td style="text-align: left;">1536 → 7168</td>
+            <td style="text-align: left;">TP8 行切</td>
+            <td style="text-align: left;">输出是部分和</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">KV cache</td>
+            <td style="text-align: left;">每卡 1/8 的 token</td>
+            <td style="text-align: left;">按 token 交错</td>
+            <td style="text-align: left;">latent 576 维，所有 head
+            共享</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>所以“replicate-Q 下 q_b / w_kc 不切”并不准确：每张卡仍按
+            TP8 建了本地分片，replicate-Q
+            是在它旁边<strong>多加</strong>一份全 head 副本。开
+            <code>SGLANG_K3_DEL_MLA_KVB_DCP</code>
+            后，<code>kv_b_proj</code> 拆完 <code>w_kc</code> /
+            <code>w_vc</code> 就被清空；若 q 投影是 16 位的，本地
+            <code>q_b_proj</code> 和 <code>w_kc</code> 也会被删掉。K3 的
+            q 投影是 block-FP8，本地分片要留给 extend 使用，删不掉。</p>
+            <p><strong>默认路径（不复制
+            Q）</strong>。下面以一张卡为视角，B 是本 DP 分组的 decode
+            batch，8 卡输入相同：</p>
+            <pre class="text"><code>hidden [B, 7168]
+ → fused_qkv_a_proj_with_mqa（整份）     q_lora [B, 1536]，latent [B, 512 + 64]
+ → q_a_layernorm / kv_a_layernorm
+ → q_b_proj（本卡 12 head）              q [B, 12, 192] → q_nope [B, 12, 128]、q_pe [B, 12, 64]
+ → Q 侧 absorb：bmm(q_nope, w_kc)        q_nope_out [B, 12, 512]
+ → AllGather（DCP 组）                   [B, 96, 512]、[B, 96, 64]
+ → MQA attention（latent 空间，KV 只有 1 个 576 维的 head）
+     96 head × 本卡 1/8 的 token；新 token 的 latent 只写进 owner rank
+     O [B, 96, 512]、LSE [B, 96]，都只是部分结果
+ → A2A + LSE 合并（DCP 组）              每卡收回自己 12 head 在 8 张卡上的 (O, LSE)，O [B, 12, 512]
+ → V 侧 absorb：bmm(O, w_vc)             [B, 12, 128] → [B, 1536]
+ → 输出门：x · sigmoid(g_proj(hidden))   [B, 1536]
+ → o_proj（本卡 1536 行）                部分和 [B, 7168]
+ → reduce-scatter（SP-MoE）              每卡 B/8 行进 MoE</code></pre>
+            <p>K3 的 MLA 以 <code>skip_rope=True</code>
+            构建，<code>rotary_emb</code> 为 None，q_pe 和 k_pe 原样进入
+            attention，不做旋转。64 维 rope 部分仍保留在 latent
+            里，只是不再携带位置信息。DeepSeek 一类模型会在 absorb
+            之后对 q_pe、k_pe 做 RoPE。</p>
+            <p><strong>打开 <code>--dcp-replicate-q-proj</code>（K3
+            默认）</strong>。只有 Q 侧两步换成全 head
+            副本，其余不变：</p>
+            <pre class="text"><code> → q_b_proj_qrep（全 96 head，block-FP8）  q [B, 96, 192] → q_nope [B, 96, 128]、q_pe [B, 96, 64]
+ → Q 侧 absorb：bmm(q_nope, w_kc_qrep)     q_nope_out [B, 96, 512]
+ → （跳过 Q AllGather）
+ → attention → A2A + LSE 合并 → w_vc（12 head）→ 输出门 → o_proj，与默认路径相同</code></pre>
+            <p>这是一笔显存换通信的交易：每层省掉一次 [B, 12, 576] → [B,
+            96, 576] 的 AllGather，代价是每层多存约 27 MiB（FP8 的
+            <code>q_b</code>）+ 12 MiB（bf16 的 <code>w_kc</code>），q
+            投影和 Q 侧 bmm 的计算量变成 8 倍。decode 的 B
+            很小，这两步的 GEMM 本来就很轻，多算的部分通常比一次跨卡
+            collective 的延迟便宜。</p>
+            <p>实现上有几处约束：</p>
+            <ul>
+            <li><strong>只在 decode
+            生效</strong>。<code>forward_mla.py</code> 里的
+            <code>q_replicate_active</code> 要求
+            <code>_is_dcp_mla_decode_phase(forward_batch)</code>
+            成立，且副本已经就绪；extend 仍用本地
+            <code>q_b_proj</code>。这一路径还会关掉 bmm 与 attention
+            的融合，好让全 head 的 <code>w_kc_qrep</code> bmm
+            单独执行。</li>
+            <li><strong>副本在 graph capture
+            前一次性准备</strong>。<code>ModelRunner._prepare_replicated_q_proj</code>
+            在 DCP 组内 AllGather 每层的 <code>q_b_proj</code> 和
+            <code>w_kc</code>；block-FP8 的 q 投影交给
+            <code>_gather_block_fp8_q_proj</code>，权重和 scale 一起
+            gather，运行期由 <code>_project_q_replicated</code> 按
+            block-FP8 GEMM 计算。<code>w_kc</code> 不是 bf16/fp16
+            的层会被跳过，退回每层 AllGather Q。</li>
+            <li><strong>K3
+            默认打开</strong>。<code>srt/arg_groups/overrides.py</code>
+            的 <code>_kimi_k3_overrides</code> 在用户未显式设置时把
+            <code>dcp_replicate_q_proj</code> 置为 True。</li>
+            <li><strong>与上游的差别</strong>。社区 v0.5.22 同样按 attn
+            TP 构建 MLA 权重，但 replicate-Q 只支持 16 位 q 投影，量化的
+            q 投影直接跳过；它也不会释放 <code>kv_b_proj</code>
+            和本地分片。block-FP8 副本和
+            <code>SGLANG_K3_DEL_MLA_KVB_DCP</code> 都是本 fork
+            加的。</li>
+            </ul>
             <h4 id="其他配套">其他配套</h4>
             <ul>
             <li><strong>CUDA graph</strong>：<code>fi_a2a</code> 的

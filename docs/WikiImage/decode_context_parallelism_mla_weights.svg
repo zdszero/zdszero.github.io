@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 470" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#868e96"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="900" height="470" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">K3 MLA decode：Q 侧要全部 head，V 侧只要本地 head</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">TP8 × DCP8 同一组 8 卡，以一个 rank 为视角；方框下方是这一步处理的 head 数（全层 96 head，本卡 12 head）</text>
+
+  <!-- zone headers -->
+  <rect x="130" y="74" width="120" height="24" rx="6" fill="#f1f3f5"/>
+  <text x="190" y="90" text-anchor="middle" font-size="11.5" font-weight="700" fill="#495057">head 无关 · 复制</text>
+  <rect x="264" y="74" width="214" height="24" rx="6" fill="#f3f0ff"/>
+  <text x="371" y="90" text-anchor="middle" font-size="11.5" font-weight="700" fill="#5f3dc4">Q 侧 · 要覆盖组内 96 head</text>
+  <rect x="492" y="74" width="140" height="24" rx="6" fill="#e6fcf5"/>
+  <text x="562" y="90" text-anchor="middle" font-size="11.5" font-weight="700" fill="#0b7285">KV 按 token 切</text>
+  <rect x="646" y="74" width="234" height="24" rx="6" fill="#edf2ff"/>
+  <text x="763" y="90" text-anchor="middle" font-size="11.5" font-weight="700" fill="#3b5bdb">V 侧 · 回到本卡 12 head</text>
+
+  <!-- lane labels -->
+  <text x="24" y="136" font-size="13" font-weight="700" fill="#212529">默认路径</text>
+  <text x="24" y="154" font-size="11" fill="#868e96">每层 AllGather Q</text>
+  <text x="24" y="236" font-size="13" font-weight="700" fill="#212529">replicate-Q</text>
+  <text x="24" y="254" font-size="11" fill="#868e96">K3 默认</text>
+  <text x="24" y="270" font-size="11" fill="#868e96">仅 decode</text>
+
+  <!-- lane 1: default -->
+  <rect x="130" y="112" width="120" height="56" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="190" y="135" text-anchor="middle" font-size="12" font-weight="700" fill="#495057">fused_qkv_a</text>
+  <text x="190" y="154" text-anchor="middle" font-size="11" fill="#868e96">+ q/kv 两个 norm</text>
+  <rect x="264" y="112" width="130" height="56" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="329" y="135" text-anchor="middle" font-size="12" font-weight="700" fill="#3b5bdb">q_b → w_kc</text>
+  <text x="329" y="154" text-anchor="middle" font-size="11" fill="#495057">TP8 本地分片</text>
+  <rect x="408" y="112" width="70" height="56" rx="8" fill="#fff9db" stroke="#f08c00"/>
+  <text x="443" y="135" text-anchor="middle" font-size="11.5" font-weight="700" fill="#e8590c">AllGather</text>
+  <text x="443" y="154" text-anchor="middle" font-size="11" fill="#495057">拼出全 Q</text>
+  <rect x="492" y="112" width="140" height="56" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="562" y="135" text-anchor="middle" font-size="12" font-weight="700" fill="#0b7285">MQA attention</text>
+  <text x="562" y="154" text-anchor="middle" font-size="11" fill="#495057">本卡 1/8 token</text>
+  <rect x="646" y="112" width="80" height="56" rx="8" fill="#fff9db" stroke="#f08c00"/>
+  <text x="686" y="135" text-anchor="middle" font-size="11.5" font-weight="700" fill="#e8590c">A2A</text>
+  <text x="686" y="154" text-anchor="middle" font-size="11" fill="#495057">LSE 合并</text>
+  <rect x="740" y="112" width="140" height="56" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="810" y="135" text-anchor="middle" font-size="12" font-weight="700" fill="#3b5bdb">w_vc → o_proj</text>
+  <text x="810" y="154" text-anchor="middle" font-size="11" fill="#495057">中间夹 g_proj gate</text>
+  <path d="M250 140 L261 140" stroke="#868e96" stroke-width="2" fill="none" marker-end="url(#ar)"/>
+  <path d="M394 140 L405 140" stroke="#868e96" stroke-width="2" fill="none" marker-end="url(#ar)"/>
+  <path d="M478 140 L489 140" stroke="#868e96" stroke-width="2" fill="none" marker-end="url(#ar)"/>
+  <path d="M632 140 L643 140" stroke="#868e96" stroke-width="2" fill="none" marker-end="url(#ar)"/>
+  <path d="M726 140 L737 140" stroke="#868e96" stroke-width="2" fill="none" marker-end="url(#ar)"/>
+  <text x="190" y="188" text-anchor="middle" font-size="11" font-family="monospace" fill="#868e96">—</text>
+  <text x="329" y="188" text-anchor="middle" font-size="11" font-family="monospace" fill="#3b5bdb">12 head</text>
+  <text x="443" y="188" text-anchor="middle" font-size="11" font-family="monospace" fill="#e8590c">12 → 96</text>
+  <text x="562" y="188" text-anchor="middle" font-size="11" font-family="monospace" fill="#0b7285">96 head</text>
+  <text x="686" y="188" text-anchor="middle" font-size="11" font-family="monospace" fill="#e8590c">96 → 12</text>
+  <text x="810" y="188" text-anchor="middle" font-size="11" font-family="monospace" fill="#3b5bdb">12 head</text>
+  <!-- lane 2: replicate-Q -->
+  <rect x="130" y="212" width="120" height="56" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="190" y="235" text-anchor="middle" font-size="12" font-weight="700" fill="#495057">fused_qkv_a</text>
+  <text x="190" y="254" text-anchor="middle" font-size="11" fill="#868e96">+ q/kv 两个 norm</text>
+  <rect x="264" y="212" width="130" height="56" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="329" y="235" text-anchor="middle" font-size="12" font-weight="700" fill="#5f3dc4">q_b → w_kc 副本</text>
+  <text x="329" y="254" text-anchor="middle" font-size="11" fill="#495057">全 96 head</text>
+  <rect x="408" y="212" width="70" height="56" rx="8" fill="#ffffff" stroke="#adb5bd" stroke-dasharray="5 3"/>
+  <text x="443" y="235" text-anchor="middle" font-size="11.5" font-weight="700" fill="#868e96">跳过</text>
+  <text x="443" y="254" text-anchor="middle" font-size="11" fill="#868e96">无 Q 通信</text>
+  <rect x="492" y="212" width="140" height="56" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="562" y="235" text-anchor="middle" font-size="12" font-weight="700" fill="#0b7285">MQA attention</text>
+  <text x="562" y="254" text-anchor="middle" font-size="11" fill="#495057">本卡 1/8 token</text>
+  <rect x="646" y="212" width="80" height="56" rx="8" fill="#fff9db" stroke="#f08c00"/>
+  <text x="686" y="235" text-anchor="middle" font-size="11.5" font-weight="700" fill="#e8590c">A2A</text>
+  <text x="686" y="254" text-anchor="middle" font-size="11" fill="#495057">LSE 合并</text>
+  <rect x="740" y="212" width="140" height="56" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="810" y="235" text-anchor="middle" font-size="12" font-weight="700" fill="#3b5bdb">w_vc → o_proj</text>
+  <text x="810" y="254" text-anchor="middle" font-size="11" fill="#495057">与默认路径相同</text>
+  <path d="M250 240 L261 240" stroke="#868e96" stroke-width="2" fill="none" marker-end="url(#ar)"/>
+  <path d="M394 240 L405 240" stroke="#868e96" stroke-width="2" fill="none" marker-end="url(#ar)"/>
+  <path d="M478 240 L489 240" stroke="#868e96" stroke-width="2" fill="none" marker-end="url(#ar)"/>
+  <path d="M632 240 L643 240" stroke="#868e96" stroke-width="2" fill="none" marker-end="url(#ar)"/>
+  <path d="M726 240 L737 240" stroke="#868e96" stroke-width="2" fill="none" marker-end="url(#ar)"/>
+  <text x="190" y="288" text-anchor="middle" font-size="11" font-family="monospace" fill="#868e96">—</text>
+  <text x="329" y="288" text-anchor="middle" font-size="11" font-family="monospace" fill="#5f3dc4">96 head</text>
+  <text x="443" y="288" text-anchor="middle" font-size="11" font-family="monospace" fill="#868e96">—</text>
+  <text x="562" y="288" text-anchor="middle" font-size="11" font-family="monospace" fill="#0b7285">96 head</text>
+  <text x="686" y="288" text-anchor="middle" font-size="11" font-family="monospace" fill="#e8590c">96 → 12</text>
+  <text x="810" y="288" text-anchor="middle" font-size="11" font-family="monospace" fill="#3b5bdb">12 head</text>
+
+  <!-- trade-off panels -->
+  <rect x="24" y="306" width="416" height="80" rx="8" fill="#fff9db" stroke="#f08c00"/>
+  <text x="40" y="328" font-size="12.5" font-weight="700" fill="#e8590c">默认：省显存，付通信</text>
+  <text x="40" y="348" font-size="11.5" fill="#495057">q_b、w_kc 只存 TP8 本地 1/8</text>
+  <text x="40" y="366" font-size="11.5" fill="#495057">每层多一次 AllGather：[B, 12, 576] → [B, 96, 576]</text>
+  <rect x="460" y="306" width="416" height="80" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="476" y="328" font-size="12.5" font-weight="700" fill="#5f3dc4">replicate-Q：省通信，付显存和 GEMM</text>
+  <text x="476" y="348" font-size="11.5" fill="#495057">每层多存 q_b 全量（FP8 ≈ 27 MiB）+ w_kc（bf16 12 MiB）</text>
+  <text x="476" y="366" font-size="11.5" fill="#495057">q_b、w_kc 的 GEMM 变成 8 倍，decode 时都很小</text>
+
+  <!-- note -->
+  <rect x="24" y="402" width="852" height="48" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="450" y="422" text-anchor="middle" font-size="12" fill="#495057">attention 之前产出 Q 的权重必须覆盖组内全部 head（本卡的 1/8 token 对每个 head 都有贡献）；</text>
+  <text x="450" y="440" text-anchor="middle" font-size="12" fill="#495057">A2A 合并后每卡只剩自己的 12 head，所以 w_vc、g_proj、o_proj 永远保持 TP8 切分</text>
+</svg>

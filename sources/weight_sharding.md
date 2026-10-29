@@ -1,395 +1,226 @@
 % Weight Sharding
 
-权重 sharding 是一种以通信换显存的推理优化：多个 GPU 不再永久保存同一份完整权重，而是各自保存一片权重；真正执行计算前，再通过集合通信临时恢复所需的数据。
+权重 sharding 是一种以通信换显存的推理优化：多个 GPU 不再永久保存同一份完整权重，而是各自保存一片；真正执行计算前，再通过集合通信临时恢复完整权重。
 
-它解决的主要问题是 **HBM 容量**，而不是直接减少模型的 FLOPs。是否能够提升整体性能，取决于节省的显存能否转化为更大的 batch、更多 KV cache 或更高并发，以及新增通信能否被计算隐藏。
+它解决的是 **HBM 容量**问题，不减少 FLOPs。能否提升整体性能，取决于两件事：省下的显存能否变成更大的 batch、更多 KV cache 或更高并发；新增的通信能否被计算盖住。
 
-### 最基本的形式
+### 要解决的问题：每张卡上一模一样的权重
 
-设完整权重为 \(W\)，通信组中有 \(N\) 个 rank：
+并行策略并不会把所有权重都切开。只要某个模块没有落在任何一个切分维度上，它在每张卡上就是一份**逐字节相同**的完整副本。常见的几种：
 
-完整权重：\(W\)
+- **DP attention（attn_tp = 1）**：每张卡是一个完整的 attention 副本，所有 Q/K/V/O 投影都是整份。
+- **EP 之外的 MoE 周边权重**：EP 只摊开路由专家；shared expert、latent MoE 的上下投影如果按 TP1 构建，就是每卡一份。
+- 其他按 TP1 构建的 `ReplicatedLinear`。
 
-rank 0：\(W_0\)
-rank 1：\(W_1\)
-...
-rank \(N-1\)：\(W_{N-1}\)
+以 Kimi K3 的 decode DP16 部署为例（数据见 [Kimi K3 on B200](./kimi_k3_b200.md)），FP8 下 KDA 投影 28.50 GiB、MLA 4.57 GiB、MoE 周边 15.72 GiB，每张卡都存着这 48.8 GiB 的副本。
 
-\[
-W = \operatorname{concat}(W_0, W_1, \ldots, W_{N-1})
-\]
+直觉上的两种办法都不太合适：
 
-模型初始化后，每个 rank 只保留约 \(1/N\) 的权重 shard。某个算子即将执行时，各 rank 通过通信收集所需数据：
+- **改成 TP 切分**。这会改变计算：DP attention 下每张卡处理的是不同的 token，把投影改成 TP 就要求每层对激活做 gather / reduce，重新引入 DP attention 本来要消掉的那部分通信，而且它在关键路径上。
+- **只靠量化**。BF16 → FP8 只能减半，副本依然是 N 份。
 
-常驻阶段：每个 rank 保存约 \(W/N\)。
+另一方面，decode 每步的计算很短，GPU 间的 NVLink 大部分时间是空闲的。于是需求变成：**不改计算，只改存储**，用空闲的互联带宽换 HBM。
 
-执行阶段：
+### 核心抽象：存储分片，计算不分片
 
-\[
-\operatorname{AllGather}(W_0, W_1, \ldots, W_{N-1})
-\longrightarrow W
-\]
+关键在于把两件事分开：权重**常驻在哪里**，和计算时**看到的是什么**。
 
-随后每个 rank 得到完整 \(W\)，沿用原有 GEMM / Linear。
+- 常驻形态：通信组里 N 个 rank 各存每层权重的 1/N 行。
+- 计算形态：GEMM 看到的仍是完整 \(W\)，算子和数学路径都不变。
+- 两者之间：在某一层即将执行时，用一次 AllGather 把 N 片拼回完整权重。
 
-因此，最保守的 weight sharding 实现并不会改变算子的数学计算路径，只是把完整权重从“永久保存”改成“按需恢复”。
-
-### Shard 的维度与计算语义
-
-线性层通常计算：
+设完整权重 \(W \in \mathbb{R}^{\text{out} \times \text{in}}\) 沿第 0 维（`out_features`）切成 N 片：
 
 \[
-Y = X W^{\mathsf T}
-\]
-
-若权重形状为：
-
-\[
-W \in \mathbb{R}^{\text{out\_features} \times \text{in\_features}}
-\]
-
-一种常见做法是沿第 0 维，也就是 `out_features` 维切分：
-
-\[
-W = \begin{bmatrix}
-W_0 \\
-W_1 \\
-\vdots \\
-W_{N-1}
-\end{bmatrix},
+W = \begin{bmatrix} W_0 \\ W_1 \\ \vdots \\ W_{N-1} \end{bmatrix},
 \qquad
-W_i \in \mathbb{R}^{(\text{out\_features}/N) \times \text{in\_features}}
-\]
-
-此时每个 rank 只使用自己的 shard，可以计算出部分输出：
-
-\[
-Y_i = X W_i^{\mathsf T}
-\]
-
-但如果后续算子需要完整输出，就还需要拼接这些局部输出。另一种更保守的方案是先 AllGather 权重：
-
-\[
-W_i \xrightarrow{\operatorname{AllGather}} W,
+W_i \in \mathbb{R}^{(\text{out}/N) \times \text{in}},
 \qquad
-Y = X W^{\mathsf T}
+\operatorname{AllGather}(W_0, \ldots, W_{N-1}) \longrightarrow W
 \]
 
-两种方案的差别如下：
+完整形态只在“这一层正在算”的时候需要，所以它不必每层各占一份，几块 workspace 轮流复用就够了。这也是这个设计成立的前提。
+
+![存储分片，计算不分片](../docs/WikiImage/weight_sharding_concept.svg)
+
+#### 它不等于 Tensor Parallel
+
+同样是“每个 rank 存 1/N 权重”，差别在于计算用的是本地分片还是恢复后的完整权重：
 
 | 方案 | 常驻权重 | 计算时权重 | 计算量 | 主要通信 |
 | --- | --- | --- | --- | --- |
-| Replicated weight | 完整 \(W\) | 完整 \(W\) | 完整 GEMM | 无额外权重通信 |
-| Weight shard + AllGather | 约 \(W/N\) | 恢复完整 \(W\) | 基本不变 | AllGather 权重 |
-| Output-sharded GEMM | 约 \(W/N\) | 只使用 \(W_i\) | 每个 rank 的局部计算 | 输出 Gather / Reduce |
+| Replicated weight | 完整 \(W\) | 完整 \(W\) | 完整 GEMM | 无 |
+| Weight shard + AllGather | 约 \(W/N\) | 恢复完整 \(W\) | 不变 | AllGather **权重** |
+| Output-sharded GEMM（TP） | 约 \(W/N\) | 只用 \(W_i\) | 每 rank 局部 | **输出**侧 Gather / AllReduce / ReduceScatter |
 
-所以要明确区分：
+所以不能笼统地说“sharding 的代价是 AllReduce”。存储 shard、计算前恢复的方案只做“收集并拼接”的 AllGather，不涉及求和，通信对象是权重而不是激活，因此和当前 batch 的 token 数无关；TP 直接用本地分片计算，通信发生在输出侧，量随 token 数变化。
 
-> **权重 sharding 不一定等于 Tensor Parallel。**
+### 一层一次 AllGather：flat layout
 
-如果 shard 后又把权重完整 AllGather 回来，它首先是存储优化；只有算子直接使用本地 shard 并相应处理局部输出时，才同时改变了计算并行方式。
+一层里通常不止一个需要恢复的权重。以 K3 的一个 KDA 层为例，`qkv_proj`、`f_b_proj`、`o_proj`、`g_proj` 和 MoE 的 latent 上下投影、shared expert 加起来有七八个。每个权重各发一次 AllGather，就要付出多次 collective launch、多组 stream / event 依赖和多个通信 buffer。
 
-### AllGather 权重还是 AllReduce 结果？
+flat layout 的做法是让通信库只看到一条字节流：
 
-这取决于具体实现。
+1. 把这一层要恢复的权重按顺序拼成一个逻辑 buffer \(T\)，每项补到 16B 对齐，总长补到 \(16 \cdot N\) 的倍数。
+2. 把 \(T\) **按字节**均分成 N 个 chunk，rank \(i\) 常驻保存 \(T_i = T[iC:(i+1)C]\)，\(C = |T|/N\)。
+3. 运行时只做一次 `all_gather_into_tensor`，每个 rank 得到完整 \(T\)。
+4. 按预先记录的 byte offset 对 \(T\) 做 narrow + view，拆回各个权重：\(W_j = \operatorname{view}(T[o_j : o_j + s_j])\)。view 只是重新解释同一块内存，不拷贝。
 
-#### Weight AllGather
+![Flat layout：一层的多个权重，一次 AllGather](../docs/WikiImage/weight_sharding_flat_layout.svg)
 
-weight-shard 方案中，每个 rank 持有不同的数据片段：
+这里有一个不显眼的地方：chunk 边界只取决于 \(|T|\) 和 N，与权重边界无关。图里 rank 1 的 chunk 同时装着 \(W_a\) 的尾部和 \(W_b\) 的头部。checkpoint 是按权重组织的，加载时最自然的切法是“每个权重切 1/N 行”，和 flat chunk 不是同一种切法，所以实现里要在加载完成后做一次**一次性重排**（见下文实现部分），运行期才能只剩一次 collective。
 
-\[
-\text{rank }0: W_0,\quad
-\text{rank }1: W_1,\quad
-\ldots,\quad
-\text{rank }N-1: W_{N-1}
-\]
+flat layout 减少的是 collective 次数、NCCL 调度的固定开销和 buffer 管理成本，**不减少总传输字节数**。“一次”指的是同一层的一组权重发起一个 collective，不同层仍各自需要一次。
 
-执行：
+### 提前一层：lookahead 与 ping-pong slot
 
-\[
-\operatorname{AllGather}(W_0, W_1, \ldots, W_{N-1})
-\]
+AllGather 如果在第 ℓ 层开头才发、发完再等，通信就完整暴露在关键路径上。做法是把它提前到上一层：
 
-完成后，每个 rank 都得到：
+- 在第 ℓ 层计算的同时，在一条侧流上发第 ℓ+1 层的 AllGather。
+- 第 ℓ+1 层开头等这次 AllGather 的完成 event，再开始计算。
+- 完整权重的落脚点只有两块 slot（A / B），按层轮流使用。
 
-\[
-\left[W_0, W_1, \ldots, W_{N-1}\right]
-\]
+![提前一层发 AllGather，两块 slot 轮流用](../docs/WikiImage/weight_sharding_lookahead.svg)
 
-这是“收集并拼接”，不涉及求和。
+两块 slot 带来一个约束：第 ℓ+1 层的 AllGather 写入的 slot，正是第 ℓ−1 层刚用过的那一块。因此它不仅要在侧流上排队，还要等第 ℓ−1 层的计算完成（gate event），否则会覆写一块还在被读的权重。反过来，这也保证了任一时刻 HBM 里至多只有两层的完整权重。
 
-#### Output AllReduce / ReduceScatter
+理想情况下 \(T_{\text{allgather}}(\ell+1) \leq T_{\text{compute}}(\ell)\)，通信被完全覆盖。实际效果取决于每层权重大小、互联带宽、与 TP / EP / DP 通信的争用，以及当前层的计算时长：prefill 的 GEMM 重，容易覆盖；小 batch decode 的 GEMM 很瘦，AllGather 更容易露出来。
 
-如果每个 rank 直接使用本地权重 shard 计算：
+### 代价：通信量与显存账
 
-\[
-Y_i = X W_i^{\mathsf T}
-\]
+#### 通信量
 
-那么后续可能需要：
-
-- `AllGather`：拼接不同输出维度的结果；
-- `AllReduce`：累加不同 rank 的部分和；
-- `ReduceScatter`：累加后只保留输出的一片。
-
-因此，不能笼统地说“sharding 的代价是 AllReduce”。对于“存储 shard、计算前恢复完整权重”的方案，核心通信是 **AllGather 权重**；对于真正的 output-sharded GEMM，通信可能发生在输出侧。
-
-### Flat AllGather
-
-一个层通常不只需要一个 replicated weight。例如可能需要 \(W_{\text{down}}\)、\(W_{\text{up}}\)、\(W_{\text{gate-up}}\) 和 \(W_{\text{shared-down}}\)。
-
-最直接的实现是分别通信：
+设一层需要恢复的权重总字节数为 \(S\)。ring AllGather 下每个 rank 发送和接收的量都约为
 
 \[
-\begin{aligned}
-&\operatorname{AllGather}(W_{\text{down}}^{\text{shard}}) \\
-&\operatorname{AllGather}(W_{\text{up}}^{\text{shard}}) \\
-&\operatorname{AllGather}(W_{\text{gate-up}}^{\text{shard}}) \\
-&\operatorname{AllGather}(W_{\text{shared-down}}^{\text{shard}})
-\end{aligned}
+V_{\text{per-rank}} \approx \frac{N-1}{N} \cdot S
 \]
 
-这样会产生多次 collective launch、多个通信 buffer 和多组 stream/event 依赖。
+N 越大越接近 \(S\)，也就是说**每张卡每层大约要收一整层权重**，而且每次 forward 都要付一次。这个量只和权重大小有关，与 batch 里的 token 数无关：batch 越大，摊到每个 token 上的通信越少，这也是它在大 batch / prefill 下更划算的原因。
 
-#### 把多个权重序列化
+#### 显存
 
-Flat AllGather 先定义一个连续的 flat layout。设完整 flat buffer 为 \(T\)：
+设被 shard 的权重总量为 \(R\)：
 
 \[
-T = \operatorname{concat}\left(
-W_{\text{down}},
-W_{\text{up}},
-W_{\text{gate-up}},
-W_{\text{shared-down}},
-\text{padding}
-\right)
+\text{Replicated: } R
+\qquad\longrightarrow\qquad
+\text{Weight shard: } \frac{R}{N} + 2 \cdot \max_\ell |T_\ell|
 \]
 
-每个 rank 的本地输入是完整 flat buffer 的一个等大小 chunk。若 chunk 大小为 \(C = |T|/N\)，则 rank \(i\) 保存：
+两块 slot 是固定开销，按最大的那一层定容量，与层数无关。层数越多，这部分摊得越薄。省下的约 \((1 - 1/N) \cdot R\) 只有真正变成 KV cache、batch 或并发才算收益；如果它们本来就不受显存限制，省下的显存就只是闲置。
 
-\[
-T_i = T[iC:(i+1)C],
-\qquad 0 \leq i < N
-\]
+还要分清**运行期常驻**和**加载峰值**。如果加载时先把完整权重读进 HBM 再切，峰值并不会下降，可能在启动阶段就 OOM。实现里 BF16 和 ModelOpt FP8 在加载时就只拷本 rank 的行；block FP8 要先在完整权重上做一次 requant，因此加载峰值不减，只有运行期常驻减少。
 
-然后只执行一次：
+#### 适用范围
 
-```python
-dist.all_gather_into_tensor(
-    output_tensor=flat_full,
-    input_tensor=flat_shard,
-    group=group,
-)
-```
+划算的场景：
 
-AllGather 完成后，每个 rank 都有完整的 \(T\)，再通过预先记录的 byte offset 创建各个权重的 view。对任意权重 \(W_j\)，有：
+- 被复制的权重占显存比例高（DP attention、TP1 的 MoE 周边投影）。
+- 部署本来就受 KV cache 容量或并发限制，省出的显存能转化成吞吐。
+- 有高带宽、空闲的节点内互联（NVLink），AllGather 能被上一层计算盖住。
 
-\[
-W_j = \operatorname{view}\left(T[o_j:o_j+s_j]\right)
-\]
+需要谨慎的场景：
 
-其中 \(o_j\) 是该权重在 flat buffer 中的 byte offset，\(s_j\) 是它占用的字节数。
+- 权重很小：通信固定开销占比高，省的显存也不多。
+- 小 batch、对单步延迟敏感的 decode：每层计算短，AllGather 容易露出来。
+- 互联已经被 TP / EP / DP 通信占满，额外的权重流量会造成争用。
+- 跨节点的 shard 组：带宽骤降，几乎不可能覆盖。
 
-这些 view 只是重新解释同一块内存，不需要再次拷贝权重。
-
-#### 为什么“一次”可以恢复多个权重？
-
-因为通信库看到的只是一个连续的 byte buffer，它不需要知道 flat buffer 内部的逻辑边界：
-
-```text
-多个逻辑 weight
-    ↓ serialize / concatenate
-一个 flat shard
-    ↓ 一次 AllGather
-一个 flat full buffer
-    ↓ offset + view
-多个逻辑 full weight
-```
-
-“一次”指的是**同一层的一组权重发起一个 collective**，并不是整个模型所有层只 AllGather 一次。不同层通常仍然需要在各自执行前准备各自的 flat weight。
-
-Flat AllGather 主要减少：
-
-- collective launch 次数；
-- NCCL 调度和同步的固定开销；
-- stream/event 依赖；
-- 多个临时 buffer 的管理成本。
-
-它通常不会显著减少总传输字节数。多个 weight 的总大小仍然是通信 payload 的主要决定因素。
-
-### 通信量为什么可能很大？
-
-是的，AllGather 权重的通信量可能很大。假设某层需要恢复的权重总大小为 \(S\)，通信组大小为 \(N\)：
-
-\[
-\text{每个 rank 常驻：约 } \frac{S}{N},
-\qquad
-\text{AllGather 后：每个 rank 得到 } S
-\]
-
-以 ring AllGather 的理想情况估算，每个 rank 的传输量通常约为：
-
-\[
-\frac{N-1}{N}S
-\]
-
-具体读写量会依赖 NCCL 采用的算法、协议和硬件拓扑。Flat 只把多个通信合并成一个操作，并不会把通信成本从 \(S\) 变成 \(S/N\)。
-
-因此这种优化的本质是：
-
-\[
-\text{HBM 容量} \longleftrightarrow \text{GPU 互联带宽}
-\]
-
-如果模型本来就能完整放入显存，且推理性能受通信限制，那么新增权重通信可能不划算；如果模型受 HBM 容量限制，sharding 释放的空间可以用于 KV cache、batch 或并发，整体收益可能更大。
-
-### 如何隐藏权重通信？
-
-常见方法是 lookahead 和 side stream：
-
-```text
-Layer i：
-    主 stream：计算 Layer i
-    side stream：AllGather Layer i+1 的权重
-
-Layer i+1：
-    等待 AllGather 完成
-    使用已经准备好的 full weight
-```
-
-理想情况下：
-
-\[
-T_{\text{allgather}} \leq T_{\text{compute}}
-\]
-
-那么通信可以被前一层计算覆盖，额外暴露的延迟较小。实际效果取决于：
-
-- batch size 和 token 数；
-- 权重大小；
-- NVLink / PCIe / 跨节点带宽；
-- 当前 TP、EP、DP 通信压力；
-- NCCL stream 和 Copy Engine 调度；
-- full buffer 是否可以安全复用。
-
-Prefill 的矩阵计算通常更重，比较容易覆盖通信；小 batch decode 的 GEMM 较瘦，AllGather 更容易暴露在关键路径上。
-
-### 显存模型
-
-设模型中被 sharding 的 replicated weight 总大小为 \(R\)，shard group size 为 \(N\)。
-
-不使用 sharding 时，每个 rank 的长期权重显存约为：
-
-\[
-M_{\text{replicated}} \approx R
-\]
-
-使用 weight shard 后，长期保存的 shard 约为：
-
-\[
-M_{\text{sharded}} \approx \frac{R}{N}
-\]
-
-但运行时还需要：
-
-```text
-各层的 persistent shard / flat shard
-+ 一个或少量可复用的 full-weight workspace
-+ 通信和 event 管理所需的额外资源
-```
-
-因此实际显存收益不是简单地把所有权重变成 \(R/N\)，而是释放了原本长期复制的 full weight。一般需要通过 staging pool 复用 full buffer，避免所有层同时恢复完整权重。
-
-还需区分加载峰值：如果实现先加载完整 checkpoint，再完成 requant、切片和释放，那么它主要降低的是**运行期间常驻显存**，不一定降低模型加载瞬间的显存峰值。
+评估时至少要看：每层 AllGather 时长与该层计算时长的比值、端到端 TTFT / TPOT 的变化、KV cache 容量和最大并发的变化，以及启动阶段的显存峰值。
 
 ### 与 TP、EP 的关系
 
-#### 与 Tensor Parallel 的区别
+三者是互补的维度，而不是替代关系。TP 和 EP 改变**计算**的划分，各自带着激活侧通信；weight sharding 只改变**存储**，处理的恰恰是 TP / EP 都没切到、仍然在每张卡上逐字节相同的那部分权重。一个典型组合是：路由专家走 EP，attention 走 DP，二者之外剩下的 replicated 投影交给 weight sharding。
 
-Tensor Parallel 通常从计算定义出发：权重和输入按某个维度切分，每个 rank 直接执行局部 GEMM，再通过集合通信得到后续需要的布局。
+### SGLang 中的实现（Kimi K3）
 
-Weight sharding 可以只从存储角度出发：权重加载完成后按 rank 保存 shard，执行时再恢复 full weight。后者不一定减少计算量。
+当前实现服务于 Kimi K3，通用机制都在 `python/sglang/srt/sharding.py`，模型侧只负责声明“哪些权重要 shard”和把 planner 接进层循环。
 
-#### 与 Expert Parallel 的区别
+| 位置 | 作用 |
+| --- | --- |
+| `sharding.py`：`WeightShardingConfig` | 从环境变量读开关和层范围，frozen，初始化后不变 |
+| `sharding.py`：`build_flat_layout` / `FlatLayout` | 计算每项 offset、16B padding 与 chunk 大小 |
+| `sharding.py`：`FlatAGStagingPool` | 两块 slot（`seq_idx % n_buffers`），按 layout 生成 typed view |
+| `sharding.py`：`FlatAGScheduler` | 每层一个：持有 flat shard，`launch` 发 AllGather，`wait_ready_once` 等完成 |
+| `sharding.py`：`WeightShardForwardPlanner` | 层循环里的 lookahead 调度与 gate event 维护 |
+| `models/kimi_k3.py` | 各模块的 `weight_shard_targets()`，`KimiK3DecoderLayer._setup_weight_shard()` |
+| `models/dflash.py` | draft 模型的 shard 与第 0 层预取 |
+| `model_executor/model_runner.py` | `load_model()` 之后调用 `force_weight_shard_finalize()` |
 
-Expert Parallel 是把不同 expert 放到不同 rank，token 通过 dispatch/combine 到负责的 expert。它解决的是 expert 计算和权重的分布问题，通常伴随 All-to-All 通信。
+一个被 shard 的权重从构造到 forward 要经过四个阶段：
 
-Weight sharding 关注的是某个 replicated weight 是否需要在每个 rank 永久保存。它可以和 TP、EP、DP 共存，但 shard group、权重布局和通信时机必须明确，不能把几种并行策略的通信组混为一谈。
+![一个被 shard 的权重从构造到 forward](../docs/WikiImage/weight_sharding_lifecycle.svg)
 
-### 主要收益
+运行期模型侧的接入只有几行，层本身在 forward 开头调用 `prepare_layer_weight_shard_forward(self)`：
 
-1. **降低常驻 HBM。** 尤其适合大模型中的 replicated projection、shared expert 或其他复制参数。
-2. **释放 KV cache 空间。** 同样显存下可以提高上下文长度、batch size 或并发数。
-3. **不必立刻重写算子。** 采用“按需恢复 full weight”时，可以继续复用已有 GEMM 和模型前向路径。
-4. **可以结合通信重叠。** side stream、lookahead、NCCL Copy Engine 等机制能够降低通信暴露时间。
-5. **可按层启用。** 对显存占用最大或收益最明显的层进行选择性 sharding，便于在显存和延迟之间折中。
-
-### 主要代价
-
-1. **权重通信量大。** 每层恢复的权重可能达到数百 MB，尤其在 decode 中容易成为瓶颈。
-2. **不一定减少 FLOPs。** 计算前恢复 full weight 的方案仍然执行原来的完整 GEMM。
-3. **不一定减少计算阶段的权重读取。** full weight 恢复后，每个 rank 仍可能读取完整权重。
-4. **需要 full-weight workspace。** 运行时并非完全没有完整权重，只是通过 pool 复用并缩短其生命周期。
-5. **增加通信竞争。** 可能与 TP AllReduce、EP All-to-All、DP Gather/Scatter 等通信争用带宽。
-6. **实现复杂。** 需要处理 stream、event、buffer 生命周期、CUDA Graph capture 和多请求并发。
-7. **硬件和软件有要求。** 高速 NVLink、合适的 NCCL 版本、symmetric memory 或 Copy Engine 能力会显著影响效果。
-8. **量化权重更复杂。** packed weight、scale、zero point 和 layout 必须一起设计，不能只切原始 tensor。
-
-### 什么时候值得使用？
-
-适合考虑 weight sharding 的情况：
-
-```text
-模型受 HBM 容量限制
-+ GPU 间互联足够快
-+ 有较大的 batch 或 prefill 计算可覆盖通信
-+ 释放的显存能转化为更多 KV cache / 并发
+```python
+self._weight_shard_planner.reset()
+self._weight_shard_planner.pre_dispatch(self.start_layer)
+for i in range(self.start_layer, self.end_layer):
+    self._weight_shard_planner.maybe_dispatch(i + 1)   # 侧流上发 AG(i+1)，gate = done(i-1)
+    hidden_states, residual, sp_sharded = self.layers[i](...)
+    self._weight_shard_planner.update_done_event(i, self.layers[i])
 ```
 
-需要谨慎的情况：
+#### 只 shard 真正 replicated 的权重
 
-```text
-模型本来就能完整驻留
-+ 小 batch decode
-+ 跨节点通信占主导
-+ TP / EP 通信已经拥塞
-+ 目标权重很大但没有足够计算用于 overlap
-```
+`_setup_shard_weight` 要求模块的 tp_size 为 1（`ReplicatedLinear` 视为 1），否则直接报错；行数不能被 N 整除的权重会告警后跳过。目标列表由各模块声明：
 
-实际判断不能只看显存节省，还要测量：
+- KDA：`qkv_proj`、`f_b_proj`、`o_proj`、`g_proj`。`f_a_proj` / `b_proj`（合并 buffer）、`qkv_conv1d` 和 3-D 融合变体不 shard。
+- MLA：`q_b_proj`（或 `q_proj`）、`o_proj`、`g_proj`。`fused_qkv_a_proj_with_mqa` 的加载绕过 `weight_loader`，`kv_b_proj` 吸收进 `w_kc` / `w_vc` 后即释放，都不参与。
+- MoE（仅 latent MoE）：`routed_expert_up_proj` / `routed_expert_down_proj`，以及 TP1 构建的 shared expert 投影。
 
-- AllGather 的实际带宽和耗时；
-- 通信暴露在关键路径上的比例；
-- prefill 吞吐和 decode ITL；
-- batch size 变化后的整体吞吐；
-- 释放显存带来的 KV cache / 并发收益；
-- 与不开启 sharding 的端到端对比。
+attention 目标只在 `attn_tp_size == 1` 时加入；attention 和 MoE 的目标合进同一个 layout，所以一层仍然只有一次 AllGather。第 0 层是 dense 层，默认范围 `1-92` 不包含它。
 
-### 总结
+#### shard 组：节点内 8 卡 + Copy Engine
 
-权重 sharding 可以概括为：
+`get_weight_sharding_group_info()` 在 TP 组里按 `(tp_rank // 8) * 8` 切出节点内的 8 卡子组。限定在节点内，是因为 AllGather 走的是 NCCL 的 Copy Engine 路径：
 
-```text
-完整权重长期复制
-        ↓
-每个 rank 只保存一个 shard
-        ↓
-按层、按需恢复 full weight
-        ↓
-复用已有计算路径
-```
+- 权重 buffer 用 `ncclMemAlloc` 分配，并通过 `ncclCommWindowRegister(NCCL_WIN_COLL_SYMMETRIC)` 注册为 symmetric window（一个 `load_inline` 的小 C++ 扩展）。
+- 要求 NCCL ≥ 2.28.3 且 `NCCL_CTA_POLICY=2`，后者不满足会直接报错。
+- CE 搬运不占 SM，因此和计算重叠时不和 GEMM 抢计算资源；代价是只能在一个 NVLink 域内生效。
+- window 注册是集合操作，所有 rank 必须按相同顺序调用（按 layer_id 排序后统一注册）。
 
-针对“计算前恢复完整权重”的实现，最准确的描述是：
+#### 加载：行 shard 先行，finalize 再重排
 
-> **用权重 AllGather 换取 replicated weight 的常驻显存。**
+完整权重尽量不进 HBM，靠两步完成：
 
-Flat AllGather 只是把同一层的多个逻辑 weight 序列化到一个 flat buffer，用一次 collective 完成收集，再通过 offset 和 view 拆回多个 weight；它减少的是 collective 调度开销，而不是总通信字节数。
+1. **加载时按行切**：构造阶段 `weight.data` 就被缩成 1/N 行，`_install_row_shard_loader` 替换参数的 weight loader，从 CPU 上的 checkpoint 张量里只拷本 rank 的行区间。`QKVParallelLinear` / `MergedColumnParallelLinear` 这类 merged linear 由 `_row_sub_blocks` 给出各子块的全局行偏移，逐块求交集。
+2. **finalize 时重排成 flat chunk**：`_redistribute_to_flat_shard` 对每个权重临时做一次普通 AllGather，只拷出落在本 rank 字节窗口 `[rank·C, (rank+1)·C)` 内的部分，随后释放临时张量。峰值只多一个权重的大小。重排完成后行 shard 被 `ncclMemFree`，之后只剩 flat shard。
 
-最终收益取决于：
+量化变体：
 
-\[
-\text{显存节省带来的系统收益}
-\mathop{\gtrless}
-\text{新增权重通信和同步带来的性能损失}
-\]
+- BF16 / FP16（`UnquantizedLinearMethod`）：按上面的流程。
+- ModelOpt FP8：权重本体参与 flat layout，scale 仍然 replicated、不进 layout。
+- block FP8（`Fp8LinearMethod` block quant）：加载后还要做 UE8M0 requant，需要完整权重，所以先保留完整形状（`_k3_requant_then_shard`），到 finalize 才切片。这一类不降低加载峰值。
 
+`finalize_model_weight_shard` 由 `ModelRunner.initialize()` 在 `load_model()` 之后立即调用，早于 KV cache 池的分配，所以收回的显存会被 KV cache 容量的计算直接看到。
+
+#### 与融合优化的冲突
+
+shard 会把 `weight.data` 缩成 1/N，任何依赖完整形状的决策都必须在这之前做完。因此 `_setup_weight_shard()` 放在 `KimiK3DecoderLayer.__init__` 的最后：fused_a_gemm、min-latency q_b、gemm_ag、k3_gemm_ar 这些 kernel 选择都已按完整形状定好。另一类是会改变权重存储的融合，被 shard 的权重不能再参与：开启 sharding 且 `attn_tp_size == 1` 时，KDA 的 full-rank qkvg 融合（`_fuse_full_rank_qkvg`）关闭；MoE 被 shard 托管时跳过 `_merge_front_weights`。
+
+#### CUDA graph 与 draft 模型
+
+所有决策（层范围、targets、layout、slot 归属）在初始化时定死，forward 里只有固定的 launch / wait 序列，可以被 CUDA graph 捕获。`wait_ready_once()` 保证一次 launch 之后当前流最多等一次。
+
+draft 模型（dflash）的第 0 层没有“上一层”可以重叠。实现把它的 AllGather 移出 CUDA graph，放到一条专用流上，与 ReplaySSM commit fold（约 4 ms）重叠：每步调用 `prefetch_first_weight_shard` / `wait_first_weight_shard`，冷启动时退化为 inline launch。不用共享侧流的原因是：共享侧流会让它排在 target 模型各层的 AllGather 之后，实测重叠只有约 25 µs。
+
+#### 集合通信必须对齐
+
+AllGather 是集合操作，shard 组内的每个 rank 每步都必须发起同样序列的 collective。DP attention 下某些 rank 可能当步没有请求；如果它们跳过 forward，其他 rank 就会挂在 AllGather 上。K3 的做法是让空闲 DP rank 跑一次 bs=1 的假 verify，使 graph 与 eager 两条路径的 collective 序列一致，见 [Kimi K3 on B200](./kimi_k3_b200.md)。
+
+#### 开关
+
+| 环境变量 | 默认 | 说明 |
+| --- | --- | --- |
+| `SGLANG_ENABLE_K3_WEIGHT_SHARD` | `false` | 总开关；旧名 `SGLANG_ENABLE_K3_MOE_WEIGHT_SHARD` 仍可用（deprecated） |
+| `SGLANG_K3_WEIGHT_SHARD_LAYERS` | `1-92` | 参与 shard 的层，支持 `all`、`2`、`2,5,7`、`2-10` 及混写 |
+| `SGLANG_ENABLE_K3_DRAFT_WEIGHT_SHARD` | `false` | draft 模型是否 shard |
+
+在 K3 B200 的部署上，MoE 周边权重 shard 后（BF16 每层 367 MB，92 层）收回约 31.45 GiB；推广到 attention 和 draft 后每卡约省 42.7 GiB。
+
+### 小结
+
+Weight sharding 用每层一次权重 AllGather，换回 replicated 权重的常驻显存：存储按 rank 切成 1/N，计算仍然看到完整的 \(W\)，算子和数学路径都不变。flat layout 把一层的多个权重压成一个 collective；提前一层发送配合两块 ping-pong slot，让通信藏在上一层的计算后面，同时保证 HBM 里最多只有两层完整权重。它是否划算，取决于省下的 \((1 - 1/N) \cdot R\) 能否变成 KV cache 或并发，以及每层的 AllGather 能否被计算盖住。

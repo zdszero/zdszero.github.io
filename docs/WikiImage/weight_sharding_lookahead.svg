@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 436" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#868e96"/>
+    </marker>
+    <marker id="arA" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#f08c00"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="900" height="436" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">提前一层发 AllGather，两块 slot 轮流用</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">WeightShardForwardPlanner：跑第 i 层之前，在侧流上发第 i+1 层的 AllGather</text>
+
+  <!-- lane backgrounds + labels -->
+  <rect x="160" y="88" width="716" height="64" rx="8" fill="#f8f9fa"/>
+  <rect x="160" y="188" width="716" height="56" rx="8" fill="#f8f9fa"/>
+  <text x="24" y="116" font-size="13" font-weight="700" fill="#212529">计算流</text>
+  <text x="24" y="134" font-size="11" fill="#868e96">current stream</text>
+  <text x="24" y="212" font-size="13" font-weight="700" fill="#212529">侧流</text>
+  <text x="24" y="229" font-size="11" font-family="monospace" fill="#868e96">k3_weight_shard</text>
+
+  <!-- compute lane -->
+  <rect x="170" y="96" width="130" height="48" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="235" y="116" text-anchor="middle" font-size="13" font-weight="700" fill="#495057">L0 dense</text>
+  <text x="235" y="134" text-anchor="middle" font-size="11" fill="#868e96">不 shard</text>
+  <rect x="310" y="96" width="130" height="48" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="375" y="116" text-anchor="middle" font-size="13" font-weight="700" fill="#3b5bdb">L1</text>
+  <text x="375" y="134" text-anchor="middle" font-size="11" fill="#495057">读 slot A</text>
+  <rect x="450" y="96" width="130" height="48" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="515" y="116" text-anchor="middle" font-size="13" font-weight="700" fill="#0b7285">L2</text>
+  <text x="515" y="134" text-anchor="middle" font-size="11" fill="#495057">读 slot B</text>
+  <rect x="590" y="96" width="130" height="48" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="655" y="116" text-anchor="middle" font-size="13" font-weight="700" fill="#3b5bdb">L3</text>
+  <text x="655" y="134" text-anchor="middle" font-size="11" fill="#495057">读 slot A</text>
+  <rect x="730" y="96" width="130" height="48" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="795" y="116" text-anchor="middle" font-size="13" font-weight="700" fill="#0b7285">L4</text>
+  <text x="795" y="134" text-anchor="middle" font-size="11" fill="#495057">读 slot B</text>
+
+  <!-- side lane -->
+  <rect x="185" y="196" width="100" height="40" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="235" y="221" text-anchor="middle" font-size="11" font-family="monospace" fill="#3b5bdb">AG L1 → A</text>
+  <rect x="325" y="196" width="100" height="40" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="375" y="221" text-anchor="middle" font-size="11" font-family="monospace" fill="#0b7285">AG L2 → B</text>
+  <rect x="465" y="196" width="100" height="40" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="515" y="221" text-anchor="middle" font-size="11" font-family="monospace" fill="#3b5bdb">AG L3 → A</text>
+  <rect x="605" y="196" width="100" height="40" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="655" y="221" text-anchor="middle" font-size="11" font-family="monospace" fill="#0b7285">AG L4 → B</text>
+  <!-- ready: layer waits for its own AG -->
+  <path d="M287 206 C 304 206, 318 176, 318 150" stroke="#868e96" stroke-width="2" fill="none" marker-end="url(#ar)"/>
+  <!-- gates: AG(l+1) overwrites the slot of layer l-1 -->
+  <path d="M430 146 L476 192" stroke="#f08c00" stroke-width="2" stroke-dasharray="5 3" fill="none" marker-end="url(#arA)"/>
+  <path d="M570 146 L616 192" stroke="#f08c00" stroke-width="2" stroke-dasharray="5 3" fill="none" marker-end="url(#arA)"/>
+
+  <!-- annotations -->
+  <text x="235" y="264" text-anchor="middle" font-size="11" font-family="monospace" fill="#495057">ready_event</text>
+  <text x="235" y="280" text-anchor="middle" font-size="11" fill="#868e96">L1 开头 wait_event</text>
+  <text x="375" y="264" text-anchor="middle" font-size="11" fill="#868e96">slot B 首次使用</text>
+  <text x="375" y="280" text-anchor="middle" font-size="11" fill="#868e96">无需 gate</text>
+  <text x="560" y="264" text-anchor="middle" font-size="11" font-family="monospace" fill="#e8590c">gate = done(L1) / done(L2)</text>
+  <text x="560" y="280" text-anchor="middle" font-size="11" fill="#868e96">上一位使用者算完，slot 才能被覆写</text>
+
+  <!-- time axis -->
+  <path d="M170 300 L850 300" stroke="#868e96" stroke-width="2" fill="none" marker-end="url(#ar)"/>
+  <text x="858" y="304" font-size="12" fill="#868e96">时间</text>
+
+  <!-- slot occupancy -->
+  <text x="24" y="336" font-size="12" font-weight="700" fill="#495057">slot A 内容</text>
+  <text x="24" y="360" font-size="12" font-weight="700" fill="#495057">slot B 内容</text>
+  <rect x="185" y="324" width="255" height="16" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="312" y="336" text-anchor="middle" font-size="10" font-family="monospace" fill="#3b5bdb">L1 full</text>
+  <rect x="465" y="324" width="255" height="16" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="592" y="336" text-anchor="middle" font-size="10" font-family="monospace" fill="#3b5bdb">L3 full</text>
+  <rect x="325" y="348" width="255" height="16" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="452" y="360" text-anchor="middle" font-size="10" font-family="monospace" fill="#0b7285">L2 full</text>
+  <rect x="605" y="348" width="255" height="16" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="732" y="360" text-anchor="middle" font-size="10" font-family="monospace" fill="#0b7285">L4 full</text>
+
+  <!-- note -->
+  <rect x="24" y="380" width="852" height="40" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="450" y="405" text-anchor="middle" font-size="12" fill="#495057">AG(ℓ+1) 与第 ℓ 层计算重叠，写入的是第 ℓ−1 层刚用完的 slot；任一时刻 HBM 里至多两层完整权重</text>
+</svg>

@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 520" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="520" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">一个被 shard 的权重从构造到 forward</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">左：发生了什么；右：这一刻 rank r 的 HBM 里有什么（N=8）</text>
+
+  <!-- spine -->
+  <path d="M60 96 L60 432" stroke="#dee2e6" stroke-width="3" fill="none"/>
+  <circle cx="60" cy="116" r="7" fill="#adb5bd"/>
+  <circle cx="60" cy="196" r="7" fill="#f08c00"/>
+  <circle cx="60" cy="288" r="7" fill="#f08c00"/>
+  <circle cx="60" cy="384" r="7" fill="#4c6ef5"/>
+
+  <!-- step 1 -->
+  <rect x="84" y="86" width="470" height="60" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="100" y="108" font-size="13" font-weight="700" fill="#495057">① 构造：KimiK3DecoderLayer._setup_weight_shard</text>
+  <text x="100" y="126" font-size="11.5" fill="#495057">收集候选 → weight.data 缩成 1/8 行（CE 分配）</text>
+  <text x="100" y="141" font-size="11" fill="#868e96">必须在 __init__ 最后：前面按完整形状做的 kernel 选择已定</text>
+
+  <!-- step 2 -->
+  <rect x="84" y="166" width="470" height="60" rx="8" fill="#fff9db" stroke="#f08c00"/>
+  <text x="100" y="188" font-size="13" font-weight="700" fill="#e8590c">② 加载：_install_row_shard_loader</text>
+  <text x="100" y="206" font-size="11.5" fill="#495057">checkpoint 张量还在 CPU 上，只拷本 rank 的行区间</text>
+  <text x="100" y="221" font-size="11" fill="#868e96">merged linear 按子块的全局行偏移求交集；完整权重从不进 HBM</text>
+
+  <!-- step 3 -->
+  <rect x="84" y="250" width="470" height="76" rx="8" fill="#fff9db" stroke="#f08c00"/>
+  <text x="100" y="272" font-size="13" font-weight="700" fill="#e8590c">③ 定稿：finalize_model_weight_shard（graph capture 前）</text>
+  <text x="100" y="290" font-size="11.5" fill="#495057">建 2 块 slot，按最大 |T| 定容量，注册 symmetric window</text>
+  <text x="100" y="306" font-size="11.5" fill="#495057">每层 _redistribute_to_flat_shard：行 shard → 字节 chunk</text>
+  <text x="100" y="321" font-size="11" fill="#868e96">逐个权重临时 AllGather，只拷出落在本 rank 窗口的字节，随后释放</text>
+
+  <!-- step 4 -->
+  <rect x="84" y="346" width="470" height="76" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="100" y="368" font-size="13" font-weight="700" fill="#3b5bdb">④ 每次 forward</text>
+  <text x="100" y="386" font-size="11.5" fill="#495057">planner 在侧流上为下一层发 flat AllGather → slot</text>
+  <text x="100" y="402" font-size="11.5" fill="#495057">prepare_layer_weight_shard_forward：等 event，weight.data = view</text>
+  <text x="100" y="417" font-size="11" fill="#868e96">下游 Linear / GEMM 不知道权重是拼回来的</text>
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#868e96"/>
+    </marker>
+  </defs>
+  <path d="M556 116 L574 116" stroke="#868e96" stroke-width="2" fill="none" marker-end="url(#ar)"/>
+  <path d="M556 196 L574 196" stroke="#868e96" stroke-width="2" fill="none" marker-end="url(#ar)"/>
+  <path d="M556 288 L574 288" stroke="#868e96" stroke-width="2" fill="none" marker-end="url(#ar)"/>
+  <path d="M556 384 L574 384" stroke="#868e96" stroke-width="2" fill="none" marker-end="url(#ar)"/>
+
+  <!-- state column -->
+  <rect x="580" y="86" width="296" height="60" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="596" y="110" font-size="11.5" font-family="monospace" fill="#3b5bdb">row shard (rows/8, K)，空</text>
+  <text x="596" y="130" font-size="11" fill="#868e96">full_buf 只是 0 元素占位</text>
+
+  <rect x="580" y="166" width="296" height="60" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="596" y="190" font-size="11.5" font-family="monospace" fill="#3b5bdb">row shard (rows/8, K)，已填</text>
+  <text x="596" y="210" font-size="11" fill="#868e96">例外：block FP8 先保留完整权重做 requant</text>
+
+  <rect x="580" y="250" width="296" height="76" rx="8" fill="#fff4e6" stroke="#f08c00"/>
+  <text x="596" y="274" font-size="11.5" font-family="monospace" fill="#e8590c">flat_shard：|T|/8 字节 × 每层</text>
+  <text x="596" y="294" font-size="11.5" font-family="monospace" fill="#0b7285">slot A + slot B：各 max|T|</text>
+  <text x="596" y="314" font-size="11" fill="#868e96">行 shard 已 ncclMemFree，之后不再变化</text>
+
+  <rect x="580" y="346" width="296" height="76" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="596" y="370" font-size="11.5" fill="#495057">slot 里轮流装当前层 / 下一层的</text>
+  <text x="596" y="388" font-size="11.5" fill="#495057">完整权重</text>
+  <text x="596" y="410" font-size="11" font-family="monospace" fill="#868e96">weight.data → slot 内 view</text>
+
+  <!-- note -->
+  <rect x="24" y="444" width="852" height="56" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="450" y="467" text-anchor="middle" font-size="12" fill="#495057">③ 由 ModelRunner.initialize 在 load_model 之后立刻调用，早于 KV cache 池的分配</text>
+  <text x="450" y="486" text-anchor="middle" font-size="12" fill="#495057">所以收回的 (1 − 1/N)·R 会直接算进 KV cache 容量；运行期常驻 ≈ R/N + 2·max|T|</text>
+</svg>

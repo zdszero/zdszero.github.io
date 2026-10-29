@@ -263,26 +263,72 @@ T_{\text{attn}}(S) - T_{\text{attn}}(S/N) > T_{\text{comm}} .
 
 这样调度器、radix cache、`req_to_token` 看到的始终是一个“看起来没有切分”的完整逻辑空间，只有最底层的读写 kernel 知道自己只负责其中 \(1/N\)。容量收益也直接体现在这里：`logical_token_capacity` 返回的是物理行数乘以 `attn_dcp_size`。
 
-#### decode 路径
+#### decode 路径：以 Kimi K3 的 MLA 为例
 
-以 DeepSeek 系列的 MLA 为例（`srt/models/deepseek_common/attention_forward_methods/forward_mla.py`）：
+K3 的 MLA 层有 96 个 head，部署形态是 attention TP8 × DCP8，两个组是同一组 8 卡。同一张卡因此同时属于两种切分：按 head 它只负责 12 个 head，按 token 它只持有 1/8 的 KV。每个权重该存多少 head，取决于它在 attention 的哪一侧：
 
-1. 若未复制 q 投影，调用 `all_gather_q_for_mla_decode`，把 `q_nope` 与 `q_pe` 拼在一起只做一次 AllGather；
-2. attention 层以 `num_local_heads * dcp_size` 个 head 构建（`srt/models/deepseek_v2.py`），backend 在 DCP decode 时返回 `(output, lse)`；
-3. 按 `dcp_comm_backend` 选择合并方式：`a2a` / `fi_a2a` 走 `dcp_a2a_lse_reduce`，否则走 `cp_lse_ag_out_rs_mla`。
+- **Q 侧（attention 之前）要全部 96 head**。本卡的 1/8 token 对每个 head 都有贡献，所以送进 attention 的 query 必须覆盖整个组的 head。产出 query 的 `q_b_proj` 和 `w_kc` 要么每层 AllGather 结果，要么常驻一份全 head 副本。
+- **V 侧（A2A 合并之后）只要本卡 12 head**。All-to-All 在合并 LSE 的同时把 head 分回各卡，所以 `w_vc`、`g_proj`、`o_proj` 始终按 TP8 切分，从不需要全 head 副本。
+- **与 head 无关的权重整份复制**：`fused_qkv_a_proj_with_mqa` 与两个 RMSNorm 的输出是 q_lora 和 latent，不带 head 维。
+- **KV cache 按 token 切**，与 head 无关。
 
-两个值得注意的细节：
+![K3 MLA decode 两条路径：默认路径每层 AllGather Q，replicate-Q 用全 head 副本跳过这次通信；两者在 A2A 之后都回到本卡 12 head](../docs/WikiImage/decode_context_parallelism_mla_weights.svg)
 
-- **LSE 底数**：FlashInfer MLA 返回 \(\log_2\) 的 LSE，FlashMLA、cutedsl_mla、aiter 返回自然对数。`is_mla_dcp_lse_base_on_e` 按 backend 判断底数，合并 kernel 据此选择 `exp/log` 或 `exp2/log2`，用错会悄无声息地算出错误权重；
-- **一次打包**：`a2a` 后端把 output 和 fp32 LSE 打包进同一个 buffer（LSE 被重解释为若干个 output dtype 的列），整层只发一次 `all_to_all_single`，而且按 uint8 字节传输，因此 fp8 output 也能直接走 pynccl。
+下表是每张卡常驻的形状（BF16 大小按单层计）。K3 的 checkpoint 是 FP8，`kv_b_proj` 在加载后被反量化成 bf16 再拆成 `w_kc` / `w_vc`。
 
-GQA/MHA 也有 DCP 路径：Triton backend 用 `cp_lse_ag_out_rs_mha`（AllGather LSE 后 AllReduce，再切出本 rank 的 head），例如 Qwen3.5；其 K/V 投影在 DCP 组内复制，KV 再按 token 切分。
+| 权重 | 本卡常驻 | 切分方式 | 说明 |
+| :--- | :--- | :--- | :--- |
+| `fused_qkv_a_proj_with_mqa` | 7168 → 1536 + 512 + 64 | 整份复制 | `ReplicatedLinear`，输出 q_lora 与 latent（含 64 维 rope 部分） |
+| `q_a_layernorm` / `kv_a_layernorm` | 1536 / 512 | 整份复制 | |
+| `q_b_proj` | 1536 → 12 × 192 | TP8 按 head | extend 仍走这一份 |
+| `q_b_proj_qrep_*` | 1536 → 96 × 192 | 全 head 副本 | 仅 replicate-Q；保持 block-FP8 并带 gather 后的 scale，约 27 MiB |
+| `w_kc` | [12, 128, 512] | TP8 按 head | 来自 `kv_b_proj` 的 K 部分 |
+| `w_kc_qrep` | [96, 128, 512] | 全 head 副本 | 仅 replicate-Q；必须是 bf16/fp16，约 12 MiB |
+| `w_vc` | [12, 512, 128] | TP8 按 head | 来自 `kv_b_proj` 的 V 部分 |
+| `g_proj` | 7168 → 1536 | TP8 列切 | 输出门 `x · sigmoid(g)`，作用在 o_proj 的输入上 |
+| `o_proj` | 1536 → 7168 | TP8 行切 | 输出是部分和 |
+| KV cache | 每卡 1/8 的 token | 按 token 交错 | latent 576 维，所有 head 共享 |
 
-#### prefill / extend
+所以“replicate-Q 下 q_b / w_kc 不切”并不准确：每张卡仍按 TP8 建了本地分片，replicate-Q 是在它旁边**多加**一份全 head 副本。开 `SGLANG_K3_DEL_MLA_KVB_DCP` 后，`kv_b_proj` 拆完 `w_kc` / `w_vc` 就被清空；若 q 投影是 16 位的，本地 `q_b_proj` 和 `w_kc` 也会被删掉。K3 的 q 投影是 block-FP8，本地分片要留给 extend 使用，删不掉。
 
-prefill 时 query 很多，按 token 切 KV 就不划算了。非稀疏 MLA 的 extend 路径反过来做：每个 rank 读出自己持有的那部分**前缀** KV，用 `all_gather_kv_cache_for_mla_extend` 在 DCP 组内拼回完整前缀，再与本次新 token 的 KV 拼接后做一次完整 attention。新 token 的 KV 仍然只写入各自的 owner rank，所以下一步 decode 看到的依旧是交错分布的 cache。拼接用的 buffer 与索引由 `planner.py` 的 `prepare_decode_context_parallel_metadata` 预先构造，装在 `DecodeContextParallelMetadata` 里。
+**默认路径（不复制 Q）**。下面以一张卡为视角，B 是本 DP 分组的 decode batch，8 卡输入相同：
 
-例外有两个：DSA 让 indexer 的 K cache 在每个 rank 上保持完整复制，每个 rank 都能独立对全序列打分、选出同一个全局 top-k，再只对其中自己拥有的 token 算 partial attention 并按 LSE 合并，因此 decode、verify、extend 都不需要 gather 前缀；Triton MHA 的 extend 也是本地算前缀 partial attention 后按 LSE 合并。
+```text
+hidden [B, 7168]
+ → fused_qkv_a_proj_with_mqa（整份）     q_lora [B, 1536]，latent [B, 512 + 64]
+ → q_a_layernorm / kv_a_layernorm
+ → q_b_proj（本卡 12 head）              q [B, 12, 192] → q_nope [B, 12, 128]、q_pe [B, 12, 64]
+ → Q 侧 absorb：bmm(q_nope, w_kc)        q_nope_out [B, 12, 512]
+ → AllGather（DCP 组）                   [B, 96, 512]、[B, 96, 64]
+ → MQA attention（latent 空间，KV 只有 1 个 576 维的 head）
+     96 head × 本卡 1/8 的 token；新 token 的 latent 只写进 owner rank
+     O [B, 96, 512]、LSE [B, 96]，都只是部分结果
+ → A2A + LSE 合并（DCP 组）              每卡收回自己 12 head 在 8 张卡上的 (O, LSE)，O [B, 12, 512]
+ → V 侧 absorb：bmm(O, w_vc)             [B, 12, 128] → [B, 1536]
+ → 输出门：x · sigmoid(g_proj(hidden))   [B, 1536]
+ → o_proj（本卡 1536 行）                部分和 [B, 7168]
+ → reduce-scatter（SP-MoE）              每卡 B/8 行进 MoE
+```
+
+K3 的 MLA 以 `skip_rope=True` 构建，`rotary_emb` 为 None，q_pe 和 k_pe 原样进入 attention，不做旋转。64 维 rope 部分仍保留在 latent 里，只是不再携带位置信息。DeepSeek 一类模型会在 absorb 之后对 q_pe、k_pe 做 RoPE。
+
+**打开 `--dcp-replicate-q-proj`（K3 默认）**。只有 Q 侧两步换成全 head 副本，其余不变：
+
+```text
+ → q_b_proj_qrep（全 96 head，block-FP8）  q [B, 96, 192] → q_nope [B, 96, 128]、q_pe [B, 96, 64]
+ → Q 侧 absorb：bmm(q_nope, w_kc_qrep)     q_nope_out [B, 96, 512]
+ → （跳过 Q AllGather）
+ → attention → A2A + LSE 合并 → w_vc（12 head）→ 输出门 → o_proj，与默认路径相同
+```
+
+这是一笔显存换通信的交易：每层省掉一次 [B, 12, 576] → [B, 96, 576] 的 AllGather，代价是每层多存约 27 MiB（FP8 的 `q_b`）+ 12 MiB（bf16 的 `w_kc`），q 投影和 Q 侧 bmm 的计算量变成 8 倍。decode 的 B 很小，这两步的 GEMM 本来就很轻，多算的部分通常比一次跨卡 collective 的延迟便宜。
+
+实现上有几处约束：
+
+- **只在 decode 生效**。`forward_mla.py` 里的 `q_replicate_active` 要求 `_is_dcp_mla_decode_phase(forward_batch)` 成立，且副本已经就绪；extend 仍用本地 `q_b_proj`。这一路径还会关掉 bmm 与 attention 的融合，好让全 head 的 `w_kc_qrep` bmm 单独执行。
+- **副本在 graph capture 前一次性准备**。`ModelRunner._prepare_replicated_q_proj` 在 DCP 组内 AllGather 每层的 `q_b_proj` 和 `w_kc`；block-FP8 的 q 投影交给 `_gather_block_fp8_q_proj`，权重和 scale 一起 gather，运行期由 `_project_q_replicated` 按 block-FP8 GEMM 计算。`w_kc` 不是 bf16/fp16 的层会被跳过，退回每层 AllGather Q。
+- **K3 默认打开**。`srt/arg_groups/overrides.py` 的 `_kimi_k3_overrides` 在用户未显式设置时把 `dcp_replicate_q_proj` 置为 True。
+- **与上游的差别**。社区 v0.5.22 同样按 attn TP 构建 MLA 权重，但 replicate-Q 只支持 16 位 q 投影，量化的 q 投影直接跳过；它也不会释放 `kv_b_proj` 和本地分片。block-FP8 副本和 `SGLANG_K3_DEL_MLA_KVB_DCP` 都是本 fork 加的。
 
 #### 其他配套
 

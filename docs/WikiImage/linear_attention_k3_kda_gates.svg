@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 712" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#868e96"/>
+    </marker>
+    <marker id="ara" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#e8590c"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="920" height="712" rx="12" fill="#ffffff"/>
+  <text x="460" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">KDA 的三个旋钮：写多少、忘多少、读多少</text>
+  <text x="460" y="56" text-anchor="middle" font-size="13" fill="#868e96">以 Kimi K3 的一个 head 为例；递推本身没有权重，这些小张量决定递推怎么用记忆</text>
+
+  <!-- ===== Panel A: beta ===== -->
+  <rect x="20" y="76" width="430" height="420" rx="10" fill="#fff9db" stroke="#f08c00"/>
+  <rect x="20" y="76" width="430" height="32" rx="10" fill="#f08c00"/>
+  <rect x="20" y="96" width="430" height="12" fill="#f08c00"/>
+  <text x="36" y="97" font-size="14" font-weight="700" fill="#ffffff">① 写多少：β ← b_proj [96, 7168]</text>
+  <text x="36" y="134" font-size="12" fill="#495057">β_t = sigmoid(x_t · b_proj[h]) ∈ (0, 1)</text>
+  <text x="36" y="153" font-size="12" fill="#495057">每个 head、每个 token 一个数：这一步把误差写进记忆多少</text>
+
+  <text x="235" y="192" text-anchor="middle" font-size="12" font-weight="700" fill="#e8590c">沿 k_t 方向，写入后再用 k_t 读回的值</text>
+  <line x1="100" y1="226" x2="370" y2="226" stroke="#adb5bd" stroke-width="3"/>
+  <text x="100" y="214" text-anchor="middle" font-size="12" font-family="monospace" fill="#495057">v̂ = k·S′</text>
+  <text x="370" y="214" text-anchor="middle" font-size="12" font-family="monospace" fill="#495057">v_t</text>
+  <circle cx="100" cy="226" r="7" fill="#ffffff" stroke="#e8590c" stroke-width="2"/>
+  <circle cx="235" cy="226" r="7" fill="#ffe8cc" stroke="#e8590c" stroke-width="2"/>
+  <circle cx="370" cy="226" r="7" fill="#e8590c" stroke="#e8590c" stroke-width="2"/>
+  <text x="100" y="256" text-anchor="middle" font-size="12.5" font-weight="700" fill="#e8590c">β ≈ 0</text>
+  <text x="100" y="273" text-anchor="middle" font-size="11.5" fill="#495057">跳过，记忆不变</text>
+  <text x="235" y="256" text-anchor="middle" font-size="12.5" font-weight="700" fill="#e8590c">β = 0.5</text>
+  <text x="235" y="273" text-anchor="middle" font-size="11.5" fill="#495057">新旧各取一半</text>
+  <text x="370" y="256" text-anchor="middle" font-size="12.5" font-weight="700" fill="#e8590c">β = 1</text>
+  <text x="370" y="273" text-anchor="middle" font-size="11.5" fill="#495057">完全改写成 v_t</text>
+
+  <rect x="40" y="298" width="390" height="40" rx="8" fill="#ffffff" stroke="#f08c00"/>
+  <text x="235" y="323" text-anchor="middle" font-size="13" font-family="monospace" fill="#212529">k_t · S_t = (1 − β_t) · v̂ + β_t · v_t</text>
+  <text x="36" y="366" font-size="12" fill="#495057">· 只改 k_t 这一个方向，与 k_t 正交的方向原样保留</text>
+  <text x="36" y="388" font-size="12" fill="#495057">· 在线学习视角：β 就是这一步 SGD 的学习率</text>
+  <text x="36" y="410" font-size="12" fill="#495057">· 可学习的意义：不值得记的 token 可以 β≈0，不占容量；</text>
+  <text x="48" y="430" font-size="12" fill="#495057">要更新的事实可以 β≈1，覆盖同一 key 下的旧值</text>
+  <text x="36" y="452" font-size="12" fill="#495057">· b_proj 的每一行是一个 7168 维的“值不值得记”探测方向</text>
+  <text x="36" y="480" font-size="11.5" fill="#868e96">参数 96 × 7168 ≈ 69 万，占一层 KDA 的 0.16%</text>
+
+  <!-- ===== Panel B: alpha ===== -->
+  <rect x="470" y="76" width="430" height="420" rx="10" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="470" y="76" width="430" height="32" rx="10" fill="#0ca678"/>
+  <rect x="470" y="96" width="430" height="12" fill="#0ca678"/>
+  <text x="486" y="97" font-size="14" font-weight="700" fill="#ffffff">② 忘多少：α ← f_a/f_b、dt_bias、A_log</text>
+  <g transform="translate(0,30)">
+    <rect x="520" y="110" width="360" height="220" fill="#ffffff" stroke="#c3fae8"/>
+    <line x1="520" y1="286" x2="880" y2="286" stroke="#e9ecef"/>
+    <line x1="520" y1="242" x2="880" y2="242" stroke="#e9ecef"/>
+    <line x1="520" y1="198" x2="880" y2="198" stroke="#e9ecef"/>
+    <line x1="520" y1="154" x2="880" y2="154" stroke="#e9ecef"/>
+    <line x1="777" y1="110" x2="777" y2="330" stroke="#e9ecef" stroke-dasharray="3 3"/>
+    <text x="514" y="334" text-anchor="end" font-size="10.5" fill="#868e96">0.1</text>
+    <text x="514" y="290" text-anchor="end" font-size="10.5" fill="#868e96">1</text>
+    <text x="514" y="246" text-anchor="end" font-size="10.5" fill="#868e96">10</text>
+    <text x="514" y="202" text-anchor="end" font-size="10.5" fill="#868e96">100</text>
+    <text x="514" y="158" text-anchor="end" font-size="10.5" fill="#868e96">1k</text>
+    <text x="514" y="114" text-anchor="end" font-size="10.5" fill="#868e96">10k</text>
+    <text x="571" y="346" text-anchor="middle" font-size="10.5" fill="#868e96">−8</text>
+    <text x="674" y="346" text-anchor="middle" font-size="10.5" fill="#868e96">−4</text>
+    <text x="777" y="346" text-anchor="middle" font-size="10.5" fill="#868e96">0</text>
+    <text x="880" y="346" text-anchor="middle" font-size="10.5" fill="#868e96">4</text>
+    <text x="700" y="362" text-anchor="middle" font-size="11.5" fill="#495057">z = f_t + dt_bias（门的输入）</text>
+    <text x="524" y="102" font-size="11.5" fill="#495057">每步半衰期（token，对数轴）</text>
+    <path d="M520 228 L533 233 L546 238 L559 242 L571 247 L584 252 L597 256 L610 261 L623 266 L636 270 L649 274 L661 279 L674 283 L687 287 L700 291 L713 295 L726 299 L739 302 L751 305 L764 308 L777 311 L790 313 L803 315 L816 316 L829 318 L841 319 L854 320 L867 321 L880 321" fill="none" stroke="#0ca678" stroke-width="2" stroke-dasharray="5 4"/>
+    <path d="M520 133 L533 142 L546 152 L559 161 L571 171 L584 180 L597 190 L610 200 L623 209 L636 219 L649 228 L661 238 L674 247 L687 256 L700 266 L713 274 L726 283 L739 291 L751 299 L764 305 L777 311 L790 315 L803 318 L816 320 L829 321 L841 322 L854 323 L867 323 L880 323" fill="none" stroke="#0ca678" stroke-width="2.2"/>
+    <path d="M636 114 L649 133 L661 152 L674 171 L687 190 L700 209 L713 228 L726 247 L739 266 L751 283 L764 299 L777 311 L790 318 L803 321 L816 323 L829 323 L841 324 L854 324 L867 324 L880 324" fill="none" stroke="#0b7285" stroke-width="2.6"/>
+    <text x="530" y="221" font-size="11" fill="#0ca678">e^A = 0.5（平缓）</text>
+    <text x="538" y="128" font-size="11" fill="#0ca678">e^A = 1</text>
+    <text x="664" y="132" font-size="11" font-weight="700" fill="#0b7285">e^A = 2（陡，像开关）</text>
+    <circle cx="571" cy="171" r="5" fill="#e8590c"/>
+    <text x="581" y="164" font-size="11" font-family="monospace" fill="#e8590c">413</text>
+    <circle cx="674" cy="247" r="5" fill="#e8590c"/>
+    <text x="683" y="240" font-size="11" font-family="monospace" fill="#e8590c">7.7</text>
+    <circle cx="777" cy="311" r="5" fill="#e8590c"/>
+    <text x="786" y="302" font-size="11" font-family="monospace" fill="#e8590c">0.28</text>
+  </g>
+  <text x="486" y="414" font-size="11.5" font-family="monospace" fill="#212529">g = −5·sigmoid(e^A_log[h]·z), α = e^g</text>
+  <text x="486" y="434" font-size="11.5" fill="#495057">· dt_bias [12288]：通道默认坐在曲线哪一点（橙点 −8 / −4 / 0）</text>
+  <text x="486" y="454" font-size="11.5" fill="#495057">· f_t = f_b(f_a(x_t))，秩 128：逐 token 把这个点左右推</text>
+  <text x="486" y="474" font-size="11.5" fill="#495057">· A_log（每 head）：曲线陡度；下限 −5 压平右端，α ≥ 0.0067</text>
+
+  <!-- ===== Panel C: readout ===== -->
+  <rect x="20" y="512" width="880" height="112" rx="10" fill="#f3f0ff" stroke="#7048e8"/>
+  <rect x="20" y="512" width="880" height="32" rx="10" fill="#7048e8"/>
+  <rect x="20" y="532" width="880" height="12" fill="#7048e8"/>
+  <text x="36" y="533" font-size="14" font-weight="700" fill="#ffffff">③ 读多少：o_norm + g_proj，然后 o_proj</text>
+
+  <rect x="36" y="556" width="200" height="56" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="136" y="578" text-anchor="middle" font-size="12.5" font-weight="700" font-family="monospace" fill="#3b5bdb">o = q̂ · S · d^−½</text>
+  <text x="136" y="598" text-anchor="middle" font-size="11" fill="#495057">幅度随记忆内容漂移</text>
+  <path d="M236 584 L252 584" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <rect x="256" y="556" width="200" height="56" rx="8" fill="#ffffff" stroke="#7048e8"/>
+  <text x="356" y="578" text-anchor="middle" font-size="12.5" font-weight="700" font-family="monospace" fill="#5f3dc4">o_norm [128]</text>
+  <text x="356" y="598" text-anchor="middle" font-size="11" fill="#495057">每 head RMSNorm，96 head 共享</text>
+  <path d="M456 584 L472 584" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <rect x="476" y="556" width="200" height="56" rx="8" fill="#ffffff" stroke="#7048e8"/>
+  <text x="576" y="578" text-anchor="middle" font-size="12.5" font-weight="700" font-family="monospace" fill="#5f3dc4">⊙ sigmoid(x_t·g_proj)</text>
+  <text x="576" y="598" text-anchor="middle" font-size="11" fill="#495057">逐通道 0~1：这个 token 取多少</text>
+  <path d="M676 584 L692 584" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <rect x="696" y="556" width="188" height="56" rx="8" fill="#f8f9fa" stroke="#adb5bd"/>
+  <text x="790" y="578" text-anchor="middle" font-size="12.5" font-weight="700" font-family="monospace" fill="#495057">o_proj [7168, 12288]</text>
+  <text x="790" y="598" text-anchor="middle" font-size="11" fill="#495057">拼接 96 head → 7168</text>
+
+  <rect x="20" y="640" width="880" height="52" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="460" y="662" text-anchor="middle" font-size="12" fill="#495057">β 与 α 两组门合计约 319 万参数（一层 KDA 的 0.72%），却决定了记忆怎么写、怎么忘；</text>
+  <text x="460" y="681" text-anchor="middle" font-size="12" fill="#495057">输出门 g_proj 是满秩的，单独占 19.8%，它不碰记忆，只决定当前 token 用多少读出结果。</text>
+</svg>

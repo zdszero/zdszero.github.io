@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 544" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#868e96"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="900" height="544" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">Flat layout：一层的多个权重，一次 AllGather</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">N=4 示意：先拼成一条字节流 T，再均分成 N 个 chunk；chunk 边界不必对齐权重边界</text>
+
+  <!-- ① logical weights -->
+  <text x="60" y="90" font-size="13" font-weight="700" fill="#212529">① 一层里要恢复的权重（逻辑视图）</text>
+  <rect x="60" y="102" width="290" height="46" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="205" y="122" text-anchor="middle" font-size="12.5" font-weight="700" fill="#3b5bdb">self_attn.qkv_proj</text>
+  <text x="205" y="139" text-anchor="middle" font-size="11" font-family="monospace" fill="#868e96">W_a: (rows_a, K)</text>
+  <rect x="366" y="102" width="164" height="46" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="448" y="122" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0b7285">self_attn.o_proj</text>
+  <text x="448" y="139" text-anchor="middle" font-size="11" font-family="monospace" fill="#868e96">W_b: (rows_b, K)</text>
+  <rect x="546" y="102" width="270" height="46" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="681" y="122" text-anchor="middle" font-size="12.5" font-weight="700" fill="#5f3dc4">mlp.routed_expert_up_proj</text>
+  <text x="681" y="139" text-anchor="middle" font-size="11" font-family="monospace" fill="#868e96">W_c: (rows_c, K)</text>
+  <path d="M450 152 L450 172" stroke="#868e96" stroke-width="2" fill="none" marker-end="url(#ar)"/>
+
+  <!-- ② flat buffer T with chunk boundaries -->
+  <text x="60" y="196" font-size="13" font-weight="700" fill="#212529">② 序列化成 flat buffer T：每项补到 16B 对齐，总长补到 16·N 的倍数</text>
+  <text x="62" y="218" font-size="10" font-family="monospace" fill="#868e96">o_a=0</text>
+  <text x="368" y="218" font-size="10" font-family="monospace" fill="#868e96">o_b</text>
+  <text x="548" y="218" font-size="10" font-family="monospace" fill="#868e96">o_c</text>
+  <text x="812" y="218" font-size="10" font-family="monospace" fill="#868e96">pad</text>
+  <rect x="60" y="224" width="290" height="40" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="350" y="224" width="16" height="40" fill="#f1f3f5" stroke="#adb5bd"/>
+  <rect x="366" y="224" width="164" height="40" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="530" y="224" width="16" height="40" fill="#f1f3f5" stroke="#adb5bd"/>
+  <rect x="546" y="224" width="270" height="40" fill="#f3f0ff" stroke="#7048e8"/>
+  <rect x="816" y="224" width="24" height="40" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="205" y="249" text-anchor="middle" font-size="12" font-family="monospace" fill="#3b5bdb">W_a</text>
+  <text x="408" y="249" text-anchor="middle" font-size="12" font-family="monospace" fill="#0b7285">W_b</text>
+  <text x="730" y="249" text-anchor="middle" font-size="12" font-family="monospace" fill="#5f3dc4">W_c</text>
+  <!-- chunk boundaries: |T| / N, independent of weight boundaries -->
+  <path d="M255 212 L255 270 M450 212 L450 270 M645 212 L645 270" stroke="#e8590c" stroke-width="2" stroke-dasharray="5 3" fill="none"/>
+  <path d="M64 272 L64 278 L251 278 L251 272 M259 272 L259 278 L446 278 L446 272 M454 272 L454 278 L641 278 L641 272 M649 272 L649 278 L836 278 L836 272" stroke="#f08c00" stroke-width="1.5" fill="none"/>
+  <text x="157" y="296" text-anchor="middle" font-size="12" font-weight="700" fill="#e8590c">T₀ → rank 0</text>
+  <text x="352" y="296" text-anchor="middle" font-size="12" font-weight="700" fill="#e8590c">T₁ → rank 1</text>
+  <text x="547" y="296" text-anchor="middle" font-size="12" font-weight="700" fill="#e8590c">T₂ → rank 2</text>
+  <text x="742" y="296" text-anchor="middle" font-size="12" font-weight="700" fill="#e8590c">T₃ → rank 3</text>
+  <text x="157" y="313" text-anchor="middle" font-size="11" fill="#868e96">W_a 前段</text>
+  <text x="352" y="313" text-anchor="middle" font-size="11" fill="#868e96">W_a 尾 + W_b 头</text>
+  <text x="547" y="313" text-anchor="middle" font-size="11" fill="#868e96">W_b 尾 + W_c 头</text>
+  <text x="742" y="313" text-anchor="middle" font-size="11" fill="#868e96">W_c 尾 + padding</text>
+
+  <!-- ③ one collective, then views -->
+  <text x="60" y="346" font-size="13" font-weight="700" fill="#212529">③ 运行期只做一次 all_gather_into_tensor：每卡拿到完整 T（写进 staging slot），再按 offset 切回 view</text>
+  <rect x="60" y="358" width="290" height="36" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="350" y="358" width="16" height="36" fill="#f1f3f5" stroke="#adb5bd"/>
+  <rect x="366" y="358" width="164" height="36" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="530" y="358" width="16" height="36" fill="#f1f3f5" stroke="#adb5bd"/>
+  <rect x="546" y="358" width="270" height="36" fill="#f3f0ff" stroke="#7048e8"/>
+  <rect x="816" y="358" width="24" height="36" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="205" y="381" text-anchor="middle" font-size="12" font-family="monospace" fill="#3b5bdb">W_a</text>
+  <text x="448" y="381" text-anchor="middle" font-size="12" font-family="monospace" fill="#0b7285">W_b</text>
+  <text x="681" y="381" text-anchor="middle" font-size="12" font-family="monospace" fill="#5f3dc4">W_c</text>
+  <path d="M205 396 L205 422" stroke="#868e96" stroke-width="2" fill="none" marker-end="url(#ar)"/>
+  <path d="M448 396 L448 422" stroke="#868e96" stroke-width="2" fill="none" marker-end="url(#ar)"/>
+  <path d="M681 396 L681 422" stroke="#868e96" stroke-width="2" fill="none" marker-end="url(#ar)"/>
+  <rect x="80" y="428" width="250" height="44" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="205" y="446" text-anchor="middle" font-size="12" font-weight="700" fill="#3b5bdb">qkv_proj.weight</text>
+  <text x="205" y="463" text-anchor="middle" font-size="10.5" font-family="monospace" fill="#495057">T[o_a : o_a+s_a].view(…)</text>
+  <rect x="350" y="428" width="196" height="44" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="448" y="446" text-anchor="middle" font-size="12" font-weight="700" fill="#0b7285">o_proj.weight</text>
+  <text x="448" y="463" text-anchor="middle" font-size="10.5" font-family="monospace" fill="#495057">T[o_b : o_b+s_b].view(…)</text>
+  <rect x="566" y="428" width="230" height="44" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="681" y="446" text-anchor="middle" font-size="12" font-weight="700" fill="#5f3dc4">routed_expert_up_proj.weight</text>
+  <text x="681" y="463" text-anchor="middle" font-size="10.5" font-family="monospace" fill="#495057">T[o_c : o_c+s_c].view(…)</text>
+
+  <!-- note -->
+  <rect x="24" y="488" width="852" height="40" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="450" y="513" text-anchor="middle" font-size="12" fill="#495057">chunk 只按字节均分，与权重边界无关：加载时先按权重切行，finalize 时一次性重排成 flat chunk；运行期每层只剩一次 collective，view 零拷贝</text>
+</svg>

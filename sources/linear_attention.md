@@ -268,12 +268,46 @@ y_t &= \big(\mathrm{RMSNorm}_{w}(o_t)\odot\sigma(x_t W_g^\top)\big)\,W_o^\top &&
 
 把这 14 项加起来是每层 443,740,416，乘 69 层正好是精算总览里的 30,618,088,704，说明没有遗漏或重复的张量。
 
+#### 逐个看：每个权重控制什么
+
+把 KDA 当成一块容量固定的记忆，q/k/v 决定“按什么地址、写什么内容”，其余小张量是三个旋钮：**写多少**（β）、**忘多少**（α）、**读多少**（输出门）。
+
+![KDA 的三个旋钮](../docs/WikiImage/linear_attention_k3_kda_gates.svg)
+
+**q / k / v 与短卷积：地址和内容。** \(k_t\) 是写入地址，\(v_t\) 是写入内容，\(q_t\) 是读取地址，角色与 softmax attention 相同；区别是 k、v 不进 KV cache，而是当场压进 \(S\)。`q/k/v_conv1d` 让每个通道看到当前和前 3 个 token 的投影（4 个 tap 的因果卷积），补上 linear 层没有 RoPE、分不清相邻顺序的缺口。
+
+**`b_proj` → β：这一步写多少。** `b_proj` 是 `[96, 7168]`，每个 head 一行：对当前 token 的 hidden 做一次点积再取 sigmoid，就是这个 head 在这一步的写入强度。它的效果可以精确写出来。记衰减后的状态为 \(S'\)、旧值 \(\hat v = \hat k_t S'\)，写入后再用同一个 key 读回：
+
+\[
+\hat k_t S_t = \hat k_t S' + \beta_t\,(\hat k_t \hat k_t^\top)(v_t - \hat v) = (1-\beta_t)\,\hat v + \beta_t\, v_t
+\]
+
+这里用到了 \(\lVert \hat k_t\rVert = 1\)。所以 β 是新旧值之间的插值系数：β≈0 时这个 token 对记忆没有影响，β=1 时这个 key 下的旧值被完全改写，与 \(\hat k_t\) 正交的方向始终不动。如果把 β 固定为 1，每个 token 都会强行覆盖自己 key 方向上的记忆；有了 `b_proj`，模型可以按内容决定哪些 token 值得占用有限的容量。β 缩放的是整个 rank-1 更新，所以每个 head 一个数就够了。
+
+**`f_a_proj` / `f_b_proj` / `dt_bias` / `A_log` → α：每个通道忘多少。** 这四个张量合起来算一个逐通道的门：
+
+\[
+z_t = \underbrace{(x_t W_{f_a}^\top)\, W_{f_b}^\top}_{f_t} + \texttt{dt\_bias},\qquad
+g_t = -5\cdot\sigma\big(e^{\texttt{A\_log}[h]}\cdot z_t\big),\qquad \alpha_t = e^{g_t}
+\]
+
+用“每步半衰期” \(\ln 2/|g|\)（记忆衰减到一半要经过多少个 token）来读最直观，即图中右侧的曲线：
+
+- **`dt_bias`**（12288 个，逐通道）决定 \(f=0\) 时这个通道停在曲线的哪一点，也就是它**默认**记多久。\(e^{A}=1\) 时，`dt_bias` 取 −8、−4、0 分别对应约 413、7.7、0.28 个 token 的半衰期。同一个 head 的 128 个通道取不同偏置，就同时拥有长期和短期记忆。
+- **\(f_t\)**（逐 token、逐通道）是数据相关的部分，把这个点左右推：往右是加速遗忘，往左是延长保留。它来自秩 128 的低秩投影，所以 12288 个通道的遗忘决策，都是同一组 128 个“当前 token 是什么情况”的特征的线性组合。
+- **`A_log`**（每 head 一个）决定曲线的陡度。\(e^{A}\) 大时门像开关，\(z\) 稍有变化就在“几乎不忘”和“几乎清空”之间切换；\(e^{A}\) 小时门对 \(z\) 不敏感，要很大的负 \(z\) 才能记得久。
+- **下限 −5** 把曲线右端压平：单步 \(\alpha \ge e^{-5}\approx 0.0067\)，一个 token 不能把某行记忆一次清零。
+
+**`o_norm` + `g_proj`：读多少。** 读出 \(o_t = d^{-1/2}\hat q_t S_t\) 没有 softmax 那样的归一化，幅度随记忆里写了多少、写了什么而漂移。`o_norm` 先在每个 head 内做 RMSNorm（权重 `[128]`，96 个 head 共享），把幅度拉回统一尺度；再乘 \(\sigma(x_t W_g^\top)\)，逐通道决定当前 token 要用多少读出结果，门接近 0 时这一层对残差几乎没有贡献。输出门只看 \(x_t\)，不参与记忆的读写。K3 的 MLA 层也有一个同形状的 `g_proj`（见[权重精算](./kimi_k3_weight.md)的 MLA 表），两种 attention 层都在 `o_proj` 之前乘一个 sigmoid 输出门。
+
+**每层公共的 6 个张量不属于 KDA。** `input_layernorm`、`post_attention_layernorm` 是 attention / MLP 输入前的 RMSNorm。`self_attention_res_*`、`mlp_res_*` 是 [Attention Residuals](./attention_residuals.md) 的参数：`*_res_proj [1, 7168]` 是一个 \(H\to 1\) 的打分向量，`*_res_norm` 是打分前的 RMSNorm，两者一起给前面各个 block 的残差快照打分，再按 softmax 权重混合，代替普通的残差相加。
+
 #### 几个从形状里读出来的细节
 
 - **门很便宜，内容很贵。** q/k/v/g/o 五个 \(7168\leftrightarrow 12288\) 的大矩阵占 99.25% 的参数；真正决定“写多少、忘多少”的 `b_proj`、`f_a/f_b`、`A_log`、`dt_bias` 合计约 319 万，只占 0.72%。遗忘门用秩 128 的低秩分解（\(7168\to128\to12288\)，约 249 万），如果做成满秩会是 8800 万。
 - **门的粒度是三层叠加的。** `A_log` 是 head 级（96 个），`dt_bias` 是通道级（12288 个），`f_t` 是 token × 通道级。于是每个通道的衰减 = head 的整体灵敏度 × (通道偏置 + 数据相关项)。
 - **`A_log` 存了 128 个，只用 96 个。** checkpoint 里它的形状是 `[head_dim]` 而不是 `[num_heads]`；加载时 `_a_log_weight_loader` 先截取前 `num_heads` 个，再按 TP 切分，后 32 个值从未参与计算。
-- **safe gate 给遗忘设了下限。** GDN / Kimi-Linear 的 \(g=-e^{A}\cdot\mathrm{softplus}(\cdot)\) 没有下界，一个 token 理论上能把某行记忆清零。K3 的 \(g = -5\cdot\sigma(\cdot) \in (-5, 0)\)，即 \(\alpha\in(e^{-5}, 1)\approx(0.0067, 1)\)：单步最多忘掉 99.3%，不会一步清空。这里 \(e^{\texttt{A\_log}}\) 的含义也变了，不再是“衰减速率”，而是 sigmoid 的斜率，决定门对输入有多敏感。
+- **safe gate 改变了 `A_log` 的含义。** GDN / Kimi-Linear 的 \(g=-e^{A}\cdot\mathrm{softplus}(\cdot)\) 没有下界，\(e^{A}\) 是衰减速率的倍数；K3 的 \(g = -5\cdot\sigma(\cdot) \in (-5, 0)\)，\(e^{A}\) 变成 sigmoid 的斜率，单步最多忘掉 99.3%。两种门在 kernel 里由 `lower_bound` 是否为空来切换（`kda_gate_chunk_cumsum` 的 `USE_LOWER_BOUND`）。
 - **K3 的输出门是满秩的。** Kimi-Linear 用低秩 `g_a_proj → g_b_proj`，K3 换成了一个 `g_proj [12288, 7168]`（`use_full_rank_gate`），单这一项就占 KDA 参数的 19.8%，与 `o_proj` 一样大。它也是唯一绕过 delta rule 的支路：直接从 \(x_t\) 投影到 `o_norm`。
 - **精度分两档。** 大矩阵是 BF16；卷积核、`A_log`、`dt_bias`、`o_norm` 是 F32。后几项会进入指数、sigmoid 或递推，而且参数量极小，存 F32 几乎不占空间。
 

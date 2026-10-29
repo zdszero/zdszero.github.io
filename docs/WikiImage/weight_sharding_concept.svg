@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 500" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="500" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">存储分片，计算不分片</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">N=4 示意：常驻时每卡只放每层的 1/N 行；用到哪一层，才把那一层拼回一块 workspace</text>
+
+  <!-- column headers -->
+  <text x="290" y="88" text-anchor="middle" font-size="13" font-weight="700" fill="#495057">GPU 0</text>
+  <text x="460" y="88" text-anchor="middle" font-size="13" font-weight="700" fill="#495057">GPU 1</text>
+  <text x="630" y="88" text-anchor="middle" font-size="13" font-weight="700" fill="#495057">GPU 2</text>
+  <text x="800" y="88" text-anchor="middle" font-size="13" font-weight="700" fill="#495057">GPU 3</text>
+
+  <!-- row 1 labels -->
+  <text x="24" y="140" font-size="14" font-weight="700" fill="#212529">Replicated</text>
+  <text x="24" y="160" font-size="12" fill="#495057">每卡一份完整副本</text>
+  <text x="24" y="180" font-size="12" font-family="monospace" fill="#e8590c">常驻 ≈ R</text>
+
+  <!-- row 2 labels -->
+  <text x="24" y="296" font-size="14" font-weight="700" fill="#212529">Weight shard</text>
+  <text x="24" y="316" font-size="12" fill="#495057">每卡存每层的 1/N 行</text>
+  <text x="24" y="336" font-size="12" font-family="monospace" fill="#3b5bdb">常驻 ≈ R/N</text>
+  <text x="24" y="384" font-size="12" fill="#0b7285">+ 2 块 full workspace</text>
+  <text x="24" y="402" font-size="11" fill="#868e96">各层轮流复用（ping-pong）</text>
+  <!-- row 1 cells: full copy of every layer on every GPU -->
+  <rect x="210" y="100" width="160" height="126" rx="10" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="222" y="126" font-size="11" fill="#868e96">L1</text><rect x="244" y="112" width="112" height="20" rx="4" fill="#fff4e6" stroke="#f08c00"/><text x="300" y="126" text-anchor="middle" font-size="11" fill="#e8590c">完整</text>
+  <text x="222" y="152" font-size="11" fill="#868e96">L2</text><rect x="244" y="138" width="112" height="20" rx="4" fill="#fff4e6" stroke="#f08c00"/><text x="300" y="152" text-anchor="middle" font-size="11" fill="#e8590c">完整</text>
+  <text x="222" y="178" font-size="11" fill="#868e96">L3</text><rect x="244" y="164" width="112" height="20" rx="4" fill="#fff4e6" stroke="#f08c00"/><text x="300" y="178" text-anchor="middle" font-size="11" fill="#e8590c">完整</text>
+  <text x="222" y="204" font-size="11" fill="#868e96">L4</text><rect x="244" y="190" width="112" height="20" rx="4" fill="#fff4e6" stroke="#f08c00"/><text x="300" y="204" text-anchor="middle" font-size="11" fill="#e8590c">完整</text>
+
+  <rect x="380" y="100" width="160" height="126" rx="10" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="392" y="126" font-size="11" fill="#868e96">L1</text><rect x="414" y="112" width="112" height="20" rx="4" fill="#fff4e6" stroke="#f08c00" stroke-dasharray="5 3"/><text x="470" y="126" text-anchor="middle" font-size="11" fill="#e8590c">副本</text>
+  <text x="392" y="152" font-size="11" fill="#868e96">L2</text><rect x="414" y="138" width="112" height="20" rx="4" fill="#fff4e6" stroke="#f08c00" stroke-dasharray="5 3"/><text x="470" y="152" text-anchor="middle" font-size="11" fill="#e8590c">副本</text>
+  <text x="392" y="178" font-size="11" fill="#868e96">L3</text><rect x="414" y="164" width="112" height="20" rx="4" fill="#fff4e6" stroke="#f08c00" stroke-dasharray="5 3"/><text x="470" y="178" text-anchor="middle" font-size="11" fill="#e8590c">副本</text>
+  <text x="392" y="204" font-size="11" fill="#868e96">L4</text><rect x="414" y="190" width="112" height="20" rx="4" fill="#fff4e6" stroke="#f08c00" stroke-dasharray="5 3"/><text x="470" y="204" text-anchor="middle" font-size="11" fill="#e8590c">副本</text>
+
+  <rect x="550" y="100" width="160" height="126" rx="10" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="562" y="126" font-size="11" fill="#868e96">L1</text><rect x="584" y="112" width="112" height="20" rx="4" fill="#fff4e6" stroke="#f08c00" stroke-dasharray="5 3"/><text x="640" y="126" text-anchor="middle" font-size="11" fill="#e8590c">副本</text>
+  <text x="562" y="152" font-size="11" fill="#868e96">L2</text><rect x="584" y="138" width="112" height="20" rx="4" fill="#fff4e6" stroke="#f08c00" stroke-dasharray="5 3"/><text x="640" y="152" text-anchor="middle" font-size="11" fill="#e8590c">副本</text>
+  <text x="562" y="178" font-size="11" fill="#868e96">L3</text><rect x="584" y="164" width="112" height="20" rx="4" fill="#fff4e6" stroke="#f08c00" stroke-dasharray="5 3"/><text x="640" y="178" text-anchor="middle" font-size="11" fill="#e8590c">副本</text>
+  <text x="562" y="204" font-size="11" fill="#868e96">L4</text><rect x="584" y="190" width="112" height="20" rx="4" fill="#fff4e6" stroke="#f08c00" stroke-dasharray="5 3"/><text x="640" y="204" text-anchor="middle" font-size="11" fill="#e8590c">副本</text>
+
+  <rect x="720" y="100" width="160" height="126" rx="10" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="732" y="126" font-size="11" fill="#868e96">L1</text><rect x="754" y="112" width="112" height="20" rx="4" fill="#fff4e6" stroke="#f08c00" stroke-dasharray="5 3"/><text x="810" y="126" text-anchor="middle" font-size="11" fill="#e8590c">副本</text>
+  <text x="732" y="152" font-size="11" fill="#868e96">L2</text><rect x="754" y="138" width="112" height="20" rx="4" fill="#fff4e6" stroke="#f08c00" stroke-dasharray="5 3"/><text x="810" y="152" text-anchor="middle" font-size="11" fill="#e8590c">副本</text>
+  <text x="732" y="178" font-size="11" fill="#868e96">L3</text><rect x="754" y="164" width="112" height="20" rx="4" fill="#fff4e6" stroke="#f08c00" stroke-dasharray="5 3"/><text x="810" y="178" text-anchor="middle" font-size="11" fill="#e8590c">副本</text>
+  <text x="732" y="204" font-size="11" fill="#868e96">L4</text><rect x="754" y="190" width="112" height="20" rx="4" fill="#fff4e6" stroke="#f08c00" stroke-dasharray="5 3"/><text x="810" y="204" text-anchor="middle" font-size="11" fill="#e8590c">副本</text>
+  <!-- row 2 cells: each GPU keeps only its row slice of every layer + 2 workspace slots -->
+  <rect x="210" y="246" width="160" height="176" rx="10" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="222" y="272" font-size="11" fill="#868e96">L1</text><rect x="244" y="258" width="112" height="20" rx="4" fill="none" stroke="#ced4da" stroke-dasharray="4 3"/><rect x="244" y="258" width="28" height="20" rx="3" fill="#edf2ff" stroke="#4c6ef5"/><text x="258" y="272" text-anchor="middle" font-size="10" font-family="monospace" fill="#3b5bdb">W0</text>
+  <text x="222" y="298" font-size="11" fill="#868e96">L2</text><rect x="244" y="284" width="112" height="20" rx="4" fill="none" stroke="#ced4da" stroke-dasharray="4 3"/><rect x="244" y="284" width="28" height="20" rx="3" fill="#edf2ff" stroke="#4c6ef5"/><text x="258" y="298" text-anchor="middle" font-size="10" font-family="monospace" fill="#3b5bdb">W0</text>
+  <text x="222" y="324" font-size="11" fill="#868e96">L3</text><rect x="244" y="310" width="112" height="20" rx="4" fill="none" stroke="#ced4da" stroke-dasharray="4 3"/><rect x="244" y="310" width="28" height="20" rx="3" fill="#edf2ff" stroke="#4c6ef5"/><text x="258" y="324" text-anchor="middle" font-size="10" font-family="monospace" fill="#3b5bdb">W0</text>
+  <text x="222" y="350" font-size="11" fill="#868e96">L4</text><rect x="244" y="336" width="112" height="20" rx="4" fill="none" stroke="#ced4da" stroke-dasharray="4 3"/><rect x="244" y="336" width="28" height="20" rx="3" fill="#edf2ff" stroke="#4c6ef5"/><text x="258" y="350" text-anchor="middle" font-size="10" font-family="monospace" fill="#3b5bdb">W0</text>
+  <rect x="244" y="366" width="54" height="36" rx="6" fill="#e6fcf5" stroke="#0ca678"/><text x="271" y="388" text-anchor="middle" font-size="11" fill="#0b7285">slot A</text>
+  <rect x="302" y="366" width="54" height="36" rx="6" fill="#e6fcf5" stroke="#0ca678"/><text x="329" y="388" text-anchor="middle" font-size="11" fill="#0b7285">slot B</text>
+
+  <rect x="380" y="246" width="160" height="176" rx="10" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="392" y="272" font-size="11" fill="#868e96">L1</text><rect x="414" y="258" width="112" height="20" rx="4" fill="none" stroke="#ced4da" stroke-dasharray="4 3"/><rect x="442" y="258" width="28" height="20" rx="3" fill="#edf2ff" stroke="#4c6ef5"/><text x="456" y="272" text-anchor="middle" font-size="10" font-family="monospace" fill="#3b5bdb">W1</text>
+  <text x="392" y="298" font-size="11" fill="#868e96">L2</text><rect x="414" y="284" width="112" height="20" rx="4" fill="none" stroke="#ced4da" stroke-dasharray="4 3"/><rect x="442" y="284" width="28" height="20" rx="3" fill="#edf2ff" stroke="#4c6ef5"/><text x="456" y="298" text-anchor="middle" font-size="10" font-family="monospace" fill="#3b5bdb">W1</text>
+  <text x="392" y="324" font-size="11" fill="#868e96">L3</text><rect x="414" y="310" width="112" height="20" rx="4" fill="none" stroke="#ced4da" stroke-dasharray="4 3"/><rect x="442" y="310" width="28" height="20" rx="3" fill="#edf2ff" stroke="#4c6ef5"/><text x="456" y="324" text-anchor="middle" font-size="10" font-family="monospace" fill="#3b5bdb">W1</text>
+  <text x="392" y="350" font-size="11" fill="#868e96">L4</text><rect x="414" y="336" width="112" height="20" rx="4" fill="none" stroke="#ced4da" stroke-dasharray="4 3"/><rect x="442" y="336" width="28" height="20" rx="3" fill="#edf2ff" stroke="#4c6ef5"/><text x="456" y="350" text-anchor="middle" font-size="10" font-family="monospace" fill="#3b5bdb">W1</text>
+  <rect x="414" y="366" width="54" height="36" rx="6" fill="#e6fcf5" stroke="#0ca678"/><text x="441" y="388" text-anchor="middle" font-size="11" fill="#0b7285">slot A</text>
+  <rect x="472" y="366" width="54" height="36" rx="6" fill="#e6fcf5" stroke="#0ca678"/><text x="499" y="388" text-anchor="middle" font-size="11" fill="#0b7285">slot B</text>
+  <rect x="550" y="246" width="160" height="176" rx="10" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="562" y="272" font-size="11" fill="#868e96">L1</text><rect x="584" y="258" width="112" height="20" rx="4" fill="none" stroke="#ced4da" stroke-dasharray="4 3"/><rect x="640" y="258" width="28" height="20" rx="3" fill="#edf2ff" stroke="#4c6ef5"/><text x="654" y="272" text-anchor="middle" font-size="10" font-family="monospace" fill="#3b5bdb">W2</text>
+  <text x="562" y="298" font-size="11" fill="#868e96">L2</text><rect x="584" y="284" width="112" height="20" rx="4" fill="none" stroke="#ced4da" stroke-dasharray="4 3"/><rect x="640" y="284" width="28" height="20" rx="3" fill="#edf2ff" stroke="#4c6ef5"/><text x="654" y="298" text-anchor="middle" font-size="10" font-family="monospace" fill="#3b5bdb">W2</text>
+  <text x="562" y="324" font-size="11" fill="#868e96">L3</text><rect x="584" y="310" width="112" height="20" rx="4" fill="none" stroke="#ced4da" stroke-dasharray="4 3"/><rect x="640" y="310" width="28" height="20" rx="3" fill="#edf2ff" stroke="#4c6ef5"/><text x="654" y="324" text-anchor="middle" font-size="10" font-family="monospace" fill="#3b5bdb">W2</text>
+  <text x="562" y="350" font-size="11" fill="#868e96">L4</text><rect x="584" y="336" width="112" height="20" rx="4" fill="none" stroke="#ced4da" stroke-dasharray="4 3"/><rect x="640" y="336" width="28" height="20" rx="3" fill="#edf2ff" stroke="#4c6ef5"/><text x="654" y="350" text-anchor="middle" font-size="10" font-family="monospace" fill="#3b5bdb">W2</text>
+  <rect x="584" y="366" width="54" height="36" rx="6" fill="#e6fcf5" stroke="#0ca678"/><text x="611" y="388" text-anchor="middle" font-size="11" fill="#0b7285">slot A</text>
+  <rect x="642" y="366" width="54" height="36" rx="6" fill="#e6fcf5" stroke="#0ca678"/><text x="669" y="388" text-anchor="middle" font-size="11" fill="#0b7285">slot B</text>
+
+  <rect x="720" y="246" width="160" height="176" rx="10" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="732" y="272" font-size="11" fill="#868e96">L1</text><rect x="754" y="258" width="112" height="20" rx="4" fill="none" stroke="#ced4da" stroke-dasharray="4 3"/><rect x="838" y="258" width="28" height="20" rx="3" fill="#edf2ff" stroke="#4c6ef5"/><text x="852" y="272" text-anchor="middle" font-size="10" font-family="monospace" fill="#3b5bdb">W3</text>
+  <text x="732" y="298" font-size="11" fill="#868e96">L2</text><rect x="754" y="284" width="112" height="20" rx="4" fill="none" stroke="#ced4da" stroke-dasharray="4 3"/><rect x="838" y="284" width="28" height="20" rx="3" fill="#edf2ff" stroke="#4c6ef5"/><text x="852" y="298" text-anchor="middle" font-size="10" font-family="monospace" fill="#3b5bdb">W3</text>
+  <text x="732" y="324" font-size="11" fill="#868e96">L3</text><rect x="754" y="310" width="112" height="20" rx="4" fill="none" stroke="#ced4da" stroke-dasharray="4 3"/><rect x="838" y="310" width="28" height="20" rx="3" fill="#edf2ff" stroke="#4c6ef5"/><text x="852" y="324" text-anchor="middle" font-size="10" font-family="monospace" fill="#3b5bdb">W3</text>
+  <text x="732" y="350" font-size="11" fill="#868e96">L4</text><rect x="754" y="336" width="112" height="20" rx="4" fill="none" stroke="#ced4da" stroke-dasharray="4 3"/><rect x="838" y="336" width="28" height="20" rx="3" fill="#edf2ff" stroke="#4c6ef5"/><text x="852" y="350" text-anchor="middle" font-size="10" font-family="monospace" fill="#3b5bdb">W3</text>
+  <rect x="754" y="366" width="54" height="36" rx="6" fill="#e6fcf5" stroke="#0ca678"/><text x="781" y="388" text-anchor="middle" font-size="11" fill="#0b7285">slot A</text>
+  <rect x="812" y="366" width="54" height="36" rx="6" fill="#e6fcf5" stroke="#0ca678"/><text x="839" y="388" text-anchor="middle" font-size="11" fill="#0b7285">slot B</text>
+
+  <!-- note -->
+  <rect x="24" y="440" width="852" height="44" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="450" y="467" text-anchor="middle" font-size="12" fill="#495057">forward 前用一次 AllGather 把第 ℓ 层的 N 片拼进一块 slot，GEMM 看到的仍是完整 W；省下约 (1 − 1/N)·R，代价是每层一次权重通信</text>
+</svg>
