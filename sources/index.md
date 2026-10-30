@@ -1,4 +1,6 @@
-% ZWiki
+% WikiOne
+
+# LLM
 
 - LLM 基础
     - [线性代数基础](./linear_algebra.md)
@@ -108,6 +110,12 @@
             - [K3 Decode：DP16 vs DP2×DCP8](./kimi_k3_decode_dp16_vs_dp2.md)
             - [K3 Prefill PP16](./kimi_k3_prefill_pp16_env.md)
         - [Prefill batch overlap](./prefill_forward_thread_overlap.md)
+
+
+---
+
+# Stock
+
 - [A 股事件史](./stages.md)
     - [2005-2007](./2005-2007.md)
     - [2008](./2008.md)
