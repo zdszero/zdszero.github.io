@@ -1,0 +1,243 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    投机解码（六）：DFlash，用块扩散一次前向出整块
+  </title>
+    <link rel="stylesheet" href="./WikiTheme/theme/bootstrap.css"  />
+          <!-- wiki three-column layout styles/behavior, kept external so the ~5KB
+       block isn't duplicated into every generated page -->
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/wiki-layout.css" />
+  <script defer src="./WikiTheme/wiki-layout.js"></script>
+</head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">投机解码（六）：DFlash，用块扩散一次前向出整块</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="wiki-layout">
+    <nav class="wiki-sidebar" id="wiki-sidebar" hidden></nav>
+    <main class="wiki-main">
+            <blockquote>
+            <p>系列总览见 <a
+            href="./speculative_decoding.md">投机解码方案对比</a>。上一篇：<a
+            href="./spec_eagle3.html">EAGLE-3</a>。</p>
+            </blockquote>
+            <h3 id="问题串行-draft-的-k-开不大">问题：串行 draft 的 k
+            开不大</h3>
+            <p>从 EAGLE 到 MTP 再到 EAGLE-3，draft 都是自回归的：猜 k 个
+            token 就要 k 次 draft 前向。这带来两个互相牵制的限制：</p>
+            <ul>
+            <li><strong>k
+            开不大</strong>。每多猜一个就多一次前向，越往后接受率越低，边际收益很快变成负的，EAGLE
+            系通常只开 3～5 步。</li>
+            <li><strong>draft 不敢加深</strong>。draft 每加一层，k
+            次前向里每一次都要多算这一层，所以 EAGLE 系的 draft 只有 1
+            层。能力被卡死在「一层 transformer 能做到的程度」。</li>
+            </ul>
+            <p>DFlash（Chen、Liang、Liu，UCSD，<a
+            href="https://arxiv.org/abs/2602.06036">arXiv
+            2602.06036</a>）的出发点是：如果 k 个 token
+            能在<strong>一次</strong>前向里出来，draft 的代价就和 k
+            基本无关，这两个限制同时解开。</p>
+            <h3
+            id="insight扩散模型单独用不行当-draft-刚好">insight：扩散模型单独用不行，当
+            draft 刚好</h3>
+            <p>块扩散（block diffusion）语言模型可以一次前向去噪出一整块
+            token，但作为独立模型，它的质量明显不如自回归模型。论文的观察是：投机解码里
+            draft 的质量不决定结果，target 的 verify
+            保证了无损，所以扩散模型最大的短板在这里不要紧。甚至不需要多轮去噪，<strong>一次去噪</strong>就够了：猜得不完美的位置交给
+            verify 剔掉。</p>
+            <p>光靠扩散还不够。一个从零理解上下文的小扩散模型猜不准，论文里不用
+            target 特征时 GSM8K 上只有 2.83×。第二个 insight
+            被作者概括为 <strong>the target knows best</strong>：target
+            的 hidden 里已经编码了后续多个 token 的信息（EAGLE-3
+            的多层融合也是这个思路），draft
+            只要能充分读到这些特征即可。</p>
+            <p>把两者合起来：并行块让 draft 加层变便宜，于是 draft
+            可以有 5 层甚至 8 层；但前提是每一层都能直接看到 target
+            特征，否则加层也没用。这引出了 DFlash 的核心结构 <strong>KV
+            注入</strong>。</p>
+            <h3 id="draft-结构">draft 结构</h3>
+            <figure>
+            <img src="./WikiImage/spec_dflash_kv_injection.svg"
+            alt="输入融合与 KV 注入" />
+            <figcaption aria-hidden="true">输入融合与 KV
+            注入</figcaption>
+            </figure>
+            <ul>
+            <li><strong>target 特征</strong>：从 target 取 5 层
+            hidden，在第 2 层到倒数第 3 层之间均匀分布，拼成 5D 后过 W_c
+            ∈ ℝ^{D×5D} 和 RMSNorm，得到上下文特征 H_t。</li>
+            <li><strong>KV 注入</strong>：在 draft
+            的<strong>每一层</strong>里，K 和 V 都是
+            <code>concat(W^K·H_t, W^K·H_d)</code>（V 同理），H_d
+            是块内位置自己的 hidden。上下文特征只过 K/V 投影，不过
+            Q、输出投影和 FFN，算完就存进 draft 的 KV cache。EAGLE-3
+            只在输入处融合一次，信号随深度稀释；DFlash 每层都重新看一遍
+            target。</li>
+            <li><strong>块输入</strong>：第 1 位是 anchor，也就是上一轮
+            verify 的 bonus token，其余位置都是 mask
+            token。块内是<strong>双向</strong>注意力，块对上下文是正常的因果注意力。</li>
+            <li><strong>输出</strong>：块内第 2 位往后每个位置的 hidden
+            过 lm_head，一次得到 block_size − 1 个 draft
+            token。embedding 和 lm_head 与 target 共享并冻结。</li>
+            <li><strong>规模</strong>：block size 16（LLaMA 上用 10），5
+            层 draft（Coder 模型用 8 层）。</li>
+            </ul>
+            <p>和 EAGLE 系比，draft
+            的状态维护也换了一种方式：上下文全部在 draft KV 里，verify
+            之后只需要把新被接受位置的 target hidden 投影成 K/V
+            写进去，不需要再跑一次 draft 前向。</p>
+            <h3 id="训练">训练</h3>
+            <ul>
+            <li><strong>随机
+            anchor</strong>：训练时不是按固定间隔切块，而是在每条序列上随机采
+            512 个 anchor 位置，每个 anchor 后面接一个 mask 块。推理时
+            anchor
+            落在哪里取决于上一轮接受到哪，随机采样让训练覆盖这种分布。对比固定切块，加速比
+            4.69× vs 4.13×。</li>
+            <li><strong>位置加权损失</strong>：块内越靠前的位置越重要（前面错了后面就没用），第
+            k 位的权重 w_k = exp(−(k−1)/γ)，block 16 时 γ = 7。</li>
+            <li><strong>数据</strong>：约 80 万条，回复由 target
+            重新生成；6 个 epoch，lr 6e-4。</li>
+            </ul>
+            <h3 id="结果">结果</h3>
+            <ul>
+            <li><strong>Qwen3-8B，T=0</strong>：平均 4.86×（τ
+            6.49），最高是 MATH-500 上的 6.08×（τ 7.87）；T=1 时平均
+            4.03×。摘要里的「超过 6×」指的是单项峰值，不是平均。</li>
+            <li><strong>对比 EAGLE-3</strong>：同设置下 EAGLE-3 平均
+            1.76×（树 16 节点）和 2.02×（树 60 节点）。摘要说比 EAGLE-3
+            快「最高 2.5×」，这个倍数取决于选哪个 EAGLE-3
+            配置和哪个任务。</li>
+            <li><strong>层数</strong>：8 层的 τ 最高，但 5
+            层的端到端加速最好。draft 再便宜也不是零成本。</li>
+            <li><strong>服务化</strong>：SGLang、B200、Qwen3-8B
+            Math500，并发 1/4/8/16/32 时分别是
+            5.1/4.5/4.5/3.9/2.8×。</li>
+            </ul>
+            <p>局限也很直接：并发越高收益越小；块越大，后面那些大概率被拒绝的位置越浪费
+            verify 算力；超过 4K 的上下文需要再微调。下一篇的 DSpark
+            正是从「块内越往后越不准」和「大 batch 下 verify
+            浪费」这两点切入的。</p>
+            <h3 id="在-sglang-里">在 SGLang 里</h3>
+            <p><code>DFLASH</code> 是独立的算法和
+            worker（<code>speculative/dflash_worker_v2.py</code> 里的
+            <code>DFlashWorkerV2</code>），不再复用 EAGLE 的
+            worker。</p>
+            <p><strong>draft 模型</strong>是
+            <code>models/dflash.py</code> 的
+            <code>DFlashDraftModel</code>，结构和论文一一对应：</p>
+            <ul>
+            <li><code>fc</code> + <code>hidden_norm</code>：把拼起来的
+            target hidden 投影成上下文特征，对应论文的 W_c 和
+            RMSNorm。</li>
+            <li>每层的 <code>kv_proj_only</code>：只算上下文特征的
+            K/V，再做 k_norm 和 RoPE，写进 draft
+            KV（<code>set_kv_buffer_prefix_valid</code>）。非量化权重直接切出
+            <code>qkv_proj.weight</code> 里 K/V 那一段做一次
+            GEMM；量化权重切不了，就回退成算完整 qkv 再丢掉 Q。</li>
+            <li>full attention 层用
+            <code>ENCODER_ONLY</code>，即块内双向；sliding
+            层仍是带窗口的因果注意力。</li>
+            <li>模型自己<strong>没有 embedding 和 lm_head</strong>，都用
+            target 的。mask token 默认是
+            <code>&lt;|MASK|&gt;</code>。</li>
+            </ul>
+            <p><strong>取哪几层</strong>：<code>build_target_layer_ids</code>（<code>speculative/dflash_utils.py</code>）返回的层数和
+            draft 层数相同。draft 只有 1 层时取中间层 N//2；否则在 [1,
+            N−3] 上均匀取。SGLang 在「第 i 层之前」捕获，hook 里会再加
+            1。</p>
+            <p><strong>每个 decode step</strong>：</p>
+            <blockquote>
+            <p>1 次 draft 块前向 + 1 次 target verify + 1 次「投影写
+            KV」</p>
+            </blockquote>
+            <p>prefill 时把整个 prompt 的 target hidden 投影写进 draft
+            KV；verify 之后按 <code>commit_lens</code>
+            只写被接受的位置。这里没有 EAGLE 那样的 draft extend
+            前向。</p>
+            <p><strong>参数</strong>：DFlash 强制
+            <code>num_steps = topk = 1</code>，这两个字段对它没有意义，只是通用的显存计算要用；block
+            size 就是 <code>num_draft_tokens</code>，不指定时从 draft
+            配置推断，默认 16。限制是只支持 CUDA、不支持 DP
+            attention、要求 PP = 1。draft 是 sliding window 时可以打开
+            <code>--speculative-draft-window-size</code>，draft KV
+            只按窗口分配（<code>draft_swa_pool.py</code>），见 <a
+            href="./speculative_decoding.html">总览里的说明</a>。</p>
+            <h3 id="后续工作">后续工作</h3>
+            <p>DFlash
+            只验一条链，块内每个位置的分布里其实还有别的候选。两篇后续分别在这两处继续推：</p>
+            <ul>
+            <li><strong>DDTree</strong>（<a
+            href="https://arxiv.org/abs/2604.12989">arXiv
+            2604.12989</a>）：把 DFlash
+            每个位置的输出分布展开成一棵树，用 best-first
+            堆在固定节点预算内选最可能的分支，target 用 ancestor-only
+            mask 一次验完。draft 不变，只改树怎么长，思路和 EAGLE-2 之于
+            EAGLE 一样。</li>
+            <li><strong>DFlare</strong>（<a
+            href="https://arxiv.org/abs/2606.02091">arXiv
+            2606.02091</a>）：DFlash 每一层注入的都是同一份
+            H_t，来自少数几层 target。DFlare 让每个 draft 层学自己的一组
+            target 层加权组合，draft 加深后收益更稳定；用 240
+            万条数据训练，Qwen3-8B 平均 5.46×，比 DFlash 快约 8%。</li>
+            </ul>
+            <h3 id="小结">小结</h3>
+            <p>DFlash 把两个看似不相关的想法拼在了一起：块扩散让 k 个
+            token 一次前向出来，于是 draft 可以加深、k 可以开到 16；KV
+            注入让每一层都直接读 target
+            的多层特征，于是加深真的有用，状态维护也只剩投影写
+            KV。它的代价在块内：同一次前向里的各位置看不到彼此最后取了什么，越往后越容易各说各的，而大
+            batch 下这些后面的位置还要白白占 verify 的算力。这两点是 <a
+            href="./spec_dspark.html">DSpark</a> 要补的。</p>
+          </main>
+        <aside class="wiki-toc">
+      <ul>
+      <li><a href="#问题串行-draft-的-k-开不大"
+      id="toc-问题串行-draft-的-k-开不大">问题：串行 draft 的 k
+      开不大</a></li>
+      <li><a href="#insight扩散模型单独用不行当-draft-刚好"
+      id="toc-insight扩散模型单独用不行当-draft-刚好">insight：扩散模型单独用不行，当
+      draft 刚好</a></li>
+      <li><a href="#draft-结构" id="toc-draft-结构">draft 结构</a></li>
+      <li><a href="#训练" id="toc-训练">训练</a></li>
+      <li><a href="#结果" id="toc-结果">结果</a></li>
+      <li><a href="#在-sglang-里" id="toc-在-sglang-里">在 SGLang
+      里</a></li>
+      <li><a href="#后续工作" id="toc-后续工作">后续工作</a></li>
+      <li><a href="#小结" id="toc-小结">小结</a></li>
+      </ul>
+    </aside>
+      </div>
+</body>
+
+</html>

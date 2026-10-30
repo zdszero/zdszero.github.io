@@ -1,0 +1,178 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    投机解码（二）：不要 draft 模型的 n-gram 方案
+  </title>
+    <link rel="stylesheet" href="./WikiTheme/theme/bootstrap.css"  />
+          <!-- wiki three-column layout styles/behavior, kept external so the ~5KB
+       block isn't duplicated into every generated page -->
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/wiki-layout.css" />
+  <script defer src="./WikiTheme/wiki-layout.js"></script>
+</head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">投机解码（二）：不要 draft 模型的 n-gram
+方案</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="wiki-layout">
+    <nav class="wiki-sidebar" id="wiki-sidebar" hidden></nav>
+    <main class="wiki-main">
+            <blockquote>
+            <p>系列总览见 <a
+            href="./speculative_decoding.md">投机解码方案对比</a>。上一篇：<a
+            href="./spec_origins.html">从 Blockwise 到 Speculative
+            Sampling</a>。</p>
+            </blockquote>
+            <h3 id="问题draft-模型本身也要钱">问题：draft
+            模型本身也要钱</h3>
+            <p>Speculative Sampling 的收益公式里，c（draft / target
+            单步耗时比）直接出现在分母里。独立小模型要训练、要部署、要占显存，还要串行跑
+            γ
+            次。如果某类任务的输出大段<strong>复制</strong>输入或历史，那么「猜」根本不需要模型：查一下前面出现过的接续就够了，c
+            近似为 0。</p>
+            <h3 id="三条路线">三条路线</h3>
+            <p>2023 年底到 2024 年初出现了三种无模型的
+            draft，区别在于「从哪里查」：</p>
+            <table>
+            <colgroup>
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th style="text-align: left;">工作</th>
+            <th style="text-align: left;">查什么</th>
+            <th style="text-align: left;">怎么验</th>
+            <th style="text-align: left;">论文结果</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td style="text-align: left;">Prompt Lookup
+            Decoding（Saxena，2023.11）</td>
+            <td style="text-align: left;">当前 prompt 里最后 n-gram（n ≤
+            3）的上一次出现，取其后 10 个 token</td>
+            <td style="text-align: left;">链</td>
+            <td style="text-align: left;">Mistral-7B 摘要 / QA 约
+            2.4×（greedy）；开放对话收益很小</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">REST（He 等，<a
+            href="https://arxiv.org/abs/2311.08252">arXiv
+            2311.08252</a>）</td>
+            <td style="text-align: left;">外部数据存储（The Stack 27
+            GB、UltraChat 12 GB）的后缀数组，最长后缀匹配</td>
+            <td style="text-align: left;">候选放进 Trie，验最常见的 64
+            个前缀（树）</td>
+            <td style="text-align: left;">CodeLlama-7B HumanEval
+            2.36×，Vicuna MT-Bench 1.62～1.77×</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">Lookahead Decoding（Fu 等，<a
+            href="https://arxiv.org/abs/2402.02057">arXiv
+            2402.02057</a>）</td>
+            <td style="text-align: left;">target 自己做 Jacobi
+            迭代的轨迹，从中收集 n-gram 池</td>
+            <td style="text-align: left;">lookahead 分支和 verify
+            分支用一个 mask 放进同一次前向</td>
+            <td style="text-align: left;">单卡 1.5～2.3×；每步 FLOPs
+            约为原来 120 倍</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>它们的共同 insight 是：<strong>draft
+            不必是语言模型，只要是一个「足够经常猜对」的分布</strong>。代价也是共同的：</p>
+            <ul>
+            <li>对开放式生成几乎没用，命中率取决于输出和语料 /
+            上文的重合度。</li>
+            <li>REST
+            没有「上下文内」能力，比如猜不出用户刚起的变量名；Prompt
+            Lookup 只看 prompt；Lookahead 用算力换步数，到了算力受限的大
+            batch 反而可能变慢。</li>
+            </ul>
+            <h3 id="sglang-的-ngrampld-和-rest-的合体">SGLang 的
+            NGRAM：PLD 和 REST 的合体</h3>
+            <p>SGLang 的 <code>NGRAM</code>
+            算法（<code>speculative/ngram_worker.py</code>，核心在
+            <code>speculative/cpp_ngram/</code>）把前两条路线合在了一起：</p>
+            <ul>
+            <li><strong>在线 trie</strong>：每个请求取最近
+            <code>max_trie_depth</code>（默认 18）个 token 去 trie
+            里查后续。verify 结束后把这段窗口插回去。trie
+            由所有请求共享，所以别的请求生成过的片段也能命中，这比 PLD
+            只看自己的 prompt 更进一步。</li>
+            <li><strong>外部语料</strong>：可以预加载 JSONL
+            语料建成后缀自动机，运行时用
+            <code>POST /add_external_corpus</code>
+            追加（<code>external_corpus_manager.py</code>），相当于 REST
+            的数据存储。</li>
+            <li><strong>树形 verify</strong>：查到的多个接续按 BFS
+            展开成树，宽度在
+            <code>--speculative-ngram-min/max-bfs-breadth</code>（默认
+            1～10）之间，默认 12 个 draft token，用 SpecInfer 的树形
+            mask 一次验完。</li>
+            </ul>
+            <p>它没有 draft 模型，<code>has_draft_kv()</code> 为
+            False，树只存在于 verify 的 attention mask
+            里，也就不存在「verify 后 draft
+            状态要对齐」的问题。限制是不支持 DP attention。</p>
+            <p>适用场景很明确：代码编辑、长文改写、RAG
+            回答、带模板的结构化输出。开放式聊天请换成后面几篇里读
+            target hidden 的方案。</p>
+            <h3 id="小结">小结</h3>
+            <p>n-gram 方案把 draft
+            成本压到接近零，换来的是命中率完全依赖「输出是不是在复制已有文本」。SGLang
+            的 NGRAM 用共享 trie 加可选外部语料，覆盖了 Prompt Lookup 和
+            REST 两种来源，并用树形 verify
+            弥补单条查找命中率不稳的问题。想在开放式生成上也猜得准，draft
+            就得看到 target 的内部状态，这是下一篇 <a
+            href="./spec_medusa_eagle.html">Medusa 与 EAGLE</a>
+            的出发点。</p>
+          </main>
+        <aside class="wiki-toc">
+      <ul>
+      <li><a href="#问题draft-模型本身也要钱"
+      id="toc-问题draft-模型本身也要钱">问题：draft
+      模型本身也要钱</a></li>
+      <li><a href="#三条路线" id="toc-三条路线">三条路线</a></li>
+      <li><a href="#sglang-的-ngrampld-和-rest-的合体"
+      id="toc-sglang-的-ngrampld-和-rest-的合体">SGLang 的 NGRAM：PLD 和
+      REST 的合体</a></li>
+      <li><a href="#小结" id="toc-小结">小结</a></li>
+      </ul>
+    </aside>
+      </div>
+</body>
+
+</html>

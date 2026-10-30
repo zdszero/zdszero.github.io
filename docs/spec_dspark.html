@@ -1,0 +1,355 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    投机解码（七）：DSpark，补回块内依赖，按置信度决定验多长
+  </title>
+    <link rel="stylesheet" href="./WikiTheme/theme/bootstrap.css"  />
+        <script defer=""
+        src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+        <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+        </script>
+        <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+        <!-- wiki three-column layout styles/behavior, kept external so the ~5KB
+       block isn't duplicated into every generated page -->
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/wiki-layout.css" />
+  <script defer src="./WikiTheme/wiki-layout.js"></script>
+</head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">投机解码（七）：DSpark，补回块内依赖，按置信度决定验多长</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="wiki-layout">
+    <nav class="wiki-sidebar" id="wiki-sidebar" hidden></nav>
+    <main class="wiki-main">
+            <blockquote>
+            <p>系列总览见 <a
+            href="./speculative_decoding.md">投机解码方案对比</a>。上一篇：<a
+            href="./spec_dflash.html">DFlash</a>。</p>
+            </blockquote>
+            <h3 id="问题并行块的两笔浪费">问题：并行块的两笔浪费</h3>
+            <p>DFlash 把 k 个 token 压进一次 draft
+            前向，但留下了两个问题。DSpark（北京大学与 DeepSeek-AI，<a
+            href="https://arxiv.org/abs/2607.05147">arXiv
+            2607.05147</a>，2026 年 7 月）分别针对它们：</p>
+            <ol type="1">
+            <li><strong>块内各位置互相看不到彼此的取值。</strong>
+            同一次前向里，第 2 位不知道第 1
+            位最后采到了什么。上文之后「of course」和「no
+            problem」都合理时，第 2 位的分布是两种续写的混合，各自取
+            argmax 就可能拼出「of problem」。论文把这叫
+            <strong>multi-modal
+            collision</strong>。它在数据上有体现：DFlash
+            的块内接受率随位置下降，代码任务从 0.87 降到 0.78，对话从
+            0.72 降到 0.63。</li>
+            <li><strong>大负载下 verify 在浪费算力。</strong> 小 batch
+            时 verify 多算几个位置几乎免费；batch 一大，verify
+            开始真实占用算力。给一个第 2 位就大概率出错的请求验满 γ+1
+            个位置，后面那些位置纯属浪费，还拖慢了同 batch
+            的其他请求。</li>
+            </ol>
+            <p>前者是 draft 的质量问题，后者是调度问题。DSpark
+            的两个组件一一对应。</p>
+            <h3 id="insight-一只把前一个-token接回来就够了">insight
+            一：只把「前一个 token」接回来就够了</h3>
+            <p>要解决 collision，最直接的办法是退回自回归
+            draft，但那样就丢掉了并行块的全部好处。论文的观察是：collision
+            主要发生在相邻位置之间，<strong>只看前一个 token</strong>
+            就能消除大部分歧义。而「只看前一个
+            token」的修正不需要模型前向，一个低秩查表就够。</p>
+            <figure>
+            <img src="./WikiImage/spec_dspark_markov.svg"
+            alt="DSpark 的 Markov 头" />
+            <figcaption aria-hidden="true">DSpark 的 Markov
+            头</figcaption>
+            </figure>
+            <p><strong>Markov 头</strong>：块前向照常给出每个位置的基础
+            logits U_k，然后从左到右依次采样，第 k 位加上一个只依赖第
+            k−1 位 token 的偏置：</p>
+            <p><span class="math display">
+            p_k = \text{softmax}\big(U_k + W_1[x_{k-1}]\,W_2\big)
+            </span></p>
+            <p>W₁ 是 V × r 的 embedding 表，W₂ 是 r × V 的投影，r =
+            256。采出 x_k 后再算第 k+1 位的偏置。这 γ
+            步是串行的，但每步只是一次查表和一次 r × V
+            的矩阵乘，延迟开销只有
+            0.2%～1.3%。论文把这种「主体并行、修正串行」的结构称为
+            semi-autoregressive。也试过把一阶马尔可夫换成
+            RNN，收益很小。</p>
+            <h3 id="insight-二draft-知道自己哪里会错">insight 二：draft
+            知道自己哪里会错</h3>
+            <p>要解决 verify
+            浪费，需要事先知道每个请求的每个位置大概会不会被接受。DSpark
+            让 draft 自己预测这件事。</p>
+            <p><strong>置信度头</strong>：每个位置输出 c_k = σ(wᵀ[h_k;
+            W₁[x_{k−1}]])，输入是该位置的 hidden 加上 Markov 头里前一个
+            token 的 embedding。训练目标不是 0/1 的接受标签，而是 draft
+            分布和 target 分布的重合度：</p>
+            <p><span class="math display">
+            c^*_k = 1 - \tfrac{1}{2}\,\lVert p_d - p_t \rVert_1
+            </span></p>
+            <p>这正是拒绝采样下该位置的接受概率（见 <a
+            href="./spec_origins.html">第一篇</a> 的 β）。用 BCE
+            训练。</p>
+            <p><strong>STS
+            校准</strong>：置信度用于调度前还要校准。STS（sequential
+            temperature scaling）从左到右逐位置做温度网格搜索，把 ECE 从
+            3%～8% 降到约
+            1%。不校准不影响正确性，只影响调度的准确度。</p>
+            <h4 id="训练">训练</h4>
+            <p>总损失是 0.1·CE + 0.9·TV + 1.0·conf：CE 是对真实 token
+            的交叉熵，TV 是 draft 与 target
+            分布的总变差（直接优化接受率），conf 是置信度头的 BCE。</p>
+            <h3
+            id="调度按吞吐决定每个请求验多长">调度：按吞吐决定每个请求验多长</h3>
+            <p>有了校准好的置信度，第 r 个请求第 j
+            位的<strong>生存概率</strong>就是前 j
+            位置信度的乘积，即「验到这一位时前面还全对」的概率。调度要回答的是：这一步全
+            batch 一共验多少位置、分给谁。</p>
+            <figure>
+            <img
+            src="./WikiImage/speculative_decoding_block_draft.svg"
+            alt="DFlash 与 DSpark：并行块 draft" />
+            <figcaption aria-hidden="true">DFlash 与 DSpark：并行块
+            draft</figcaption>
+            </figure>
+            <p>论文的目标是最大化吞吐：</p>
+            <p><span class="math display">
+            \Theta = \tau \cdot \text{SPS}(B),\quad B = \sum_r (1 +
+            \ell_r)
+            </span></p>
+            <p>ℓ_r 是第 r 个请求验的 draft 长度，B 是 verify 的总 token
+            数，τ 是预期产出的 token 数（生存概率之和），SPS(B)
+            是「batch 里 B 个 token
+            时每秒能跑几步」，离线测出。多验一个位置，τ
+            增加它的生存概率，SPS 下降一点，两者相乘。</p>
+            <p>求解是贪心：把全 batch
+            所有位置按生存概率从大到小排开，依次接纳，直到 Θ
+            不再上升就停。因为同一请求里生存概率随位置单调不增，接纳出来的必然是每个请求的一段前缀。小负载时
+            SPS 几乎是平的，几乎全验；大负载时 SPS
+            下降得快，只留下高置信的位置。</p>
+            <p>两个工程细节：</p>
+            <ul>
+            <li><strong>无损要求「不偷看」</strong>。调度只能用 draft
+            自己的置信度，不能用 target 的任何信息。论文把它叫 causal
+            barrier：只要验多长的决定不依赖 verify
+            的结果，输出分布就和不投机完全一致。</li>
+            <li><strong>异步</strong>。生产环境里调度和 draft
+            重叠执行，用的是 <strong>2
+            步之前</strong>的置信度，换来调度不在关键路径上。</li>
+            </ul>
+            <h3 id="draft-结构">draft 结构</h3>
+            <p>论文主实验的 draft 基本沿用 DFlash：target 多层特征经 KV
+            注入进入每层，块输入是 anchor 加
+            mask，块内双向注意力；在此之上加 Markov 头和置信度头。</p>
+            <p>DeepSeek V4 线上用的生产 drafter 是 3 层 MoE、带
+            mHC、滑动窗口 128，γ = 5。NVIDIA NeMo 文档里 V4.1 Flash
+            的配置也是 3 层、block 5、<code>target_layer_ids</code> 取
+            [37, 38, 39]、<code>markov_rank</code>
+            256。注意它取的是末尾连续三层，而不是 DFlash
+            那样均匀分布。</p>
+            <h3 id="结果">结果</h3>
+            <ul>
+            <li><strong>离线</strong>：Qwen3-8B GSM8K 上的 τ，EAGLE-3
+            5.30、DFlash 5.33、DSpark 6.17；整体比 DFlash 高 16%～18%，γ
+            越大优势越明显（γ = 15 时 +30%），这正是 collision
+            随块长加剧的反面。</li>
+            <li><strong>线上（DeepSeek V4）</strong>：</li>
+            </ul>
+            <table>
+            <thead>
+            <tr>
+            <th style="text-align: left;"></th>
+            <th style="text-align: left;">中等 SLA 吞吐</th>
+            <th style="text-align: left;">严格 SLA 吞吐</th>
+            <th style="text-align: left;">单用户速度</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td style="text-align: left;">V4-Flash</td>
+            <td style="text-align: left;">+51%</td>
+            <td style="text-align: left;">+661%</td>
+            <td style="text-align: left;">+60%～85%</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">V4-Pro</td>
+            <td style="text-align: left;">+52%</td>
+            <td style="text-align: left;">+406%</td>
+            <td style="text-align: left;">+57%～78%</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>对比基线是 V4 预览版的 MTP-1。严格 SLA
+            那一列，论文的说法是 DSpark
+            扩展了可达的吞吐前沿，所以几百个百分点不能当作同条件下的吞吐倍数来读。低负载时
+            DSpark 的平均 verify 长度约 4～6，而 MTP-1 固定是 2。V4
+            预览版发布两周后，DSpark 替换掉了 MTP-1。</p>
+            <p>局限：draft 总是生成满 γ 个 token，调度只裁剪
+            verify，不裁剪 draft 本身。</p>
+            <h3 id="在-sglang-里">在 SGLang 里</h3>
+            <p><code>DSPARK</code> 是独立算法，worker 是
+            <code>DSparkWorkerV2</code>，组件拆在
+            <code>speculative/dspark_components/</code>
+            下：<code>dspark_draft</code>、<code>dspark_kv_inject</code>、<code>dspark_planner</code>、<code>dspark_sps</code>、<code>dspark_sts</code>、<code>dspark_verify</code>、<code>dspark_block_accept_estimator</code>
+            等；变长 verify 的布局在
+            <code>speculative/ragged_verify.py</code>。</p>
+            <p><strong>draft 模型</strong>有两套：</p>
+            <ul>
+            <li><code>models/dspark.py</code>：<code>DSparkDraftModel</code>
+            继承 <code>DFlashDraftModel</code>，再混入
+            <code>DSparkDraftMixin</code>。Markov
+            头有三种：<code>VanillaMarkov</code>（<code>markov_w1 = Embedding(V, r)</code>、<code>markov_w2 = Linear(r, V)</code>，和论文公式一致）、<code>GatedMarkovHead</code>、<code>RNNHead</code>，后两种还会看
+            hidden。gated 变体论文里没有。<code>run_markov_block</code>
+            就是上面那个逐位置加偏置、采样、再算下一位偏置的循环。<code>DSparkConfidenceHead</code>
+            是一个 <code>Linear(h + r, 1)</code>，推理时按 STS 温度做
+            <code>sigmoid(raw / T)</code>。</li>
+            <li><code>models/deepseek_v4_dspark.py</code>：<code>DeepseekV4ForCausalLMDSpark</code>，对应
+            V4 的生产 drafter，层是 <code>DeepseekV4DecoderLayer</code>
+            的子类，注意力带 sliding window。</li>
+            </ul>
+            <p><strong>调度</strong>在
+            <code>dspark_planner.py</code>：按生存概率排序（<code>compute_sort_survival</code>），结合
+            SPS 表决定总预算，每个请求的 verify 长度落在 [1,
+            γ+1]，至少验 anchor。置信度经一个环形缓冲传递，滞后步数由
+            <code>SGLANG_DSPARK_CONFIDENCE_RELAY_LAG_STEPS</code>
+            控制，默认 2，和论文的异步设计一致；关掉 overlap
+            调度时没有滞后。两张离线表分别由
+            <code>--speculative-dspark-sps-table-path</code> 和
+            <code>--speculative-dspark-confidence-sts-path</code>
+            指定。没有 SPS
+            表时表是平的，「多验一个」永远不吃亏，预算退化成全验。</p>
+            <p><strong>变长 verify</strong> 由
+            <code>SGLANG_RAGGED_VERIFY_MODE</code> 选择：</p>
+            <table>
+            <colgroup>
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th style="text-align: left;">模式</th>
+            <th style="text-align: left;">target 跑多少位置</th>
+            <th style="text-align: left;">效果</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td
+            style="text-align: left;"><code>static</code>（默认）</td>
+            <td style="text-align: left;">全部 γ+1</td>
+            <td style="text-align: left;">不裁剪，CUDA graph
+            形状固定</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;"><code>cap-accept</code></td>
+            <td style="text-align: left;">全部 γ+1</td>
+            <td
+            style="text-align: left;">接受长度截在计划值上，不省计算；能精确统计「不截断时」的接受长度</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;"><code>compact</code></td>
+            <td style="text-align: left;">各请求长度之和，补齐到 graph
+            档位</td>
+            <td style="text-align: left;">真正省掉 verify 计算</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>注意默认的 <code>static</code> 模式不创建预算
+            planner，只用到 Markov 头；要拿到论文里大负载下的收益，需要
+            <code>compact</code> 加 SPS 表。非 <code>static</code>
+            模式要求 checkpoint 带置信度头，否则启动时报错。</p>
+            <p><strong>参数</strong>：γ 依次取
+            <code>--speculative-dspark-block-size</code>、checkpoint
+            里的 block_size，都没有时默认
+            7，<code>num_draft_tokens = γ + 1</code>。只支持 CUDA。和
+            DFlash 不同，DSpark 支持 DP attention（需要
+            <code>--enable-dp-lm-head</code> 或打开 lm_head
+            分片共享），PP &gt; 1 只在 PD 分离下支持。<a
+            href="./kimi_k3_b200.html">Kimi K3 B200</a>
+            的部署用的就是它，包括按窗口分配的 draft KV 池。</p>
+            <h3 id="后续工作">后续工作</h3>
+            <p><strong>PCTree</strong>（<a
+            href="https://arxiv.org/abs/2608.02123">arXiv
+            2608.02123</a>）把 DSpark 的单链变成树：Markov
+            头本来就能给「某个父 token 之下各子
+            token」打分，于是直接用它为每个父节点挑备选子节点，在固定
+            verify 预算里选最可能的路径。不需要重训，也不多跑
+            backbone。Qwen3-4B/8B/14B 上比同配置 DSpark 的加速比高
+            3.1%～29.5%；Qwen3-4B GSM8K、B = 16 时 τ 从 9.41 升到
+            11.16。</p>
+            <h3 id="小结">小结</h3>
+            <p>DSpark
+            承认了并行块的两笔浪费，并各用一个很轻的部件补上：Markov
+            头只把前一个 token 接回块里，以几乎为零的代价消除大部分
+            multi-modal collision，让块可以开得更长；置信度头加 SPS
+            表把「验多长」变成一个按吞吐求解的调度问题，大负载下只验值得验的位置，并通过不偷看
+            target 保持无损。从 Blockwise 一路到这里，draft 越来越懂
+            target，而 DSpark 第一次让 verify 本身也按负载伸缩。</p>
+          </main>
+        <aside class="wiki-toc">
+      <ul>
+      <li><a href="#问题并行块的两笔浪费"
+      id="toc-问题并行块的两笔浪费">问题：并行块的两笔浪费</a></li>
+      <li><a href="#insight-一只把前一个-token接回来就够了"
+      id="toc-insight-一只把前一个-token接回来就够了">insight
+      一：只把「前一个 token」接回来就够了</a></li>
+      <li><a href="#insight-二draft-知道自己哪里会错"
+      id="toc-insight-二draft-知道自己哪里会错">insight 二：draft
+      知道自己哪里会错</a></li>
+      <li><a href="#调度按吞吐决定每个请求验多长"
+      id="toc-调度按吞吐决定每个请求验多长">调度：按吞吐决定每个请求验多长</a></li>
+      <li><a href="#draft-结构" id="toc-draft-结构">draft 结构</a></li>
+      <li><a href="#结果" id="toc-结果">结果</a></li>
+      <li><a href="#在-sglang-里" id="toc-在-sglang-里">在 SGLang
+      里</a></li>
+      <li><a href="#后续工作" id="toc-后续工作">后续工作</a></li>
+      <li><a href="#小结" id="toc-小结">小结</a></li>
+      </ul>
+    </aside>
+      </div>
+</body>
+
+</html>

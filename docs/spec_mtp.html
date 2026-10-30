@@ -1,0 +1,333 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    投机解码（四）：MTP，模型自带的 draft
+  </title>
+    <link rel="stylesheet" href="./WikiTheme/theme/bootstrap.css"  />
+        <script defer=""
+        src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+        <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+        </script>
+        <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+        <!-- wiki three-column layout styles/behavior, kept external so the ~5KB
+       block isn't duplicated into every generated page -->
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/wiki-layout.css" />
+  <script defer src="./WikiTheme/wiki-layout.js"></script>
+</head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">投机解码（四）：MTP，模型自带的
+draft</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="wiki-layout">
+    <nav class="wiki-sidebar" id="wiki-sidebar" hidden></nav>
+    <main class="wiki-main">
+            <blockquote>
+            <p>系列总览见 <a
+            href="./speculative_decoding.md">投机解码方案对比</a>。上一篇：<a
+            href="./spec_medusa_eagle.html">Medusa、EAGLE 与
+            EAGLE-2</a>。</p>
+            </blockquote>
+            <h3 id="问题事后训练的-draft-总差一口气">问题：事后训练的
+            draft 总差一口气</h3>
+            <p>EAGLE 和 Medusa 都是在 target 训练完之后再单独训练
+            draft，数据只有几十万条对话，和 target
+            的预训练语料差了几个数量级。draft 学到的是「target
+            在这些数据上的行为」，换个领域就掉准。</p>
+            <p>如果 target
+            在<strong>预训练时</strong>就顺带学「往后多猜一个
+            token」，draft
+            就能见到全部预训练数据，而且和主干一起收敛。这就是
+            MTP（multi-token
+            prediction）。它最初被当作一种训练目标提出，后来才发现它天然就是一个高质量的
+            draft。</p>
+            <h3
+            id="meta多个并行头训练目标先行">Meta：多个并行头，训练目标先行</h3>
+            <p>Gloeckle 等人（<a
+            href="https://arxiv.org/abs/2404.19737">arXiv
+            2404.19737</a>）的结构是：共享 trunk，上面接 n
+            个<strong>独立</strong>的输出头，每个头是一层
+            transformer，所有头共享 unembedding。为了参数量对齐，加了
+            n−1 个头就从 trunk 里减掉 n−1 层。</p>
+            <p>论文的主要论点是训练收益：13B 模型在 HumanEval 和 MBPP
+            上分别多解了 12% 和 17% 的题（相对值，pass@1
+            14.1→15.8、26.0→30.5），且模型越大收益越明显。推理时这些头可以直接做<strong>自投机解码</strong>：7B、4
+            个头在代码上加速 3.0×，每 3 个提议平均接受 2.5 个。</p>
+            <p>结构上它和 Medusa 一样是并行独立头，第 2 个头看不到第 1
+            个头的输出。</p>
+            <h3
+            id="deepseek-v3串行模块保留因果链">DeepSeek-V3：串行模块，保留因果链</h3>
+            <p>DeepSeek-V3（<a
+            href="https://arxiv.org/abs/2412.19437">arXiv
+            2412.19437</a>）把并行头改成了<strong>串行</strong>：「依次预测额外的
+            token，在每个预测深度上保留完整的因果链」。第 k 个 MTP
+            模块的输入是上一深度的 hidden 和第 i+k 个 token 的
+            embedding：</p>
+            <p><span class="math display">
+            h&#39;^{k}_i = M_k\big[\text{RMSNorm}(h^{k-1}_i);\
+            \text{RMSNorm}(\text{Emb}(t_{i+k}))\big]
+            </span></p>
+            <p>M_k 是 d × 2d 的投影，后面接一个 Transformer
+            block，embedding 和输出头与主模型共享。这和 EAGLE 的 draft
+            几乎是同一个形状：特征加前移一位的 token，过一层，再借
+            target 的
+            lm_head。区别在于它和主干一起预训练，而且那一层就是主干同款的
+            MLA + MoE block。</p>
+            <figure>
+            <img src="./WikiImage/spec_eagle_family_arch.svg"
+            alt="EAGLE、MTP、EAGLE3 的 draft 结构" />
+            <figcaption aria-hidden="true">EAGLE、MTP、EAGLE3 的 draft
+            结构</figcaption>
+            </figure>
+            <p>V3 用 D = 1，即只多预测 1 个 token，损失权重 λ 在前 10T
+            token 取 0.3，后 4.8T 取 0.1。论文消融显示，即使推理时丢掉
+            MTP 模块，它也能提升主模型效果。用作 draft 时，第二个 token
+            的接受率在 85%～90%，TPS 提升 1.8×。</p>
+            <h3
+            id="之后的模型一层预训练多层后训练">之后的模型：一层预训练，多层后训练</h3>
+            <p>DeepSeek 之后，带 MTP
+            层发布成了常见做法，各家的结构都沿用 V3：</p>
+            <table>
+            <colgroup>
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th style="text-align: left;">模型</th>
+            <th style="text-align: left;">MTP 层数</th>
+            <th style="text-align: left;">说明</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td style="text-align: left;">GLM-4.5 / 4.5-Air（<a
+            href="https://arxiv.org/abs/2508.06471">arXiv
+            2508.06471</a>）</td>
+            <td style="text-align: left;">1</td>
+            <td style="text-align: left;">一个 MoE 层作为 MTP 层，λ 0.3
+            → 0.1</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">Qwen3-Next-80B-A3B</td>
+            <td style="text-align: left;">1</td>
+            <td style="text-align: left;">权重里只有
+            <code>mtp.layers.0</code>，结构同
+            DeepSeek；官方称做了训练推理一致的多步训练</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">MiMo-7B（<a
+            href="https://arxiv.org/abs/2505.07608">arXiv
+            2505.07608</a>）</td>
+            <td style="text-align: left;">预训练 1，推理 3</td>
+            <td style="text-align: left;">论文称多层 MTP
+            对预训练没有额外帮助；推理时复制出 2 层再微调，首层接受率约
+            90%，第 3 层仍超过 75%</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">MiMo-V2-Flash（<a
+            href="https://arxiv.org/abs/2601.02780">arXiv
+            2601.02780</a>）</td>
+            <td style="text-align: left;">3</td>
+            <td style="text-align: left;">每层是 SWA（窗口 128）+ dense
+            FFN，0.33B；3 层时接受长度最高 3.6、解码加速 2.6×</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">Step 3.5 Flash（<a
+            href="https://arxiv.org/abs/2602.10604">arXiv
+            2602.10604</a>）</td>
+            <td style="text-align: left;">3</td>
+            <td style="text-align: left;">每层 SWA + dense
+            FFN，主训练只训 MTP-1，MTP-2/3 由它初始化后联合训练</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>一个共同趋势是：<strong>预训练时只训一层，后训练再扩成多层</strong>。原因是多层
+            MTP 对主模型的训练收益不大，但对 draft
+            很有用：只有一层时，第 2、3 步 draft
+            要把同一层递归地用在自己的输出上，输入分布和训练时不一致；每一步一个专门的层就没有这个问题。MiMo-V2-Flash
+            和 Step 3.5 都把 MTP 层做成 SWA + dense FFN，也是为了让
+            draft 便宜：MoE 和全局注意力在 draft 上性价比很低。</p>
+            <h3 id="gemma-4-assistant只读-target-的-kv">Gemma 4
+            assistant：只读 target 的 KV</h3>
+            <p>Google 在 2026 年 5 月给 Gemma 4 发布了 MTP
+            drafter（官方叫 assistant），走了一条不同的路。按 <a
+            href="https://gemma.ai/tutorials/visual-guides/mtp/">Gemma
+            的说明</a>，drafter <strong>cross-attend 到 target
+            已经算好的 KV cache</strong>：复用 target 最后一个 local
+            层的 KV 和最后一个 global 层的 KV。输入是 target
+            末层激活拼上 token embedding 再降维（E2B 上 1536 →
+            256），只在第一轮这样做，之后喂 drafter 自己的激活。E2B 的
+            drafter 约 76M 参数、4 层（3 sliding、1 full），另外用 2048
+            个聚类中心先算粗 logits，再展开 top 聚类，压低 lm_head
+            成本。官方宣称最高 3× 加速。</p>
+            <p>它和 DeepSeek MTP 的根本区别是：draft <strong>没有自己的
+            KV</strong>。上下文全部来自 target 的 KV，draft 层只产生
+            query。 ### 在 SGLang 里</p>
+            <p>MTP 在 SGLang
+            里没有独立的算法，而是分别落到三条路径上。</p>
+            <p><strong>NEXTN：单层 MTP，就是 EAGLE。</strong>
+            <code>--speculative-algorithm NEXTN</code> 在参数解析时被
+            <code>_resolve_speculative_algorithm_alias</code>（<code>arg_groups/speculative_hook.py</code>）改写成
+            <code>EAGLE</code>，所以枚举里根本没有 NEXTN。对
+            DeepSeek、GLM、Bailing 等架构，draft 路径自动指向 target
+            自己的 checkpoint，加载时架构名被改写成
+            <code>DeepseekV3ForCausalLMNextN</code> 之类，只读
+            <code>model.layers.{num_hidden_layers}</code> 这一层。draft
+            模型（<code>models/deepseek_nextn.py</code>）是
+            <code>enorm</code>、<code>hnorm</code>、<code>eh_proj = Linear(2h, h, bias=False)</code>、一个
+            <code>is_nextn=True</code> 的
+            <code>DeepseekV2DecoderLayer</code>，最后
+            <code>shared_head.norm</code> 加共享的
+            head，与论文公式一一对应。默认 (steps 3, topk 1, draft
+            tokens 4)：用一层 MTP 递归走 3
+            步，这正是上文说的「训练推理不一致」，第 2、3
+            步的接受率会明显低于第 1 步。</p>
+            <p><strong>Multi-layer EAGLE：每步一个 MTP 层。</strong>
+            MiMoV2 和 Step3p5 选 EAGLE
+            时，<code>arg_groups/overrides.py</code> 自动打开
+            <code>enable_multi_layer_eagle</code>，worker 换成
+            <code>MultiLayerEagleWorkerV2</code>，每个 MTP 层一个独立的
+            ModelRunner 和 KV。时间分配和普通 EAGLE 相反：draft
+            阶段<strong>不做前向</strong>，只整理上一轮 extend
+            时各层算好的 top-k；extend 阶段依次跑 num_steps
+            次，每层一次。要求 topk = 1。</p>
+            <p><strong>FROZEN_KV_MTP：Gemma 4 assistant。</strong>
+            用户写 NEXTN 或 EAGLE，只要 draft 的架构是
+            <code>Gemma4AssistantForCausalLM</code>，就被提升为
+            <code>FROZEN_KV_MTP</code>（<code>FrozenKVMTPWorkerV2</code>，同样继承
+            <code>EAGLEWorkerV2</code>）。<code>models/gemma4_mtp.py</code>
+            的结构是 <code>pre_projection</code>（2·backbone_h →
+            h）、一个 Gemma4 文本 trunk、<code>post_projection</code>（h
+            → backbone_h）；所有层都标成
+            kv_shared，<code>kv_shared_layer_index</code> 指向 target
+            最后的 sliding / full 层；可选的 centroids head 默认展开 top
+            32 个聚类。</p>
+            <ul>
+            <li>draft 不分配 KV（draft pool 只是一个 64 slot
+            的占位池），前向时也不写 KV。</li>
+            <li>因为没有 draft KV 要对齐，也就<strong>不需要 draft
+            extend</strong>：verify 之后只留下最后一个被接受 token 的
+            target hidden，作为下一轮的种子。每步是 1 次种子前向 +
+            (steps − 1) 次 draft 前向 + 1 次 verify。</li>
+            <li>topk &gt; 1 时要求 triton attention 后端。</li>
+            </ul>
+            <table>
+            <colgroup>
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th style="text-align: left;"></th>
+            <th style="text-align: left;">NEXTN</th>
+            <th style="text-align: left;">Multi-layer EAGLE</th>
+            <th style="text-align: left;">FROZEN_KV_MTP</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td style="text-align: left;">典型模型</td>
+            <td
+            style="text-align: left;">DeepSeek-V3、GLM-4.5、Qwen3-Next</td>
+            <td style="text-align: left;">MiMoV2、Step3p5</td>
+            <td style="text-align: left;">Gemma 4</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">draft 层</td>
+            <td style="text-align: left;">1 层，递归用 steps 次</td>
+            <td style="text-align: left;">每步 1 个专门的层</td>
+            <td style="text-align: left;">assistant 小模型</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">draft KV</td>
+            <td style="text-align: left;">自有</td>
+            <td style="text-align: left;">每层一份</td>
+            <td style="text-align: left;">无，只读 target</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">verify 后</td>
+            <td style="text-align: left;">draft extend</td>
+            <td style="text-align: left;">依次跑各 MTP 层</td>
+            <td style="text-align: left;">只留种子 hidden</td>
+            </tr>
+            </tbody>
+            </table>
+            <h3 id="小结">小结</h3>
+            <p>MTP 把 draft 的训练挪进了预训练：Meta 用并行头证明了多
+            token 预测本身就能提升模型，DeepSeek-V3
+            改成串行模块，结构几乎就是 EAGLE 的
+            draft，但见过全部预训练数据，接受率高。之后的模型普遍「预训练一层、后训练多层」，并把
+            MTP 层做成 SWA + dense FFN 以降低 draft 成本。Gemma 4
+            更进一步，让 draft 直接读 target 的 KV，省掉了 draft 自己的
+            KV 和 extend。不过所有这些 MTP 仍然是串行的：k 个 token 要 k
+            次 draft 前向。另一方面，没有自带 MTP 的模型仍需要外挂
+            draft，这条线的下一步是 <a
+            href="./spec_eagle3.html">EAGLE-3</a>。</p>
+          </main>
+        <aside class="wiki-toc">
+      <ul>
+      <li><a href="#问题事后训练的-draft-总差一口气"
+      id="toc-问题事后训练的-draft-总差一口气">问题：事后训练的 draft
+      总差一口气</a></li>
+      <li><a href="#meta多个并行头训练目标先行"
+      id="toc-meta多个并行头训练目标先行">Meta：多个并行头，训练目标先行</a></li>
+      <li><a href="#deepseek-v3串行模块保留因果链"
+      id="toc-deepseek-v3串行模块保留因果链">DeepSeek-V3：串行模块，保留因果链</a></li>
+      <li><a href="#之后的模型一层预训练多层后训练"
+      id="toc-之后的模型一层预训练多层后训练">之后的模型：一层预训练，多层后训练</a></li>
+      <li><a href="#gemma-4-assistant只读-target-的-kv"
+      id="toc-gemma-4-assistant只读-target-的-kv">Gemma 4
+      assistant：只读 target 的 KV</a></li>
+      <li><a href="#小结" id="toc-小结">小结</a></li>
+      </ul>
+    </aside>
+      </div>
+</body>
+
+</html>
