@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 530" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="880" height="530" rx="12" fill="#ffffff"/>
+  <text x="440" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">DP Attention 下 rank 之间的两类依赖</text>
+  <text x="440" y="56" text-anchor="middle" font-size="13" fill="#868e96">示意 4 个 DP rank（attn_tp = 1），自上而下是一步 decode 的执行顺序</text>
+
+  <!-- rank headers -->
+  <text x="285" y="86" text-anchor="middle" font-size="12" font-weight="700" fill="#495057">rank 0</text>
+  <text x="385" y="86" text-anchor="middle" font-size="12" font-weight="700" fill="#495057">rank 1</text>
+  <text x="485" y="86" text-anchor="middle" font-size="12" font-weight="700" fill="#495057">rank 2</text>
+  <text x="585" y="86" text-anchor="middle" font-size="12" font-weight="700" fill="#495057">rank 3</text>
+
+  <!-- row 0: control sync -->
+  <text x="40" y="116" font-size="12.5" font-weight="700" fill="#e8590c">控制同步</text>
+  <text x="40" y="132" font-size="11" fill="#868e96">每步一次，在 CPU 上</text>
+  <rect x="240" y="98" width="390" height="44" rx="8" fill="#fff4e6" stroke="#ff922b"/>
+  <text x="435" y="117" text-anchor="middle" font-size="12" font-weight="700" fill="#e8590c">交换每个 rank 的 7 个整数</text>
+  <text x="435" y="133" text-anchor="middle" font-size="11" fill="#b26a00">→ 统一 bs、forward mode、谁跑 idle batch</text>
+
+  <!-- row 1: embed -->
+  <text x="40" y="174" font-size="12.5" font-weight="700" fill="#0b7285">embed</text>
+  <text x="40" y="190" font-size="11" fill="#868e96">词表切分，跨 rank 查表</text>
+  <rect x="240" y="156" width="390" height="44" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="435" y="183" text-anchor="middle" font-size="12" fill="#0b7285">gather input_ids → 查本 rank 词表分片 → 合并</text>
+
+  <!-- row 2: attention (local) -->
+  <text x="40" y="232" font-size="12.5" font-weight="700" fill="#3b5bdb">attention</text>
+  <text x="40" y="248" font-size="11" fill="#868e96">只算本地 batch</text>
+  <rect x="240" y="214" width="90" height="44" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="340" y="214" width="90" height="44" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="440" y="214" width="90" height="44" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="540" y="214" width="90" height="44" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="285" y="241" text-anchor="middle" font-size="11.5" fill="#3b5bdb">本地 KV</text>
+  <text x="385" y="241" text-anchor="middle" font-size="11.5" fill="#3b5bdb">本地 KV</text>
+  <text x="485" y="241" text-anchor="middle" font-size="11.5" fill="#3b5bdb">本地 KV</text>
+  <text x="585" y="241" text-anchor="middle" font-size="11.5" fill="#3b5bdb">本地 KV</text>
+
+  <!-- row 3: MoE -->
+  <text x="40" y="290" font-size="12.5" font-weight="700" fill="#0b7285">MoE</text>
+  <text x="40" y="306" font-size="11" fill="#868e96">专家分布在所有 rank</text>
+  <rect x="240" y="272" width="390" height="44" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="435" y="291" text-anchor="middle" font-size="12" font-weight="700" fill="#0b7285">dispatch → 专家 GEMM → combine</text>
+  <text x="435" y="307" text-anchor="middle" font-size="11" fill="#0b7285">每层一次全员同步，最慢的 rank 决定这一层的时间</text>
+
+  <!-- loop bracket for attention + MoE -->
+  <path d="M 640 214 L 652 214 L 652 316 L 640 316" fill="none" stroke="#868e96" stroke-width="1.5"/>
+  <text x="660" y="262" font-size="11.5" font-weight="700" fill="#495057">× N 层</text>
+  <text x="660" y="278" font-size="10.5" fill="#868e96">K3：92 层 MoE</text>
+
+  <!-- row 4: lm_head -->
+  <text x="40" y="348" font-size="12.5" font-weight="700" fill="#0b7285">lm_head</text>
+  <text x="40" y="364" font-size="11" fill="#868e96">词表切分，跨 rank 算 logits</text>
+  <rect x="240" y="330" width="390" height="44" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="435" y="357" text-anchor="middle" font-size="12" fill="#0b7285">gather hidden → 算本 rank 词表分片 → 发回 logits</text>
+
+  <!-- row 5: sample (local) -->
+  <text x="40" y="406" font-size="12.5" font-weight="700" fill="#3b5bdb">sample / verify</text>
+  <text x="40" y="422" font-size="11" fill="#868e96">只处理本地请求</text>
+  <rect x="240" y="388" width="90" height="44" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="340" y="388" width="90" height="44" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="440" y="388" width="90" height="44" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="540" y="388" width="90" height="44" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="285" y="415" text-anchor="middle" font-size="11.5" fill="#3b5bdb">本地</text>
+  <text x="385" y="415" text-anchor="middle" font-size="11.5" fill="#3b5bdb">本地</text>
+  <text x="485" y="415" text-anchor="middle" font-size="11.5" fill="#3b5bdb">本地</text>
+  <text x="585" y="415" text-anchor="middle" font-size="11.5" fill="#3b5bdb">本地</text>
+
+  <!-- legend -->
+  <rect x="40" y="446" width="14" height="14" rx="3" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="60" y="457" font-size="11.5" fill="#495057">本地计算，不通信</text>
+  <rect x="230" y="446" width="14" height="14" rx="3" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="250" y="457" font-size="11.5" fill="#495057">数据依赖：全员参加的 collective</text>
+  <rect x="490" y="446" width="14" height="14" rx="3" fill="#fff4e6" stroke="#ff922b"/>
+  <text x="510" y="457" font-size="11.5" fill="#495057">控制依赖：定下 collective 的参与者和 size</text>
+
+  <!-- note strip -->
+  <rect x="40" y="474" width="800" height="42" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="440" y="492" text-anchor="middle" font-size="12" fill="#495057">数据依赖决定所有 rank 必须一起走完每一层；控制依赖决定它们在出发前先对齐 shape。</text>
+  <text x="440" y="508" text-anchor="middle" font-size="12" fill="#495057">NCCL、DeepEP buffer 和 cuda graph 都要求 launch 之前就知道 size，所以对齐只能在 forward 之前单独做。</text>
+</svg>

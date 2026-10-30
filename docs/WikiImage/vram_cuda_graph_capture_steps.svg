@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 470" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="920" height="470" rx="12" fill="#ffffff"/>
+  <text x="460" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">capture 时每一步吃掉多少显存</text>
+  <text x="460" y="56" text-anchor="middle" font-size="13" fill="#868e96">Kimi K3 decode，TP0 启动日志里相邻两次 avail_mem 之差，GiB；档位从大到小捕获</text>
+
+  <!-- legend -->
+  <g font-size="11" fill="#495057">
+    <rect x="232" y="70" width="12" height="10" rx="2" fill="#f1f3f5" stroke="#adb5bd"/>
+    <text x="250" y="79">静态 buffer</text>
+    <rect x="340" y="70" width="12" height="10" rx="2" fill="#edf2ff" stroke="#4c6ef5"/>
+    <text x="358" y="79">最大一档</text>
+    <rect x="432" y="70" width="12" height="10" rx="2" fill="#e6fcf5" stroke="#0ca678"/>
+    <text x="450" y="79">其余每档</text>
+    <rect x="524" y="70" width="12" height="10" rx="2" fill="#f3f0ff" stroke="#7048e8"/>
+    <text x="542" y="79">draft graph（整组）</text>
+  </g>
+
+  <!-- panel headers -->
+  <text x="80" y="108" font-size="14" font-weight="700" fill="#0b7285">A · DP16</text>
+  <text x="80" y="124" font-size="10.5" fill="#868e96">target verify：bs 24 → 1，6 档，每请求 6 token</text>
+  <text x="510" y="108" font-size="14" font-weight="700" fill="#5f3dc4">B · DP2 × DCP8</text>
+  <text x="510" y="124" font-size="10.5" fill="#868e96">target verify：bs 192 → 8，23 档，每请求 5 token</text>
+
+  <!-- grid: baseline 380, 18 px / GiB -->
+  <g stroke="#e9ecef" stroke-width="1">
+    <path d="M76 344 L450 344"/><path d="M76 308 L450 308"/><path d="M76 272 L450 272"/>
+    <path d="M76 236 L450 236"/><path d="M76 200 L450 200"/>
+    <path d="M506 344 L890 344"/><path d="M506 308 L890 308"/><path d="M506 272 L890 272"/>
+    <path d="M506 236 L890 236"/><path d="M506 200 L890 200"/>
+  </g>
+  <g stroke="#adb5bd" stroke-width="1.2">
+    <path d="M76 380 L450 380"/><path d="M506 380 L890 380"/>
+  </g>
+  <g font-size="10" fill="#868e96" text-anchor="end">
+    <text x="70" y="383">0</text><text x="70" y="347">2</text><text x="70" y="311">4</text>
+    <text x="70" y="275">6</text><text x="70" y="239">8</text><text x="70" y="203">10</text>
+    <text x="500" y="383">0</text><text x="500" y="347">2</text><text x="500" y="311">4</text>
+    <text x="500" y="275">6</text><text x="500" y="239">8</text><text x="500" y="203">10</text>
+  </g>
+
+  <!-- A columns -->
+  <rect x="80" y="376.76" width="30" height="3.24" fill="#f1f3f5" stroke="#adb5bd"/>
+  <rect x="125" y="250.94" width="44" height="129.06" fill="#edf2ff" stroke="#4c6ef5"/>
+  <g fill="#e6fcf5" stroke="#0ca678">
+    <rect x="185" y="378" width="18" height="2"/><rect x="210" y="378" width="18" height="2"/>
+    <rect x="235" y="378" width="18" height="2"/><rect x="260" y="378" width="18" height="2"/>
+    <rect x="285" y="378" width="18" height="2"/>
+  </g>
+  <rect x="330" y="369.92" width="44" height="10.08" fill="#f3f0ff" stroke="#7048e8"/>
+
+  <!-- B columns -->
+  <rect x="510" y="356.06" width="30" height="23.94" fill="#f1f3f5" stroke="#adb5bd"/>
+  <rect x="555" y="195.68" width="44" height="184.32" fill="#edf2ff" stroke="#4c6ef5"/>
+  <g fill="#e6fcf5" stroke="#0ca678" stroke-width="0.8">
+    <rect x="612" y="373.34" width="5" height="6.66"/>
+    <rect x="620" y="378" width="5" height="2"/><rect x="628" y="378" width="5" height="2"/>
+    <rect x="636" y="378" width="5" height="2"/><rect x="644" y="378" width="5" height="2"/>
+    <rect x="652" y="378" width="5" height="2"/><rect x="660" y="378" width="5" height="2"/>
+    <rect x="668" y="378" width="5" height="2"/><rect x="676" y="378" width="5" height="2"/>
+    <rect x="684" y="378" width="5" height="2"/><rect x="692" y="378" width="5" height="2"/>
+    <rect x="700" y="378" width="5" height="2"/><rect x="708" y="378" width="5" height="2"/>
+    <rect x="716" y="378" width="5" height="2"/><rect x="724" y="378" width="5" height="2"/>
+    <rect x="732" y="378" width="5" height="2"/><rect x="740" y="378" width="5" height="2"/>
+    <rect x="748" y="378" width="5" height="2"/><rect x="756" y="378" width="5" height="2"/>
+    <rect x="764" y="378" width="5" height="2"/><rect x="772" y="378" width="5" height="2"/>
+    <rect x="780" y="378" width="5" height="2"/>
+  </g>
+  <rect x="810" y="361.28" width="44" height="18.72" fill="#f3f0ff" stroke="#7048e8"/>
+
+  <!-- value labels -->
+  <g font-size="11" font-weight="700" text-anchor="middle" fill="#495057">
+    <text x="95" y="370">0.18</text>
+    <text x="147" y="244" fill="#3b5bdb">7.17</text>
+    <text x="244" y="370" fill="#0b7285">0.23</text>
+    <text x="352" y="363" fill="#5f3dc4">0.56</text>
+    <text x="525" y="350">1.33</text>
+    <text x="577" y="189" fill="#3b5bdb">10.24</text>
+    <text x="698" y="366" fill="#0b7285">1.35</text>
+    <text x="832" y="355" fill="#5f3dc4">1.04</text>
+  </g>
+  <g font-size="10" fill="#3b5bdb" text-anchor="middle">
+    <text x="147" y="320">最大一档</text>
+    <text x="577" y="320">最大一档</text>
+  </g>
+  <g font-size="10" fill="#868e96" text-anchor="start">
+    <text x="612" y="346">bs 184 留 0.37，其后每档约 0.05</text>
+  </g>
+
+  <!-- x labels -->
+  <g font-size="10.5" fill="#495057" text-anchor="middle">
+    <text x="95" y="396">静态</text><text x="147" y="396">bs 24</text>
+    <text x="244" y="396">其余 5 档</text><text x="352" y="396">draft</text>
+    <text x="525" y="396">静态</text><text x="577" y="396">bs 192</text>
+    <text x="698" y="396">其余 22 档</text><text x="832" y="396">draft</text>
+  </g>
+  <g font-size="11" fill="#212529" text-anchor="middle">
+    <text x="263" y="414">target 7.58 + draft 0.56 = <tspan font-weight="700">8.14 GiB</tspan></text>
+    <text x="698" y="414">target 12.92 + draft 1.04 = <tspan font-weight="700">13.96 GiB</tspan></text>
+  </g>
+
+  <!-- note strip -->
+  <rect x="24" y="424" width="872" height="32" rx="8" fill="#f8f9fa"/>
+  <text x="460" y="444" text-anchor="middle" font-size="11.5" fill="#495057">DP2 多捕获 17 档，档位增量只多 1.1 GiB。两边差的 5.8 GiB 里，最大一档 +3.1，静态 buffer +1.2，draft +0.5。</text>
+</svg>

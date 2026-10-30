@@ -26,6 +26,7 @@
 | [显存预算与统计口径](./vram_budget.md) | 启动时从总显存推导 KV 容量；`allocated`/`reserved`/NVML 各统计什么；逻辑用途与物理分配 |
 | [常驻显存：权重与 KV Cache](./vram_persistent.md) | 权重分片的字节账；不同 attention 架构每 token 的 KV 字节 |
 | [运行时显存：激活、Workspace 与峰值](./vram_runtime.md) | 激活与 workspace 的区别；Prefill/Decode 峰值；CUDA Graph 对峰值的影响 |
+| [CUDA Graph 显存：怎么算、怎么测](./vram_cuda_graph.md) | graph 显存的三层拆分；与 batch 无关的 MoE 固定项；从启动日志读出每一项 |
 | [通信与传输显存](./vram_communication.md) | NCCL、custom all-reduce、DeepEP buffer；PD 分离的注册内存 |
 
 ## 2. 从显存生命周期理解

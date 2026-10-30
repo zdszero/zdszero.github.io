@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 470" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#868e96"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="880" height="470" rx="12" fill="#ffffff"/>
+  <text x="440" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">一步 decode 的时间线：控制同步藏在上一步的 GPU 执行里</text>
+  <text x="440" y="56" text-anchor="middle" font-size="13" fill="#868e96">overlap scheduler 开启时（默认），同一个 rank 的 CPU 和 GPU 两条线</text>
+
+  <!-- lane labels -->
+  <text x="40" y="112" font-size="13" font-weight="700" fill="#495057">CPU</text>
+  <text x="40" y="128" font-size="11" fill="#868e96">scheduler</text>
+  <text x="40" y="192" font-size="13" font-weight="700" fill="#495057">GPU</text>
+  <text x="40" y="208" font-size="11" fill="#868e96">forward</text>
+
+  <!-- GPU lane -->
+  <rect x="130" y="176" width="350" height="44" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="305" y="197" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0b7285">step N 的 forward</text>
+  <text x="305" y="212" text-anchor="middle" font-size="11" fill="#0b7285">embed → 层 × N（MoE 全员同步）→ lm_head</text>
+  <rect x="484" y="176" width="356" height="44" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="662" y="197" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0b7285">step N+1 的 forward</text>
+  <text x="662" y="212" text-anchor="middle" font-size="11" fill="#0b7285">replay bs = 对齐后的 graph bs</text>
+
+  <!-- CPU lane boxes -->
+  <rect x="130" y="96" width="110" height="44" rx="8" fill="#f8f9fa" stroke="#dee2e6"/>
+  <text x="185" y="116" text-anchor="middle" font-size="11.5" fill="#495057">处理 step N-1</text>
+  <text x="185" y="131" text-anchor="middle" font-size="11.5" fill="#495057">的结果</text>
+  <rect x="248" y="96" width="90" height="44" rx="8" fill="#f8f9fa" stroke="#dee2e6"/>
+  <text x="293" y="116" text-anchor="middle" font-size="11.5" fill="#495057">选本地</text>
+  <text x="293" y="131" text-anchor="middle" font-size="11.5" fill="#495057">batch</text>
+  <rect x="346" y="96" width="110" height="44" rx="8" fill="#fff4e6" stroke="#ff922b"/>
+  <text x="401" y="116" text-anchor="middle" font-size="12" font-weight="700" fill="#e8590c">控制同步</text>
+  <text x="401" y="131" text-anchor="middle" font-size="11" fill="#b26a00">gloo, 16 rank</text>
+  <rect x="464" y="96" width="70" height="44" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="499" y="116" text-anchor="middle" font-size="11.5" fill="#3b5bdb">launch</text>
+  <text x="499" y="131" text-anchor="middle" font-size="11.5" fill="#3b5bdb">graph</text>
+  <path d="M 499 140 L 499 172" fill="none" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+
+  <!-- bracket: sync overlapped with GPU step N -->
+  <path d="M 346 150 L 346 158 L 456 158 L 456 150" fill="none" stroke="#e8590c" stroke-width="1.5"/>
+  <text x="401" y="171" text-anchor="middle" font-size="10.5" fill="#e8590c">与 step N 并行</text>
+  <text x="560" y="116" font-size="11.5" fill="#495057">CPU 等 GPU，再处理 step N 的结果……</text>
+  <text x="560" y="132" font-size="11" fill="#868e96">只要 CPU 一轮比 GPU 一步短，同步就不在关键路径上</text>
+
+  <!-- lower half: two ways to reach agreement -->
+  <line x1="40" y1="246" x2="840" y2="246" stroke="#e9ecef" stroke-width="1.5"/>
+  <text x="40" y="272" font-size="14" font-weight="700" fill="#212529">共识的两种来源（4 个 rank，本地请求数 5 / 8 / 3 / 7）</text>
+
+  <!-- option A -->
+  <rect x="40" y="286" width="390" height="118" rx="10" fill="#fff4e6" stroke="#ff922b"/>
+  <text x="56" y="308" font-size="12.5" font-weight="700" fill="#e8590c">A · 默认：每步 all-gather</text>
+  <text x="56" y="328" font-family="monospace" font-size="12" fill="#495057">global_num_tokens = [5, 8, 3, 7]</text>
+  <text x="56" y="348" font-family="monospace" font-size="12" fill="#495057">graph bs = max → 8</text>
+  <text x="56" y="372" font-size="11.5" fill="#495057">按最忙的 rank padding，跟着负载走</text>
+  <text x="56" y="390" font-size="11" fill="#868e96">代价：每步一次跨节点 CPU 通信（实测约 3 ms）</text>
+
+  <!-- option B -->
+  <rect x="450" y="286" width="390" height="118" rx="10" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="466" y="308" font-size="12.5" font-weight="700" fill="#5f3dc4">B · SKIP_ALL_GATHER + STATIC_SYNC_BOUND=24</text>
+  <text x="466" y="328" font-family="monospace" font-size="12" fill="#495057">global_num_tokens = [24, 24, 24, 24]</text>
+  <text x="466" y="348" font-family="monospace" font-size="12" fill="#495057">graph bs = 24（每一步都是）</text>
+  <text x="466" y="372" font-size="11.5" fill="#495057">约定一个常量，不用通信也一致</text>
+  <text x="466" y="390" font-size="11" fill="#868e96">代价：负载低时也按 24 计算和通信</text>
+
+  <!-- note strip -->
+  <rect x="40" y="418" width="800" height="40" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="440" y="436" text-anchor="middle" font-size="12" fill="#495057">两种方式都会 padding，差别是 pad 到多少。MoE 每层本来就要等最慢的 rank，</text>
+  <text x="440" y="452" text-anchor="middle" font-size="12" fill="#495057">所以 A 的 padding 几乎不增加延迟；B 在所有 rank 都低于 24 时吃亏。</text>
+</svg>

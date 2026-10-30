@@ -24,7 +24,73 @@
     DP
   </title>
     <link rel="stylesheet" href="./WikiTheme/theme/bootstrap.css"  />
-          <!-- wiki three-column layout styles/behavior, kept external so the ~5KB
+        <style type="text/css">
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+      <!-- wiki three-column layout styles/behavior, kept external so the ~5KB
        block isn't duplicated into every generated page -->
   <link rel="stylesheet" type="text/css" href="./WikiTheme/wiki-layout.css" />
   <script defer src="./WikiTheme/wiki-layout.js"></script>
@@ -153,6 +219,382 @@
             <li>是否会额外 ReduceScatter 的通信（后面是正常 MoE 还是
             FusedMoE）</li>
             </ul>
+            <h2 id="dp-attention-下-rank-之间的依赖">DP Attention 下
+            rank 之间的依赖</h2>
+            <h3
+            id="问题名义上独立的-dp-rank为什么每步都要互相等">问题：名义上独立的
+            DP rank，为什么每步都要互相等</h3>
+            <p>开了 DP attention 之后，每个 DP rank 有自己的
+            scheduler、自己的请求和自己的 KV cache，看起来像 N
+            个独立实例。但模型只有 attention 是按 DP
+            切开的，MoE、切分过的词表这些部分仍然跨 rank 共享。一步
+            forward 里，所有 rank 要一起参加上百次 collective。</p>
+            <p>这就带来两个问题：</p>
+            <ul>
+            <li>某个 rank 这一步没有请求，它能不能直接跳过这一步？</li>
+            <li>各 rank 的 batch 大小不同时，collective 的 buffer
+            应该开多大，每个 rank 的数据写在什么位置？</li>
+            </ul>
+            <p>两个问题的答案都依赖其他 rank 的状态，而每个 rank 的
+            scheduler 只知道自己的。</p>
+            <h3
+            id="抽象数据依赖和控制依赖">抽象：数据依赖和控制依赖</h3>
+            <p>rank 之间的依赖可以分成两类。</p>
+            <p><strong>数据依赖</strong>是计算本身需要的：本 rank 的
+            token 要用到其他 rank 上的权重。以 Kimi K3 decode DP16
+            为例：</p>
+            <table>
+            <colgroup>
+            <col style="width: 50%" />
+            <col style="width: 50%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th style="text-align: left;">环节</th>
+            <th style="text-align: left;">跨 rank 做什么</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td style="text-align: left;">embed（词表按
+            <code>SGLANG_VOCAB_TP_SIZE</code> 切分）</td>
+            <td style="text-align: left;">每个 rank
+            只存一段词表，要替其他 rank 查表</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">每个 MoE 层</td>
+            <td style="text-align: left;">专家分布在所有 rank 上，token
+            要 dispatch 出去，算完再 combine 回来</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">lm_head（词表切分）</td>
+            <td style="text-align: left;">收集其他 rank 的 hidden，算本
+            rank 那段词表的 logits，再发回去</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">attention、sample、spec
+            verify</td>
+            <td style="text-align: left;">只处理本地请求，不通信</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>数据依赖的结果是：所有 rank 必须一起走完每一层，每个 MoE
+            层都要等最慢的 rank 到齐。一个 rank
+            即使没有请求，也得跑一个空的 idle batch 去参加
+            collective，否则其他 rank 会卡住。</p>
+            <p><strong>控制依赖</strong>是为了让这些 collective
+            能正确执行。所有 rank 在 launch 之前要对三件事达成一致：</p>
+            <ol type="1">
+            <li><strong>谁参加。</strong> 没有请求的 rank 要补一个 idle
+            batch。</li>
+            <li><strong>跑什么模式。</strong> decode、extend、idle 的
+            kernel 序列和 collective 序列不同，必须统一；是否走 cuda
+            graph 也要统一，只要有一个 rank 不能走 graph，所有 rank
+            都不走。</li>
+            <li><strong>shape 多大。</strong> NCCL collective 要求每个
+            rank 贡献的长度相同；gather 到 buffer 时每个 rank 的 offset
+            等于前面 rank 的 token 数之和；cuda graph 在 capture
+            时就固定了 shape，所有 rank 必须 replay 同一个 bs 的
+            graph。</li>
+            </ol>
+            <p>关键在于：这些 size 必须在 kernel launch 之前确定，不能在
+            forward 里边算边商量。所以控制依赖要在 forward
+            之前单独解决一次，这就是 scheduler 每步做的「MLP
+            sync」。它交换的不是激活，只是每个 rank 的几个整数。</p>
+            <figure>
+            <img
+            src="./WikiImage/data_parallelism_dp_dependencies.svg"
+            alt="DP Attention 下 rank 之间的两类依赖" />
+            <figcaption aria-hidden="true">DP Attention 下 rank
+            之间的两类依赖</figcaption>
+            </figure>
+            <h3 id="整体流程一步-decode-里的控制同步">整体流程：一步
+            decode 里的控制同步</h3>
+            <p>每个 rank 的 scheduler 选好本地 batch 后，把 7
+            个整数放进一个小 tensor，在所有 rank 之间做一次
+            all-gather：</p>
+            <pre><code>num_tokens, num_tokens_for_logprob, can_cuda_graph,
+is_extend_in_batch, can_run_tbo, forward_mode, can_run_breakable_cuda_graph</code></pre>
+            <p>收到所有 rank 的数据后，每个 rank
+            用同样的规则各自推导，得到相同的结论：</p>
+            <ul>
+            <li><code>global_num_tokens</code>：每个 rank
+            的请求数列表。后面的 DP gather、dense MLP、词表切分的 embed
+            和 lm_head、DSpark 的 row 布局都按它来算 buffer 长度和
+            offset。</li>
+            <li>graph bs：取
+            <code>max(global_num_tokens)</code>，再向上取到最近一档
+            capture 过的 bs。</li>
+            <li><code>can_cuda_graph</code>：所有 rank 取 min。</li>
+            <li><code>need_idle_batch</code>：只要有任何一个 rank 有
+            token，没有请求的 rank 就补 idle batch。</li>
+            </ul>
+            <p>decode 阶段 <code>global_num_tokens</code>
+            里是请求数，进入 forward 后再乘上每个请求的 token
+            数（投机解码时是 draft + 1），换算成 token 数。</p>
+            <p>这次通信的代价取决于它在不在关键路径上。开了 overlap
+            scheduler（默认）时，它走的是 CPU 上的 gloo 通信组，不走
+            NCCL。原因是 GPU 这时还在跑上一步，如果用
+            NCCL，它就得排在上一步的 kernel 后面。所以这次同步和上一步的
+            GPU 执行是并行的。</p>
+            <p>在 K3 decode DP2（16 个 rank 跨 2 个节点）的 trace
+            里，<code>prepare_mlp_sync_batch</code> 每步中位数 3.07
+            ms、p90 3.35 ms，但 GPU 在相邻两步之间的空闲是 0。只要 CPU
+            一轮的总耗时小于 GPU 一步的时间，这 3 ms
+            就被完全藏住。它会暴露出来的情况是：关掉 overlap
+            schedule、GPU 一步很短导致 CPU 成为瓶颈，或者 gloo
+            出现长尾。</p>
+            <figure>
+            <img
+            src="./WikiImage/data_parallelism_dp_step_timeline.svg"
+            alt="一步 decode 的时间线" />
+            <figcaption aria-hidden="true">一步 decode
+            的时间线</figcaption>
+            </figure>
+            <h3
+            id="跳过同步用约定代替通信">跳过同步：用约定代替通信</h3>
+            <p>如果不想要这次通信，也可以让所有 rank
+            事先约定一个常量。<code>SGLANG_SCHEDULER_SKIP_ALL_GATHER=1</code>
+            跳过 all-gather，<code>SGLANG_DP_STATIC_SYNC_BOUND=B</code>
+            让每个 rank 都假设所有 rank 的请求数都是 B，于是
+            <code>global_num_tokens = [B] * dp_size</code>，offset 就是
+            <code>rank * B</code>，不需要通信也能算出相同的布局。</p>
+            <p>这两个开关必须一起用。只开 <code>SKIP_ALL_GATHER</code>
+            不设 bound 时，<code>global_num_tokens</code> 里只有本 rank
+            自己的数，这是给 DWDP（各 rank 完全独立运行）用的模式；DP
+            attention 下各 rank 的布局会对不上，词表切分的 embed
+            会直接报错，collective 的 size 不一致还可能导致 hang。</p>
+            <p>两种方式都会 padding，差别是 pad 到多少：</p>
+            <table>
+            <colgroup>
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th style="text-align: left;"></th>
+            <th style="text-align: left;">默认 all-gather</th>
+            <th style="text-align: left;">SKIP_ALL_GATHER +
+            STATIC_SYNC_BOUND</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td style="text-align: left;">共识从哪来</td>
+            <td style="text-align: left;">每步交换一次</td>
+            <td style="text-align: left;">启动时约定的常量</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">padding 到</td>
+            <td style="text-align: left;">当步所有 rank 的最大值</td>
+            <td style="text-align: left;">永远是 B</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">每步开销</td>
+            <td style="text-align: left;">一次跨节点 CPU 通信，通常被
+            overlap 藏住</td>
+            <td style="text-align: left;">没有</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">负载低时</td>
+            <td style="text-align: left;">跟着变小</td>
+            <td style="text-align: left;">仍按 B 计算和通信</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">限制</td>
+            <td style="text-align: left;">无</td>
+            <td style="text-align: left;">B ≥ 每个 rank
+            可能的最大请求数，否则 scheduler 报错；所有 rank
+            每步必须处于同一 forward mode，因为模式不再被同步</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>因为每个 MoE 层本来就要等最慢的 rank，默认方式 pad
+            到最大值几乎不增加延迟。静态 bound 只在所有 rank 都低于 B
+            时吃亏。K3 decode DP16 的启动脚本设了
+            <code>B = 24</code>，结果每 rank bs 4、8、24 的三份 profile
+            墙钟都在 136~138 ms，trace 里 KDA 和 MLA kernel 的 grid
+            也完全相同，都是按 24 跑的。详见 <a
+            href="./kimi_k3_decode_dp16_vs_dp2.html">K3 Decode：DP16 vs
+            DP2×DCP8</a>。</p>
+            <h3 id="源码定位">源码定位</h3>
+            <p>路径相对 <code>python/sglang/srt/</code>：</p>
+            <ul>
+            <li><code>managers/scheduler_components/dp_attn.py</code>
+            <ul>
+            <li><code>prepare_mlp_sync_batch_raw()</code>：一步同步的入口，决定用哪个通信组、是否跳过
+            all-gather、是否补 idle batch。</li>
+            <li><code>MLPSyncBatchInfo.all_gather()</code>：打包 7
+            个整数并 all-gather，推导出
+            <code>global_num_tokens</code>、<code>can_cuda_graph</code>
+            等。</li>
+            <li><code>_fill_static_sync_values()</code>：静态 bound
+            路径，用 <code>[bound] * dp_size</code> 代替通信结果。</li>
+            </ul></li>
+            <li><code>environ.py</code>：<code>SGLANG_SCHEDULER_SKIP_ALL_GATHER</code>、<code>SGLANG_DP_STATIC_SYNC_BOUND</code>
+            的定义和注释。</li>
+            <li><code>layers/dp_attention.py</code>：<code>get_dp_padding_mode()</code>
+            根据 <code>global_num_tokens</code> 选择 MAX_LEN（每个 rank
+            都 pad 到最大值）或 SUM_LEN（紧凑排布）的 gather 布局；cuda
+            graph 内固定用 MAX_LEN。</li>
+            <li><code>model_executor/runner/decode_cuda_graph_runner.py</code>：graph
+            bs 取
+            <code>max(original_global_num_tokens_cpu)</code>。</li>
+            <li><code>speculative/spec_info.py</code>：<code>spec_scale_global_num_tokens()</code>
+            把请求数换算成 token 数。</li>
+            </ul>
+            <p>每层 attention 和 MLP 之间具体怎么 gather 和 scatter，见
+            <a href="./communicator.html">Communicator</a>。</p>
+            <h3 id="小结">小结</h3>
+            <p>DP attention 让 attention 部分各 rank 独立，但 MoE
+            和词表切分把所有 rank 绑在每一层上，这是数据依赖。为了让这些
+            collective 能用固定的 shape 和 cuda graph 执行，所有 rank
+            在每步 forward 前必须对参与者、模式和 size
+            达成一致，这是控制依赖。默认实现每步交换几个整数来达成一致，代价通常被
+            overlap scheduler 藏住；静态 bound
+            用约定代替通信，省掉这次同步，代价是负载低时也按上限计算。</p>
+            <h2
+            id="fake-dp一个入口下的多组独立模型副本">Fake-DP：一个入口下的多组独立模型副本</h2>
+            <p>SGLang 当前仓库中的 <code>--fake-dp N</code>（字段名
+            <code>fake_dp_size</code>，默认 1）表示：在同一个
+            DataParallelController / HTTP 服务入口后面，启动 N
+            组独立模型实例。<strong><code>--fake-dp 2</code>
+            就是两组完整模型副本，每组可以再用 TP / CP / EP 组织自己的
+            GPU。</strong> “完整”指每组 GPU 合起来包含完整模型，而非每张
+            GPU 都保存完整权重。</p>
+            <p>这里的 fake 指外层用 controller 做类似 DP
+            的请求分发，内部保持独立实例的执行方式；模型副本和 GPU
+            资源分配都是真实的。</p>
+            <h3 id="部署示例8-卡运行两套-tp4">部署示例：8 卡运行两套
+            TP4</h3>
+            <p>单机、PP=1、默认连续 GPU 编号时：</p>
+            <div class="sourceCode" id="cb2"><pre
+            class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">--fake-dp</span> 2 <span class="at">--tp-size</span> 4</span></code></pre></div>
+            <pre class="text"><code>                    一个 HTTP 服务入口
+                            │
+                   DataParallelController
+                      请求分发 / 路由
+                      ┌─────┴─────┐
+                      ▼           ▼
+                 Replica 0    Replica 1
+                 GPU 0～3     GPU 4～7
+                 完整模型 A    完整模型 B
+                 独立 TP4     独立 TP4
+                 独立 KV      独立 KV</code></pre>
+            <p>两组会分别加载模型权重，分别维护 scheduler、batch、GPU KV
+            cache 和通信组。两组之间不进行模型 forward 的
+            collective。一个请求通常路由到其中一组，由该组执行；该请求不会因为
+            fake-DP=2 自动使用全部 8 张 GPU。PD 分离部署时，Prefill 与
+            Decode 各自仍按其部署拓扑执行和传输 KV。</p>
+            <p>在上述 PP=1 场景，总 GPU 数为
+            <code>fake_dp_size × tp_size</code>。每个 TP4
+            副本都必须独立容纳完整模型及运行资源，不能依靠另一个副本补足权重或显存。若每组同时配置
+            CP4 / EP4，这些通常是在同一组 4
+            张卡上组织不同算子的并行维度，不是再将 GPU 数乘以 4 和
+            4。</p>
+            <h3 id="与-dp-attention-的区别">与 DP-attention 的区别</h3>
+            <table>
+            <colgroup>
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>项目</th>
+            <th>Fake-DP，例如 fake-DP2 × TP4</th>
+            <th>DP-attention，例如全局 TP8 / attention DP2</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>模型组织</td>
+            <td>两组完整且独立的模型副本</td>
+            <td>同一全局模型通信世界中划分 attention DP 组</td>
+            </tr>
+            <tr>
+            <td>内部 DP</td>
+            <td>预期每个副本使用实际 DP=1 的路径</td>
+            <td>attention 按配置划分 DP 组</td>
+            </tr>
+            <tr>
+            <td>通信范围</td>
+            <td>TP / CP / EP 各自在副本内部</td>
+            <td>attention 分组执行；MoE 等部分仍可能跨 attention DP
+            组通信</td>
+            </tr>
+            <tr>
+            <td>调度与 GPU KV</td>
+            <td>每个副本独立维护</td>
+            <td>随 attention DP 组及算子布局组织</td>
+            </tr>
+            <tr>
+            <td>请求分发</td>
+            <td>外层 controller 选择一个副本</td>
+            <td>controller 向相应 DP worker 分发</td>
+            </tr>
+            <tr>
+            <td>主要用途</td>
+            <td>多副本扩容，同时保留单实例执行路径</td>
+            <td>调整 attention 与 MoE 等模块的并行布局、计算和 KV
+            冗余</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>这里比较的是 <strong>fake-DP 与开启 DP-attention
+            的部署</strong>；普通 DP
+            多副本本身也可以是独立实例，不能把所有
+            <code>--dp-size</code> 用法都理解为同一个全局通信世界。</p>
+            <p>Fake-DP 的配置意图是保持实际 <code>dp_size=1</code>，由
+            <code>fake_dp_size</code> 决定外层副本数。它不是把
+            <code>--fake-dp 2</code> 和 <code>--dp-size 2</code>
+            相乘得到四组副本；当前 controller
+            使用两者的最大值计算副本数。评估该功能时，应按其预期独立副本配置使用。</p>
+            <h3 id="启动和请求路由">启动和请求路由</h3>
+            <p>启动时，engine 发现 <code>fake_dp_size &gt; 1</code>
+            后创建 DataParallelController。controller
+            走独立副本启动路径，为每组分配独立的分布式通信端口和 GPU
+            区间，再分别启动组内 scheduler
+            进程、加载模型。对外仍共用服务入口和 tokenizer / detokenizer
+            IPC 通道。</p>
+            <p>请求分发取决于负载均衡配置，可以轮询、按请求数或 token
+            负载选择副本。在 PD 分离的
+            <code>follow_bootstrap_room</code> 模式下，controller 按
+            <code>bootstrap_room % 副本数</code> 选择目标，以匹配 KV
+            bootstrap 的副本路由。当前 fake-DP 路径会忽略外部
+            <code>routed_dp_rank</code> 的直接指定，避免外部默认 rank=0
+            导致所有请求都落到副本 0。</p>
+            <p>GPU KV 池彼此独立；如果启用 AttentionStore
+            等外部缓存，仍可能复用同一外部缓存服务或命名空间。当前实现用副本
+            dp_id 区分注册信息，因此“独立 GPU
+            KV”不代表外部缓存服务也必须部署两套。</p>
+            <h3 id="性能含义">性能含义</h3>
+            <p>Fake-DP
+            提供多组模型并行服务的能力，主要影响总吞吐、请求排队和并发容量。它不会直接把一个请求分摊给两个副本，也不能保证吞吐线性翻倍。是否优于单组
+            TP8，取决于 TP4 的单组执行效率、模型能否装下、KV
+            容量、请求负载和路由均衡。</p>
+            <p>例如 TP4 能装下模型且单组效率较高时，两组 TP4 可能比单组
+            TP8 更适合处理大量独立请求；若权重或运行资源必须使用 8
+            卡才能容纳，则不能用两组 TP4 替代。</p>
+            <h3 id="源码定位-1">源码定位</h3>
+            <p>以上基于分析时的本地仓库实现：</p>
+            <ul>
+            <li><code>python/sglang/srt/arg_groups/fields/parallel.py</code>：<code>fake_dp_size</code>
+            定义与 <code>--fake-dp</code> 别名。</li>
+            <li><code>python/sglang/srt/entrypoints/engine.py</code>：<code>_launch_scheduler_processes()</code>
+            判断是否创建 controller。</li>
+            <li><code>python/sglang/srt/managers/data_parallel_controller.py</code>：副本数计算、<code>launch_dp_schedulers()</code>、GPU
+            分配和请求分发。</li>
+            <li><code>python/sglang/srt/disaggregation/common/conn.py</code>：对外公布
+            fake-DP 副本数，供 KV bootstrap 路由使用。</li>
+            <li><code>python/sglang/srt/managers/scheduler.py</code>：AttentionStore
+            注册时使用 controller 分配的副本 dp_id。</li>
+            </ul>
+            <p>相关概念：<a href="./tensor_parallelism.md">TP</a>、<a
+            href="./expert_parallelism.md">EP</a>、<a
+            href="./disaggregation.md">PD 分离</a>、<a
+            href="./kv_cache_size.html">KV Cache</a>。</p>
           </main>
         <aside class="wiki-toc">
       <ul>
@@ -163,6 +605,36 @@
       <li><a href="#不同-attention-冗余显存分析"
       id="toc-不同-attention-冗余显存分析">不同 Attention
       冗余显存分析</a></li>
+      </ul></li>
+      <li><a href="#dp-attention-下-rank-之间的依赖"
+      id="toc-dp-attention-下-rank-之间的依赖">DP Attention 下 rank
+      之间的依赖</a>
+      <ul>
+      <li><a href="#问题名义上独立的-dp-rank为什么每步都要互相等"
+      id="toc-问题名义上独立的-dp-rank为什么每步都要互相等">问题：名义上独立的
+      DP rank，为什么每步都要互相等</a></li>
+      <li><a href="#抽象数据依赖和控制依赖"
+      id="toc-抽象数据依赖和控制依赖">抽象：数据依赖和控制依赖</a></li>
+      <li><a href="#整体流程一步-decode-里的控制同步"
+      id="toc-整体流程一步-decode-里的控制同步">整体流程：一步 decode
+      里的控制同步</a></li>
+      <li><a href="#跳过同步用约定代替通信"
+      id="toc-跳过同步用约定代替通信">跳过同步：用约定代替通信</a></li>
+      <li><a href="#源码定位" id="toc-源码定位">源码定位</a></li>
+      <li><a href="#小结" id="toc-小结">小结</a></li>
+      </ul></li>
+      <li><a href="#fake-dp一个入口下的多组独立模型副本"
+      id="toc-fake-dp一个入口下的多组独立模型副本">Fake-DP：一个入口下的多组独立模型副本</a>
+      <ul>
+      <li><a href="#部署示例8-卡运行两套-tp4"
+      id="toc-部署示例8-卡运行两套-tp4">部署示例：8 卡运行两套
+      TP4</a></li>
+      <li><a href="#与-dp-attention-的区别"
+      id="toc-与-dp-attention-的区别">与 DP-attention 的区别</a></li>
+      <li><a href="#启动和请求路由"
+      id="toc-启动和请求路由">启动和请求路由</a></li>
+      <li><a href="#性能含义" id="toc-性能含义">性能含义</a></li>
+      <li><a href="#源码定位-1" id="toc-源码定位-1">源码定位</a></li>
       </ul></li>
       </ul>
     </aside>

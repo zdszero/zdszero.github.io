@@ -1,0 +1,1594 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    Kimi K3 Decode：DP16 vs DP2 × DCP8
+  </title>
+    <link rel="stylesheet" href="./WikiTheme/theme/bootstrap.css"  />
+          <!-- wiki three-column layout styles/behavior, kept external so the ~5KB
+       block isn't duplicated into every generated page -->
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/wiki-layout.css" />
+  <script defer src="./WikiTheme/wiki-layout.js"></script>
+</head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">Kimi K3 Decode：DP16 vs DP2 ×
+DCP8</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="wiki-layout">
+    <nav class="wiki-sidebar" id="wiki-sidebar" hidden></nav>
+    <main class="wiki-main">
+            <p><a href="./kimi_k3_b200.html">Kimi K3 B200</a>
+            里介绍了两套 decode 部署：A 是 DP16（每卡一个完整 attention
+            副本），B 是 DP2 × DCP8（一台机器 8 卡合成一个 attention
+            组）。本文用同一组 2 机 16 卡 B200 的 benchmark、100k
+            上下文下的 trace
+            和启动日志，把两者在<strong>计算</strong>和<strong>显存</strong>上逐项对齐，回答三个问题：同样的实例并发下谁快，为什么并发越低
+            DP16 越吃亏，以及 DP16 每卡多出来的 KV 和 SSM
+            状态池是从哪些固定开销里省出来的。</p>
+            <p>本文的 DP16
+            数据来自调整后的配置：<code>--speculative-dspark-block-size</code>
+            从 5 改成 4（每请求每步验证 5 个 token，与 DP2
+            相同），并关掉了 <code>SGLANG_DP_STATIC_SYNC_BOUND=24</code>
+            和
+            <code>SGLANG_SCHEDULER_SKIP_ALL_GATHER=1</code>。旧配置下每个
+            rank 都按 bs 24 的形状跑，100k 上下文时 bs 1 ~ 8
+            的步时间都是约 132.6 ms；现在 bs 1 降到 83.5 ms。</p>
+            <h3 id="性能大图">性能大图</h3>
+            <p><code>est_throughput</code> 按固定接受长度 3.5
+            估算（<code>bs × dp × 3.5 / generation_time</code>），两边每步验证的
+            token 数相同，所以它只反映步时间。</p>
+            <h4 id="dp2dcp8">dp2dcp8</h4>
+            <table style="width:99%;">
+            <colgroup>
+            <col style="width: 16%" />
+            <col style="width: 16%" />
+            <col style="width: 16%" />
+            <col style="width: 16%" />
+            <col style="width: 16%" />
+            <col style="width: 16%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th style="text-align: left;">ctx</th>
+            <th style="text-align: left;">bs/dp</th>
+            <th style="text-align: left;">bs*dp</th>
+            <th style="text-align: left;">est_throughput (tok/s)</th>
+            <th style="text-align: left;">generation_time (ms)</th>
+            <th style="text-align: left;">tpot (ms)</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td style="text-align: left;">100k</td>
+            <td style="text-align: left;">16</td>
+            <td style="text-align: left;">32</td>
+            <td style="text-align: left;">2189.87</td>
+            <td style="text-align: left;">51.10</td>
+            <td style="text-align: left;">14.60</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">100k</td>
+            <td style="text-align: left;">32</td>
+            <td style="text-align: left;">64</td>
+            <td style="text-align: left;">3741.62</td>
+            <td style="text-align: left;">59.90</td>
+            <td style="text-align: left;">17.10</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">100k</td>
+            <td style="text-align: left;">48</td>
+            <td style="text-align: left;">96</td>
+            <td style="text-align: left;">4948.12</td>
+            <td style="text-align: left;">67.90</td>
+            <td style="text-align: left;">19.40</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">100k</td>
+            <td style="text-align: left;">64</td>
+            <td style="text-align: left;">128</td>
+            <td style="text-align: left;">5848.60</td>
+            <td style="text-align: left;">76.60</td>
+            <td style="text-align: left;">21.90</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">100k</td>
+            <td style="text-align: left;">80</td>
+            <td style="text-align: left;">160</td>
+            <td style="text-align: left;">6539.74</td>
+            <td style="text-align: left;">85.60</td>
+            <td style="text-align: left;">24.50</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">100k</td>
+            <td style="text-align: left;">96</td>
+            <td style="text-align: left;">192</td>
+            <td style="text-align: left;">6776.56</td>
+            <td style="text-align: left;">99.20</td>
+            <td style="text-align: left;">28.30</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">100k</td>
+            <td style="text-align: left;">112</td>
+            <td style="text-align: left;">224</td>
+            <td style="text-align: left;">7294.46</td>
+            <td style="text-align: left;">107.50</td>
+            <td style="text-align: left;">30.70</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">100k</td>
+            <td style="text-align: left;">128</td>
+            <td style="text-align: left;">256</td>
+            <td style="text-align: left;">7601.14</td>
+            <td style="text-align: left;">117.90</td>
+            <td style="text-align: left;">33.70</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">100k</td>
+            <td style="text-align: left;">144</td>
+            <td style="text-align: left;">288</td>
+            <td style="text-align: left;">8191.12</td>
+            <td style="text-align: left;">123.10</td>
+            <td style="text-align: left;">35.20</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">100k</td>
+            <td style="text-align: left;">160</td>
+            <td style="text-align: left;">320</td>
+            <td style="text-align: left;">8386.50</td>
+            <td style="text-align: left;">133.50</td>
+            <td style="text-align: left;">38.20</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">100k</td>
+            <td style="text-align: left;">176</td>
+            <td style="text-align: left;">352</td>
+            <td style="text-align: left;">8761.52</td>
+            <td style="text-align: left;">140.60</td>
+            <td style="text-align: left;">40.20</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">100k</td>
+            <td style="text-align: left;">192</td>
+            <td style="text-align: left;">384</td>
+            <td style="text-align: left;">9083.68</td>
+            <td style="text-align: left;">148.00</td>
+            <td style="text-align: left;">42.30</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">200k</td>
+            <td style="text-align: left;">16</td>
+            <td style="text-align: left;">32</td>
+            <td style="text-align: left;">2060.64</td>
+            <td style="text-align: left;">54.40</td>
+            <td style="text-align: left;">15.50</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">200k</td>
+            <td style="text-align: left;">32</td>
+            <td style="text-align: left;">64</td>
+            <td style="text-align: left;">3433.92</td>
+            <td style="text-align: left;">65.20</td>
+            <td style="text-align: left;">18.60</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">200k</td>
+            <td style="text-align: left;">48</td>
+            <td style="text-align: left;">96</td>
+            <td style="text-align: left;">4457.74</td>
+            <td style="text-align: left;">75.40</td>
+            <td style="text-align: left;">21.50</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">200k</td>
+            <td style="text-align: left;">64</td>
+            <td style="text-align: left;">128</td>
+            <td style="text-align: left;">5222.48</td>
+            <td style="text-align: left;">85.80</td>
+            <td style="text-align: left;">24.50</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">200k</td>
+            <td style="text-align: left;">80</td>
+            <td style="text-align: left;">160</td>
+            <td style="text-align: left;">5774.07</td>
+            <td style="text-align: left;">97.00</td>
+            <td style="text-align: left;">27.70</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">200k</td>
+            <td style="text-align: left;">96</td>
+            <td style="text-align: left;">192</td>
+            <td style="text-align: left;">5967.03</td>
+            <td style="text-align: left;">112.60</td>
+            <td style="text-align: left;">32.20</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">400k</td>
+            <td style="text-align: left;">16</td>
+            <td style="text-align: left;">32</td>
+            <td style="text-align: left;">1823.94</td>
+            <td style="text-align: left;">61.40</td>
+            <td style="text-align: left;">17.50</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">400k</td>
+            <td style="text-align: left;">32</td>
+            <td style="text-align: left;">64</td>
+            <td style="text-align: left;">2906.99</td>
+            <td style="text-align: left;">77.10</td>
+            <td style="text-align: left;">22.00</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">400k</td>
+            <td style="text-align: left;">48</td>
+            <td style="text-align: left;">96</td>
+            <td style="text-align: left;">3707.79</td>
+            <td style="text-align: left;">90.60</td>
+            <td style="text-align: left;">25.90</td>
+            </tr>
+            </tbody>
+            </table>
+            <h4 id="dp16">dp16</h4>
+            <table style="width:99%;">
+            <colgroup>
+            <col style="width: 16%" />
+            <col style="width: 16%" />
+            <col style="width: 16%" />
+            <col style="width: 16%" />
+            <col style="width: 16%" />
+            <col style="width: 16%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th style="text-align: left;">ctx</th>
+            <th style="text-align: left;">bs/dp</th>
+            <th style="text-align: left;">bs*dp</th>
+            <th style="text-align: left;">est_throughput (tok/s)</th>
+            <th style="text-align: left;">generation_time (ms)</th>
+            <th style="text-align: left;">tpot (ms)</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td style="text-align: left;">100k</td>
+            <td style="text-align: left;">1</td>
+            <td style="text-align: left;">16</td>
+            <td style="text-align: left;">670.39</td>
+            <td style="text-align: left;">83.50</td>
+            <td style="text-align: left;">23.90</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">100k</td>
+            <td style="text-align: left;">4</td>
+            <td style="text-align: left;">64</td>
+            <td style="text-align: left;">2614.65</td>
+            <td style="text-align: left;">85.70</td>
+            <td style="text-align: left;">24.50</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">100k</td>
+            <td style="text-align: left;">8</td>
+            <td style="text-align: left;">128</td>
+            <td style="text-align: left;">4539.85</td>
+            <td style="text-align: left;">98.70</td>
+            <td style="text-align: left;">28.20</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">100k</td>
+            <td style="text-align: left;">12</td>
+            <td style="text-align: left;">192</td>
+            <td style="text-align: left;">6099.59</td>
+            <td style="text-align: left;">110.20</td>
+            <td style="text-align: left;">31.50</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">100k</td>
+            <td style="text-align: left;">16</td>
+            <td style="text-align: left;">256</td>
+            <td style="text-align: left;">7091.10</td>
+            <td style="text-align: left;">126.40</td>
+            <td style="text-align: left;">36.10</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">100k</td>
+            <td style="text-align: left;">20</td>
+            <td style="text-align: left;">320</td>
+            <td style="text-align: left;">7847.50</td>
+            <td style="text-align: left;">142.70</td>
+            <td style="text-align: left;">40.80</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">100k</td>
+            <td style="text-align: left;">24</td>
+            <td style="text-align: left;">384</td>
+            <td style="text-align: left;">9302.64</td>
+            <td style="text-align: left;">144.50</td>
+            <td style="text-align: left;">41.30</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">200k</td>
+            <td style="text-align: left;">1</td>
+            <td style="text-align: left;">16</td>
+            <td style="text-align: left;">667.80</td>
+            <td style="text-align: left;">83.90</td>
+            <td style="text-align: left;">24.00</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">200k</td>
+            <td style="text-align: left;">4</td>
+            <td style="text-align: left;">64</td>
+            <td style="text-align: left;">2503.76</td>
+            <td style="text-align: left;">89.50</td>
+            <td style="text-align: left;">25.60</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">200k</td>
+            <td style="text-align: left;">8</td>
+            <td style="text-align: left;">128</td>
+            <td style="text-align: left;">3976.07</td>
+            <td style="text-align: left;">112.70</td>
+            <td style="text-align: left;">32.20</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">200k</td>
+            <td style="text-align: left;">12</td>
+            <td style="text-align: left;">192</td>
+            <td style="text-align: left;">5404.33</td>
+            <td style="text-align: left;">124.30</td>
+            <td style="text-align: left;">35.50</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">400k</td>
+            <td style="text-align: left;">1</td>
+            <td style="text-align: left;">16</td>
+            <td style="text-align: left;">659.63</td>
+            <td style="text-align: left;">84.90</td>
+            <td style="text-align: left;">24.30</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">400k</td>
+            <td style="text-align: left;">4</td>
+            <td style="text-align: left;">64</td>
+            <td style="text-align: left;">2283.40</td>
+            <td style="text-align: left;">98.10</td>
+            <td style="text-align: left;">28.00</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>DP16 只捕获了 <code>1 2 4 8 16 24</code> 这几档 CUDA
+            graph，bs 12 和 bs 20 分别跑 bs 16 和 bs 24 的图，所以 bs 20
+            的步时间（142.7 ms）几乎和 bs 24（144.5 ms）一样。</p>
+            <h3 id="问题同样-16-张卡同样的并发按什么切">问题：同样 16
+            张卡、同样的并发，按什么切</h3>
+            <p>两套部署的专家侧完全相同：EP16，每卡 1/16
+            的路由专家，DeepEP low-latency + deep_gemm masked
+            GEMM。差别只在 attention 侧怎么分请求：</p>
+            <ul>
+            <li><strong>DP16</strong>：16 个 rank 各自独占 1/16
+            的请求。一个请求的 KDA state、MLA KV 都在一张卡上，attention
+            没有任何 TP 通信。</li>
+            <li><strong>DP2 × DCP8</strong>：每台机器的 8
+            张卡共同服务一半的请求。KDA 按 head 切（每卡 12 / 96 个
+            head），MLA latent KV 按 token 交错切（slot <code>p</code>
+            归 rank <code>p % 8</code>）。</li>
+            </ul>
+            <p>直觉上两种说法都成立：「DP16 没有 attention
+            通信，应该更快」，「DP2 的 attention 权重天然只有
+            1/8，应该更省显存」。把 100k
+            上下文下相同实例并发的步时间放在一起：</p>
+            <table style="width:99%;">
+            <colgroup>
+            <col style="width: 16%" />
+            <col style="width: 16%" />
+            <col style="width: 16%" />
+            <col style="width: 16%" />
+            <col style="width: 16%" />
+            <col style="width: 16%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th style="text-align: right;">实例并发</th>
+            <th style="text-align: right;">DP16 bs/dp</th>
+            <th style="text-align: right;">DP2 bs/dp</th>
+            <th style="text-align: right;">DP16 步时间 (ms)</th>
+            <th style="text-align: right;">DP2 步时间 (ms)</th>
+            <th style="text-align: right;">DP16 吞吐 / DP2</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td style="text-align: right;">64</td>
+            <td style="text-align: right;">4</td>
+            <td style="text-align: right;">32</td>
+            <td style="text-align: right;">85.7</td>
+            <td style="text-align: right;">59.9</td>
+            <td style="text-align: right;">0.70</td>
+            </tr>
+            <tr>
+            <td style="text-align: right;">128</td>
+            <td style="text-align: right;">8</td>
+            <td style="text-align: right;">64</td>
+            <td style="text-align: right;">98.7</td>
+            <td style="text-align: right;">76.6</td>
+            <td style="text-align: right;">0.78</td>
+            </tr>
+            <tr>
+            <td style="text-align: right;">192</td>
+            <td style="text-align: right;">12</td>
+            <td style="text-align: right;">96</td>
+            <td style="text-align: right;">110.2</td>
+            <td style="text-align: right;">99.2</td>
+            <td style="text-align: right;">0.90</td>
+            </tr>
+            <tr>
+            <td style="text-align: right;">256</td>
+            <td style="text-align: right;">16</td>
+            <td style="text-align: right;">128</td>
+            <td style="text-align: right;">126.4</td>
+            <td style="text-align: right;">117.9</td>
+            <td style="text-align: right;">0.93</td>
+            </tr>
+            <tr>
+            <td style="text-align: right;">320</td>
+            <td style="text-align: right;">20</td>
+            <td style="text-align: right;">160</td>
+            <td style="text-align: right;">142.7</td>
+            <td style="text-align: right;">133.5</td>
+            <td style="text-align: right;">0.94</td>
+            </tr>
+            <tr>
+            <td style="text-align: right;">384</td>
+            <td style="text-align: right;">24</td>
+            <td style="text-align: right;">192</td>
+            <td style="text-align: right;">144.5</td>
+            <td style="text-align: right;">148.0</td>
+            <td style="text-align: right;">1.02</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>步时间是 benchmark 的
+            <code>generation_time</code>。200k、400k
+            上趋势相同：实例并发 64 时 DP16 的吞吐是 DP2 的 0.73 和
+            0.79。显存上，DP16 每卡 MLA KV 池 41.1 GiB，DP2 是 34.6
+            GiB，实例 KV 容量 51.1 M 对 43.0 M token，DP16 多 19%。</p>
+            <p>所以两条直觉都只对一半。DP16 只有在每卡跑满 24
+            个请求时才追平并略快于 DP2，并发越低差得越多，bs 1
+            时一步也要 83.5 ms，而 DP2 在实例并发 32 时只要 51.1
+            ms。DP16 的权重常驻并不比 DP2 多多少，KV
+            反而更多。要解释这些，不能只看「谁有通信、谁有副本」，要看一张卡在一步里实际读写了多少字节、其中哪些随并发增长、哪些是固定的，以及哪些通信落在关键路径上。</p>
+            <h3
+            id="抽象状态守恒权重不守恒通信换了位置">抽象：状态守恒，权重不守恒，通信换了位置</h3>
+            <p>decode 每步的主要开销是读
+            HBM。把一张卡每步要碰的数据分成两类，两种布局的差别就清楚了：</p>
+            <p><strong>跟请求走的状态，总量守恒，随并发增长。</strong>
+            KDA state 的大小是「请求数 × head 数」，实例并发 256 时 DP16
+            每卡 16 个请求 × 96 个 head，DP2 每卡 128 个请求 × 12 个
+            head，乘积相同。MLA KV 是「请求数 × token 数」，DP16 每卡 16
+            个请求 × 全部 token，DP2 每卡 128 个请求 × 1/8 的
+            token，乘积也相同。无论怎么切，16
+            张卡合起来要存、要读的都是全部请求的状态，平均到每卡一样多。</p>
+            <p><strong>跟模型走的非专家权重，总量不守恒，也不随并发变化。</strong>
+            DP16 的每张卡都要用完整的 KDA / MLA 投影、shared expert 和
+            latent 投影去乘自己那几个请求。weight shard
+            只解决了「存」（每卡存 1/8 行），没有解决「读」：每层前都要
+            AllGather 回完整权重，再完整读一遍。DP2 的 attention 投影按
+            head 切，每卡只读 1/8；只有 SP-MoE 段（latent 投影、shared
+            expert）在 1/8 行上跑
+            TP1，仍需要完整权重。这部分开销每步都一样，bs 1 和 bs 24
+            付的一样多。</p>
+            <p><strong>通信换了位置，没有消失。</strong> DP16
+            把通信换成了权重
+            AllGather，它与本层计算无关，可以在侧流上提前一层发起；但它的量也是固定的，本层计算太短时就藏不住。DP2
+            的通信是激活上的 reduce-scatter / all-gather /
+            all-to-all，结果是下一个 kernel
+            的输入，落在关键路径上，量随行数增长。</p>
+            <figure>
+            <img src="./WikiImage/kimi_k3_dp16_vs_dp2_ledger.svg"
+            alt="一张卡每步要碰的数据：状态守恒，权重不守恒" />
+            <figcaption
+            aria-hidden="true">一张卡每步要碰的数据：状态守恒，权重不守恒</figcaption>
+            </figure>
+            <p>按这个框架估一张卡每步的 HBM 读写（100k 上下文，实例并发
+            256）：</p>
+            <table>
+            <colgroup>
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th style="text-align: left;">每卡每步</th>
+            <th style="text-align: right;">A · DP16</th>
+            <th style="text-align: right;">B · DP2 × DCP8</th>
+            <th style="text-align: left;">来源</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td style="text-align: left;">路由专家权重读</td>
+            <td style="text-align: right;">≈ 85 GB</td>
+            <td style="text-align: right;">≈ 85 GB</td>
+            <td style="text-align: left;">EP16 相同；w13 + w2 的 MBU ×
+            时间</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">KDA state 读 + 写</td>
+            <td style="text-align: right;">2 × 6.9 GB</td>
+            <td style="text-align: right;">2 × 6.9 GB</td>
+            <td style="text-align: left;">69 层 × 96 head × 128 × 128 ×
+            fp32，每请求 0.43 GB，× 16 个完整请求</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">MLA KV 读</td>
+            <td style="text-align: right;">≈ 22.6 GB</td>
+            <td style="text-align: right;">≈ 22.6 GB</td>
+            <td style="text-align: left;">24 层 × 576 B × 100k token ×
+            16 个完整请求</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">非专家权重读</td>
+            <td style="text-align: right;">≈ 55 GB</td>
+            <td style="text-align: right;">≈ 22 GB</td>
+            <td style="text-align: left;">由 trace 里 AllGather 的 PtoP
+            字节反推</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">权重 AllGather 写入</td>
+            <td style="text-align: right;">48.4 GB</td>
+            <td style="text-align: right;">14.8 GB</td>
+            <td style="text-align: left;">trace 中每步
+            <code>Memcpy PtoP</code> 字节，bs 4 ~ 24 不变</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">关键路径上的激活通信</td>
+            <td style="text-align: right;">≈ 4.6 ms</td>
+            <td style="text-align: right;">≈ 17.7 ms</td>
+            <td style="text-align: left;">见「通信」一节</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>前三行完全相同，并随并发线性增长；后三行是两边各自的代价。DP16
+            每步多读写约 66 GB 权重，这是一笔与 bs 无关的固定开销；DP2
+            每步多约 13 ms 的关键路径通信，它随行数增长（DP2 bs 64 时约
+            6.5 ms）。并发低时，前三行小，DP16 的固定开销占比大，于是
+            DP16 慢得多；并发高时，DP2
+            的激活通信跟着行数涨上来，两边在每卡 24 个请求附近打平。</p>
+            <h3
+            id="计算一步的时间按层类型拆开">计算：一步的时间按层类型拆开</h3>
+            <p>用 perfmap-pro 的 <code>analyze.py</code> 按 Kimi K3 的
+            block
+            标注（<code>annotations/sgl_b_k3_decode_dp16.json</code> /
+            <code>sgl_b_k3_decode.json</code>）切开一步
+            decode，按层类型汇总 kernel 时间。取 100k
+            上下文下两个实例并发点，单位 ms：</p>
+            <table style="width:99%;">
+            <colgroup>
+            <col style="width: 14%" />
+            <col style="width: 14%" />
+            <col style="width: 14%" />
+            <col style="width: 14%" />
+            <col style="width: 14%" />
+            <col style="width: 14%" />
+            <col style="width: 14%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th style="text-align: left;">层类型</th>
+            <th style="text-align: right;">DP16 bs 8</th>
+            <th style="text-align: right;">DP2 bs 64</th>
+            <th style="text-align: right;">差</th>
+            <th style="text-align: right;">DP16 bs 16</th>
+            <th style="text-align: right;">DP2 bs 128</th>
+            <th style="text-align: right;">差</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td style="text-align: left;">实例并发</td>
+            <td style="text-align: right;">128</td>
+            <td style="text-align: right;">128</td>
+            <td style="text-align: right;"></td>
+            <td style="text-align: right;">256</td>
+            <td style="text-align: right;">256</td>
+            <td style="text-align: right;"></td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">KDA × 68</td>
+            <td style="text-align: right;">17.4</td>
+            <td style="text-align: right;">9.6</td>
+            <td style="text-align: right;">+7.8</td>
+            <td style="text-align: right;">21.9</td>
+            <td style="text-align: right;">18.5</td>
+            <td style="text-align: right;">+3.4</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">MLA × 24</td>
+            <td style="text-align: right;">18.8</td>
+            <td style="text-align: right;">16.5</td>
+            <td style="text-align: right;">+2.3</td>
+            <td style="text-align: right;">33.7</td>
+            <td style="text-align: right;">29.0</td>
+            <td style="text-align: right;">+4.7</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">MoE × 92</td>
+            <td style="text-align: right;">59.4</td>
+            <td style="text-align: right;">56.6</td>
+            <td style="text-align: right;">+2.9</td>
+            <td style="text-align: right;">73.4</td>
+            <td style="text-align: right;">73.3</td>
+            <td style="text-align: right;">+0.1</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">Dense × 1 + 首尾</td>
+            <td style="text-align: right;">5.5</td>
+            <td style="text-align: right;">4.5</td>
+            <td style="text-align: right;">+1.0</td>
+            <td style="text-align: right;">7.6</td>
+            <td style="text-align: right;">7.2</td>
+            <td style="text-align: right;">+0.4</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">kernel 合计</td>
+            <td style="text-align: right;">101.2</td>
+            <td style="text-align: right;">87.1</td>
+            <td style="text-align: right;">+14.1</td>
+            <td style="text-align: right;">136.6</td>
+            <td style="text-align: right;">128.0</td>
+            <td style="text-align: right;">+8.6</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">非 AllGather kernel
+            的并集</td>
+            <td style="text-align: right;">90.7</td>
+            <td style="text-align: right;">76.3</td>
+            <td style="text-align: right;">+14.4</td>
+            <td style="text-align: right;">122.6</td>
+            <td style="text-align: right;">117.6</td>
+            <td style="text-align: right;">+5.0</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">只有 AllGather 在跑</td>
+            <td style="text-align: right;">5.8</td>
+            <td style="text-align: right;">0.2</td>
+            <td style="text-align: right;">+5.6</td>
+            <td style="text-align: right;">3.2</td>
+            <td style="text-align: right;">0.5</td>
+            <td style="text-align: right;">+2.7</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">GPU 全空</td>
+            <td style="text-align: right;">3.6</td>
+            <td style="text-align: right;">1.1</td>
+            <td style="text-align: right;">+2.5</td>
+            <td style="text-align: right;">1.3</td>
+            <td style="text-align: right;">1.2</td>
+            <td style="text-align: right;">+0.1</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">trace 一步墙钟</td>
+            <td style="text-align: right;">100.1</td>
+            <td style="text-align: right;">77.6</td>
+            <td style="text-align: right;">+22.5</td>
+            <td style="text-align: right;">127.1</td>
+            <td style="text-align: right;">119.3</td>
+            <td style="text-align: right;">+7.8</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">benchmark
+            <code>generation_time</code></td>
+            <td style="text-align: right;">98.7</td>
+            <td style="text-align: right;">76.6</td>
+            <td style="text-align: right;">+22.1</td>
+            <td style="text-align: right;">126.4</td>
+            <td style="text-align: right;">117.9</td>
+            <td style="text-align: right;">+8.5</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>kernel
+            合计含多流重叠，所以比墙钟大。下面四行把墙钟拆成互不重叠的三段：除权重
+            AllGather（<code>Memcpy PtoP</code>）外任意 kernel
+            在跑的时间、只有 AllGather 在跑的时间、GPU
+            上什么都没跑的时间。trace 的墙钟和 benchmark 的
+            <code>generation_time</code> 相差不到 1.5
+            ms，可以直接对照。</p>
+            <p>两个并发点上 DP16 慢的原因不同：</p>
+            <ul>
+            <li><strong>实例并发 128</strong>：差的 22.5 ms 里，KDA
+            的固定权重开销占 7.8 ms，「只有 AllGather 在跑」和「GPU
+            全空」占 8.1 ms。后者是 DP16 侧流上的权重 AllGather
+            跑到了关键路径上，见「通信」一节。</li>
+            <li><strong>实例并发 256</strong>：AllGather
+            基本藏住了，差的 7.8 ms 主要来自 MLA（+4.7）和
+            KDA（+3.4）。MLA 的差值来自 kernel 的 wave
+            量化，见下文。</li>
+            </ul>
+            <figure>
+            <img
+            src="./WikiImage/kimi_k3_dp16_vs_dp2_step_time.svg"
+            alt="一步 decode 的时间按层类型拆开" />
+            <figcaption aria-hidden="true">一步 decode
+            的时间按层类型拆开</figcaption>
+            </figure>
+            <h4
+            id="kda投影读完整权重是固定开销state-kernel-慢-1.46-倍">KDA：投影读完整权重是固定开销，state
+            kernel 慢 1.46 倍</h4>
+            <p>DP16 每层的投影都乘完整权重。以 <code>kda_qkv_proj</code>
+            为例，实例并发 256 时 DP16 是 M = 80（16 请求 × 5）乘完整的
+            36864 × 7168 FP8 权重，主 GEMM 67.2 us，MBU 52%；DP2 是 M =
+            640（128 × 5）乘 1/8 的权重，28.6 us，MFU
+            44%。<code>kda_o_proj</code> 同理（30.6 对 11.2 us）。DP16
+            每层还有一次约 33 us 的 <code>memcpy128</code>，这是
+            AllGather 中本 rank 那 1/8
+            的本地拷贝，落在主流上。这些读权重的开销与 bs 无关：DP16 的
+            KDA 投影加本地拷贝从 bs 4 到 bs 24 一直是每步 9.3 ~ 10.9
+            ms，DP2 只有约 2.7 ms。DP2 多出的是 SP-MoE 前的
+            reduce-scatter，bs 128 时每层 86 us，共 5.84 ms。</p>
+            <p>两边的 state 更新跑的是同一个
+            <code>kernel_cutlass_kda_decode_mtp_kernel</code>，每卡每层读写的
+            state 字节相同（16 × 96 head 与 128 × 12 head），q_len
+            现在也都是 5。但 DP16 每层 124 us（MBU 21.6%），DP2 每层 85
+            us（MBU 31.6%），慢 1.46 倍；实例并发 128 时是 68 对 46
+            us，1.48 倍。</p>
+            <p>旧版本猜测这来自侧流 AllGather 与 KDA kernel 抢 HBM。新
+            trace 里几乎每个 KDA kernel 都和 PtoP 重叠，bs 24
+            时少数没有重叠的 7 个平均 174.6 us，有重叠的平均 181.2
+            us，只快 3.6%。抢带宽不是主因，1.46
+            倍的来源目前没有找到，下一步需要用 ncu 对比两边同一 kernel
+            的 launch 配置和访存模式。</p>
+            <h4
+            id="mla字节守恒但-dp16-的-kernel-被-wave-量化拖慢">MLA：字节守恒，但
+            DP16 的 kernel 被 wave 量化拖慢</h4>
+            <p>每卡要读的 KV 字节两边相同：DP16 一张卡算 16 个请求对全部
+            100k token 的 attention，DP2 一张卡算 128 个请求（复制
+            Q，全部 96 个 head）对 1/8 token 的 attention。但 DP16 的
+            decode kernel 每层 1240 us，DP2 的 <code>attn_mqa</code>
+            每层 826 us（MFU 46%）。</p>
+            <p>原因在 DP16 用的 tokenspeed MLA kernel 怎么划分
+            grid。q_len = 5 时走 M128 的 2-CTA 路径，KV 方向的切分数由
+            <code>tokenspeed_mla/mla_decode.py</code> 的
+            <code>_get_split_kv_and_workspace_size</code>
+            里的简化启发式决定：<code>split = min(148 // B // (q_len × 2), 32)</code>，B
+            是本卡请求数。B ≥ 8 时 split = 1，grid 是 (2, B × 5,
+            split)：</p>
+            <table>
+            <thead>
+            <tr>
+            <th style="text-align: right;">DP16 每卡 bs</th>
+            <th style="text-align: left;">grid</th>
+            <th style="text-align: right;">CTA 数</th>
+            <th style="text-align: left;">B200 148 个 SM 上的 wave</th>
+            <th style="text-align: right;">每层时间</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td style="text-align: right;">4</td>
+            <td style="text-align: left;">(2, 20, 3)</td>
+            <td style="text-align: right;">120</td>
+            <td style="text-align: left;">1</td>
+            <td style="text-align: right;">214 us</td>
+            </tr>
+            <tr>
+            <td style="text-align: right;">8</td>
+            <td style="text-align: left;">(2, 40, 1)</td>
+            <td style="text-align: right;">80</td>
+            <td style="text-align: left;">1</td>
+            <td style="text-align: right;">620 us</td>
+            </tr>
+            <tr>
+            <td style="text-align: right;">16</td>
+            <td style="text-align: left;">(2, 80, 1)</td>
+            <td style="text-align: right;">160</td>
+            <td style="text-align: left;">2，第二波只有 12 个 CTA</td>
+            <td style="text-align: right;">1240 us</td>
+            </tr>
+            <tr>
+            <td style="text-align: right;">24</td>
+            <td style="text-align: left;">(2, 120, 1)</td>
+            <td style="text-align: right;">240</td>
+            <td style="text-align: left;">2</td>
+            <td style="text-align: right;">1248 us</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>split = 1 时每个 CTA 要扫完整的 100k token，约 620 us。bs
+            16 的 160 个 CTA 比 SM 多 12 个，这 12 个 CTA
+            单独跑第二波，时间翻倍。如果 split 能按 wave 取整（FP8 的
+            M64 路径用的 <code>get_split_kv</code> 就是这样做的），按
+            CTA 数等比估算，bs 16 每层约 670 us、bs 24 约 1005 us、bs 8
+            约 335 us，每步分别省约 13.7、5.8、6.8
+            ms。这是估算，没有实测。DP2 bs 128 的 grid 是 (2, 640,
+            1)，1280 个 CTA 约 8.6 波，量化损失小。旧配置的 DP16 是 bs
+            24 × q_len 6，288 个 CTA 约 1.95 波，正好填满，所以当时两边
+            MLA 打平（802 对 798 us / 层）。</p>
+            <p>DP2 每层额外的通信开销（bs 128）：</p>
+            <ul>
+            <li><code>dcp_exchange</code>：交换 <code>(O, LSE)</code> 的
+            all-to-all，132 us / 层，共 3.17 ms。</li>
+            <li><code>reduce_scatter</code>：o_proj 后进 SP-MoE，共 1.30
+            ms。</li>
+            <li><code>dcp_pack</code> +
+            <code>dcp_lse_combine</code>：A2A 前的打包和按 LSE 合并，共
+            0.73 ms。</li>
+            <li><code>mla_prepare</code>：共 0.44 ms，处理 640 行而不是
+            80 行。</li>
+            </ul>
+            <h4 id="moe行数相同两边打平">MoE：行数相同，两边打平</h4>
+            <p>实例并发 256 时两边每卡 dispatch 的行数相同：DP16 是 16 ×
+            5 = 80 行，DP2 先在组内 reduce-scatter，128 × 5 / 8 = 80
+            行。路由专家的 GEMM 是读权重受限的，每步把本卡 1/16
+            的专家几乎全部读一遍。DP16 的 w13 每层 151 us（MBU 约
+            50%），w2 80 us；DP2 是 129 us（MBU 约 57%）和 66 us。DP2
+            开了 <code>SGLANG_DEEPGEMM_MASKED_BLOCK_M=32</code>，同样 80
+            行下 GEMM 更快，可能与这个开关有关，没有单独验证。DeepEP 的
+            dispatch + combine 两边都是每步约 32 ms（32.2 对 32.5
+            ms）。</p>
+            <p>DP2 在 MoE 结束后还有一次 all-gather 把行拼回 TP
+            布局，每层 61 us，共 5.58 ms，正好抵掉它在 GEMM
+            上省下的时间，所以 MoE 段合计打平（73.4 对 73.3 ms）。</p>
+            <h4 id="首尾词表切分的范围">首尾：词表切分的范围</h4>
+            <p>DP16 的 <code>logits_all_gather</code> 0.61
+            ms、<code>lm_head</code> 前的 gather 0.26
+            ms、<code>lm_head</code> 0.24 ms；DP2 的尾部 all-gather 是
+            0.32 ms。两边的切法不同：DP16 用
+            <code>SGLANG_VOCAB_TP_SIZE=8</code> 把词表切到机内 8 个 DP
+            rank 上，lm_head 要先把这 8 个 rank 的行收齐；DP2 用
+            <code>--enable-dp-lm-head</code>，词表只在本 DP 的 attention
+            TP 组内切。两边的 KDA ReplaySSM 都在 2.2 ms 左右（2.27 对
+            2.15 ms）。</p>
+            <h3
+            id="通信关键路径上的与侧流上的">通信：关键路径上的，与侧流上的</h3>
+            <p>把 DeepEP 之外的通信按「是否阻塞下一个
+            kernel」分开（实例并发 256）：</p>
+            <table>
+            <colgroup>
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th style="text-align: left;">每步</th>
+            <th style="text-align: left;">A · DP16 bs 16</th>
+            <th style="text-align: left;">B · DP2 × DCP8 bs 128</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td style="text-align: left;">关键路径</td>
+            <td style="text-align: left;">AllGather 本地拷贝约 3.1
+            ms，dense all-reduce、logits / lm_head gather、首部
+            all-gather 约 1.5 ms，共约 4.6 ms</td>
+            <td style="text-align: left;">KDA 后 RS 5.84 ms、MLA 的 A2A
+            / RS / pack / 合并 5.2 ms、MoE 后 AG 5.58 ms、首尾约 1.1
+            ms，共约 17.7 ms</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">侧流</td>
+            <td style="text-align: left;">权重 AllGather 48.4 GB，PtoP
+            忙约 69 ms</td>
+            <td style="text-align: left;">MoE 段权重 AllGather 14.8
+            GB，PtoP 忙约 26 ms</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">DeepEP dispatch + combine</td>
+            <td style="text-align: left;">32.2 ms</td>
+            <td style="text-align: left;">32.5 ms</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>DP16 侧流上的 AllGather 每步搬的字节固定，PtoP
+            的忙碌时间从 bs 4 到 bs 24 都在 69 ~ 70
+            ms。它能不能藏住，取决于主流上的计算够不够长：</p>
+            <table>
+            <thead>
+            <tr>
+            <th style="text-align: left;">DP16 每卡 bs</th>
+            <th style="text-align: right;">4</th>
+            <th style="text-align: right;">8</th>
+            <th style="text-align: right;">16</th>
+            <th style="text-align: right;">24</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td style="text-align: left;">一步墙钟</td>
+            <td style="text-align: right;">87.5</td>
+            <td style="text-align: right;">100.1</td>
+            <td style="text-align: right;">127.1</td>
+            <td style="text-align: right;">145.1</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">非 AllGather kernel
+            的并集</td>
+            <td style="text-align: right;">71.9</td>
+            <td style="text-align: right;">90.7</td>
+            <td style="text-align: right;">122.6</td>
+            <td style="text-align: right;">140.9</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">只有 AllGather 在跑</td>
+            <td style="text-align: right;">10.8</td>
+            <td style="text-align: right;">5.8</td>
+            <td style="text-align: right;">3.2</td>
+            <td style="text-align: right;">2.9</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">GPU 全空</td>
+            <td style="text-align: right;">4.8</td>
+            <td style="text-align: right;">3.6</td>
+            <td style="text-align: right;">1.3</td>
+            <td style="text-align: right;">1.4</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>bs 4 时计算本身只有 71.9 ms，和 AllGather 的 69 ms
+            差不多长，主流经常要等下一层的权重到齐，墙钟里有 10.8 ms
+            只有 AllGather 在跑，另有 4.8 ms GPU 全空。bs 16
+            以上计算变长，这两段降到 4 ~ 5 ms。DP2
+            两个点上这两段合计都不到 2 ms。这就是 DP16 小 bs 的下限：bs
+            1 也要 83.5 ms，其中权重读取和 AllGather
+            的固定开销占了大头。</p>
+            <h3
+            id="显存固定开销决定状态池有多大">显存：固定开销决定状态池有多大</h3>
+            <p>每卡显存可以分成两类。一类是<strong>状态池</strong>：MLA
+            KV、KDA state、ReplaySSM ring 和 draft
+            KV，它们跟着请求走。另一类是<strong>固定开销</strong>：权重、通信组、workspace、CUDA
+            graph 和留给运行时的余量，它们跟着布局和启动参数走。</p>
+            <p>状态池的大小是算出来的结果，不是独立变量。启动时 sglang
+            先测当前空闲显存，扣掉
+            <code>(1 − mem_fraction_static)</code>
+            的运行时余量，剩下的就是状态池预算（<code>kv_cache_configurator.py</code>
+            的
+            <code>_profile_available_bytes()</code>）。在预算内，<code>_handle_max_mamba_cache()</code>
+            先按槽数扣掉 KDA state 和 ReplaySSM ring。本部署关了 radix
+            cache，槽数就是每个 DP 的 <code>max_running_requests</code>
+            加 extra slots。余下的再分给 draft KV 和 MLA KV。所以 MLA KV
+            和 KDA state
+            之间怎么分，调参数就能改。比较两种布局时应该先比固定开销：它决定了状态池总共有多少。</p>
+            <p>两边启动时整卡可用都是 177.7
+            GiB（<code>Init torch distributed</code> 的占用 +
+            <code>Load weight begin</code> 时的 avail）。下表按 TP0
+            启动日志逐项记账（sglang 日志里写的 GB 实际按 2^30
+            计，这里统一写 GiB）：</p>
+            <table>
+            <colgroup>
+            <col style="width: 20%" />
+            <col style="width: 20%" />
+            <col style="width: 20%" />
+            <col style="width: 20%" />
+            <col style="width: 20%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th style="text-align: left;">每卡固定开销</th>
+            <th style="text-align: right;">A · DP16</th>
+            <th style="text-align: right;">B · DP2 × DCP8</th>
+            <th style="text-align: right;">差</th>
+            <th style="text-align: left;">由什么决定</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td style="text-align: left;">NCCL / 分布式初始化</td>
+            <td style="text-align: right;">1.56</td>
+            <td style="text-align: right;">2.21</td>
+            <td style="text-align: right;">−0.65</td>
+            <td style="text-align: left;">布局：DP2 多出 DCP8、attention
+            TP8 两个组</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">target 权重常驻（含 AG
+            staging）</td>
+            <td style="text-align: right;">97.55</td>
+            <td style="text-align: right;">95.32</td>
+            <td style="text-align: right;">+2.23</td>
+            <td style="text-align: left;">布局 + weight shard
+            覆盖范围</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">draft 权重（含 AG
+            staging）</td>
+            <td style="text-align: right;">2.11</td>
+            <td style="text-align: right;">1.23</td>
+            <td style="text-align: right;">+0.88</td>
+            <td style="text-align: left;">开关：DP16 开了 draft weight
+            shard，staging 1.26</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">workspace 类</td>
+            <td style="text-align: right;">0.65</td>
+            <td style="text-align: right;">3.62</td>
+            <td style="text-align: right;">−2.97</td>
+            <td style="text-align: left;">布局（DCP 专属结构）+
+            每卡槽数</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">CUDA graph（target +
+            draft）</td>
+            <td style="text-align: right;">8.06</td>
+            <td style="text-align: right;">13.96</td>
+            <td style="text-align: right;">−5.90</td>
+            <td style="text-align: left;">参数（bs 档位、DeepEP 上限）+
+            布局（每卡行数）</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">运行时剩余</td>
+            <td style="text-align: right;">3.99</td>
+            <td style="text-align: right;">7.98</td>
+            <td style="text-align: right;">−3.99</td>
+            <td
+            style="text-align: left;">参数：<code>--mem-fraction-static</code>
+            0.88 对 0.83</td>
+            </tr>
+            <tr>
+            <td
+            style="text-align: left;"><strong>固定开销合计</strong></td>
+            <td style="text-align: right;"><strong>113.92</strong></td>
+            <td style="text-align: right;"><strong>124.32</strong></td>
+            <td style="text-align: right;"><strong>−10.40</strong></td>
+            <td style="text-align: left;"></td>
+            </tr>
+            <tr>
+            <td
+            style="text-align: left;"><strong>留给状态池</strong></td>
+            <td style="text-align: right;"><strong>63.79</strong></td>
+            <td style="text-align: right;"><strong>53.39</strong></td>
+            <td style="text-align: right;"><strong>+10.40</strong></td>
+            <td style="text-align: left;">177.7 减去上面合计</td>
+            </tr>
+            </tbody>
+            </table>
+            <figure>
+            <img src="./WikiImage/kimi_k3_dp16_vs_dp2_memory.svg"
+            alt="固定开销占掉多少，每卡还剩多少给 KV 和 SSM 状态" />
+            <figcaption
+            aria-hidden="true">固定开销占掉多少，每卡还剩多少给 KV 和
+            SSM 状态</figcaption>
+            </figure>
+            <p>DP16 每卡的固定开销少 10.4
+            GiB，这就是它多出来的状态池。拆开看有三部分：</p>
+            <ul>
+            <li>CUDA graph 和运行时余量省了 9.9 GiB（CUDA graph
+            5.9，运行时余量 4.0）。这两项主要由参数决定，CUDA graph
+            里也有每卡行数这个布局因素。</li>
+            <li>DCP 和每卡槽数带来的结构省了 3.6 GiB：全 head Q
+            副本、按槽数和全局槽数分配的表、两个 NCCL 组和 attention
+            workspace。</li>
+            <li>DP16 在 target 和 draft 的权重 staging 上多付了 3.1
+            GiB。</li>
+            </ul>
+            <p>逐项看固定开销的来源：</p>
+            <ul>
+            <li><p><strong>权重常驻只差 2.2 GiB。</strong> DP16
+            的非专家权重靠 weight shard 也只存 1/8，和 DP2 天然的 1/8
+            差不多；差额中能对上的一项是 AG staging pool（1196 MiB 对
+            350 MiB，DP16 要 staging 的权重更多），其余没有再拆。DeepEP
+            buffer 不在这一行：它在第一次 dispatch 时才懒分配，也就是
+            CUDA graph 最大一档的 warmup 里，所以计入了下面的 CUDA
+            graph。拆法见 <a href="./vram_cuda_graph.html">CUDA Graph
+            显存</a>。</p></li>
+            <li><p><strong>加载峰值 DP16 高得多。</strong> DP16 的
+            <code>Load weight end</code> 占用 145.2 GiB，之后释放 47.7
+            GiB；DP2 是 109.9 GiB，释放 14.6 GiB。日志里的
+            <code>requant-then-shard: ... kept full through post-load</code>
+            说明 DP16 的被 shard 权重先以完整形状加载、重量化后才切成
+            1/8，加载时只剩 30.9 GiB 余量。这不影响稳态，但是 DP16
+            加更多 shard 范围或更大权重时要先撞上的墙。</p></li>
+            <li><p><strong>draft 权重多 0.88 GiB。</strong> draft 本身
+            DP16 只占 0.85 GiB（DP2 是 1.23 GiB），但 DP16 开了
+            <code>SGLANG_ENABLE_K3_DRAFT_WEIGHT_SHARD</code>，多了一个
+            1.26 GiB 的 AG staging pool（日志
+            <code>FlatAGStagingPool ... total=1288.0 MiB</code>）。</p></li>
+            <li><p><strong>CUDA graph 少 5.9 GiB。</strong> DP16 只捕获
+            6 个 batch size（1 ~ 24），DP2 捕获 23 个（8 ~
+            192），但档位数只解释约 1.1 GiB。差额主要来自最大一档（7.19
+            对 10.24 GiB）和静态 buffer（0.17 对 1.33 GiB）：DCP8 的
+            attention 段每卡处理整个 DP 的 960 行，DP16 是 120
+            行。最大一档里的 DeepEP buffer 由
+            <code>SGLANG_DEEPEP_NUM_MAX_DISPATCH_TOKENS_PER_RANK</code>
+            决定，DP16 仍是 144（3.50 GiB），而它现在每卡只 dispatch 24
+            × 5 = 120 行，设成 120 可以降到 2.92 GiB。这是 DP16
+            省下显存最多的一项，逐项拆分见 <a
+            href="./vram_cuda_graph.html">CUDA Graph 显存</a>。</p></li>
+            <li><p><strong>NCCL 初始化少 0.65 GiB。</strong>
+            这一项只统计 <code>Init torch distributed</code>
+            期间建的通信组。TP0 进程在这期间建的 NCCL communicator，DP16
+            是 1 个 16 卡加 1 个 8 卡，DP2 是 1 个 16 卡加 2 个 8
+            卡。DP2 多出的组来自 DCP8 和 attention
+            TP8（<code>parallel_state.py</code> 里 <code>_DCP</code>
+            只在 <code>dcp_size &gt; 1</code>
+            时建，<code>_ATTN_TP</code> 的大小是
+            <code>tp / (cp × dp)</code>，DP16 下为
+            1，不需要通信）。这两个组都在节点内，各自还开了一份
+            CustomAllReduceV2（日志
+            <code>All Reduce config: symmetric_memory = 28.01 MB, local_buffer = 8.00 MB, multicast = True</code>，共
+            2 次）。DP16 剩下的 8 卡组是词表切分的 vocab
+            TP，它显式关掉了 custom allreduce；TP16 组跨节点，两边的
+            custom allreduce 都被禁用。所以差额是一个节点内 NCCL comm
+            加两份 symmetric memory
+            buffer，每项具体占多少没有单独测。两边之后还会懒建一些
+            comm（weight shard 组、EP 组），DP2 另外在 capture 前和
+            capture 中各多一个 8 卡 comm，这些计入后面的 workspace 和
+            CUDA graph。</p></li>
+            <li><p><strong>workspace 类少 2.97 GiB。</strong>
+            这一行是各区间 avail
+            下降减去有日志的分配后的残差。按区间拆开：</p>
+            <table>
+            <colgroup>
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th style="text-align: left;">区间残差（GiB）</th>
+            <th style="text-align: right;">DP16</th>
+            <th style="text-align: right;">DP2</th>
+            <th style="text-align: left;">来源</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td style="text-align: left;">draft 加载后 → target
+            内存池结束</td>
+            <td style="text-align: right;">0.15</td>
+            <td style="text-align: right;">0.82</td>
+            <td style="text-align: left;"><code>req_to_token</code>
+            表（DP16 的 draft AG staging 已归到 draft 权重）</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">draft 内存池</td>
+            <td style="text-align: right;">0.13</td>
+            <td style="text-align: right;">0.83</td>
+            <td style="text-align: left;">与请求槽数同比例，未定位</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">attention backend 初始化 →
+            capture 开始</td>
+            <td style="text-align: right;">0.36</td>
+            <td style="text-align: right;">1.58</td>
+            <td style="text-align: left;">DCP 的全 head Q 副本、draft
+            slot map、懒建的 DCP comm、backend workspace</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">target graph 结束 → draft
+            graph 开始</td>
+            <td style="text-align: right;">0</td>
+            <td style="text-align: right;">0.39</td>
+            <td style="text-align: left;">未定位</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>能对上的几项都和 DCP 或每卡槽数有关：</p>
+            <ul>
+            <li><strong><code>req_to_token</code> 表按「槽数 ×
+            最大上下文」分配。</strong> decode
+            侧的表（<code>disaggregation/decode.py</code>）有
+            <code>size + pre_alloc_size + 1</code> 行，每行
+            <code>context_len = 1048576</code> 个 int32，也就是 4
+            MiB。DP2 是 192 + 16 + 1 = 209 行，0.82 GiB；DP16 是 24 + 8
+            + 1 = 33 行，0.13 GiB。两者和残差都对得上。DP16 每卡并发小 8
+            倍，这张表也小 8 倍。</li>
+            <li><strong>DCP 要在每卡上放一份全 head 的 Q 投影。</strong>
+            DCP 按序列切 KV，每卡都要算全部 96 个 head，而 attention TP8
+            只给每卡留了 12 个 head 的 <code>q_b_proj</code> 和
+            <code>w_kc</code>。<code>--dcp-replicate-q-proj</code> 在
+            capture 前用 <code>model_runner.py</code> 的
+            <code>_prepare_replicated_q_proj()</code> 把它们 all-gather
+            成全量：每层 <code>q_b_proj</code>（FP8）96 × 192 × 1536 =
+            28.3 MB，<code>w_kc</code>（bf16）96 × 128 × 512 × 2 = 12.6
+            MB，24 层 MLA 共 0.91 GiB。FP8 路径保留了原来的分片，因为非
+            decode 模式仍要用它，所以这 0.91 GiB 是纯增量。这次
+            all-gather 也是 DCP 组的 NCCL comm
+            第一次被用到的地方，日志里 DP2 在这个区间多建了一个 8 卡
+            comm。DP16 没有 DCP，这两项都没有。</li>
+            <li><strong>draft slot map 按全局 KV 槽数分配。</strong>
+            <code>DraftWindowSlotMap.full_to_swa</code> 是 int64，长度是
+            target 的全局槽数。DCP8 下全局槽数是每卡 KV 的 8 倍（21.5 M
+            对 3.19 M），所以 DP2 是 0.16 GiB，DP16 是 0.02 GiB。</li>
+            </ul>
+            <p>attention 区间扣掉以上几项后，DP2 还剩约 0.5 GiB，DP16 约
+            0.34 GiB。这部分应该是按最大 bs 和 head 数分配的 attention
+            backend workspace，没有逐个 buffer 核对。</p></li>
+            <li><p><strong>运行时剩余少 4.0 GiB。</strong> 这一项完全由
+            <code>--mem-fraction-static</code> 决定，0.88 对 0.83。DP16
+            把更多显存划给了静态池，只给运行时留 4.0
+            GiB。它只需要盖住运行时的激活峰值，DP16
+            每卡行数少，所以能压得更低。</p></li>
+            </ul>
+            <h4
+            id="状态池内部怎么分参数选择">状态池内部怎么分：参数选择</h4>
+            <p>状态池总量定下之后，内部比例由参数决定：</p>
+            <table>
+            <colgroup>
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th style="text-align: left;">状态池</th>
+            <th style="text-align: right;">A · DP16</th>
+            <th style="text-align: right;">B · DP2 × DCP8</th>
+            <th style="text-align: left;">由什么决定</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td style="text-align: left;">KDA state（mamba cache）</td>
+            <td style="text-align: right;">16.16</td>
+            <td style="text-align: right;">12.79</td>
+            <td style="text-align: left;">槽数 × 本卡 head 数</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">ReplaySSM ring buffer</td>
+            <td style="text-align: right;">5.02</td>
+            <td style="text-align: right;">3.97</td>
+            <td style="text-align: left;">槽数 ×
+            <code>--linear-replayssm-cache-len</code></td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">draft KV（SWA 窗口池）</td>
+            <td style="text-align: right;">1.50</td>
+            <td style="text-align: right;">2.00</td>
+            <td
+            style="text-align: left;"><code>--speculative-draft-window-size</code>、<code>SGLANG_DSPARK_SWA_POOL_MULTIPLIER</code></td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">target MLA KV</td>
+            <td style="text-align: right;">41.11</td>
+            <td style="text-align: right;">34.63</td>
+            <td style="text-align: left;">前面扣完后剩下的全部</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">合计</td>
+            <td style="text-align: right;">63.79</td>
+            <td style="text-align: right;">53.39</td>
+            <td style="text-align: left;"></td>
+            </tr>
+            </tbody>
+            </table>
+            <p>KDA state 和 ReplaySSM 都按槽分配，DP16 每槽 0.64
+            GiB，DP2 每槽 0.08 GiB。DP2 一个槽只存 12 个 head，乘 8
+            后，一个完整请求的代价两边都是 0.64 GiB，状态本身守恒。</p>
+            <p>两边真正的差别在槽数。槽数是每个 DP 的
+            <code>max_running_requests</code> 加
+            <code>--disaggregation-decode-extra-slots</code>，再加 1 个
+            padding 槽。DP16 是 24 + 8 + 1 = 33，DP2 是 192 + 16 + 1 =
+            209，折合完整请求约 26 个。DP16 为 extra slots 多留了 33%
+            的余量，DP2 只留了 8%。如果 DP16 也按 8% 留（extra slots
+            设成 2），能省约 6 个槽，也就是 3.8 GiB，这部分会全部流进
+            MLA KV。所以 KDA state 多、MLA KV
+            少，都是这组参数的结果，不是布局本身的代价。</p>
+            <p>另外，DP16 的 KDA state 从旧配置的 16.62 降到了 16.16
+            GiB。原因是其中的 conv window 部分按每请求 token 数分配，6
+            降到 5 之后，这部分从 2.81 降到 2.35 GiB。</p>
+            <p>日志里
+            <code>DSpark SWA draft: reclaimed 16.37 GiB</code>（DP16）和
+            <code>1.11 GiB</code>（DP2）差得很多。但这个数是和一个假想基线比出来的回收量，基线是「draft
+            KV 按 target token
+            等比分配」，所以它不是两边实际占用的差。两边 draft KV
+            的实际占用是 1.5 对 2.0 GiB。DP2 的 draft KV 按 head 切到 8
+            卡上，每 slot 1280 B，DP16 是 10240 B。但 DP2
+            每个请求预留的窗口槽更多（<code>DSpark draft SWA slot map</code>
+            日志里 7997 对
+            4753），<code>SGLANG_DSPARK_SWA_POOL_MULTIPLIER</code> 也是
+            4 对 3，合起来仍比 DP16 大 0.5 GiB。</p>
+            <h3 id="容量与吞吐">容量与吞吐</h3>
+            <p>MLA KV 每 token 的字节在两种布局下相同（24 层 × 576
+            B，DCP 只是把 token 分到不同卡上），所以实例能放多少 token
+            只取决于 16 张卡的 KV 池总字节：</p>
+            <table>
+            <thead>
+            <tr>
+            <th style="text-align: left;"></th>
+            <th style="text-align: right;">A · DP16</th>
+            <th style="text-align: right;">B · DP2 × DCP8</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td style="text-align: left;">每卡 KV slot</td>
+            <td style="text-align: right;">3,193,344</td>
+            <td style="text-align: right;">2,690,112</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">每个 DP 的容量</td>
+            <td style="text-align: right;">3.19 M</td>
+            <td style="text-align: right;">21.5 M（× dcp_size 8）</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">实例容量</td>
+            <td style="text-align: right;">51.1 M</td>
+            <td style="text-align: right;">43.0 M</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;">384 并发时每请求平均可用</td>
+            <td style="text-align: right;">133 k</td>
+            <td style="text-align: right;">112 k</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>注意 sglang 的 <code>sglang:max_total_num_tokens</code>
+            指标是每个 rank 本地池的大小，DCP 下一个 DP 的容量要乘
+            <code>dcp_size</code>（<code>/server_info</code>
+            里可以读到）。perfmap-pro 的 <code>d.py</code> 自动推 sweep
+            上限时就是这么算的。</p>
+            <p>吞吐方面，两边现在用同一个 draft、同样的 block
+            size，每步每请求都验证 5 个
+            token，接受长度相同，吞吐之比就是步时间之比的倒数。100k
+            上下文下，DP16 只在实例并发 384 时快 2.4%，并发 256 时慢
+            7%，并发 64 时慢 30%。DP16
+            的优势在两处：满并发时没有关键路径上的激活通信，KV 容量多
+            19%。DP2 的优势在另一头：并发上不去时，它没有 DP16
+            那笔固定的权重读写和 AllGather，一个请求的访存还能摊到 8
+            张卡上；单请求能放的上下文也更长（一个 DP 21.5 M 对 3.19
+            M）。</p>
+            <h3 id="实现与开关">实现与开关</h3>
+            <p>两份启动脚本（<code>start_k3_decode_dp16.sh</code> /
+            <code>start_k3_decode_dp2.sh</code>）中影响上面结论的差异：</p>
+            <table>
+            <colgroup>
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th style="text-align: left;">开关</th>
+            <th style="text-align: left;">A · DP16</th>
+            <th style="text-align: left;">B · DP2 × DCP8</th>
+            <th style="text-align: left;">影响</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td style="text-align: left;"><code>--dp-size</code> /
+            <code>--dcp-size</code></td>
+            <td style="text-align: left;">16 / 1</td>
+            <td style="text-align: left;">2 / 8</td>
+            <td style="text-align: left;">布局本身</td>
+            </tr>
+            <tr>
+            <td
+            style="text-align: left;"><code>SGLANG_ENABLE_K3_WEIGHT_SHARD</code></td>
+            <td style="text-align: left;">1，覆盖 attention 投影 + MoE
+            段</td>
+            <td style="text-align: left;">用旧名
+            <code>SGLANG_ENABLE_K3_MOE_WEIGHT_SHARD=1</code>，只覆盖 MoE
+            段</td>
+            <td style="text-align: left;">权重 AllGather 48.4 对 14.8 GB
+            / 步</td>
+            </tr>
+            <tr>
+            <td
+            style="text-align: left;"><code>SGLANG_ENABLE_K3_DRAFT_WEIGHT_SHARD</code></td>
+            <td style="text-align: left;">1</td>
+            <td style="text-align: left;">未开</td>
+            <td style="text-align: left;">draft 权重 0.85 对 1.23
+            GiB，DP16 另有 1.26 GiB staging</td>
+            </tr>
+            <tr>
+            <td
+            style="text-align: left;"><code>--speculative-dspark-block-size</code></td>
+            <td style="text-align: left;">4（旧配置是 5）</td>
+            <td style="text-align: left;">4</td>
+            <td style="text-align: left;">每步每请求验证 5 对 5 个
+            token</td>
+            </tr>
+            <tr>
+            <td
+            style="text-align: left;"><code>SGLANG_DP_STATIC_SYNC_BOUND=24</code>、<code>SGLANG_SCHEDULER_SKIP_ALL_GATHER=1</code></td>
+            <td style="text-align: left;">已注释掉（旧配置开着）</td>
+            <td style="text-align: left;">未设</td>
+            <td style="text-align: left;">开着时每个 rank 都按 bs 24
+            的形状跑，小 bs 也付满 bs 的时间</td>
+            </tr>
+            <tr>
+            <td
+            style="text-align: left;"><code>--max-running-requests</code>
+            / <code>--cuda-graph-bs</code></td>
+            <td style="text-align: left;">24 /
+            DP，<code>1 2 4 8 16 24</code></td>
+            <td style="text-align: left;">192 / DP，8 ~ 192 共 23
+            档</td>
+            <td style="text-align: left;">CUDA graph 8.1 对 14.0
+            GiB；DP16 的 bs 12、20 会 pad 到 16、24 的图</td>
+            </tr>
+            <tr>
+            <td
+            style="text-align: left;"><code>--disaggregation-decode-extra-slots</code></td>
+            <td style="text-align: left;">8</td>
+            <td style="text-align: left;">16</td>
+            <td style="text-align: left;">KDA state 槽 32 对 208</td>
+            </tr>
+            <tr>
+            <td
+            style="text-align: left;"><code>--mem-fraction-static</code></td>
+            <td style="text-align: left;">0.88</td>
+            <td style="text-align: left;">0.83</td>
+            <td style="text-align: left;">剩余 4.0 对 8.0 GiB</td>
+            </tr>
+            <tr>
+            <td
+            style="text-align: left;"><code>SGLANG_DEEPEP_NUM_MAX_DISPATCH_TOKENS_PER_RANK</code></td>
+            <td style="text-align: left;">144，大于每卡实际的 120
+            行</td>
+            <td style="text-align: left;">128，覆盖每卡 120 行</td>
+            <td style="text-align: left;">DeepEP buffer 3.50 对 3.11
+            GiB（计入 CUDA graph）</td>
+            </tr>
+            <tr>
+            <td
+            style="text-align: left;"><code>SGLANG_DSPARK_SWA_POOL_MULTIPLIER</code></td>
+            <td style="text-align: left;">3</td>
+            <td style="text-align: left;">4</td>
+            <td style="text-align: left;">draft KV 1.5 对 2.0 GiB</td>
+            </tr>
+            <tr>
+            <td
+            style="text-align: left;"><code>SGLANG_DEEPGEMM_MASKED_BLOCK_M=32</code>、<code>SGLANG_K3_SHARED_IN_COMBINE_HOOK=1</code></td>
+            <td style="text-align: left;">未开</td>
+            <td style="text-align: left;">开</td>
+            <td style="text-align: left;">MoE GEMM 对齐、shared expert
+            与 combine 重叠</td>
+            </tr>
+            <tr>
+            <td
+            style="text-align: left;"><code>SGLANG_ENABLE_EMBED_DP_SHARD</code>、<code>SGLANG_ENABLE_DSPARK_LM_HEAD_DP_SHARD</code>、<code>SGLANG_DSPARK_LM_HEAD_VOCAB_ALL_GATHER</code>、<code>--moe-dense-tp-size 1</code></td>
+            <td style="text-align: left;">开</td>
+            <td style="text-align: left;">未开</td>
+            <td style="text-align: left;">首尾 embedding / lm_head 和
+            dense 层的切法，影响在 1 ms 量级</td>
+            </tr>
+            <tr>
+            <td
+            style="text-align: left;"><code>SGLANG_OPT_FLASH_KDA_CUTE=1</code></td>
+            <td style="text-align: left;">未开</td>
+            <td style="text-align: left;">开</td>
+            <td style="text-align: left;">只作用于 prefill 的 KDA
+            backend，与 decode 无关</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>weight shard 的覆盖范围由 <code>sharding.py</code> 的
+            <code>WeightShardingConfig</code>
+            决定，<code>environ.py</code> 里的注释写明 attention
+            投影只在「attention TP narrow 是 identity」时被
+            shard，也就是 attn_tp = 1 的 DP16。层范围由
+            <code>SGLANG_K3_WEIGHT_SHARD_LAYERS</code>（默认
+            <code>1-92</code>）控制。每次 AllGather 在 trace
+            里显示为一个 <code>memcpy128</code>（本 rank 分片）加 7 个
+            <code>Memcpy PtoP</code>（NCCL Copy-Engine 路径，约 710
+            GB/s）。</p>
+            <h3 id="测量方法与局限">测量方法与局限</h3>
+            <ul>
+            <li>trace：<code>profile_dp16/d_bs{4,8,16,24}_100k/</code>
+            与 <code>profile_dp2/d_bs{64,128}_100k/</code>，各一份 TP-0
+            / DP-0 的 torch profile，7 ~ 13 个 decode 步。DP16 用
+            <code>python3 analyze.py -o &lt;dir&gt; -a annotations/sgl_b_k3_decode_dp16.json -qlen 5 -b 0</code>
+            分析，DP2 用
+            <code>-a annotations/sgl_b_k3_decode.json -b 0</code>。只看了一张卡，没有看
+            rank 间的差异。旧配置的 DP16 trace
+            已被覆盖，旧数字只在正文里引用。</li>
+            <li>DP16 的标注没有给 MLA 层的 kernel 打 tag，MLA × 24 是按
+            block 位置归类的（首尾之间、非 KDA / MoE / Dense 的
+            block）。</li>
+            <li>一步墙钟取 GPU 侧 <code>scheduler.run_batch</code>
+            标注中时长大于 10 ms 的那些（另一半是 0 ms
+            的空标注）的中位数，与 benchmark 的
+            <code>generation_time</code> 相差不到 1.5 ms。kernel
+            合计是各 block 内 kernel 时间之和，含多流重叠部分；「非
+            AllGather kernel 的并集」是除 <code>Memcpy PtoP</code>
+            外所有 kernel 和 memcpy 区间的并集。</li>
+            <li>每卡每步的 HBM
+            字节表里，路由专家和非专家权重的读取量是估算值（前者由 GEMM
+            的 MBU × 时间得出，后者由 AllGather 的 PtoP 字节按 8/7
+            反推）。</li>
+            <li>MLA wave 量化的节省量是按 CTA 数等比估算的，没有改
+            kernel 实测。DP16 <code>gated_delta_net</code> 慢 1.46
+            倍的原因尚未找到。</li>
+            <li>显存数字来自每种部署的一次启动日志（TP0）。benchmark
+            来自 perfmap-pro 的
+            <code>output/batch_2026_10_29_20_13/</code>（DP16）。</li>
+            </ul>
+            <p>几个可以直接试的方向：</p>
+            <ul>
+            <li><strong>MLA 的 split 按 wave 取整。</strong> 让 M128
+            2-CTA 路径也用 wave-aware 的 <code>get_split_kv</code>，估计
+            DP16 bs 16 每步省约 13.7 ms，bs 24 省约 5.8 ms。</li>
+            <li><strong>DeepEP 上限降到 120。</strong> DP16 每卡
+            dispatch 120
+            行，<code>SGLANG_DEEPEP_NUM_MAX_DISPATCH_TOKENS_PER_RANK</code>
+            从 144 改成 120，DeepEP buffer 省约 0.6 GiB，masked GEMM
+            中间张量估计再省约 0.4 GiB。</li>
+            <li><strong>减少 extra-slots。</strong> DP16 的 KDA state 和
+            ReplaySSM 每槽约 0.64 GiB。extra-slots 从 8 降到 2，余量和
+            DP2 一样是 8%，能把约 3.8 GiB 让给 MLA KV。</li>
+            <li><strong>对齐 MoE 开关。</strong> DP2 上已经开的
+            <code>SGLANG_DEEPGEMM_MASKED_BLOCK_M=32</code> 和
+            <code>SGLANG_K3_SHARED_IN_COMBINE_HOOK=1</code> 在 DP16
+            上没开。同样 80 行时 DP16 的 w13 / w2 每层比 DP2 慢 22 / 14
+            us，合计每步约 3 ms，是否兼容 attn_tp = 1 需要先确认。</li>
+            </ul>
+            <h3 id="小结">小结</h3>
+            <p>两种布局下，跟请求走的 KDA state 和 MLA KV
+            在每卡上的字节完全相同，差别来自它们各自付出的代价。DP16
+            每步多读写约 66 GB 权重，侧流上还有约 69 ms 的
+            AllGather，这些都与 bs 无关；DP2
+            每步多一段关键路径上的激活通信，实例并发 256 时约 17.7
+            ms，随行数增长。所以并发越低 DP16 越吃亏（实例并发 64
+            时吞吐只有 DP2 的 0.70，bs 1 也要 83.5 ms），每卡跑满 24
+            个请求时才追平并略快。在此之上，DP16 的 MLA kernel 因 wave
+            量化在 bs 16
+            多花将近一倍时间，这是目前最值得修的一项。显存上，两边的权重常驻只差
+            2 GiB。DP16 的固定开销每卡少 10.4 GiB，主要来自更少的 CUDA
+            graph、更高的 <code>mem-fraction-static</code>，以及不需要
+            DCP 专属的 Q 副本、索引表和通信组，这 10.4 GiB 全部留给了 KV
+            和 SSM 状态池。状态池内 KDA state 和 MLA KV
+            怎么分，由槽数等参数决定。高并发、中短上下文时 DP16 能放更多
+            KV、步时间略短；并发不足或单请求上下文很长时，DP2
+            更合适。</p>
+          </main>
+        <aside class="wiki-toc">
+      <ul>
+      <li><a href="#性能大图" id="toc-性能大图">性能大图</a></li>
+      <li><a href="#问题同样-16-张卡同样的并发按什么切"
+      id="toc-问题同样-16-张卡同样的并发按什么切">问题：同样 16
+      张卡、同样的并发，按什么切</a></li>
+      <li><a href="#抽象状态守恒权重不守恒通信换了位置"
+      id="toc-抽象状态守恒权重不守恒通信换了位置">抽象：状态守恒，权重不守恒，通信换了位置</a></li>
+      <li><a href="#计算一步的时间按层类型拆开"
+      id="toc-计算一步的时间按层类型拆开">计算：一步的时间按层类型拆开</a></li>
+      <li><a href="#通信关键路径上的与侧流上的"
+      id="toc-通信关键路径上的与侧流上的">通信：关键路径上的，与侧流上的</a></li>
+      <li><a href="#显存固定开销决定状态池有多大"
+      id="toc-显存固定开销决定状态池有多大">显存：固定开销决定状态池有多大</a></li>
+      <li><a href="#容量与吞吐" id="toc-容量与吞吐">容量与吞吐</a></li>
+      <li><a href="#实现与开关" id="toc-实现与开关">实现与开关</a></li>
+      <li><a href="#测量方法与局限"
+      id="toc-测量方法与局限">测量方法与局限</a></li>
+      <li><a href="#小结" id="toc-小结">小结</a></li>
+      </ul>
+    </aside>
+      </div>
+</body>
+
+</html>

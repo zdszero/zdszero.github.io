@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 446" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="920" height="446" rx="12" fill="#ffffff"/>
+  <text x="460" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">最大一档里有什么</text>
+  <text x="460" y="56" text-anchor="middle" font-size="13" fill="#868e96">每卡，GiB；DeepEP 归属按日志顺序推断，MoE 中间张量按形状估算，剩余为实测减去前两项</text>
+
+  <!-- legend -->
+  <g font-size="11" fill="#495057">
+    <rect x="200" y="70" width="12" height="10" rx="2" fill="#fff9db" stroke="#f08c00"/>
+    <text x="218" y="79">DeepEP buffer</text>
+    <rect x="320" y="70" width="12" height="10" rx="2" fill="#e6fcf5" stroke="#0ca678"/>
+    <text x="338" y="79">MoE masked GEMM 中间张量</text>
+    <rect x="500" y="70" width="12" height="10" rx="2" fill="#ffffff" stroke="#adb5bd" stroke-dasharray="3 2"/>
+    <text x="518" y="79">剩余：attention / KDA 激活、NCCL、cuBLAS 等</text>
+  </g>
+
+  <!-- row labels -->
+  <text x="24" y="110" font-size="13" font-weight="700" fill="#0b7285">A · DP16</text>
+  <text x="24" y="125" font-size="10.5" fill="#868e96">max_dispatch 144</text>
+  <text x="24" y="160" font-size="13" font-weight="700" fill="#5f3dc4">B · DP2 × DCP8</text>
+  <text x="24" y="175" font-size="10.5" fill="#868e96">max_dispatch 128</text>
+  <text x="24" y="210" font-size="13" font-weight="700" fill="#495057">DP16 · 每卡 128 请求</text>
+  <text x="24" y="225" font-size="10.5" fill="#868e96">max_dispatch 768，估算</text>
+
+  <!-- bars: x0 = 230, 20 px / GiB -->
+  <rect x="230" y="96" width="70" height="30" fill="#fff9db" stroke="#f08c00"/>
+  <rect x="300" y="96" width="46" height="30" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="346" y="96" width="27.4" height="30" fill="#ffffff" stroke="#adb5bd" stroke-dasharray="3 2"/>
+
+  <rect x="230" y="146" width="62.2" height="30" fill="#fff9db" stroke="#f08c00"/>
+  <rect x="292.2" y="146" width="40" height="30" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="332.2" y="146" width="102.6" height="30" fill="#ffffff" stroke="#adb5bd" stroke-dasharray="3 2"/>
+
+  <rect x="230" y="196" width="373.2" height="30" fill="#fff9db" stroke="#f08c00" stroke-dasharray="5 3"/>
+  <rect x="603.2" y="196" width="242" height="30" fill="#e6fcf5" stroke="#0ca678" stroke-dasharray="5 3"/>
+
+  <g font-size="10.5" font-weight="700" text-anchor="middle">
+    <text x="265" y="115" fill="#e8590c">3.50</text>
+    <text x="323" y="115" fill="#0b7285">2.3</text>
+    <text x="359.7" y="115" fill="#495057">1.4</text>
+    <text x="261" y="165" fill="#e8590c">3.11</text>
+    <text x="312" y="165" fill="#0b7285">2.0</text>
+    <text x="383.5" y="165" fill="#495057">5.1</text>
+    <text x="416" y="215" fill="#e8590c">DeepEP 18.66</text>
+    <text x="724" y="215" fill="#0b7285">MoE ≈ 12.1</text>
+  </g>
+  <g font-size="11" fill="#495057">
+    <text x="382" y="115">= <tspan font-weight="700">7.17</tspan> 实测</text>
+    <text x="444" y="165">= <tspan font-weight="700">10.24</tspan> 实测　剩余多 3.7：attention 段每卡 960 行对 144 行</text>
+    <text x="852" y="215">+ ?</text>
+  </g>
+
+  <path d="M24 248 L896 248" stroke="#e9ecef" stroke-width="1"/>
+
+  <!-- cards: what each part scales with -->
+  <g>
+    <rect x="24" y="262" width="280" height="118" rx="8" fill="#fff9db" stroke="#f08c00"/>
+    <rect x="320" y="262" width="280" height="118" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+    <rect x="616" y="262" width="280" height="118" rx="8" fill="#f8f9fa" stroke="#adb5bd" stroke-dasharray="4 3"/>
+  </g>
+  <g font-size="13" font-weight="700">
+    <text x="40" y="286" fill="#e8590c">DeepEP low-latency buffer</text>
+    <text x="336" y="286" fill="#0b7285">masked GEMM 中间张量</text>
+    <text x="632" y="286" fill="#495057">attention / KDA 激活等</text>
+  </g>
+  <g font-size="12" fill="#212529" font-family="'SFMono-Regular', Menlo, Consolas, monospace">
+    <text x="40" y="312">≈ 8 × E × max_dispatch × H B</text>
+    <text x="336" y="312">gate_up = E × max_dispatch × 2I × 2 B</text>
+    <text x="632" y="312">≈ 每行激活 × 本卡行数</text>
+  </g>
+  <g font-size="10.5" fill="#495057">
+    <text x="40" y="334">E = 896 专家，H = 3584（latent MoE）</text>
+    <text x="336" y="334">I = 3072；单层峰值约 1.5 × gate_up</text>
+    <text x="632" y="334">DP16 144 行；DCP8 attention 段 960 行</text>
+  </g>
+  <g font-size="10.5" font-weight="700">
+    <text x="40" y="362" fill="#e8590c">与 bs 无关 · 非 torch · 首次 dispatch 懒分配</text>
+    <text x="336" y="362" fill="#0b7285">与 bs 无关 · 池内 · 层间复用</text>
+    <text x="632" y="362" fill="#495057">随 max_bs 线性 · 池内 · 只看一层</text>
+  </g>
+
+  <!-- note strip -->
+  <rect x="24" y="396" width="872" height="34" rx="8" fill="#f8f9fa"/>
+  <text x="460" y="417" text-anchor="middle" font-size="11.5" fill="#495057">前两项只由 max_dispatch 决定。DP16 的 max_dispatch 等于每卡行数，加大 bs 时跟着涨；DCP8 只需覆盖 reduce-scatter 后的 1/8 行。</text>
+</svg>

@@ -287,6 +287,8 @@ DCP 组内 8 张卡共同服务同一批请求，投机解码的每个随机决�
 
 两者不是谁替代谁：A 在并发足够时把 HBM 带宽摊给更多请求，B 在并发上不去或上下文很长时把一个请求的访存摊给 8 张卡。
 
+表中 B 的并发是早期配置。当前 `start_k3_decode_dp2.sh` 用的是每 DP 192（总并发 384，dispatch 128）。在同样 384 并发下两者的逐项计算与显存对比见 [K3 Decode：DP16 vs DP2×DCP8](./kimi_k3_decode_dp16_vs_dp2.md)。
+
 ### DSPARK 与 KDA state：投机解码在两侧的分工
 
 ![DSPARK 在 PD 两侧各做什么](../docs/WikiImage/kimi_k3_b200_dspark.svg)

@@ -1,0 +1,117 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 610" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="920" height="610" rx="12" fill="#ffffff"/>
+  <text x="460" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">固定开销占掉多少，每卡还剩多少给 KV 和 SSM 状态</text>
+  <text x="460" y="56" text-anchor="middle" font-size="13" fill="#868e96">TP0 启动日志逐项记账，GiB；两边整卡可用都是 177.7 GiB；虚线框内是状态池</text>
+
+  <!-- scale: x0 = 170, 3.8 px / GiB -->
+  <g font-size="10" fill="#868e96">
+    <text x="170" y="92">0</text>
+    <text x="845" y="92" text-anchor="end">177.7 GiB</text>
+  </g>
+
+  <!-- row labels -->
+  <text x="24" y="114" font-size="13" font-weight="700" fill="#0b7285">A · DP16</text>
+  <text x="24" y="129" font-size="10.5" fill="#868e96">mem-fraction 0.88</text>
+  <text x="24" y="188" font-size="13" font-weight="700" fill="#5f3dc4">B · DP2 × DCP8</text>
+  <text x="24" y="203" font-size="10.5" fill="#868e96">mem-fraction 0.83</text>
+
+  <!-- A bar: NCCL, target 权重, draft 权重, workspace, graph, 剩余 | KDA+Replay, draft KV, MLA KV -->
+  <rect x="170" y="98" width="5.93" height="36" fill="#f1f3f5" stroke="#adb5bd"/>
+  <rect x="175.93" y="98" width="370.69" height="36" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="546.62" y="98" width="8.02" height="36" fill="#dbe4ff" stroke="#4c6ef5"/>
+  <rect x="554.64" y="98" width="2.47" height="36" fill="#f1f3f5" stroke="#adb5bd"/>
+  <rect x="557.11" y="98" width="30.63" height="36" fill="#fff9db" stroke="#f08c00"/>
+  <rect x="587.74" y="98" width="15.16" height="36" fill="#ffffff" stroke="#adb5bd" stroke-dasharray="3 2"/>
+  <rect x="602.90" y="98" width="80.48" height="36" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="683.38" y="98" width="5.70" height="36" fill="#c3fae8" stroke="#0ca678"/>
+  <rect x="689.08" y="98" width="156.22" height="36" fill="#f3f0ff" stroke="#7048e8"/>
+  <rect x="600.90" y="94" width="246.40" height="44" rx="4" fill="none" stroke="#212529" stroke-width="1.5" stroke-dasharray="5 3"/>
+
+  <!-- B bar -->
+  <rect x="170" y="172" width="8.40" height="36" fill="#f1f3f5" stroke="#adb5bd"/>
+  <rect x="178.40" y="172" width="362.22" height="36" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="540.62" y="172" width="4.67" height="36" fill="#dbe4ff" stroke="#4c6ef5"/>
+  <rect x="545.29" y="172" width="13.76" height="36" fill="#f1f3f5" stroke="#adb5bd"/>
+  <rect x="559.05" y="172" width="53.05" height="36" fill="#fff9db" stroke="#f08c00"/>
+  <rect x="612.10" y="172" width="30.32" height="36" fill="#ffffff" stroke="#adb5bd" stroke-dasharray="3 2"/>
+  <rect x="642.42" y="172" width="63.69" height="36" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="706.11" y="172" width="7.60" height="36" fill="#c3fae8" stroke="#0ca678"/>
+  <rect x="713.71" y="172" width="131.59" height="36" fill="#f3f0ff" stroke="#7048e8"/>
+  <rect x="640.42" y="168" width="206.88" height="44" rx="4" fill="none" stroke="#212529" stroke-width="1.5" stroke-dasharray="5 3"/>
+
+  <!-- in-bar labels -->
+  <g font-size="10.5" font-weight="700" text-anchor="middle">
+    <text x="361" y="120" fill="#3b5bdb">target 权重 + staging 97.6</text>
+    <text x="572" y="120" fill="#e8590c">8.1</text>
+    <text x="643" y="120" fill="#0b7285">SSM 21.2</text>
+    <text x="767" y="120" fill="#5f3dc4">MLA KV 41.1</text>
+    <text x="360" y="194" fill="#3b5bdb">target 权重 + staging 95.3</text>
+    <text x="585" y="194" fill="#e8590c">图 14.0</text>
+    <text x="627" y="194" fill="#868e96">8.0</text>
+    <text x="674" y="194" fill="#0b7285">SSM 16.8</text>
+    <text x="779" y="194" fill="#5f3dc4">MLA KV 34.6</text>
+  </g>
+  <g font-size="10.5" fill="#868e96">
+    <text x="170" y="152">固定开销 113.9：NCCL 1.6 · draft 权重 2.1 · workspace 类 0.65 · CUDA graph 8.1 · 剩余 4.0</text>
+    <text x="845" y="152" text-anchor="end" font-weight="700" fill="#212529">状态池 63.8（含 draft KV 1.5）</text>
+    <text x="170" y="226">固定开销 124.3：NCCL 2.2 · draft 权重 1.2 · workspace 类 3.6 · CUDA graph 14.0 · 剩余 8.0</text>
+    <text x="845" y="226" text-anchor="end" font-weight="700" fill="#212529">状态池 53.4（含 draft KV 2.0）</text>
+  </g>
+  <!-- diverging: fixed overhead, DP16 minus DP2, center x = 470, 30 px / GiB -->
+  <path d="M24 244 L896 244" stroke="#e9ecef" stroke-width="1"/>
+  <text x="460" y="266" text-anchor="middle" font-size="14" font-weight="700" fill="#212529">固定开销逐项对比：DP16 每卡少 10.4 GiB，全部留给状态池</text>
+  <g font-size="10.5" fill="#868e96">
+    <text x="462" y="286" text-anchor="end">← DP16 少用</text>
+    <text x="478" y="286">DP16 多用 →</text>
+  </g>
+  <path d="M470 292 L470 516" stroke="#adb5bd" stroke-width="1.2"/>
+
+  <g font-size="11.5" fill="#495057">
+    <text x="24" y="310">CUDA graph（含 DeepEP）</text>
+    <text x="24" y="338">运行时剩余（0.88 对 0.83）</text>
+    <text x="24" y="366">按槽数分配的索引表</text>
+    <text x="24" y="394">DCP 全 head Q 副本</text>
+    <text x="24" y="422">NCCL 初始化</text>
+    <text x="24" y="450">其他 workspace</text>
+    <text x="24" y="478">draft 权重 + staging</text>
+    <text x="24" y="506">target 权重 + staging</text>
+  </g>
+
+  <rect x="293.0" y="296" width="177.0" height="20" rx="3" fill="#fff9db" stroke="#f08c00"/>
+  <rect x="350.3" y="324" width="119.7" height="20" rx="3" fill="#ffffff" stroke="#adb5bd" stroke-dasharray="3 2"/>
+  <rect x="424.7" y="352" width="45.3" height="20" rx="3" fill="#f1f3f5" stroke="#adb5bd"/>
+  <rect x="442.7" y="380" width="27.3" height="20" rx="3" fill="#f1f3f5" stroke="#adb5bd"/>
+  <rect x="450.5" y="408" width="19.5" height="20" rx="3" fill="#f1f3f5" stroke="#adb5bd"/>
+  <rect x="453.5" y="436" width="16.5" height="20" rx="3" fill="#f1f3f5" stroke="#adb5bd"/>
+  <rect x="470" y="464" width="26.4" height="20" rx="3" fill="#dbe4ff" stroke="#4c6ef5"/>
+  <rect x="470" y="492" width="66.9" height="20" rx="3" fill="#edf2ff" stroke="#4c6ef5"/>
+
+  <g font-size="11" font-weight="700" fill="#495057">
+    <text x="287" y="310" text-anchor="end">−5.9</text>
+    <text x="344" y="338" text-anchor="end">−4.0</text>
+    <text x="419" y="366" text-anchor="end">−1.5</text>
+    <text x="437" y="394" text-anchor="end">−0.9</text>
+    <text x="445" y="422" text-anchor="end">−0.65</text>
+    <text x="448" y="450" text-anchor="end">−0.55</text>
+    <text x="502" y="478">+0.9<tspan font-weight="400" fill="#868e96">　DP16 开了 draft weight shard，staging 1.26</tspan></text>
+    <text x="543" y="506">+2.2<tspan font-weight="400" fill="#868e96">　AG staging 1.2 对 0.3，其余未拆</tspan></text>
+  </g>
+  <g font-size="10.5" fill="#868e96">
+    <text x="478" y="310">档位、最大 bs、DCP 960 行 vs 120 行</text>
+    <text x="478" y="338">参数，需盖住运行时峰值</text>
+    <text x="478" y="366">槽数 × 1M 上下文；DCP 按全局槽数</text>
+    <text x="478" y="394">只有 DCP 需要</text>
+    <text x="478" y="422">多 DCP8、attention TP8 两个组</text>
+    <text x="478" y="450">attention backend 等，未逐项核对</text>
+  </g>
+
+  <!-- result row -->
+  <path d="M24 524 L896 524" stroke="#e9ecef" stroke-width="1"/>
+  <text x="24" y="546" font-size="11.5" font-weight="700" fill="#212529">状态池（KV + SSM）</text>
+  <rect x="470" y="532" width="312.0" height="20" rx="3" fill="#f3f0ff" stroke="#212529" stroke-dasharray="5 3"/>
+  <text x="788" y="546" font-size="11" font-weight="700" fill="#5f3dc4">+10.4</text>
+
+  <!-- note strip -->
+  <rect x="24" y="564" width="872" height="34" rx="8" fill="#f8f9fa"/>
+  <text x="460" y="585" text-anchor="middle" font-size="11.5" fill="#495057">CUDA graph 和 mem-fraction 省 9.9，DCP 专属结构（Q 副本、索引表、NCCL 组、workspace）省 3.6，DP16 在权重上多付 3.1。状态池内怎么分是参数选择。</text>
+</svg>

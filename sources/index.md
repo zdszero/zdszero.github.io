@@ -78,6 +78,7 @@
             - [Budget & Metrics](./vram_budget.md)
             - [Weights & KV Cache](./vram_persistent.md)
             - [Runtime Activation](./vram_runtime.md)
+            - [CUDA Graph Memory](./vram_cuda_graph.md)
             - [Communication Buffers](./vram_communication.md)
     - Model Params
         - [kimi k3 weight](./kimi_k3_weight.md)
@@ -103,6 +104,7 @@
         - [H200 迁移 B200](./h200_to_b200_mig.md)
         - [Kimi K25/K26 B200](./kimi_k25_b200.md)
         - [Kimi K3 B200](./kimi_k3_b200.md)
+            - [K3 Decode：DP16 vs DP2×DCP8](./kimi_k3_decode_dp16_vs_dp2.md)
         - [Prefill batch overlap](./prefill_forward_thread_overlap.md)
 - [A 股事件史](./stages.md)
     - [2005-2007](./2005-2007.md)

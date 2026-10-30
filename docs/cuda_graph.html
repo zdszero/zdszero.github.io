@@ -160,10 +160,9 @@
             <span class="math inline">t^{\text{gpu}}_i</span>，一共有
             <span class="math inline">N</span> 个 kernel。在 CPU
             能持续提前排队的理想情况下：</p>
-            <p><span class="math display">
-            T_{\text{wall}} \approx \max\left(\sum_{i=1}^{N}
-            t^{\text{cpu}}_i,\ \sum_{i=1}^{N} t^{\text{gpu}}_i\right)
-            </span></p>
+            <p><span class="math display">T_{\text{wall}} \approx
+            \max\left(\sum_{i=1}^{N} t^{\text{cpu}}_i,\ \sum_{i=1}^{N}
+            t^{\text{gpu}}_i\right)</span></p>
             <p>当 <span class="math inline">\sum_i t^{\text{cpu}}_i &gt;
             \sum_i t^{\text{gpu}}_i</span> 时，GPU 会在两次 kernel
             之间空转等待命令，流水线出现断档（bubble），这称为
@@ -173,10 +172,9 @@
             <p>CUDA Graph
             的做法是：把一整段固定的命令序列<strong>录制</strong>成一张
             DAG，之后每次执行只需提交一次：</p>
-            <p><span class="math display">
-            \Delta T \approx \sum_{i=1}^{N} t^{\text{cpu}}_i -
-            t^{\text{cpu}}_{\text{graph}}
-            </span></p>
+            <p><span class="math display">\Delta T \approx
+            \sum_{i=1}^{N} t^{\text{cpu}}_i -
+            t^{\text{cpu}}_{\text{graph}}</span></p>
             <p>其中 <span
             class="math inline">t^{\text{cpu}}_{\text{graph}}</span>
             是单次 graph launch 的成本，与 <span
@@ -439,7 +437,10 @@
             </table>
             <p>这部分显存在启动时就被占住，并且在 KV cache
             容量规划之外，所以档位开得越大、越密，留给 KV cache
-            的空间越少。</p>
+            的空间越少。实测中「越大」的影响远大于「越密」：最大一档往往还包含与
+            batch 无关的 MoE 缓冲和 warmup 触发的懒分配，见 <a
+            href="./vram_cuda_graph.html">CUDA Graph
+            显存：怎么算、怎么测</a>。</p>
             <h3 id="图能复用的条件">图能复用的条件</h3>
             <p>把“图只认地址和参数”换成可检查的条件，一段代码能被同一张图反复
             replay，需要四个「一致」：</p>
@@ -502,16 +503,14 @@
             <pre class="text"><code>Q: [bs, 1, n_heads, head_dim]
 K: [bs, kv_len, n_heads, head_dim]</code></pre>
             <p>attention 的核心计算是</p>
-            <p><span class="math display">
-            \mathrm{softmax}\!\left(\frac{QK^{\mathsf
-            T}}{\sqrt{d}}\right)V
-            </span></p>
+            <p><span
+            class="math display">\mathrm{softmax}\!\left(\frac{QK^{\mathsf
+            T}}{\sqrt{d}}\right)V</span></p>
             <p>每个 query token 都要算一整行
             attention。大多数实现的并行策略是</p>
-            <p><span class="math display">
-            \text{grid.x} \approx \frac{bs \times n\_heads \times
-            q\_len}{\text{queries per block}}
-            </span></p>
+            <p><span class="math display">\text{grid.x} \approx \frac{bs
+            \times n\_heads \times q\_len}{\text{queries per
+            block}}</span></p>
             <p>也就是「一个 thread block 负责一个 query block」。decode
             时 <span class="math inline">q\_len = 1</span>，所以 grid
             规模只和 <span class="math inline">bs \times n\_heads</span>
@@ -613,16 +612,13 @@ K: [bs, kv_len, n_heads, head_dim]</code></pre>
             是动态的。解决办法是预先 capture 若干 batch size
             档位（bucket），运行时把真实 batch pad
             到不小于它的最小档位：</p>
-            <p><span class="math display">
-            b_k = \min\left\{\, b_m \in \mathcal{B} \;\middle|\; b_m \ge
-            b \,\right\}
-            </span></p>
+            <p><span class="math display">b_k = \min\left\{\, b_m \in
+            \mathcal{B} \;\middle|\; b_m \ge b \,\right\}</span></p>
             <p>其中 <span class="math inline">\mathcal{B}</span> 是预先
             capture 的档位集合，例如 <span class="math inline">1, 2, 4,
             8, 16, \ldots</span>。padding 带来的算力浪费比例为</p>
-            <p><span class="math display">
-            \eta = 1 - \frac{b}{b_k}
-            </span></p>
+            <p><span class="math display">\eta = 1 -
+            \frac{b}{b_k}</span></p>
             <p>档位越密，<span class="math inline">\eta</span>
             越小，但要维护的图越多，capture
             时间与常驻显存也越高（见上文显存账）。常见策略是在小 batch

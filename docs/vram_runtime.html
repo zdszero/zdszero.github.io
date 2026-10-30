@@ -357,7 +357,10 @@
             128256 为例，这一块就是约 125 MiB。</p>
             <p>私有池的机制和显存账见 <a
             href="./torch_memory_management.md">显存管理与生命周期</a>，捕获与重放的约束见
-            <a href="./cuda_graph.html">Cuda Graph</a>。</p>
+            <a href="./cuda_graph.md">Cuda
+            Graph</a>。这块常驻具体由哪几项组成、怎么从启动日志里量出来，见
+            <a href="./vram_cuda_graph.html">CUDA Graph
+            显存：怎么算、怎么测</a>。</p>
             <h3 id="在-sglang-中给运行时显存留多少余量">在 SGLang
             中：给运行时显存留多少余量</h3>
             <p>KV cache pool 的大小由 <code>mem_fraction_static</code>

@@ -82,6 +82,105 @@
 - 小算子是否有重复计算
 - 是否会额外 ReduceScatter 的通信（后面是正常 MoE 还是 FusedMoE）
 
+## DP Attention 下 rank 之间的依赖
+
+### 问题：名义上独立的 DP rank，为什么每步都要互相等
+
+开了 DP attention 之后，每个 DP rank 有自己的 scheduler、自己的请求和自己的 KV cache，看起来像 N 个独立实例。但模型只有 attention 是按 DP 切开的，MoE、切分过的词表这些部分仍然跨 rank 共享。一步 forward 里，所有 rank 要一起参加上百次 collective。
+
+这就带来两个问题：
+
+- 某个 rank 这一步没有请求，它能不能直接跳过这一步？
+- 各 rank 的 batch 大小不同时，collective 的 buffer 应该开多大，每个 rank 的数据写在什么位置？
+
+两个问题的答案都依赖其他 rank 的状态，而每个 rank 的 scheduler 只知道自己的。
+
+### 抽象：数据依赖和控制依赖
+
+rank 之间的依赖可以分成两类。
+
+**数据依赖**是计算本身需要的：本 rank 的 token 要用到其他 rank 上的权重。以 Kimi K3 decode DP16 为例：
+
+| 环节 | 跨 rank 做什么 |
+| :--- | :--- |
+| embed（词表按 `SGLANG_VOCAB_TP_SIZE` 切分） | 每个 rank 只存一段词表，要替其他 rank 查表 |
+| 每个 MoE 层 | 专家分布在所有 rank 上，token 要 dispatch 出去，算完再 combine 回来 |
+| lm_head（词表切分） | 收集其他 rank 的 hidden，算本 rank 那段词表的 logits，再发回去 |
+| attention、sample、spec verify | 只处理本地请求，不通信 |
+
+数据依赖的结果是：所有 rank 必须一起走完每一层，每个 MoE 层都要等最慢的 rank 到齐。一个 rank 即使没有请求，也得跑一个空的 idle batch 去参加 collective，否则其他 rank 会卡住。
+
+**控制依赖**是为了让这些 collective 能正确执行。所有 rank 在 launch 之前要对三件事达成一致：
+
+1. **谁参加。** 没有请求的 rank 要补一个 idle batch。
+2. **跑什么模式。** decode、extend、idle 的 kernel 序列和 collective 序列不同，必须统一；是否走 cuda graph 也要统一，只要有一个 rank 不能走 graph，所有 rank 都不走。
+3. **shape 多大。** NCCL collective 要求每个 rank 贡献的长度相同；gather 到 buffer 时每个 rank 的 offset 等于前面 rank 的 token 数之和；cuda graph 在 capture 时就固定了 shape，所有 rank 必须 replay 同一个 bs 的 graph。
+
+关键在于：这些 size 必须在 kernel launch 之前确定，不能在 forward 里边算边商量。所以控制依赖要在 forward 之前单独解决一次，这就是 scheduler 每步做的「MLP sync」。它交换的不是激活，只是每个 rank 的几个整数。
+
+![DP Attention 下 rank 之间的两类依赖](../docs/WikiImage/data_parallelism_dp_dependencies.svg)
+
+### 整体流程：一步 decode 里的控制同步
+
+每个 rank 的 scheduler 选好本地 batch 后，把 7 个整数放进一个小 tensor，在所有 rank 之间做一次 all-gather：
+
+```
+num_tokens, num_tokens_for_logprob, can_cuda_graph,
+is_extend_in_batch, can_run_tbo, forward_mode, can_run_breakable_cuda_graph
+```
+
+收到所有 rank 的数据后，每个 rank 用同样的规则各自推导，得到相同的结论：
+
+- `global_num_tokens`：每个 rank 的请求数列表。后面的 DP gather、dense MLP、词表切分的 embed 和 lm_head、DSpark 的 row 布局都按它来算 buffer 长度和 offset。
+- graph bs：取 `max(global_num_tokens)`，再向上取到最近一档 capture 过的 bs。
+- `can_cuda_graph`：所有 rank 取 min。
+- `need_idle_batch`：只要有任何一个 rank 有 token，没有请求的 rank 就补 idle batch。
+
+decode 阶段 `global_num_tokens` 里是请求数，进入 forward 后再乘上每个请求的 token 数（投机解码时是 draft + 1），换算成 token 数。
+
+这次通信的代价取决于它在不在关键路径上。开了 overlap scheduler（默认）时，它走的是 CPU 上的 gloo 通信组，不走 NCCL。原因是 GPU 这时还在跑上一步，如果用 NCCL，它就得排在上一步的 kernel 后面。所以这次同步和上一步的 GPU 执行是并行的。
+
+在 K3 decode DP2（16 个 rank 跨 2 个节点）的 trace 里，`prepare_mlp_sync_batch` 每步中位数 3.07 ms、p90 3.35 ms，但 GPU 在相邻两步之间的空闲是 0。只要 CPU 一轮的总耗时小于 GPU 一步的时间，这 3 ms 就被完全藏住。它会暴露出来的情况是：关掉 overlap schedule、GPU 一步很短导致 CPU 成为瓶颈，或者 gloo 出现长尾。
+
+![一步 decode 的时间线](../docs/WikiImage/data_parallelism_dp_step_timeline.svg)
+
+### 跳过同步：用约定代替通信
+
+如果不想要这次通信，也可以让所有 rank 事先约定一个常量。`SGLANG_SCHEDULER_SKIP_ALL_GATHER=1` 跳过 all-gather，`SGLANG_DP_STATIC_SYNC_BOUND=B` 让每个 rank 都假设所有 rank 的请求数都是 B，于是 `global_num_tokens = [B] * dp_size`，offset 就是 `rank * B`，不需要通信也能算出相同的布局。
+
+这两个开关必须一起用。只开 `SKIP_ALL_GATHER` 不设 bound 时，`global_num_tokens` 里只有本 rank 自己的数，这是给 DWDP（各 rank 完全独立运行）用的模式；DP attention 下各 rank 的布局会对不上，词表切分的 embed 会直接报错，collective 的 size 不一致还可能导致 hang。
+
+两种方式都会 padding，差别是 pad 到多少：
+
+| | 默认 all-gather | SKIP_ALL_GATHER + STATIC_SYNC_BOUND |
+| :--- | :--- | :--- |
+| 共识从哪来 | 每步交换一次 | 启动时约定的常量 |
+| padding 到 | 当步所有 rank 的最大值 | 永远是 B |
+| 每步开销 | 一次跨节点 CPU 通信，通常被 overlap 藏住 | 没有 |
+| 负载低时 | 跟着变小 | 仍按 B 计算和通信 |
+| 限制 | 无 | B ≥ 每个 rank 可能的最大请求数，否则 scheduler 报错；所有 rank 每步必须处于同一 forward mode，因为模式不再被同步 |
+
+因为每个 MoE 层本来就要等最慢的 rank，默认方式 pad 到最大值几乎不增加延迟。静态 bound 只在所有 rank 都低于 B 时吃亏。K3 decode DP16 的启动脚本设了 `B = 24`，结果每 rank bs 4、8、24 的三份 profile 墙钟都在 136~138 ms，trace 里 KDA 和 MLA kernel 的 grid 也完全相同，都是按 24 跑的。详见 [K3 Decode：DP16 vs DP2×DCP8](./kimi_k3_decode_dp16_vs_dp2.md)。
+
+### 源码定位
+
+路径相对 `python/sglang/srt/`：
+
+- `managers/scheduler_components/dp_attn.py`
+    - `prepare_mlp_sync_batch_raw()`：一步同步的入口，决定用哪个通信组、是否跳过 all-gather、是否补 idle batch。
+    - `MLPSyncBatchInfo.all_gather()`：打包 7 个整数并 all-gather，推导出 `global_num_tokens`、`can_cuda_graph` 等。
+    - `_fill_static_sync_values()`：静态 bound 路径，用 `[bound] * dp_size` 代替通信结果。
+- `environ.py`：`SGLANG_SCHEDULER_SKIP_ALL_GATHER`、`SGLANG_DP_STATIC_SYNC_BOUND` 的定义和注释。
+- `layers/dp_attention.py`：`get_dp_padding_mode()` 根据 `global_num_tokens` 选择 MAX_LEN（每个 rank 都 pad 到最大值）或 SUM_LEN（紧凑排布）的 gather 布局；cuda graph 内固定用 MAX_LEN。
+- `model_executor/runner/decode_cuda_graph_runner.py`：graph bs 取 `max(original_global_num_tokens_cpu)`。
+- `speculative/spec_info.py`：`spec_scale_global_num_tokens()` 把请求数换算成 token 数。
+
+每层 attention 和 MLP 之间具体怎么 gather 和 scatter，见 [Communicator](./communicator.md)。
+
+### 小结
+
+DP attention 让 attention 部分各 rank 独立，但 MoE 和词表切分把所有 rank 绑在每一层上，这是数据依赖。为了让这些 collective 能用固定的 shape 和 cuda graph 执行，所有 rank 在每步 forward 前必须对参与者、模式和 size 达成一致，这是控制依赖。默认实现每步交换几个整数来达成一致，代价通常被 overlap scheduler 藏住；静态 bound 用约定代替通信，省掉这次同步，代价是负载低时也按上限计算。
+
 ## Fake-DP：一个入口下的多组独立模型副本
 
 SGLang 当前仓库中的 `--fake-dp N`（字段名 `fake_dp_size`，默认 1）表示：在同一个 DataParallelController / HTTP 服务入口后面，启动 N 组独立模型实例。**`--fake-dp 2` 就是两组完整模型副本，每组可以再用 TP / CP / EP 组织自己的 GPU。** “完整”指每组 GPU 合起来包含完整模型，而非每张 GPU 都保存完整权重。

@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 524" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="920" height="524" rx="12" fill="#ffffff"/>
+  <text x="460" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">一步 decode 的时间按层类型拆开</text>
+  <text x="460" y="56" text-anchor="middle" font-size="13" fill="#868e96">A · DP16（每卡 16 请求 × 5 token）对 B · DP2 × DCP8（每 DP 128 请求 × 5 token）；kernel 时间，ms</text>
+
+  <!-- legend -->
+  <g font-size="11" fill="#495057">
+    <rect x="210" y="72" width="12" height="10" rx="2" fill="#e6fcf5" stroke="#0ca678"/>
+    <rect x="224" y="72" width="12" height="10" rx="2" fill="#f3f0ff" stroke="#7048e8"/>
+    <text x="242" y="81">计算（A / B）</text>
+    <rect x="350" y="72" width="12" height="10" rx="2" fill="#fff9db" stroke="#f08c00"/>
+    <text x="368" y="81">DeepEP dispatch + combine</text>
+    <rect x="540" y="72" width="12" height="10" rx="2" fill="#fff5f5" stroke="#fa5252"/>
+    <text x="558" y="81">TP / DCP 激活通信</text>
+    <rect x="690" y="72" width="12" height="10" rx="2" fill="#edf2ff" stroke="#4c6ef5"/>
+    <text x="708" y="81">权重 AllGather 本地拷贝</text>
+  </g>
+
+  <!-- grid: x0 = 210, 5 px / ms -->
+  <g stroke="#e9ecef" stroke-width="1">
+    <path d="M210 98 L210 418"/><path d="M310 98 L310 418"/><path d="M410 98 L410 418"/>
+    <path d="M510 98 L510 418"/><path d="M610 98 L610 418"/>
+  </g>
+  <g font-size="10" fill="#868e96" text-anchor="middle">
+    <text x="210" y="432">0</text><text x="310" y="432">20</text><text x="410" y="432">40</text>
+    <text x="510" y="432">60</text><text x="610" y="432">80 ms</text>
+  </g>
+
+  <!-- group labels -->
+  <g font-size="12.5" font-weight="700" fill="#495057">
+    <text x="24" y="130">KDA × 68</text>
+    <text x="24" y="214">MLA × 24</text>
+    <text x="24" y="298">MoE × 92</text>
+    <text x="24" y="382">Dense + 首尾</text>
+  </g>
+  <g font-size="10" fill="#868e96">
+    <text x="24" y="146">投影 + gated_delta_net</text>
+    <text x="24" y="230">投影 + attention kernel</text>
+    <text x="24" y="314">路由 + shared expert</text>
+    <text x="24" y="398">ReplaySSM、lm_head</text>
+  </g>
+  <g font-size="11" font-weight="700" text-anchor="end">
+    <text x="202" y="121" fill="#0b7285">A</text><text x="202" y="153" fill="#5f3dc4">B</text>
+    <text x="202" y="205" fill="#0b7285">A</text><text x="202" y="237" fill="#5f3dc4">B</text>
+    <text x="202" y="289" fill="#0b7285">A</text><text x="202" y="321" fill="#5f3dc4">B</text>
+    <text x="202" y="373" fill="#0b7285">A</text><text x="202" y="405" fill="#5f3dc4">B</text>
+  </g>
+
+  <!-- compute segments -->
+  <g fill="#e6fcf5" stroke="#0ca678">
+    <rect x="210" y="104" width="98.3" height="24" rx="3"/>
+    <rect x="210" y="188" width="168.5" height="24" rx="3"/>
+    <rect x="210" y="272" width="206.0" height="24" rx="3"/>
+    <rect x="210" y="356" width="30.3" height="24" rx="3"/>
+  </g>
+  <g fill="#f3f0ff" stroke="#7048e8">
+    <rect x="210" y="136" width="63.4" height="24" rx="3"/>
+    <rect x="210" y="220" width="118.9" height="24" rx="3"/>
+    <rect x="210" y="304" width="176.0" height="24" rx="3"/>
+    <rect x="210" y="388" width="29.7" height="24" rx="3"/>
+  </g>
+  <!-- DeepEP -->
+  <g fill="#fff9db" stroke="#f08c00">
+    <rect x="416.0" y="272" width="161.0" height="24" rx="3"/>
+    <rect x="386.0" y="304" width="162.5" height="24" rx="3"/>
+  </g>
+  <!-- TP / DCP activation comm -->
+  <g fill="#fff5f5" stroke="#fa5252">
+    <rect x="273.4" y="136" width="29.2" height="24" rx="3"/>
+    <rect x="328.9" y="220" width="26.0" height="24" rx="3"/>
+    <rect x="548.5" y="304" width="27.9" height="24" rx="3"/>
+    <rect x="240.3" y="356" width="7.7" height="24" rx="2"/>
+    <rect x="239.7" y="388" width="6.4" height="24" rx="2"/>
+  </g>
+  <!-- weight AG local copy on main stream -->
+  <rect x="308.3" y="104" width="11.3" height="24" rx="3" fill="#edf2ff" stroke="#4c6ef5"/>
+
+  <!-- in-bar labels -->
+  <g font-size="10.5" text-anchor="middle" font-weight="700">
+    <text x="313" y="288" fill="#0b7285">计算 41.2</text>
+    <text x="496" y="288" fill="#e8590c">DeepEP 32.2</text>
+    <text x="298" y="320" fill="#5f3dc4">计算 35.2</text>
+    <text x="467" y="320" fill="#e8590c">DeepEP 32.5</text>
+    <text x="294" y="204" fill="#0b7285">2 wave，第二波 12 个 CTA</text>
+  </g>
+
+  <!-- value labels -->
+  <g font-size="11" fill="#495057">
+    <text x="328" y="121"><tspan font-weight="700">21.9</tspan>　gated_delta_net 124 us/层 · AG 本地拷贝 33 us/层</text>
+    <text x="311" y="153"><tspan font-weight="700">18.5</tspan>　gated_delta_net 85 us/层 · RS 86 us/层</text>
+    <text x="387" y="205"><tspan font-weight="700">33.7</tspan>　decode kernel 1240 us/层，attention 侧无通信</text>
+    <text x="363" y="237"><tspan font-weight="700">29.0</tspan>　attn_mqa 826 us/层 · A2A / RS / pack 217 us/层</text>
+    <text x="586" y="289"><tspan font-weight="700">73.4</tspan>　w13 151 · w2 80 us/层</text>
+    <text x="586" y="321"><tspan font-weight="700">73.3</tspan>　w13 129 · w2 66 · AG 61 us/层</text>
+    <text x="256" y="373"><tspan font-weight="700">7.6</tspan>　ReplaySSM 2.3 · 首尾通信 1.5 ms</text>
+    <text x="254" y="405"><tspan font-weight="700">7.2</tspan>　ReplaySSM 2.2 · 首尾通信 1.3 ms</text>
+  </g>
+
+  <!-- totals -->
+  <rect x="24" y="444" width="872" height="34" rx="8" fill="#f8f9fa"/>
+  <text x="460" y="466" text-anchor="middle" font-size="12" fill="#212529"><tspan font-weight="700">kernel 合计</tspan> A 136.6 · B 128.0 ms　｜　<tspan font-weight="700">一步墙钟</tspan> A 127.1 · B 119.3 ms　｜　<tspan font-weight="700">关键路径激活通信</tspan> A ≈ 4.6 · B ≈ 17.7 ms</text>
+  <text x="460" y="502" text-anchor="middle" font-size="11" fill="#868e96">单份 trace（TP-0 / DP-0），实例 256 并发、100k 上下文。A 的权重 AllGather 主体在侧流上（每步 48.4 GB，PtoP 忙约 69 ms），未画入。</text>
+</svg>

@@ -96,7 +96,7 @@ CUDA Graph 捕获的 kernel 记录了它们读写的地址，所以 capture 期�
 
 SGLang 按 batch 从大到小捕获，多张图共享同一个私有池，因此占用大约等于最大桶的峰值，而不是所有桶之和。lm head 的输出也不例外：`model_executor/graph_shared_output.py` 的 `GraphSharedOutput` 为所有 graph runner 准备一块 `(max_rows, vocab)` 的 FP32 logits 缓冲，`max_rows` 由 `ModelRunner.max_decode_logits_rows()` 按“最大 capture batch × 每请求 token 数”算出。以 batch 256、词表 128256 为例，这一块就是约 125 MiB。
 
-私有池的机制和显存账见 [显存管理与生命周期](./torch_memory_management.md)，捕获与重放的约束见 [Cuda Graph](./cuda_graph.md)。
+私有池的机制和显存账见 [显存管理与生命周期](./torch_memory_management.md)，捕获与重放的约束见 [Cuda Graph](./cuda_graph.md)。这块常驻具体由哪几项组成、怎么从启动日志里量出来，见 [CUDA Graph 显存：怎么算、怎么测](./vram_cuda_graph.md)。
 
 ### 在 SGLang 中：给运行时显存留多少余量
 
