@@ -87,6 +87,7 @@
     - Hardware
         - [GPU Arch](./gpu_arch.md)
         - [Cuda Graph](./cuda_graph.md)
+            - [Graph 与 Perfetto Stream](./cuda_graph_perfetto.md)
         - [CPU & GPU](./cpu_gpu.md)
         - [Stream](./cuda_stream.md)
         - [Host Device Interconnect](./host_device_interconnect.md)
@@ -105,6 +106,7 @@
         - [Kimi K25/K26 B200](./kimi_k25_b200.md)
         - [Kimi K3 B200](./kimi_k3_b200.md)
             - [K3 Decode：DP16 vs DP2×DCP8](./kimi_k3_decode_dp16_vs_dp2.md)
+            - [K3 Prefill PP16](./kimi_k3_prefill_pp16_env.md)
         - [Prefill batch overlap](./prefill_forward_thread_overlap.md)
 - [A 股事件史](./stages.md)
     - [2005-2007](./2005-2007.md)

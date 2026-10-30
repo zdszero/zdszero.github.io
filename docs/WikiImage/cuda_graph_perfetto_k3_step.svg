@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 430" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="430" rx="12" fill="#ffffff"/>
+  <text x="30" y="34" font-size="20" font-weight="700" fill="#212529">K3 DP16 一次 TARGET_VERIFY replay：123 条轨道，两类工作</text>
+  <text x="30" y="56" font-size="13" fill="#868e96">bs=24，TP0 rank；一次 cudaGraphLaunch 共 4431 个 GPU op，GPU 跨度 ≈135 ms</text>
+
+  <!-- left: per-track view -->
+  <rect x="30" y="78" width="410" height="250" rx="10" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="46" y="102" font-size="14" font-weight="700" fill="#3b5bdb">按轨道看：主链被切成 ~120 段</text>
+  <text x="46" y="120" font-size="11.5" fill="#868e96">每段 17 / 23 / 39 个 kernel，约一层，按时间依次出现</text>
+  <rect x="56" y="134" width="40" height="10" rx="2" fill="#4c6ef5"/>
+  <rect x="88" y="148" width="40" height="10" rx="2" fill="#4c6ef5"/>
+  <rect x="108" y="155" width="14" height="10" rx="2" fill="#0ca678"/>
+  <rect x="120" y="162" width="40" height="10" rx="2" fill="#4c6ef5"/>
+  <rect x="152" y="176" width="40" height="10" rx="2" fill="#4c6ef5"/>
+  <rect x="172" y="183" width="14" height="10" rx="2" fill="#0ca678"/>
+  <rect x="184" y="190" width="40" height="10" rx="2" fill="#4c6ef5"/>
+  <rect x="216" y="204" width="40" height="10" rx="2" fill="#4c6ef5"/>
+  <rect x="248" y="218" width="40" height="10" rx="2" fill="#4c6ef5"/>
+  <rect x="268" y="225" width="14" height="10" rx="2" fill="#0ca678"/>
+  <rect x="280" y="232" width="40" height="10" rx="2" fill="#4c6ef5"/>
+  <text x="330" y="244" font-size="14" fill="#868e96">…</text>
+  <rect x="56" y="262" width="368" height="12" rx="3" fill="#fff9db" stroke="#f08c00"/>
+  <text x="62" y="272" font-size="10" font-family="monospace" fill="#e8590c">s376：644× Memcpy PtoP + 92× memcpy128，忙 69 ms</text>
+  <rect x="56" y="290" width="12" height="10" rx="2" fill="#4c6ef5"/>
+  <text x="74" y="299" font-size="11" fill="#495057">主链段</text>
+  <rect x="130" y="290" width="12" height="10" rx="2" fill="#0ca678"/>
+  <text x="148" y="299" font-size="11" fill="#495057">alt_stream 分叉（gate / 共享专家）</text>
+  <rect x="330" y="290" width="12" height="10" rx="2" fill="#f08c00"/>
+  <text x="348" y="299" font-size="11" fill="#495057">权重 AG</text>
+  <text x="46" y="318" font-size="11" fill="#868e96">每条轨道都画一份 step[TARGET_VERIFY bs=24]，共 127 份</text>
+  <!-- right: union view -->
+  <rect x="460" y="78" width="410" height="250" rx="10" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="476" y="102" font-size="14" font-weight="700" fill="#0b7285">按并集看：时间都花在计算上</text>
+  <text x="476" y="120" font-size="11.5" fill="#868e96">7 次 replay 的典型值，条长按 135 ms 等比</text>
+
+  <text x="476" y="146" font-size="11.5" fill="#495057">计算 kernel 并集</text>
+  <rect x="476" y="152" width="376" height="14" rx="3" fill="#4c6ef5"/>
+  <text x="846" y="163" font-size="10.5" font-weight="700" fill="#ffffff" text-anchor="end">≈134 ms</text>
+
+  <text x="476" y="188" font-size="11.5" fill="#495057">s376 权重拷贝（几乎都与计算重叠）</text>
+  <rect x="476" y="194" width="194" height="14" rx="3" fill="#f08c00"/>
+  <text x="664" y="205" font-size="10.5" font-weight="700" fill="#ffffff" text-anchor="end">≈69 ms</text>
+
+  <text x="476" y="230" font-size="11.5" fill="#495057">计算与计算重叠（kernel 和 145.3 − 并集 134.2）</text>
+  <rect x="476" y="236" width="31" height="14" rx="3" fill="#0ca678"/>
+  <text x="514" y="247" font-size="10.5" fill="#0b7285">≈11 ms</text>
+
+  <text x="476" y="272" font-size="11.5" fill="#495057">只有拷贝在跑 / GPU 全空</text>
+  <rect x="476" y="278" width="3" height="14" rx="1" fill="#f08c00"/>
+  <rect x="482" y="278" width="3" height="14" rx="1" fill="#adb5bd"/>
+  <text x="492" y="289" font-size="10.5" fill="#495057">0.5–0.9 ms / 0.6–0.9 ms</text>
+  <text x="476" y="316" font-size="11" fill="#868e96">轨道多 ≠ 并发多：同一时刻通常只有 1–3 条轨道在跑</text>
+
+  <!-- note -->
+  <rect x="30" y="344" width="840" height="66" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="46" y="368" font-size="12" fill="#495057">读 graph replay 的 trace：先按 cudaGraphLaunch 的 correlation 把一次 replay 的 kernel 聚到一起，再对所有 stream 取并集算忙碌。</text>
+  <text x="46" y="390" font-size="12" fill="#495057">逐轨道相加会重复计算重叠；逐轨道看 step 标注的长度，只能看到驱动怎么摆放节点。</text>
+
+</svg>

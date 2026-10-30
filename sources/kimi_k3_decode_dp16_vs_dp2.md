@@ -97,9 +97,9 @@ decode 每步的主要开销是读 HBM。把一张卡每步要碰的数据分成
 | MLA KV 读 | ≈ 22.6 GB | ≈ 22.6 GB | 24 层 × 576 B × 100k token × 16 个完整请求 |
 | 非专家权重读 | ≈ 55 GB | ≈ 22 GB | 由 trace 里 AllGather 的 PtoP 字节反推 |
 | 权重 AllGather 写入 | 48.4 GB | 14.8 GB | trace 中每步 `Memcpy PtoP` 字节，bs 4 ~ 24 不变 |
-| 关键路径上的激活通信 | ≈ 4.6 ms | ≈ 17.7 ms | 见「通信」一节 |
+| 关键路径上的激活通信 | ≈ 1.5 ms | ≈ 17.7 ms | 见「通信」一节 |
 
-前三行完全相同，并随并发线性增长；后三行是两边各自的代价。DP16 每步多读写约 66 GB 权重，这是一笔与 bs 无关的固定开销；DP2 每步多约 13 ms 的关键路径通信，它随行数增长（DP2 bs 64 时约 6.5 ms）。并发低时，前三行小，DP16 的固定开销占比大，于是 DP16 慢得多；并发高时，DP2 的激活通信跟着行数涨上来，两边在每卡 24 个请求附近打平。
+前三行完全相同，并随并发线性增长；后三行是两边各自的代价。DP16 每步多读写约 66 GB 权重，这是一笔与 bs 无关的固定开销；DP2 每步多约 16 ms 的关键路径通信，它随行数增长（DP2 bs 64 时约 6.5 ms）。并发低时，前三行小，DP16 的固定开销占比大，于是 DP16 慢得多；并发高时，DP2 的激活通信跟着行数涨上来，两边在每卡 24 个请求附近打平。
 
 ### 计算：一步的时间按层类型拆开
 
@@ -123,14 +123,14 @@ kernel 合计含多流重叠，所以比墙钟大。下面四行把墙钟拆成�
 
 两个并发点上 DP16 慢的原因不同：
 
-- **实例并发 128**：差的 22.5 ms 里，KDA 的固定权重开销占 7.8 ms，「只有 AllGather 在跑」和「GPU 全空」占 8.1 ms。后者是 DP16 侧流上的权重 AllGather 跑到了关键路径上，见「通信」一节。
+- **实例并发 128**：差的 22.5 ms 里，KDA 的固定权重开销占 7.8 ms，「只有 AllGather 在跑」和「GPU 全空」占 8.1 ms。后者是 DP16 侧流上的权重 AllGather 跑到了关键路径上，见「通信」和「权重 AllGather」两节。
 - **实例并发 256**：AllGather 基本藏住了，差的 7.8 ms 主要来自 MLA（+4.7）和 KDA（+3.4）。MLA 的差值来自 kernel 的 wave 量化，见下文。
 
 ![一步 decode 的时间按层类型拆开](../docs/WikiImage/kimi_k3_dp16_vs_dp2_step_time.svg)
 
 #### KDA：投影读完整权重是固定开销，state kernel 慢 1.46 倍
 
-DP16 每层的投影都乘完整权重。以 `kda_qkv_proj` 为例，实例并发 256 时 DP16 是 M = 80（16 请求 × 5）乘完整的 36864 × 7168 FP8 权重，主 GEMM 67.2 us，MBU 52%；DP2 是 M = 640（128 × 5）乘 1/8 的权重，28.6 us，MFU 44%。`kda_o_proj` 同理（30.6 对 11.2 us）。DP16 每层还有一次约 33 us 的 `memcpy128`，这是 AllGather 中本 rank 那 1/8 的本地拷贝，落在主流上。这些读权重的开销与 bs 无关：DP16 的 KDA 投影加本地拷贝从 bs 4 到 bs 24 一直是每步 9.3 ~ 10.9 ms，DP2 只有约 2.7 ms。DP2 多出的是 SP-MoE 前的 reduce-scatter，bs 128 时每层 86 us，共 5.84 ms。
+DP16 每层的投影都乘完整权重。以 `kda_qkv_proj` 为例，实例并发 256 时 DP16 是 M = 80（16 请求 × 5）乘完整的 36864 × 7168 FP8 权重，主 GEMM 67.2 us，MBU 52%；DP2 是 M = 640（128 × 5）乘 1/8 的权重，28.6 us，MFU 44%。`kda_o_proj` 同理（30.6 对 11.2 us）。KDA block 的 kernel 时间里还算进了每层一次约 30 ~ 38 us 的 `memcpy128`，它是权重 AllGather 中本 rank 那 1/8 的本地拷贝，跑在侧流上，不占主流（见「权重 AllGather」一节）。这些读权重的开销与 bs 无关：DP16 的 KDA 投影加本地拷贝从 bs 4 到 bs 24 一直是每步 9.3 ~ 10.9 ms，其中本地拷贝占 2.0 ~ 2.6 ms，主流上的投影约 7 ~ 8 ms；DP2 只有约 2.7 ms。DP2 多出的是 SP-MoE 前的 reduce-scatter，bs 128 时每层 86 us，共 5.84 ms。
 
 两边的 state 更新跑的是同一个 `kernel_cutlass_kda_decode_mtp_kernel`，每卡每层读写的 state 字节相同（16 × 96 head 与 128 × 12 head），q_len 现在也都是 5。但 DP16 每层 124 us（MBU 21.6%），DP2 每层 85 us（MBU 31.6%），慢 1.46 倍；实例并发 128 时是 68 对 46 us，1.48 倍。
 
@@ -174,8 +174,8 @@ DP16 的 `logits_all_gather` 0.61 ms、`lm_head` 前的 gather 0.26 ms、`lm_hea
 
 | 每步 | A · DP16 bs 16 | B · DP2 × DCP8 bs 128 |
 | :--- | :--- | :--- |
-| 关键路径 | AllGather 本地拷贝约 3.1 ms，dense all-reduce、logits / lm_head gather、首部 all-gather 约 1.5 ms，共约 4.6 ms | KDA 后 RS 5.84 ms、MLA 的 A2A / RS / pack / 合并 5.2 ms、MoE 后 AG 5.58 ms、首尾约 1.1 ms，共约 17.7 ms |
-| 侧流 | 权重 AllGather 48.4 GB，PtoP 忙约 69 ms | MoE 段权重 AllGather 14.8 GB，PtoP 忙约 26 ms |
+| 关键路径 | dense all-reduce、logits / lm_head gather、首部 all-gather，共约 1.5 ms | KDA 后 RS 5.84 ms、MLA 的 A2A / RS / pack / 合并 5.2 ms、MoE 后 AG 5.58 ms、首尾约 1.1 ms，共约 17.7 ms |
+| 侧流 | 权重 AllGather 48.4 GB，PtoP 忙约 69 ms（AllGather 的本地拷贝 `memcpy128` 也在这条流上） | MoE 段权重 AllGather 14.8 GB，PtoP 忙约 26 ms |
 | DeepEP dispatch + combine | 32.2 ms | 32.5 ms |
 
 DP16 侧流上的 AllGather 每步搬的字节固定，PtoP 的忙碌时间从 bs 4 到 bs 24 都在 69 ~ 70 ms。它能不能藏住，取决于主流上的计算够不够长：
@@ -188,6 +188,91 @@ DP16 侧流上的 AllGather 每步搬的字节固定，PtoP 的忙碌时间从 b
 | GPU 全空 | 4.8 | 3.6 | 1.3 | 1.4 |
 
 bs 4 时计算本身只有 71.9 ms，和 AllGather 的 69 ms 差不多长，主流经常要等下一层的权重到齐，墙钟里有 10.8 ms 只有 AllGather 在跑，另有 4.8 ms GPU 全空。bs 16 以上计算变长，这两段降到 4 ~ 5 ms。DP2 两个点上这两段合计都不到 2 ms。这就是 DP16 小 bs 的下限：bs 1 也要 83.5 ms，其中权重读取和 AllGather 的固定开销占了大头。
+
+### 权重 AllGather：shard 了什么、每层搬多少、多快
+
+#### 要解决的问题：TP1 模块的权重在每张卡上都是完整副本
+
+一个模块如果在本卡上以 TP1 运行，就要用完整权重去乘本卡的行。16 张卡各存一份完整副本，HBM 浪费在重复的权重上。weight shard 的做法是：机内 8 张卡组成一个 shard 组，每张卡只**存** 1/8 行；每层开始前，用一次 AllGather 把完整权重拼回到一块临时 buffer，算完就丢。显存省下 7/8，代价是每层每卡要从 NVLink 收 7/8 的完整权重，再从 HBM 完整读一遍。
+
+已经按 TP 切过的权重本来就只有 1/8，没有必要再 shard。所以哪些权重被 shard，由各模块在本卡上的 TP 大小决定：
+
+- **MoE 段两边都 shard。** 路由专家前后的 latent 投影和 TP1 的 shared expert 在两种布局下都是 TP1。
+- **attention 投影只有 DP16 shard。** DP16 的 attn_tp = 1，KDA 和 MLA 的投影都是完整的；DP2 的 attn_tp = 8，投影已经按 head 切成 1/8。
+- **draft 层只有 DP16 shard。** 它开了 `SGLANG_ENABLE_K3_DRAFT_WEIGHT_SHARD`，DP2 没开（日志 `0 weight-sharded layers`）。
+
+![每层 AllGather 的权重组成与侧流流水](../docs/WikiImage/kimi_k3_dp16_vs_dp2_weight_ag.svg)
+
+#### 每层搬多少
+
+每卡存 1/8，每次 AllGather 收 7/8。形状是 (out, in)，FP8 每元素 1 B，bf16 2 B：
+
+| 层（层数） | 被 shard 的权重 | 完整 / 层 | 每卡收 / 层 | 每卡收 / 步 |
+| :--- | :--- | ---: | ---: | ---: |
+| DP2 MoE 层（92） | `routed_expert_down_proj` 3584 × 7168、`routed_expert_up_proj` 7168 × 3584、shared `gate_up_proj` 12288 × 7168、shared `down_proj` 7168 × 6144，均 FP8 | 183.5 MB | 160.6 MB | 14.77 GB |
+| DP16 KDA 层（68） | MoE 段同上 4 项 + `qkv_proj` 36864 × 7168、`o_proj` 7168 × 12288、`g_proj` 12288 × 7168（FP8）、`f_b_proj` 12288 × 128（bf16） | 627.0 MB | 548.7 MB | 37.31 GB |
+| DP16 MLA 层（24） | MoE 段同上 4 项 + `q_b_proj` 18432 × 1536、`o_proj` 7168 × 12288、`g_proj` 12288 × 7168，均 FP8 | 388.0 MB | 339.5 MB | 8.15 GB |
+| DP16 draft 层（5） | `self_attn.o_proj` 7168 × 4096、`mlp.gate_up_proj` 28672 × 7168、`mlp.down_proj` 7168 × 14336，均 bf16 | 675.3 MB | 590.9 MB | 2.95 GB |
+
+合计每卡每步收 DP16 48.41 GB、DP2 14.77 GB，与启动日志的 staging 容量（`capacity=627048448` / `183500800`，即最大一层的完整字节）和 trace 里 `Memcpy PtoP` 的字节都对得上。DP16 一层 KDA 要搬的量是 DP2 一层 MoE 的 3.4 倍，其中 `qkv_proj` 一项就有 264 MB。
+
+有几类权重被刻意排除：
+
+- **MLA 的 `fused_qkv_a_proj_with_mqa`。** `load_weights` 用手写的 `param.data[...]` 拷贝绕过了 `weight_loader`，加载时的行切分会被静默忽略；它也是 MLA 里最小的投影。
+- **MLA 的 `kv_b_proj`、`w_kc` / `w_vc`。** `kv_b_proj` 被吸收进 `w_kc` / `w_vc` 后就释放了；后两者不是 `Linear.weight`，min-latency GEMM 的选择在初始化时按它们的形状定死。
+- **draft 的 `qkv_proj`。** context KV 注入路径在 AllGather 窗口之外读它。
+- **第 0 层（dense）。** `SGLANG_K3_WEIGHT_SHARD_LAYERS` 默认是 `1-92`，第 0 层不 shard。
+
+#### 带宽：一个本地拷贝加 7 个 PtoP
+
+每次 AllGather 在 trace 里是同一个 correlation 下的一组拷贝，都在侧流上：先是一个 `memcpy128` kernel，把本卡那 1/8 拷进 staging buffer；然后是 7 个串行的 `Memcpy PtoP`，即 NCCL 的 Copy Engine 路径，每个从一张对端卡拉 1/8。用「每卡收的 7/8 字节 ÷ 整组拷贝的墙钟」算等效带宽：
+
+| | 每个 PtoP | 单个 PtoP 带宽 | 本地拷贝 | 一次 AllGather 墙钟 | 等效带宽 |
+| :--- | ---: | ---: | ---: | ---: | ---: |
+| DP16 KDA 层 | 78.4 MB | 707 ~ 712 GB/s | 28 ~ 38 us | 791 ~ 800 us | 686 ~ 694 GB/s |
+| DP16 MLA 层 | 48.5 MB | 674 ~ 675 GB/s | 21 ~ 31 us | 524 ~ 525 us | 646 ~ 647 GB/s |
+| DP16 draft 层 | 84.4 MB | 717 ~ 722 GB/s | 27 us | 836 ~ 843 us | 701 ~ 707 GB/s |
+| DP2 MoE 层 | 22.9 MB | 579 ~ 614 GB/s | 9 ~ 14 us | 283 ~ 330 us | 514 ~ 568 GB/s |
+
+B200 的 NVLink5 单向 900 GB/s，DP16 的单个 PtoP 能跑到约 80%。DP2 低一截，有两个原因：
+
+- **拷贝小。** 每个 PtoP 只有 22.9 MB、约 37 us，PtoP 之间还有约 3 us 的空隙，固定开销占比高。
+- **和激活通信抢 NVLink。** DP2 的侧流 AllGather 与 DCP 的 A2A、TP 的 RS / AG 和 DeepEP 同时在跑。bs 128 时与 NCCL / DeepEP kernel 重叠的 PtoP 中位数 563 GB/s，不重叠的 622 GB/s；bs 64 时两者没有差别（624 对 617）。DP16 bs 16 只有 685 对 715 的小差。
+
+DP2 trace 里每步 846 个 `ncclDevKernel_AllGather_RING_LL` 是 DCP / TP 的激活 all-gather，不是权重 AllGather，不要和上面混在一起。
+
+#### 能不能藏住：按层类型看暴露时间
+
+搬的字节与 bs 无关，DP16 每步侧流忙 74 ~ 76 ms（PtoP 约 69 ms 加本地拷贝），DP2 约 28 ~ 30 ms。下表的「暴露」是 AllGather 的拷贝在跑、而其他流上没有任何 kernel 在跑的时间，即主流在等权重：
+
+| 每步（ms） | 侧流忙 | 暴露合计 | KDA 层 | draft 层（图内 4 次） | MLA 层 + 图外的 draft AG |
+| :--- | ---: | ---: | ---: | ---: | ---: |
+| DP16 bs 4 | 73.8 | 11.45 | 8.54 | 2.75 | 0.16 |
+| DP16 bs 8 | 74.1 | 6.42 | 3.60 | 2.71 | 0.11 |
+| DP16 bs 16 | 75.1 | 3.67 | 0.94 | 2.63 | 0.10 |
+| DP16 bs 24 | 76.0 | 3.18 | 0.58 | 2.52 | 0.08 |
+| DP2 bs 64 | 27.5 | 0.40 | | | |
+| DP2 bs 128 | 30.3 | 0.50 | | | |
+
+这里把本地拷贝也算作 AllGather，所以比「通信」一节的「只有 AllGather 在跑」略大（那里本地拷贝算作普通 kernel）。三类层的情况不同：
+
+- **KDA 层随 bs 藏住。** 第 i+1 层的 AllGather 要和第 i 层（attention + MoE）的计算重叠。一次 KDA AllGather 约 800 us，bs 4 时前一层的计算比它短，每步暴露 8.5 ms；bs 24 只剩 0.6 ms。
+- **MLA 层基本藏住。** 它的 AllGather 只有约 525 us，比前一层的计算短，bs 4 时也只暴露约 0.1 ms。
+- **draft 层始终暴露约 2.5 ms。** draft 是 5 个小 dense 层，每层计算远短于一次约 840 us 的 AllGather，图内 4 次 AllGather 几乎都在等。第 0 个 draft 层的 AllGather 被提到 CUDA graph 外、放在专门的 prefetch 流上，与 ReplaySSM 的 commit 重叠（日志 `draft hoisted 1/5 layer AG(s)`），bs 4 时也只暴露约 0.04 ms。
+
+DP2 每步暴露不到 0.6 ms：它的 AllGather 每层只有约 300 us，而每层的计算更长，单 MoE 段就有约 615 us（bs 64）到 800 us（bs 128）。
+
+#### 实现要点
+
+代码在 `sglang/srt/sharding.py`，各模型用 `weight_shard_targets()` 声明可以 shard 的权重（`models/kimi_k3.py` 的 `KimiK3MoE`、KDA、MLA 三处，`models/dflash.py` 的 draft 层）。`KimiK3DecoderLayer._setup_weight_shard` 只在 `attn_tp_size == 1` 时把 attention 的目标加进来，这就是上面 DP2 不 shard attention 的那一行判断。几个值得知道的细节：
+
+- **shard 组是机内 8 卡。** `get_weight_sharding_group_info` 从 TP16 组里按 `_K3_CE_GROUP_SIZE = 8` 切出机内的局部组，所以 AllGather 只走 NVLink，不跨机。
+- **每层一次扁平 AllGather。** 一层所有目标的分片拼成一个连续 buffer，每层只发一次 `all_gather_into_tensor`，所有层共用一条侧流（`get_weight_sharding_side_stream`）。
+- **提前一层发起，两块 staging 轮流用。** `WeightShardForwardPlanner` 在第 i 层开始前发起第 i+1 层的 AllGather；`FlatAGStagingPool` 有两块大小等于最大一层的 buffer，第 i+2 层的 AllGather 要等第 i 层用完它那块才能写。staging 因此占 2 × 最大一层，DP16 是 2 × 627 MB = 1196 MiB，DP2 是 350 MiB，即「显存」一节里的 staging pool。
+- **FP8 先重量化再切。** block FP8 权重要先以完整形状走完 post-load 的重量化，再切成 1/8（日志 `requant-then-shard`）；`weight_scale_inv` 不切，各卡保留完整一份。这就是 DP16 加载峰值高的原因。bf16 权重在加载时直接切。
+- **profile 标注只覆盖本地拷贝。** perfmap-pro 标注里的 `weight_ag` 匹配的是 `memcpy128`，也就是本地那 1/8 的拷贝；7 个 `Memcpy PtoP` 不在 block 的 kernel 时间里。
+
+按上面的数字估算，DP16 的 draft weight shard 每步付约 2.5 ms 的暴露时间（bs 24 时约 1.7% 的步时间），换来的显存约 1.5 GiB（5 层完整 3.14 GiB，减去本地 1/8 的 0.39 GiB 和 1.26 GiB 的 staging），约合 2 个 KDA state 槽。这是估算，没有实测。
 
 ### 显存：固定开销决定状态池有多大
 
@@ -295,11 +380,12 @@ MLA KV 每 token 的字节在两种布局下相同（24 层 × 576 B，DCP 只�
 | `SGLANG_ENABLE_EMBED_DP_SHARD`、`SGLANG_ENABLE_DSPARK_LM_HEAD_DP_SHARD`、`SGLANG_DSPARK_LM_HEAD_VOCAB_ALL_GATHER`、`--moe-dense-tp-size 1` | 开 | 未开 | 首尾 embedding / lm_head 和 dense 层的切法，影响在 1 ms 量级 |
 | `SGLANG_OPT_FLASH_KDA_CUTE=1` | 未开 | 开 | 只作用于 prefill 的 KDA backend，与 decode 无关 |
 
-weight shard 的覆盖范围由 `sharding.py` 的 `WeightShardingConfig` 决定，`environ.py` 里的注释写明 attention 投影只在「attention TP narrow 是 identity」时被 shard，也就是 attn_tp = 1 的 DP16。层范围由 `SGLANG_K3_WEIGHT_SHARD_LAYERS`（默认 `1-92`）控制。每次 AllGather 在 trace 里显示为一个 `memcpy128`（本 rank 分片）加 7 个 `Memcpy PtoP`（NCCL Copy-Engine 路径，约 710 GB/s）。
+weight shard 的覆盖范围由 `sharding.py` 的 `WeightShardingConfig` 决定，`environ.py` 里的注释写明 attention 投影只在「attention TP narrow 是 identity」时被 shard，也就是 attn_tp = 1 的 DP16。层范围由 `SGLANG_K3_WEIGHT_SHARD_LAYERS`（默认 `1-92`）控制。每次 AllGather 在 trace 里显示为侧流上的一个 `memcpy128`（本 rank 分片）加 7 个 `Memcpy PtoP`（NCCL Copy-Engine 路径），带宽和暴露时间见「权重 AllGather」一节。
 
 ### 测量方法与局限
 
 - trace：`profile_dp16/d_bs{4,8,16,24}_100k/` 与 `profile_dp2/d_bs{64,128}_100k/`，各一份 TP-0 / DP-0 的 torch profile，7 ~ 13 个 decode 步。DP16 用 `python3 analyze.py -o <dir> -a annotations/sgl_b_k3_decode_dp16.json -qlen 5 -b 0` 分析，DP2 用 `-a annotations/sgl_b_k3_decode.json -b 0`。只看了一张卡，没有看 rank 间的差异。旧配置的 DP16 trace 已被覆盖，旧数字只在正文里引用。
+- 权重 AllGather 的统计：在 PtoP 所在的侧流上，按「1 个 `memcpy128` + 后续连续的 `Memcpy PtoP`」切出每次 AllGather，按 PtoP 字节 × 8/7 还原完整大小来区分层类型。不能按 correlation 分组，一次 CUDA graph replay 里的拷贝共享同一个 correlation。暴露时间是 AllGather 拷贝区间减去其他所有 kernel / memcpy 区间并集后的剩余。
 - DP16 的标注没有给 MLA 层的 kernel 打 tag，MLA × 24 是按 block 位置归类的（首尾之间、非 KDA / MoE / Dense 的 block）。
 - 一步墙钟取 GPU 侧 `scheduler.run_batch` 标注中时长大于 10 ms 的那些（另一半是 0 ms 的空标注）的中位数，与 benchmark 的 `generation_time` 相差不到 1.5 ms。kernel 合计是各 block 内 kernel 时间之和，含多流重叠部分；「非 AllGather kernel 的并集」是除 `Memcpy PtoP` 外所有 kernel 和 memcpy 区间的并集。
 - 每卡每步的 HBM 字节表里，路由专家和非专家权重的读取量是估算值（前者由 GEMM 的 MBU × 时间得出，后者由 AllGather 的 PtoP 字节按 8/7 反推）。
@@ -315,4 +401,4 @@ weight shard 的覆盖范围由 `sharding.py` 的 `WeightShardingConfig` 决定�
 
 ### 小结
 
-两种布局下，跟请求走的 KDA state 和 MLA KV 在每卡上的字节完全相同，差别来自它们各自付出的代价。DP16 每步多读写约 66 GB 权重，侧流上还有约 69 ms 的 AllGather，这些都与 bs 无关；DP2 每步多一段关键路径上的激活通信，实例并发 256 时约 17.7 ms，随行数增长。所以并发越低 DP16 越吃亏（实例并发 64 时吞吐只有 DP2 的 0.70，bs 1 也要 83.5 ms），每卡跑满 24 个请求时才追平并略快。在此之上，DP16 的 MLA kernel 因 wave 量化在 bs 16 多花将近一倍时间，这是目前最值得修的一项。显存上，两边的权重常驻只差 2 GiB。DP16 的固定开销每卡少 10.4 GiB，主要来自更少的 CUDA graph、更高的 `mem-fraction-static`，以及不需要 DCP 专属的 Q 副本、索引表和通信组，这 10.4 GiB 全部留给了 KV 和 SSM 状态池。状态池内 KDA state 和 MLA KV 怎么分，由槽数等参数决定。高并发、中短上下文时 DP16 能放更多 KV、步时间略短；并发不足或单请求上下文很长时，DP2 更合适。
+两种布局下，跟请求走的 KDA state 和 MLA KV 在每卡上的字节完全相同，差别来自它们各自付出的代价。DP16 每步多读写约 66 GB 权重，侧流上还有约 69 ms 的 AllGather，这些都与 bs 无关。它 shard 了 attention 投影、MoE 段和 draft 层，每卡每步从 NVLink 收 48.4 GB，单个 PtoP 跑到约 710 GB/s；KDA 层的 AllGather 在 bs 24 时基本藏住，draft 层的始终暴露约 2.5 ms。DP2 每步多一段关键路径上的激活通信，实例并发 256 时约 17.7 ms，随行数增长。所以并发越低 DP16 越吃亏（实例并发 64 时吞吐只有 DP2 的 0.70，bs 1 也要 83.5 ms），每卡跑满 24 个请求时才追平并略快。在此之上，DP16 的 MLA kernel 因 wave 量化在 bs 16 多花将近一倍时间，这是目前最值得修的一项。显存上，两边的权重常驻只差 2 GiB。DP16 的固定开销每卡少 10.4 GiB，主要来自更少的 CUDA graph、更高的 `mem-fraction-static`，以及不需要 DCP 专属的 Q 副本、索引表和通信组，这 10.4 GiB 全部留给了 KV 和 SSM 状态池。状态池内 KDA state 和 MLA KV 怎么分，由槽数等参数决定。高并发、中短上下文时 DP16 能放更多 KV、步时间略短；并发不足或单请求上下文很长时，DP2 更合适。

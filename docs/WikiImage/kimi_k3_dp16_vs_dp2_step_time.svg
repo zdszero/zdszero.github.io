@@ -13,7 +13,7 @@
     <rect x="540" y="72" width="12" height="10" rx="2" fill="#fff5f5" stroke="#fa5252"/>
     <text x="558" y="81">TP / DCP 激活通信</text>
     <rect x="690" y="72" width="12" height="10" rx="2" fill="#edf2ff" stroke="#4c6ef5"/>
-    <text x="708" y="81">权重 AllGather 本地拷贝</text>
+    <text x="708" y="81">AG 本地拷贝（侧流）</text>
   </g>
 
   <!-- grid: x0 = 210, 5 px / ms -->
@@ -72,7 +72,7 @@
     <rect x="240.3" y="356" width="7.7" height="24" rx="2"/>
     <rect x="239.7" y="388" width="6.4" height="24" rx="2"/>
   </g>
-  <!-- weight AG local copy on main stream -->
+  <!-- weight AG local copy (side stream, counted in KDA block kernel time) -->
   <rect x="308.3" y="104" width="11.3" height="24" rx="3" fill="#edf2ff" stroke="#4c6ef5"/>
 
   <!-- in-bar labels -->
@@ -86,7 +86,7 @@
 
   <!-- value labels -->
   <g font-size="11" fill="#495057">
-    <text x="328" y="121"><tspan font-weight="700">21.9</tspan>　gated_delta_net 124 us/层 · AG 本地拷贝 33 us/层</text>
+    <text x="328" y="121"><tspan font-weight="700">21.9</tspan>　gated_delta_net 124 us/层 · AG 本地拷贝 33 us/层（侧流）</text>
     <text x="311" y="153"><tspan font-weight="700">18.5</tspan>　gated_delta_net 85 us/层 · RS 86 us/层</text>
     <text x="387" y="205"><tspan font-weight="700">33.7</tspan>　decode kernel 1240 us/层，attention 侧无通信</text>
     <text x="363" y="237"><tspan font-weight="700">29.0</tspan>　attn_mqa 826 us/层 · A2A / RS / pack 217 us/层</text>
@@ -98,6 +98,6 @@
 
   <!-- totals -->
   <rect x="24" y="444" width="872" height="34" rx="8" fill="#f8f9fa"/>
-  <text x="460" y="466" text-anchor="middle" font-size="12" fill="#212529"><tspan font-weight="700">kernel 合计</tspan> A 136.6 · B 128.0 ms　｜　<tspan font-weight="700">一步墙钟</tspan> A 127.1 · B 119.3 ms　｜　<tspan font-weight="700">关键路径激活通信</tspan> A ≈ 4.6 · B ≈ 17.7 ms</text>
-  <text x="460" y="502" text-anchor="middle" font-size="11" fill="#868e96">单份 trace（TP-0 / DP-0），实例 256 并发、100k 上下文。A 的权重 AllGather 主体在侧流上（每步 48.4 GB，PtoP 忙约 69 ms），未画入。</text>
+  <text x="460" y="466" text-anchor="middle" font-size="12" fill="#212529"><tspan font-weight="700">kernel 合计</tspan> A 136.6 · B 128.0 ms　｜　<tspan font-weight="700">一步墙钟</tspan> A 127.1 · B 119.3 ms　｜　<tspan font-weight="700">关键路径激活通信</tspan> A ≈ 1.5 · B ≈ 17.7 ms</text>
+  <text x="460" y="502" text-anchor="middle" font-size="11" fill="#868e96">单份 trace（TP-0 / DP-0），实例 256 并发、100k 上下文。A 的权重 AllGather 主体在侧流上（每步 48.4 GB，侧流忙约 75 ms），除本地拷贝外未画入。</text>
 </svg>

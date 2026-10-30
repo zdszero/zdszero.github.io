@@ -1,0 +1,135 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 600" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#868e96"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="920" height="600" rx="12" fill="#ffffff"/>
+  <text x="460" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">PP16 prefill：每个开关缩短的是哪一段时间</text>
+  <text x="460" y="56" text-anchor="middle" font-size="13" fill="#868e96">上半部分决定吞吐（微批周期），下半部分决定单个请求的 TTFT</text>
+
+  <!-- Panel A: throughput -->
+  <rect x="20" y="74" width="880" height="236" rx="10" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="36" y="98" font-size="14" font-weight="700" fill="#212529">吞吐：微批周期由最慢的 stage 和最慢的那条边决定</text>
+  <text x="228" y="120" text-anchor="middle" font-size="11" fill="#868e96">node 0（s0 ~ s7）</text>
+  <text x="668" y="120" text-anchor="middle" font-size="11" fill="#868e96">node 1（s8 ~ s15）</text>
+  <path d="M457 110 L457 212" stroke="#e8590c" stroke-width="1.5" stroke-dasharray="5 4"/>
+  <rect x="44" y="128" width="46" height="64" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="67" y="148" text-anchor="middle" font-size="11.5" font-weight="700" fill="#3b5bdb">s0</text>
+  <text x="67" y="166" text-anchor="middle" font-size="11" fill="#495057">7 层</text>
+  <text x="67" y="182" text-anchor="middle" font-size="10" fill="#868e96">1 MLA</text>
+  <rect x="96" y="128" width="46" height="64" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="119" y="148" text-anchor="middle" font-size="11.5" font-weight="700" fill="#3b5bdb">s1</text>
+  <text x="119" y="166" text-anchor="middle" font-size="11" fill="#495057">5 层</text>
+  <text x="119" y="182" text-anchor="middle" font-size="10" fill="#868e96">2 MLA</text>
+  <rect x="148" y="128" width="46" height="64" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="171" y="148" text-anchor="middle" font-size="11.5" font-weight="700" fill="#3b5bdb">s2</text>
+  <text x="171" y="166" text-anchor="middle" font-size="11" fill="#495057">7 层</text>
+  <text x="171" y="182" text-anchor="middle" font-size="10" fill="#868e96">1 MLA</text>
+  <rect x="200" y="128" width="46" height="64" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="223" y="148" text-anchor="middle" font-size="11.5" font-weight="700" fill="#3b5bdb">s3</text>
+  <text x="223" y="166" text-anchor="middle" font-size="11" fill="#495057">5 层</text>
+  <text x="223" y="182" text-anchor="middle" font-size="10" fill="#868e96">2 MLA</text>
+  <rect x="252" y="128" width="46" height="64" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="275" y="148" text-anchor="middle" font-size="11.5" font-weight="700" fill="#3b5bdb">s4</text>
+  <text x="275" y="166" text-anchor="middle" font-size="11" fill="#495057">7 层</text>
+  <text x="275" y="182" text-anchor="middle" font-size="10" fill="#868e96">1 MLA</text>
+  <rect x="304" y="128" width="46" height="64" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="327" y="148" text-anchor="middle" font-size="11.5" font-weight="700" fill="#3b5bdb">s5</text>
+  <text x="327" y="166" text-anchor="middle" font-size="11" fill="#495057">5 层</text>
+  <text x="327" y="182" text-anchor="middle" font-size="10" fill="#868e96">2 MLA</text>
+  <rect x="356" y="128" width="46" height="64" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="379" y="148" text-anchor="middle" font-size="11.5" font-weight="700" fill="#3b5bdb">s6</text>
+  <text x="379" y="166" text-anchor="middle" font-size="11" fill="#495057">7 层</text>
+  <text x="379" y="182" text-anchor="middle" font-size="10" fill="#868e96">1 MLA</text>
+  <rect x="408" y="128" width="46" height="64" rx="6" fill="#fff4e6" stroke="#f08c00" stroke-width="1.5"/>
+  <text x="431" y="148" text-anchor="middle" font-size="11.5" font-weight="700" fill="#e8590c">s7</text>
+  <text x="431" y="166" text-anchor="middle" font-size="11" fill="#495057">5 层</text>
+  <text x="431" y="182" text-anchor="middle" font-size="10" fill="#868e96">2 MLA</text>
+  <rect x="460" y="128" width="46" height="64" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="483" y="148" text-anchor="middle" font-size="11.5" font-weight="700" fill="#3b5bdb">s8</text>
+  <text x="483" y="166" text-anchor="middle" font-size="11" fill="#495057">7 层</text>
+  <text x="483" y="182" text-anchor="middle" font-size="10" fill="#868e96">1 MLA</text>
+  <rect x="512" y="128" width="46" height="64" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="535" y="148" text-anchor="middle" font-size="11.5" font-weight="700" fill="#3b5bdb">s9</text>
+  <text x="535" y="166" text-anchor="middle" font-size="11" fill="#495057">5 层</text>
+  <text x="535" y="182" text-anchor="middle" font-size="10" fill="#868e96">2 MLA</text>
+  <rect x="564" y="128" width="46" height="64" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="587" y="148" text-anchor="middle" font-size="11.5" font-weight="700" fill="#3b5bdb">s10</text>
+  <text x="587" y="166" text-anchor="middle" font-size="11" fill="#495057">7 层</text>
+  <text x="587" y="182" text-anchor="middle" font-size="10" fill="#868e96">1 MLA</text>
+  <rect x="616" y="128" width="46" height="64" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="639" y="148" text-anchor="middle" font-size="11.5" font-weight="700" fill="#3b5bdb">s11</text>
+  <text x="639" y="166" text-anchor="middle" font-size="11" fill="#495057">5 层</text>
+  <text x="639" y="182" text-anchor="middle" font-size="10" fill="#868e96">2 MLA</text>
+  <rect x="668" y="128" width="46" height="64" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="691" y="148" text-anchor="middle" font-size="11.5" font-weight="700" fill="#3b5bdb">s12</text>
+  <text x="691" y="166" text-anchor="middle" font-size="11" fill="#495057">7 层</text>
+  <text x="691" y="182" text-anchor="middle" font-size="10" fill="#868e96">1 MLA</text>
+  <rect x="720" y="128" width="46" height="64" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="743" y="148" text-anchor="middle" font-size="11.5" font-weight="700" fill="#3b5bdb">s13</text>
+  <text x="743" y="166" text-anchor="middle" font-size="11" fill="#495057">5 层</text>
+  <text x="743" y="182" text-anchor="middle" font-size="10" fill="#868e96">2 MLA</text>
+  <rect x="772" y="128" width="46" height="64" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="795" y="148" text-anchor="middle" font-size="11.5" font-weight="700" fill="#3b5bdb">s14</text>
+  <text x="795" y="166" text-anchor="middle" font-size="11" fill="#495057">6 层</text>
+  <text x="795" y="182" text-anchor="middle" font-size="10" fill="#868e96">1 MLA</text>
+  <rect x="824" y="128" width="46" height="64" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="847" y="148" text-anchor="middle" font-size="11.5" font-weight="700" fill="#3b5bdb">s15</text>
+  <text x="847" y="166" text-anchor="middle" font-size="11" fill="#495057">3 层</text>
+  <text x="847" y="182" text-anchor="middle" font-size="10" fill="#868e96">2 MLA</text>
+  <path d="M44 204 L866 204" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <circle cx="457" cy="204" r="6" fill="#f08c00"/>
+  <text x="250" y="216" text-anchor="middle" font-size="10.5" fill="#868e96">hidden + attn-res bank 逐级下传</text>
+  <text x="466" y="216" font-size="10.5" fill="#e8590c">唯一的跨机边 s7 → s8</text>
+  <rect x="36" y="228" width="272" height="72" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="50" y="248" font-size="13" font-weight="700" fill="#3b5bdb">① stage 均衡</text>
+  <text x="50" y="268" font-size="10.5" font-family="monospace" fill="#3b5bdb">SGLANG_PP_LAYER_PARTITION</text>
+  <text x="50" y="288" font-size="11" fill="#495057">7 / 5 交替，用 KDA 层数抵 MLA 的开销</text>
+  <rect x="324" y="228" width="272" height="72" rx="8" fill="#fff4e6" stroke="#f08c00"/>
+  <text x="338" y="248" font-size="13" font-weight="700" fill="#e8590c">② 跨机边界</text>
+  <text x="338" y="268" font-size="10.5" font-family="monospace" fill="#e8590c">PP_EAGER_BANK_FORWARD / RANKS=7</text>
+  <text x="338" y="288" font-size="11" fill="#495057">继承的 bank 行收到即转发，和计算重叠</text>
+  <rect x="612" y="228" width="272" height="72" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="626" y="248" font-size="13" font-weight="700" fill="#0b7285">③ stage 内 kernel</text>
+  <text x="626" y="268" font-size="10.5" fill="#0b7285">FlashKDA CuTe + KDA / MLA 算子融合</text>
+  <text x="626" y="288" font-size="11" fill="#495057">缩短每一层，16 个 stage 同时受益</text>
+
+  <!-- Panel B: TTFT -->
+  <rect x="20" y="326" width="880" height="200" rx="10" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="36" y="350" font-size="14" font-weight="700" fill="#212529">TTFT：一个请求还要过几道 PD 控制面的确认</text>
+  <text x="884" y="350" text-anchor="end" font-size="10.5" fill="#868e96">开关名省略前缀 SGLANG_PP_PD_PREFILL_ / SGLANG_PP_PD_KV_TRANSFER_</text>
+  <rect x="36" y="368" width="200" height="60" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="136" y="392" text-anchor="middle" font-size="13" font-weight="700" fill="#5f3dc4">准入</text>
+  <text x="136" y="412" text-anchor="middle" font-size="11" fill="#495057">16 个 stage 都确认 bootstrap</text>
+  <rect x="256" y="368" width="220" height="60" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="366" y="392" text-anchor="middle" font-size="13" font-weight="700" fill="#3b5bdb">chunk 1 … n 流过 16 个 stage</text>
+  <text x="366" y="412" text-anchor="middle" font-size="11" fill="#495057">由上面 ① ② ③ 决定</text>
+  <rect x="496" y="368" width="200" height="60" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="596" y="392" text-anchor="middle" font-size="13" font-weight="700" fill="#5f3dc4">发 last chunk 的 KV</text>
+  <text x="596" y="412" text-anchor="middle" font-size="11" fill="#495057">各 stage 发往 decode</text>
+  <rect x="716" y="368" width="168" height="60" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="800" y="392" text-anchor="middle" font-size="13" font-weight="700" fill="#5f3dc4">回复客户端</text>
+  <text x="800" y="412" text-anchor="middle" font-size="11" fill="#495057">PP0 发出 HTTP 响应</text>
+  <path d="M236 398 L252 398" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <path d="M476 398 L492 398" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <path d="M696 398 L712 398" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+
+  <text x="136" y="450" text-anchor="middle" font-size="10.5" font-family="monospace" fill="#5f3dc4">SIDEBAND_BOOTSTRAP_CONSENSUS</text>
+  <text x="136" y="470" text-anchor="middle" font-size="11" fill="#c92a2a">旧：沿 PP 环每轮走一跳，等 16 轮</text>
+  <text x="136" y="488" text-anchor="middle" font-size="11" fill="#0b7285">新：各 stage 经 ZMQ 直接向 PP0 报到</text>
+  <text x="366" y="450" text-anchor="middle" font-size="10.5" font-family="monospace" fill="#3b5bdb">--pp-async-batch-depth 2</text>
+  <text x="366" y="470" text-anchor="middle" font-size="11" fill="#495057">输出回传和 CPU 预处理</text>
+  <text x="366" y="488" text-anchor="middle" font-size="11" fill="#495057">提到本微批 launch 之前</text>
+  <text x="596" y="450" text-anchor="middle" font-size="10.5" font-family="monospace" fill="#5f3dc4">EARLY_LAST_CHUNK</text>
+  <text x="596" y="468" text-anchor="middle" font-size="10.5" font-family="monospace" fill="#5f3dc4">+ TARGET_PARALLEL</text>
+  <text x="596" y="488" text-anchor="middle" font-size="11" fill="#c92a2a">旧：等输出环回到 PP0 再发</text>
+  <text x="596" y="506" text-anchor="middle" font-size="11" fill="#c92a2a">旧：所有 room 挤在一个线程</text>
+  <text x="800" y="450" text-anchor="middle" font-size="10.5" font-family="monospace" fill="#5f3dc4">EARLY_STREAM_OUTPUT</text>
+  <text x="800" y="470" text-anchor="middle" font-size="11" fill="#c92a2a">旧：等逆流水的释放共识</text>
+  <text x="800" y="488" text-anchor="middle" font-size="11" fill="#0b7285">新：PP0 算完即回</text>
+
+  <rect x="20" y="540" width="880" height="48" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="36" y="560" font-size="12" fill="#495057">关键点：周期只看最慢的 stage 和最慢的那条边，开关要落在这两处才提升吞吐。</text>
+  <text x="36" y="578" font-size="12" fill="#495057">紫色这几项主要缩短 TTFT：每一项都去掉一次“沿 16 个 stage 绕一圈再继续”的等待。</text>
+</svg>

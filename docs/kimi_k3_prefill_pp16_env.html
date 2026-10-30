@@ -1,0 +1,572 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    Kimi K3 Prefill PP16
+  </title>
+    <link rel="stylesheet" href="./WikiTheme/theme/bootstrap.css"  />
+          <!-- wiki three-column layout styles/behavior, kept external so the ~5KB
+       block isn't duplicated into every generated page -->
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/wiki-layout.css" />
+  <script defer src="./WikiTheme/wiki-layout.js"></script>
+</head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">Kimi K3 Prefill PP16</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="wiki-layout">
+    <nav class="wiki-sidebar" id="wiki-sidebar" hidden></nav>
+    <main class="wiki-main">
+            <p><a href="./kimi_k3_b200.html">Kimi K3 B200</a> 介绍了
+            prefill 为什么用 PP16 ×
+            TP1，以及每个优化是哪次提交引入的。本文换一个角度：拿
+            prefill 启动脚本 <code>start_k3_prefill_pp16.sh</code>
+            里的环境变量逐个对照 aiak_sglang
+            代码，说清楚每个开关缩短的是哪一段时间、为什么能缩短，以及哪些开关其实没有生效。</p>
+            <h3 id="问题pp16-prefill-的时间花在哪">问题：PP16 prefill
+            的时间花在哪</h3>
+            <p>PP16 把 93 层切成 16 段，一张卡一段。层内没有任何 TP 或
+            EP 通信，代价转移到了三个地方：</p>
+            <ul>
+            <li><strong>最慢的
+            stage</strong>。流水线稳定后，每个微批的周期等于最慢 stage
+            的耗时。层数平均分不等于耗时平均分：MLA
+            层的注意力代价随前缀变长而增长，KDA 层不会。</li>
+            <li><strong>最慢的那条边</strong>。stage 之间传的是 hidden
+            加 attn-res bank <code>[T, NB, H]</code>（见 <a
+            href="./attention_residuals.html">Attention
+            Residuals</a>），bank 比 hidden 大好几倍。16 段里只有 s7 →
+            s8 跨机，其余 14 条边走 NVLink。</li>
+            <li><strong>绕环一圈的协议</strong>。PD 分离要求”16 个 stage
+            都准备好”之后才接请求、“16 个 stage 都发完
+            KV”之后才算结束。如果这些确认沿 PP
+            环一跳一跳地传，每次都要多付 16 轮迭代。</li>
+            </ul>
+            <p>另外，单个 stage 内部还有一个和 PP 无关的问题：K3 每卡 96
+            个 head，不是 2 的幂；投影输出切出来的张量带 stride。PyTorch
+            的通用实现在这些形状上会退化成不能向量化的小 kernel。</p>
+            <h3
+            id="抽象吞吐看周期ttft-看确认次数">抽象：吞吐看周期，TTFT
+            看确认次数</h3>
+            <p>把脚本里的开关按”缩短的是哪段时间”分成两组，就容易看清：</p>
+            <ul>
+            <li><strong>吞吐</strong>由微批周期决定。周期取决于最慢的
+            stage
+            和最慢的边，开关要落在这两处才有用：层怎么切、跨机边上传什么、每层的
+            kernel 有多快。</li>
+            <li><strong>TTFT</strong>
+            除了计算本身，还取决于一个请求要经过几次需要全体 stage
+            确认的协议。这一组开关的共同做法是把”沿环串行传 16
+            跳”改成”各 stage 直接报到”，或者干脆不等确认。</li>
+            </ul>
+            <figure>
+            <img src="./WikiImage/kimi_k3_prefill_pp16_levers.svg"
+            alt="PP16 prefill：每个开关缩短的是哪一段时间" />
+            <figcaption aria-hidden="true">PP16
+            prefill：每个开关缩短的是哪一段时间</figcaption>
+            </figure>
+            <p>下面三节讲吞吐，第四节讲
+            TTFT，最后两节是不影响速度但必须设对的开关，以及当前脚本里没生效的设置。</p>
+            <h3 id="吞吐一层怎么切">吞吐一：层怎么切</h3>
+            <p><code>SGLANG_PP_LAYER_PARTITION="7,5,7,5,7,5,7,5,7,5,7,5,7,5,6,3"</code>
+            指定每个 stage 的层数，由 <code>distributed/utils.py</code>
+            的 <code>get_pp_indices</code> 读取，启动时校验个数等于
+            pp_size、总和等于 93。</p>
+            <p>按 config 的 <code>full_attn_layers</code>
+            数下来，这个切法有以下规律：</p>
+            <ul>
+            <li><strong>7 层的 stage 有 1 个 MLA，5 层的有 2
+            个</strong>。多 2 层 KDA 换少 1 层 MLA，让两种 stage
+            在长前缀下耗时接近。这条是按层分布推断的设计意图，仓库里没有逐
+            stage 的实测耗时。</li>
+            <li><strong>每两个 stage 正好是一个 12 层的 attn-res
+            block</strong>。偶数 stage 从
+            <code>layer_idx % 12 == 0</code> 的层开始，会往 bank
+            里写一行；奇数 stage 一行都不写，只透传。</li>
+            <li>最后一个 stage 只放 3 层，因为它还要做输出侧 attn-res
+            聚合、final norm、lm_head 采样和 DSPARK draft KV 写入。</li>
+            </ul>
+            <p>跨机切点的位置是这个切法里最讲究的地方。前 8 段合计 48
+            层，所以 s7 负责第 43 ~ 47 层（0-based），跨机消息里的 bank
+            只有 4 行（第 0、12、24、36 层写入）。最初的 PP16
+            脚本（luno-4974）注释里记录：切点挪到 49 会让第 48 层写的第
+            5 行也跨机，吞吐下降 3.8%。</p>
+            <p>旧版脚本还有一条约束：前缀和不能落在 8/24/52/68/84，否则
+            DSPARK 的 aux 抓取层（0-based 7/23/51/67/83）正好是某个
+            stage 的最后一层，会访问只有最后一个 stage 才有的
+            <code>output_attn_res_proj</code>
+            而报错。现在的切法前缀和里有 24 和 84，能启动是因为
+            luno-5270 给非最后 stage 加了
+            <code>next_stage_attn_res_proj</code>（<code>models/kimi_k3.py</code>
+            的
+            <code>_dspark_capture_stream</code>），这条约束已经不存在。</p>
+            <h3 id="吞吐二跨机边上的-bank">吞吐二：跨机边上的 bank</h3>
+            <p>PP 消息由 <code>KimiK3Model.forward</code> 在非最后 stage
+            组装：<code>hidden_states</code> 加
+            <code>residual</code>，而 K3 的 <code>residual</code> 实际是
+            <code>attn_res.block_residual</code>，形状
+            <code>[T, NB, H]</code>。在 48 层切开时 NB = 4，bank 占 s7 →
+            s8 流量的 80%。</p>
+            <p>问题在于这 4 行 s7 一行都没改，却要等 s7 的 forward
+            跑完才跟着 hidden
+            一起发出去。这时下一个微批还没开始算，传输没有可以重叠的计算。</p>
+            <p><code>SGLANG_PP_EAGER_BANK_FORWARD=1</code>
+            把消息拆成两条（<code>managers/scheduler_pp_mixin.py</code>
+            的 <code>_pp_eager_bank_forward</code> /
+            <code>_pp_eager_bank_strip</code>）：</p>
+            <ul>
+            <li><strong>pp_bank</strong>：从上游继承的行，收到后立刻转发，不等本
+            stage 的
+            forward。每轮迭代都发一条，没有内容时发空消息，保证两端的消息数不会错开。</li>
+            <li><strong>proxy</strong>：hidden 加本 stage
+            新写的行（<code>residual[:, k:, :]</code>），forward
+            完再发。</li>
+            </ul>
+            <p>接收端默认（<code>SGLANG_PP_EAGER_BANK_PREFETCH=1</code>）在侧流上提前一轮收
+            bank。传的字节和原来完全相同，结果
+            bit-exact。<code>SGLANG_PP_EAGER_BANK_RANKS="7"</code>
+            把改写限定在 s7 这个发送端，也就是唯一的跨机边。</p>
+            <p>luno-4974 的实测（2 机 PP16，varlen prefill，平均输入
+            76K，200 请求，各跑两次）：s7 → s8 的 boundary stall 从 33.2
+            / 30.5 ms 降到 11.2 / 9.8 ms，吞吐从 61623 提到 63882
+            tok/s，提升 3.7%。</p>
+            <p>这是一个两端协议：s8 是否要收 pp_bank，取决于 s7
+            是否发。两台机器的 pod
+            各自读环境变量，如果一台设了一台没设，就会有一端的 send
+            没有对应的 recv。所以
+            <code>_pp_resolve_eager_bank_cfg</code> 启动时在 PP 组里
+            all-gather 配置，一律以 PP0 的为准，不一致只打 warning。</p>
+            <p><code>--pp-async-batch-depth 2</code>
+            是同一类的命令行参数：微批槽位变成
+            <code>pp_size + 2</code>，上一个微批的输出回传和 CPU
+            侧预处理放到当前微批 launch 之前提交，藏到 GPU
+            计算后面。</p>
+            <h3 id="吞吐三stage-内的-kernel">吞吐三：stage 内的
+            kernel</h3>
+            <p>前两节决定的是”哪个
+            stage、哪条边最慢”，这一节让每一层本身变快。93 层里 69 层是
+            KDA、24 层是 MLA，每个 stage 都有两种层，所以这些优化 16 个
+            stage 一起受益，不会改变谁是瓶颈。</p>
+            <figure>
+            <img
+            src="./WikiImage/kimi_k3_prefill_pp16_layer_kernels.svg"
+            alt="一层 KDA 和一层 MLA 的 prefill 算子链" />
+            <figcaption aria-hidden="true">一层 KDA 和一层 MLA 的
+            prefill 算子链</figcaption>
+            </figure>
+            <h4 id="kda">KDA</h4>
+            <table>
+            <colgroup>
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th style="text-align: left;">开关</th>
+            <th style="text-align: left;">换掉了什么</th>
+            <th style="text-align: left;">代码位置</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td
+            style="text-align: left;"><code>SGLANG_OPT_FLASH_KDA_CUTE=1</code></td>
+            <td style="text-align: left;">外部 <code>flash_kda</code>
+            包换成仓内 CuTe DSL
+            实现（SM100+），加载完权重后预编译，避免首个请求冷编译</td>
+            <td
+            style="text-align: left;"><code>layers/attention/linear/kernels/kda_flashkda.py</code>；预编译在
+            <code>models/kimi_k3.py</code> 的
+            <code>precompile_kernels_after_loading</code></td>
+            </tr>
+            <tr>
+            <td
+            style="text-align: left;"><code>SGLANG_FLASHKDA_MIN_SEQ_LEN=64</code>
+            / <code>MAX_SEQ_LEN=24576</code></td>
+            <td style="text-align: left;">FlashKDA
+            的适用长度窗，默认上限 2048</td>
+            <td
+            style="text-align: left;"><code>FlashKDAKernel._should_fall_back</code></td>
+            </tr>
+            <tr>
+            <td
+            style="text-align: left;"><code>SGLANG_K3_KDA_SHORT_CONV=1</code></td>
+            <td style="text-align: left;">q/k/v 三次 Triton
+            <code>causal_conv1d_fn</code>（含 SiLU 和 conv state
+            更新）合成一次 CUDA launch；5 种 prefill 形状上合计快 1.787
+            倍</td>
+            <td
+            style="text-align: left;"><code>layers/attention/linear/kda_backend.py</code>
+            的 <code>forward_extend</code></td>
+            </tr>
+            <tr>
+            <td
+            style="text-align: left;"><code>SGLANG_OPT_USE_K3_KDA_FUSED_BETA_SIGMOID=1</code></td>
+            <td style="text-align: left;">从 <code>[f_a\|b]</code> 的
+            strided 切片上做 BF16 → FP32 copy 和 sigmoid，两个 kernel
+            合成一个</td>
+            <td style="text-align: left;"><code>models/kimi_k3.py</code>
+            的 <code>kda_activate_beta</code></td>
+            </tr>
+            <tr>
+            <td
+            style="text-align: left;"><code>SGLANG_OPT_USE_K3_KDA_FUSED_TRACK_CONV_STATE=1</code></td>
+            <td
+            style="text-align: left;"><code>prefix_lens &gt; 0</code>
+            比较、conv 窗口 gather、<code>index_put</code> 三个小 kernel
+            合成一个，原地写 conv pool</td>
+            <td
+            style="text-align: left;"><code>kda_backend.py</code></td>
+            </tr>
+            <tr>
+            <td
+            style="text-align: left;"><code>SGLANG_OPT_USE_KDA_STRIDED_ONORM=1</code></td>
+            <td style="text-align: left;"><code>FusedRMSNormGated</code>
+            的 <code>reshape</code> 被迫做的非连续 copy 和 gated RMSNorm
+            合成一个 kernel</td>
+            <td style="text-align: left;"><code>models/kimi_k3.py</code>
+            的 KDA 输出尾部</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>这一组里最容易踩坑的是 FlashKDA
+            的长度窗。判断是<strong>按整个 batch</strong> 做的：batch
+            里最短的 extend 低于下限，或者最长的超过上限，这个 batch 的
+            69 层 KDA 全部退回 Triton <code>chunk_kda</code>。原 PP16
+            脚本注释记录这会慢约 5%，并且单独调大 chunk
+            会因此表现为负优化。所以
+            <code>SGLANG_FLASHKDA_MAX_SEQ_LEN</code> 必须不小于
+            <code>--chunked-prefill-size</code>。当前脚本 chunk 是
+            16K、上限是 24K，满足要求。</p>
+            <p>四个小融合单看每个只省几微秒，但它们都在 KDA 层的 forward
+            里，一个 chunk 要乘以 69 层。四个都与原路径
+            bit-exact，形状覆盖不到时自动回退。</p>
+            <h4 id="mla">MLA</h4>
+            <p><code>trtllm_mla</code> 后端处理 extend 时一律走
+            <code>MHA_CHUNKED_KV</code>（<code>models/deepseek_common/attention_backend_handler.py</code>
+            的 <code>handle_attention_trtllm_mla</code>）：KV pool
+            里只存 latent，每次 forward 都要把前缀经
+            <code>kv_b_proj</code> 分块展开成完整的 K/V，逐块算
+            attention 再按 LSE 合并。</p>
+            <table>
+            <colgroup>
+            <col style="width: 50%" />
+            <col style="width: 50%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th style="text-align: left;">开关</th>
+            <th style="text-align: left;">作用</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td
+            style="text-align: left;"><code>SGLANG_OPT_USE_FLATROW_CONCAT_MHA_K=1</code></td>
+            <td style="text-align: left;">把 <code>k_nope</code> 和
+            <code>k_pe</code> 拼成 K。现有的两个快速 kernel 分别只支持
+            128 head 和 2 的幂个 head，K3 的 96 head 都不满足，PyTorch
+            切片赋值会退化成两个每线程只搬 2 字节的 copy。开启后按
+            (token, head) 平铺成行，用 Triton 写。新 token
+            和每个前缀块的拼接都会用到</td>
+            </tr>
+            <tr>
+            <td
+            style="text-align: left;"><code>SGLANG_OPT_USE_TRITON_MLA_QKV_FP8_CAST=1</code></td>
+            <td style="text-align: left;"><code>_quantize_fp8_qkv</code>
+            里三次 bf16 → fp8 的 <code>Tensor.to</code> 换成 Triton。v
+            是 <code>kv[..., 128:]</code> 的视图，head stride
+            256、只有内层 128 个元素连续，torch 的 cast 无法向量化，只有
+            0.667 TB/s。在 B200、T = 32768、12 head
+            的形状上，它占这组算子 397.6 µs 中的 188.9 µs</td>
+            </tr>
+            <tr>
+            <td
+            style="text-align: left;"><code>SGLANG_MAX_KV_CHUNK_CAPACITY=65536</code></td>
+            <td style="text-align: left;">每个前缀块最多展开多少
+            token（按 batch 平分），默认
+            128K。调小后长前缀会多切几块，主要作用是压低展开 K/V
+            的临时显存峰值。这个值是在 luno-5385（修复 PP
+            重放时准入不一致的崩溃）里改的，应该看作稳定性设置，不是提速开关</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>FP8 cast 那个 kernel 连 PyTorch 的溢出编码都照搬了：|x|
+            &gt; 464 以及 inf / nan 一律写成带符号的
+            0x7f，而不是硬件默认的截到 448。bit-exact
+            就是靠这种细节保证的。</p>
+            <p><code>SGLANG_K3_ATTN_MOE_FP8=1</code>
+            不是可选的优化。它是加载
+            <code>/Kimi-K3-ATTN-MOE-DENSE-FP8</code> 这份混合 checkpoint
+            的总开关：attention 投影、shared expert 等按 ModelOpt FP8
+            加载，路由专家保持
+            MXFP4（<code>layers/quantization/modelopt_quant.py</code> 的
+            <code>_k3_attn_moe_fp8_enabled</code>）。换了 checkpoint
+            就必须开。</p>
+            <h3
+            id="ttft去掉绕环一圈的确认">TTFT：去掉绕环一圈的确认</h3>
+            <p>一个请求在 PD prefill 里要过三道全体 stage 的关口：准入前
+            16 个 stage 都要确认 bootstrap 完成；最后一个 chunk 算完，16
+            个 stage 各自的 KV 都要发出去；全部发完后才释放 KV
+            页和请求槽位。原来这三道关口都沿 PP
+            环推进，每一跳占一个微批槽位。下面四个开关都只在
+            <code>pp_size &gt; 1</code> 时生效，前三个要求 Mooncake
+            传输后端。</p>
+            <table>
+            <colgroup>
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th style="text-align: left;">开关</th>
+            <th style="text-align: left;">原来卡在哪</th>
+            <th style="text-align: left;">现在</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td
+            style="text-align: left;"><code>SGLANG_PP_PD_PREFILL_SIDEBAND_BOOTSTRAP_CONSENSUS=1</code></td>
+            <td style="text-align: left;">“所有 stage 都确认了这个
+            room”沿 PP 中继链每轮迭代走一跳，准入前固定多等 pp_size
+            轮</td>
+            <td style="text-align: left;">每个 stage 自己的
+            transfer_infos 齐了就经旁路 ZMQ 直接向 PP0 报 PP_READY，PP0
+            收齐 16 份才把 room 置为
+            <code>WaitingForInput</code>。准入条件不变，只是确认改成并行</td>
+            </tr>
+            <tr>
+            <td
+            style="text-align: left;"><code>SGLANG_PP_PD_PREFILL_EARLY_LAST_CHUNK=1</code></td>
+            <td style="text-align: left;">最后一个 chunk 的 KV 在
+            <code>process_batch_result</code> 里发，要等输出沿 PP 环回到
+            PP0</td>
+            <td style="text-align: left;">非 PP0 的 stage 在下一轮迭代的
+            CPU 阶段就发自己那几层的 KV/state；aux（首 token）只由 PP0
+            写和发；输出环里中继的那半圈去掉，只剩最后一个 stage 发、PP0
+            收</td>
+            </tr>
+            <tr>
+            <td
+            style="text-align: left;"><code>SGLANG_PP_PD_KV_TRANSFER_TARGET_PARALLEL=1</code></td>
+            <td style="text-align: left;">发送队列的 key 是目标 rpc
+            端口之和，decode 集群固定时这个值不变，一个 rank 的所有 room
+            都挤在同一个队列、同一个线程上串行</td>
+            <td style="text-align: left;">按
+            <code>hash(bootstrap_room)</code> 选队列；一个 room 有多个
+            decode 目标时拆成每个目标一个任务。这个开关隐含打开
+            <code>SGLANG_PP_PD_KV_TRANSFER_ROOM_SHARDING</code></td>
+            </tr>
+            <tr>
+            <td
+            style="text-align: left;"><code>SGLANG_PP_PD_PREFILL_EARLY_STREAM_OUTPUT=1</code></td>
+            <td style="text-align: left;">HTTP
+            响应要等释放共识。共识的第二圈逆着流水线方向走，曾经让
+            prefill 侧的 TTFT 比 decode 还大（luno-5302）</td>
+            <td style="text-align: left;">PP0 自己的 prefill
+            一完成就回复客户端。共识只控制 KV 页和请求槽位的释放。decode
+            端靠自己收到的传输通知判断 KV 是否成功，不依赖这个响应</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>旁路共识和 eager bank
+            一样是两端协议，但处理更严格：<code>disaggregation/common/conn.py</code>
+            的 <code>_check_uniform_sideband_flag</code> 在启动时广播
+            PP0 的值，任何 rank
+            不一致就直接报错退出。原因是共识环上的消息不带
+            tag，只按发送顺序配对；一端少发一条，后面所有消息都会错位，而且不会有任何异常。</p>
+            <p>开启 <code>EARLY_STREAM_OUTPUT</code> 后，prefill
+            侧上报的 TTFT 指标不再按”KV
+            传完”计时（<code>disaggregation/prefill.py</code>），看监控时要注意口径变了。</p>
+            <p>为这条路径服务的两个容量参数：<code>SGLANG_DISAGGREGATION_QUEUE_SIZE=50</code>
+            和
+            <code>SGLANG_DISAGGREGATION_THREAD_POOL_SIZE=50</code>。默认是
+            4 个队列，线程数按 CPU 数算，最多 12
+            个。每个队列独占一个工作线程，按 room
+            分片要有足够多的队列才能真正并行。<code>SGLANG_MOONCAKE_SEND_AUX_TCP=1</code>
+            让 aux 这种几十字节的元数据走 TCP，不占 RDMA 传输。</p>
+            <p><code>SGLANG_DISAGGREGATION_DECODE_LAZY_ALLOC=true</code>
+            让 decode 先认领请求，等 prefill 报告算完再分配
+            KV，<code>SGLANG_DISAGGREGATION_LAZY_INDICES_TIMEOUT=60</code>
+            是 prefill 等 decode 回传 KV 地址的超时。这个开关 prefill 和
+            decode 必须设成一样：prefill 会通过 <code>/route</code>
+            公布自己的值，decode 在 bootstrap
+            时发现不一致就拒绝请求。</p>
+            <h3
+            id="不影响速度但要设对的开关">不影响速度、但要设对的开关</h3>
+            <p>这一组只作用于启动、预热或运维，不改变稳态的 prefill
+            吞吐和 TTFT：</p>
+            <ul>
+            <li><strong>加载</strong>：<code>SGLANG_ENABLE_PP_WEIGHT_FILTER=1</code>
+            把层范围过滤下推到
+            loader（<code>model_loader/loader.py</code> 的
+            <code>_resolve_pp_layer_range</code>）。不含本 stage 层的
+            safetensors 文件根本不打开，打开的文件也只读本 stage
+            需要的张量。默认情况下每个 rank 都读完整 checkpoint，在
+            <code>load_weights</code> 里再丢掉不要的层。</li>
+            <li><strong>进程启动</strong>：<code>SGLANG_PARALLEL_SCHEDULER_LAUNCH=1</code>
+            并发拉起 scheduler
+            进程（<code>utils/numa_utils.py</code>）。要求
+            multiprocessing 用 spawn
+            方式、<code>dp_size &lt;= 1</code>、没开 memory
+            saver，条件不满足时自动退回串行。</li>
+            <li><strong>预热</strong>：<code>SGLANG_JIT_DEEPGEMM_PRECOMPILE=0</code>
+            跳过 DeepGEMM
+            按形状全量预编译；<code>SGLANG_WARMUP_PREFILL_LENS="512,2048,8192,32768,65536"</code>
+            让启动时按这些长度各跑一次 prefill，把 JIT 编译和 autotune
+            放在服务就绪之前，<code>SGLANG_WARMUP_BATCH_SIZE</code> 和
+            <code>SGLANG_WARMUP_TIMEOUT</code>
+            是每个长度的并发数和总超时。两者配合的效果是：只编译真正会用到的形状，同时首批请求不会撞上冷编译。</li>
+            <li><strong>容错</strong>：<code>SGLANG_ENABLE_STRICT_MEM_CHECK_DURING_IDLE=0</code>
+            让空闲时的内存泄漏检查只告警、不让进程退出（<code>managers/scheduler_components/invariant_checker.py</code>）。</li>
+            <li><strong>其他</strong>：<code>MC_*</code>、<code>NCCL_*</code>、<code>NVSHMEM_*</code>
+            是 Mooncake、NCCL 和 NVSHMEM 的网卡与 QP
+            参数；<code>SGLANG_MC_POOL_GB</code> 只用于多模态 embedding
+            的传输池；<code>SGLANG_IDLE_METRIC_HEARTBEAT</code>
+            让空闲时延迟直方图也有零值样本，监控面板不会断线；<code>SGLANG_TOOL_STRICT_LEVEL</code>、<code>SGLANG_HEALTH_CHECK_TIMEOUT</code>、<code>SGLANG_TBO_DEBUG</code>
+            与性能无关。</li>
+            </ul>
+            <h3 id="当前脚本里没生效的设置">当前脚本里没生效的设置</h3>
+            <table>
+            <colgroup>
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th style="text-align: left;">设置</th>
+            <th style="text-align: left;">为什么没生效</th>
+            <th style="text-align: left;">怎么处理</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td
+            style="text-align: left;"><code>SGLANG_DYNAMIC_CHUNKING_COST_MODEL=1</code></td>
+            <td style="text-align: left;">只在
+            <code>profile_and_init_predictor</code>
+            里读取，而这个函数只有开了
+            <code>--enable-dynamic-chunking</code>
+            才会调用（<code>managers/scheduler.py</code> 的
+            <code>init_chunked_prefill</code>，条件是
+            <code>enable_dynamic_chunking and pp_size &gt; 1</code>）。脚本的
+            <code>PARALLEL_ARGS</code> 里没有这个参数</td>
+            <td style="text-align: left;">想要它就在
+            <code>PARALLEL_ARGS</code> 里加
+            <code>--enable-dynamic-chunking</code>。最初的 PP16
+            脚本（luno-4974）是带着这个参数测出上面那组吞吐数字的</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;"><code>CACHE_OPT</code>
+            第一次赋值</td>
+            <td style="text-align: left;">数组被定义两次，第二次的
+            <code>--disable-radix-cache</code> 覆盖了
+            <code>--enable-asradix-cache</code></td>
+            <td style="text-align: left;">如果本意是关
+            cache，删掉第一段，避免误读</td>
+            </tr>
+            <tr>
+            <td style="text-align: left;"><code>AS_*</code>
+            环境变量</td>
+            <td style="text-align: left;">只有 asradix cache 会读，cache
+            已关</td>
+            <td style="text-align: left;">随 asradix 一起生效</td>
+            </tr>
+            <tr>
+            <td
+            style="text-align: left;"><code>DEEPEP_CONFIG_JSON</code></td>
+            <td style="text-align: left;">aiak_sglang 和已安装的
+            <code>deep_ep</code> 包里都没有代码读这个变量；而且 TP1 加
+            <code>--moe-runner-backend flashinfer_mxfp4</code> 的
+            prefill 不走 DeepEP。DeepEP 的配置入口是命令行参数
+            <code>--deepep-config</code></td>
+            <td style="text-align: left;">可以删掉</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>如果打开 dynamic chunking，cost model 的作用是：按每个
+            stage 的 FLOPs 给 chunk
+            定价，<code>cost_s(L, x) = k_g·x + k_e·(L + x) + k_a·x·(L + 0.5x)</code>，其中
+            L 是已缓存的前缀长度、x 是本次新算的 token
+            数（<code>managers/chunk_cost_model.py</code>）。预算等于”前缀为
+            0 时一个 <code>--chunked-prefill-size</code> chunk
+            的代价”，所以前缀越长、chunk
+            越小，每个微批的耗时保持接近。系数直接从加载好的权重数出来，16
+            个 stage 各算一份再取最大值，因为短前缀时 GEMM 多的 stage
+            是瓶颈，长前缀时 MLA 多的 stage 是瓶颈。在当前关掉 cache
+            的配置下 L 来自 chunked prefill
+            自己的前几块，这个功能仍然有意义：同一个长请求的后几个 chunk
+            会自动变小。</p>
+            <h3 id="小结">小结</h3>
+            <p>PP16 prefill
+            的开关可以按一个问题来读：它缩短的是周期，还是确认次数。层切分、跨机边上的
+            eager bank 和 stage 内的 kernel
+            融合缩短微批周期，决定吞吐；旁路共识、早发 last
+            chunk、按目标并行发送和提前回复客户端各去掉一次”沿 16 个
+            stage 绕一圈”的等待，决定 TTFT。两类开关里有几个是跨 pod
+            的两端协议（eager bank、旁路共识、lazy
+            alloc），两台机器必须设成一样；FlashKDA 的长度上限必须跟着
+            chunk 大小走。dynamic chunking 的 cost model
+            在当前脚本里没有生效，补上
+            <code>--enable-dynamic-chunking</code> 才会起作用。</p>
+          </main>
+        <aside class="wiki-toc">
+      <ul>
+      <li><a href="#问题pp16-prefill-的时间花在哪"
+      id="toc-问题pp16-prefill-的时间花在哪">问题：PP16 prefill
+      的时间花在哪</a></li>
+      <li><a href="#抽象吞吐看周期ttft-看确认次数"
+      id="toc-抽象吞吐看周期ttft-看确认次数">抽象：吞吐看周期，TTFT
+      看确认次数</a></li>
+      <li><a href="#吞吐一层怎么切"
+      id="toc-吞吐一层怎么切">吞吐一：层怎么切</a></li>
+      <li><a href="#吞吐二跨机边上的-bank"
+      id="toc-吞吐二跨机边上的-bank">吞吐二：跨机边上的 bank</a></li>
+      <li><a href="#吞吐三stage-内的-kernel"
+      id="toc-吞吐三stage-内的-kernel">吞吐三：stage 内的
+      kernel</a></li>
+      <li><a href="#ttft去掉绕环一圈的确认"
+      id="toc-ttft去掉绕环一圈的确认">TTFT：去掉绕环一圈的确认</a></li>
+      <li><a href="#不影响速度但要设对的开关"
+      id="toc-不影响速度但要设对的开关">不影响速度、但要设对的开关</a></li>
+      <li><a href="#当前脚本里没生效的设置"
+      id="toc-当前脚本里没生效的设置">当前脚本里没生效的设置</a></li>
+      <li><a href="#小结" id="toc-小结">小结</a></li>
+      </ul>
+    </aside>
+      </div>
+</body>
+
+</html>

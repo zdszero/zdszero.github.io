@@ -1,0 +1,129 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 640" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#868e96"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="920" height="640" rx="12" fill="#ffffff"/>
+  <text x="460" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">权重 AllGather：每层搬什么，怎么藏在侧流上</text>
+  <text x="460" y="56" text-anchor="middle" font-size="13" fill="#868e96">机内 8 卡一组，每 rank 只存 1/8 行；每层前 AllGather 回完整权重，每 rank 收 7/8</text>
+
+  <!-- part 1: per-layer composition -->
+  <text x="24" y="90" font-size="14" font-weight="700" fill="#212529">① 每层 AllGather 的完整权重（FP8 = 1 B，bf16 = 2 B；横轴按 MB 等比）</text>
+
+  <!-- row 1: DP2 MoE -->
+  <text x="24" y="118" font-size="12.5" font-weight="700" fill="#495057">B · DP2 MoE 层</text>
+  <text x="24" y="134" font-size="11" fill="#868e96">× 92，attn_tp = 8</text>
+  <rect x="220" y="106" width="43.7" height="30" fill="#c3fae8" stroke="#0ca678"/>
+  <rect x="263.7" y="106" width="112.3" height="30" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="241.8" y="125" text-anchor="middle" font-size="10" fill="#0b7285">latent</text>
+  <text x="319.8" y="125" text-anchor="middle" font-size="10.5" fill="#0b7285">shared 132</text>
+  <text x="386" y="119" font-size="12" font-weight="700" fill="#212529">183.5 MB</text>
+  <text x="386" y="134" font-size="11" fill="#868e96">每步收 14.8 GB</text>
+
+  <!-- row 2: DP16 KDA -->
+  <text x="24" y="168" font-size="12.5" font-weight="700" fill="#495057">A · DP16 KDA 层</text>
+  <text x="24" y="184" font-size="11" fill="#868e96">× 68，attn_tp = 1</text>
+  <rect x="220" y="156" width="43.7" height="30" fill="#c3fae8" stroke="#0ca678"/>
+  <rect x="263.7" y="156" width="112.3" height="30" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="241.8" y="175" text-anchor="middle" font-size="10" fill="#0b7285">latent</text>
+  <text x="319.8" y="175" text-anchor="middle" font-size="10.5" fill="#0b7285">shared 132</text>
+  <rect x="376" y="156" width="224.6" height="30" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="600.6" y="156" width="74.9" height="30" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="675.5" y="156" width="74.9" height="30" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="750.4" y="156" width="2.7" height="30" fill="#4c6ef5"/>
+  <text x="488.3" y="175" text-anchor="middle" font-size="10.5" fill="#3b5bdb">qkv_proj 264</text>
+  <text x="638" y="175" text-anchor="middle" font-size="10.5" fill="#3b5bdb">o 88</text>
+  <text x="713" y="175" text-anchor="middle" font-size="10.5" fill="#3b5bdb">g 88</text>
+  <text x="763" y="169" font-size="12" font-weight="700" fill="#212529">627.0 MB</text>
+  <text x="763" y="184" font-size="11" fill="#868e96">每步收 37.3 GB</text>
+  <!-- row 3: DP16 MLA -->
+  <text x="24" y="218" font-size="12.5" font-weight="700" fill="#495057">A · DP16 MLA 层</text>
+  <text x="24" y="234" font-size="11" fill="#868e96">× 24，attn_tp = 1</text>
+  <rect x="220" y="206" width="43.7" height="30" fill="#c3fae8" stroke="#0ca678"/>
+  <rect x="263.7" y="206" width="112.3" height="30" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="241.8" y="225" text-anchor="middle" font-size="10" fill="#0b7285">latent</text>
+  <text x="319.8" y="225" text-anchor="middle" font-size="10.5" fill="#0b7285">shared 132</text>
+  <rect x="376" y="206" width="24.1" height="30" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="400.1" y="206" width="74.9" height="30" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="475" y="206" width="74.9" height="30" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="388" y="225" text-anchor="middle" font-size="9" fill="#3b5bdb">q_b</text>
+  <text x="437.5" y="225" text-anchor="middle" font-size="10.5" fill="#3b5bdb">o 88</text>
+  <text x="512.5" y="225" text-anchor="middle" font-size="10.5" fill="#3b5bdb">g 88</text>
+  <text x="562" y="219" font-size="12" font-weight="700" fill="#212529">388.0 MB</text>
+  <text x="562" y="234" font-size="11" fill="#868e96">每步收 8.2 GB</text>
+
+  <!-- row 4: DP16 draft -->
+  <text x="24" y="268" font-size="12.5" font-weight="700" fill="#495057">A · DP16 draft 层</text>
+  <text x="24" y="284" font-size="11" fill="#868e96">× 5，bf16（DP2 未开）</text>
+  <rect x="220" y="256" width="49.9" height="30" fill="#f3f0ff" stroke="#7048e8"/>
+  <rect x="269.9" y="256" width="349.4" height="30" fill="#f3f0ff" stroke="#7048e8"/>
+  <rect x="619.3" y="256" width="174.7" height="30" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="245" y="275" text-anchor="middle" font-size="10.5" fill="#5f3dc4">o 59</text>
+  <text x="444.6" y="275" text-anchor="middle" font-size="10.5" fill="#5f3dc4">mlp.gate_up_proj 411</text>
+  <text x="706.7" y="275" text-anchor="middle" font-size="10.5" fill="#5f3dc4">mlp.down_proj 206</text>
+  <text x="804" y="269" font-size="12" font-weight="700" fill="#212529">675.3 MB</text>
+  <text x="804" y="284" font-size="11" fill="#868e96">每步收 3.0 GB</text>
+
+  <!-- legend -->
+  <rect x="220" y="302" width="12" height="12" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="238" y="312" font-size="11" fill="#495057">MoE 段：latent 投影 + TP1 shared expert，两边都 shard</text>
+  <rect x="590" y="302" width="12" height="12" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="608" y="312" font-size="11" fill="#495057">attention 投影：只在 attn_tp = 1 时 shard</text>
+  <text x="220" y="332" font-size="11" fill="#868e96">KDA 行末的细条是 f_b_proj（bf16，3 MB）。合计每步每 rank 收：A 48.4 GB，B 14.8 GB。</text>
+  <!-- part 2: side-stream pipeline -->
+  <path d="M24 352 L896 352" stroke="#e9ecef"/>
+  <text x="24" y="378" font-size="14" font-weight="700" fill="#212529">② 侧流流水：第 i 层计算时，侧流已在拉第 i+1 层的权重（两块 staging 槽轮流用）</text>
+
+  <text x="24" y="414" font-size="12.5" font-weight="700" fill="#495057">主流</text>
+  <text x="24" y="470" font-size="12.5" font-weight="700" fill="#495057">侧流</text>
+
+  <rect x="110" y="396" width="270" height="30" rx="6" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="245" y="415" text-anchor="middle" font-size="11.5" fill="#495057">第 i 层计算（读槽 0）</text>
+  <rect x="392" y="396" width="168" height="30" rx="6" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="476" y="415" text-anchor="middle" font-size="11.5" fill="#495057">第 i+1 层（计算短）</text>
+  <rect x="562" y="396" width="86" height="30" rx="6" fill="#fff5f5" stroke="#fa5252" stroke-dasharray="4 3"/>
+  <text x="605" y="415" text-anchor="middle" font-size="11.5" font-weight="700" fill="#c92a2a">等权重</text>
+  <rect x="650" y="396" width="240" height="30" rx="6" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="770" y="415" text-anchor="middle" font-size="11.5" fill="#495057">第 i+2 层计算（读槽 0）</text>
+
+  <rect x="110" y="452" width="250" height="30" rx="6" fill="#fff9db" stroke="#f08c00"/>
+  <text x="235" y="471" text-anchor="middle" font-size="11.5" fill="#e8590c">AG(i+1) → 槽 1，藏住</text>
+  <rect x="392" y="452" width="256" height="30" rx="6" fill="#fff4e6" stroke="#f08c00" stroke-width="2"/>
+  <text x="520" y="471" text-anchor="middle" font-size="11.5" font-weight="700" fill="#e8590c">AG(i+2) → 槽 0，比计算长</text>
+  <rect x="650" y="452" width="240" height="30" rx="6" fill="#fff9db" stroke="#f08c00"/>
+  <text x="770" y="471" text-anchor="middle" font-size="11.5" fill="#e8590c">AG(i+3) → 槽 1</text>
+
+  <path d="M360 452 L388 428" stroke="#868e96" stroke-width="2" fill="none" marker-end="url(#ar)"/>
+  <path d="M648 452 L648 432" stroke="#868e96" stroke-width="2" fill="none" marker-end="url(#ar)"/>
+  <text x="300" y="444" font-size="10" fill="#868e96" text-anchor="end">到齐才开始下一层</text>
+  <text x="656" y="444" font-size="10" fill="#c92a2a">暴露</text>
+  <!-- zoom: one AG -->
+  <path d="M392 482 L110 512 M648 482 L878 512" stroke="#ced4da" stroke-dasharray="3 3" fill="none"/>
+  <text x="24" y="530" font-size="12.5" font-weight="700" fill="#495057">一次 AG</text>
+  <text x="24" y="546" font-size="11" fill="#868e96">KDA 层 ≈ 800 us</text>
+  <rect x="110" y="514" width="40" height="38" rx="5" fill="#fff4e6" stroke="#e8590c"/>
+  <text x="130" y="531" text-anchor="middle" font-size="10" font-weight="700" fill="#e8590c">本地</text>
+  <text x="130" y="545" text-anchor="middle" font-size="9" fill="#e8590c">30 us</text>
+  <g font-size="10" fill="#e8590c" text-anchor="middle">
+    <rect x="154" y="514" width="100" height="38" rx="5" fill="#fff9db" stroke="#f08c00"/>
+    <text x="204" y="531" font-weight="700">PtoP → +1</text><text x="204" y="545" fill="#868e96">78 MB · 110 us</text>
+    <rect x="258" y="514" width="100" height="38" rx="5" fill="#fff9db" stroke="#f08c00"/>
+    <text x="308" y="531" font-weight="700">PtoP → +2</text><text x="308" y="545" fill="#868e96">78 MB · 110 us</text>
+    <rect x="362" y="514" width="100" height="38" rx="5" fill="#fff9db" stroke="#f08c00"/>
+    <text x="412" y="531" font-weight="700">PtoP → +3</text><text x="412" y="545" fill="#868e96">78 MB · 110 us</text>
+    <rect x="466" y="514" width="100" height="38" rx="5" fill="#fff9db" stroke="#f08c00"/>
+    <text x="516" y="531" font-weight="700">PtoP → +4</text><text x="516" y="545" fill="#868e96">78 MB · 110 us</text>
+    <rect x="570" y="514" width="100" height="38" rx="5" fill="#fff9db" stroke="#f08c00"/>
+    <text x="620" y="531" font-weight="700">PtoP → +5</text><text x="620" y="545" fill="#868e96">78 MB · 110 us</text>
+    <rect x="674" y="514" width="100" height="38" rx="5" fill="#fff9db" stroke="#f08c00"/>
+    <text x="724" y="531" font-weight="700">PtoP → +6</text><text x="724" y="545" fill="#868e96">78 MB · 110 us</text>
+    <rect x="778" y="514" width="100" height="38" rx="5" fill="#fff9db" stroke="#f08c00"/>
+    <text x="828" y="531" font-weight="700">PtoP → +7</text><text x="828" y="545" fill="#868e96">78 MB · 110 us</text>
+  </g>
+
+  <!-- note -->
+  <rect x="24" y="572" width="872" height="52" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="460" y="593" text-anchor="middle" font-size="12" fill="#212529"><tspan font-weight="700">搬的字节与 bs 无关</tspan>：DP16 每步侧流忙 74 ~ 76 ms，DP2 约 28 ~ 30 ms。能不能藏住，只看本层计算是否比 AG 长。</text>
+  <text x="460" y="612" text-anchor="middle" font-size="12" fill="#495057">DP16 KDA 层 bs 4 暴露 8.5 ms、bs 24 只剩 0.6 ms；MLA 层从不暴露；draft 层计算太短，4 次图内 AG 每步始终暴露约 2.5 ms。</text>
+</svg>

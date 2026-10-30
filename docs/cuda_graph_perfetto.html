@@ -1,0 +1,471 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    CUDA Graph 在 Perfetto 中的 Stream
+  </title>
+    <link rel="stylesheet" href="./WikiTheme/theme/bootstrap.css"  />
+        <style type="text/css">
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+      <!-- wiki three-column layout styles/behavior, kept external so the ~5KB
+       block isn't duplicated into every generated page -->
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/wiki-layout.css" />
+  <script defer src="./WikiTheme/wiki-layout.js"></script>
+</head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">CUDA Graph 在 Perfetto 中的
+Stream</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="wiki-layout">
+    <nav class="wiki-sidebar" id="wiki-sidebar" hidden></nav>
+    <main class="wiki-main">
+            <ul>
+            <li>decode 阶段开了 CUDA Graph，为什么 Perfetto 里一个
+            <code>step[TARGET_VERIFY bs=24]</code> 会出现在上百条 stream
+            上？</li>
+            <li>CUDA Graph 不是把所有 kernel 压到一条 stream
+            里了吗？</li>
+            <li>这么多 stream，意味着有这么多路并发吗？应该怎么读这种
+            trace？</li>
+            </ul>
+            <h3 id="问题开了-graphstream-反而变多了">问题：开了
+            graph，stream 反而变多了</h3>
+            <p>一个常见的理解是：decode 阶段用 CUDA Graph 把一次 forward
+            的所有 kernel 打包成一个 <code>cudaGraphLaunch</code>，所以
+            GPU 上应该只看到一条 stream，kernel 一个接一个排下去。</p>
+            <p>打开 Kimi K3 DP16 decode（bs=24，TP0 rank）的 torch
+            profiler trace，看到的却是另一番景象：一次
+            <code>TARGET_VERIFY</code> 的 replay 里，4431 个 GPU op
+            分布在 123 条 stream
+            上；<code>step[TARGET_VERIFY bs=24]</code> 这个 GPU 标注在
+            127 条轨道上各画了一份，有的长 0.07 ms，有的长 116
+            ms。同一份 trace 里，graph 之外的 eager kernel 只落在 stream
+            31 和 87 两条上。</p>
+            <p>这里有两个问题要分开回答：</p>
+            <ol type="1">
+            <li>为什么 replay 出来的 kernel 会落到这么多 stream
+            上？</li>
+            <li>这么多 stream
+            是不是意味着这么多路并发，性能上要不要担心？</li>
+            </ol>
+            <p>第一个问题的答案在 CUDA Graph
+            本身的模型里；第二个问题要回到 trace 上量。</p>
+            <h3
+            id="抽象stream-是-capture-时写依赖的语法replay-时只剩-dag">抽象：stream
+            是 capture 时写依赖的语法，replay 时只剩 DAG</h3>
+            <p>CUDA Graph 对“压缩”的那部分理解没错：它把 N 次 kernel
+            提交合成一次 <code>cudaGraphLaunch</code>，省掉的是 CPU
+            侧逐个 launch 的成本（见 <a href="./cuda_graph.html">Cuda
+            Graph</a>）。但它压缩的是<strong>提交</strong>，不是<strong>执行顺序</strong>。</p>
+            <p>capture 的时候，代码照常往 stream 上提交 kernel，并用
+            <code>wait_stream</code> / <code>record_event</code> /
+            <code>wait_event</code> 在 stream 之间分叉、汇合。graph
+            从这些操作里推出的是一张 DAG：</p>
+            <ul>
+            <li>同一条 stream 上的前后两个 kernel 之间连一条边；</li>
+            <li>一次 <code>wait_event</code>，在被等待的 kernel 和后续
+            kernel 之间连一条边。</li>
+            </ul>
+            <p>推完之后，节点上就不再带 stream 信息了。capture 用的
+            stream 只是用来表达依赖的语法。NVIDIA
+            论坛上的回答说得很直接：用 stream 1 和 stream 2 capture
+            出来的图，执行时“永远不会真的跑在 stream 1 和 stream 2
+            上，这两条 stream 只用来抽取节点之间的依赖”（<a
+            href="https://forums.developer.nvidia.com/t/what-will-happen-when-i-replay-a-cuda-graph-with-two-streams-in-a-new-stream/293965">NVIDIA
+            Developer Forums</a>）。</p>
+            <p>replay 的时候，驱动把 DAG 的节点摆到自己管理的内部 stream
+            上执行，只要求满足依赖边。CUPTI 记录的是 kernel
+            实际所在的内部 stream，Perfetto 又按 stream 分轨，于是：</p>
+            <ul>
+            <li><strong>一条没有分叉的链</strong>，通常留在同一条内部
+            stream 上；</li>
+            <li><strong>遇到分叉或汇合</strong>，后面的节点可能被摆到另一条
+            stream
+            上。一条串行的主链因此被切成很多段，每段一条轨道。</li>
+            </ul>
+            <p>第二条是在 trace 里观察到的规律，CUDA
+            文档没有承诺具体怎么摆放。可以依赖的只有一点：<strong>轨道数反映的是驱动怎么摆放节点，不等于并发路数。真正的并发由依赖边决定。</strong></p>
+            <figure>
+            <img
+            src="./WikiImage/cuda_graph_perfetto_capture_replay.svg"
+            alt="capture 时的 stream 只用来推出依赖边；replay 时驱动把节点摆到内部 stream 上，主链被切成多段" />
+            <figcaption aria-hidden="true">capture 时的 stream
+            只用来推出依赖边；replay 时驱动把节点摆到内部 stream
+            上，主链被切成多段</figcaption>
+            </figure>
+            <h3 id="perfetto-里的轨道和标注是怎么来的">Perfetto
+            里的轨道和标注是怎么来的</h3>
+            <p>torch profiler 导出的 trace 里，GPU
+            侧有三类和这个问题相关的记录：</p>
+            <table>
+            <colgroup>
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>记录</th>
+            <th>分轨依据</th>
+            <th>在 graph replay 下的表现</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td><code>kernel</code> / <code>gpu_memcpy</code></td>
+            <td><code>args.stream</code>，也就是 kernel 实际所在的
+            stream</td>
+            <td>落在驱动选的内部 stream 上，不是 capture 时的
+            stream</td>
+            </tr>
+            <tr>
+            <td><code>cuda_runtime</code> 的
+            <code>cudaGraphLaunch</code></td>
+            <td>CPU 线程</td>
+            <td>一次 replay 只有一条；它的 <code>correlation</code>
+            被这次 replay 的<strong>所有</strong> kernel 共用</td>
+            </tr>
+            <tr>
+            <td><code>gpu_user_annotation</code></td>
+            <td>每条有 kernel 的 GPU stream 各一份</td>
+            <td>CPU 上的 <code>record_function</code> 范围投影到
+            GPU，每条轨道上从这段时间里第一个 kernel 画到最后一个
+            kernel</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>最后一行解释了“上百个
+            <code>step[TARGET_VERIFY bs=24]</code>”：step
+            只有一个，但它在每条轨道上各投影一份。在 K3 这份 trace
+            里核对过，每份标注的两端都正好贴着该轨道上首尾 kernel
+            的起止时间。所以标注的长度没有“这个 step 在这条 stream
+            上花了多久”的含义：</p>
+            <ul>
+            <li>只跑了 17 个 kernel 的短轨道，标注长约 2 ms；</li>
+            <li>权重拷贝轨道从头忙到尾，标注长 116 ms；</li>
+            <li>有一条轨道上的 24 个 RMSNorm 从 3.4 ms 一直散落到 131
+            ms，标注也跟着拉到 108
+            ms，中间大部分时间这条轨道是空的。</li>
+            </ul>
+            <p>要把一次 replay 的 kernel 聚到一起，应该用第二行的
+            <code>correlation</code>：先找到
+            <code>cudaGraphLaunch</code>，再取所有同
+            <code>correlation</code> 的
+            kernel。不要按轨道或按标注聚。</p>
+            <h3 id="实测k3-dp16-一次-target_verify-replay">实测：K3 DP16
+            一次 TARGET_VERIFY replay</h3>
+            <p>数据来自
+            <code>profile_dp16/d_bs24_100k</code>（DP16，单卡
+            bs=24，全局 384），按 <code>correlation</code> 取出 7 次
+            4431-op 的 replay 统计。</p>
+            <p><strong>轨道上有什么。</strong> 按每条 stream 上的 kernel
+            数分组，结构很清楚：</p>
+            <table>
+            <colgroup>
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>轨道</th>
+            <th>数量</th>
+            <th>内容</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>stream 376</td>
+            <td>1</td>
+            <td>644 次 <code>Memcpy PtoP (Device -&gt; Device)</code> +
+            92 次 <code>memcpy128</code>，忙约 69 ms。每次 PtoP 约 78
+            MB、约 715 GB/s，是权重 AllGather</td>
+            </tr>
+            <tr>
+            <td>主链段</td>
+            <td>约 120</td>
+            <td>每段 17、23 或 39 个 kernel，按时间依次出现。例如 stream
+            413 上依次是
+            quant、gemm、<code>situ_and_mul</code>、<code>add3</code>、<code>attn_res</code>、RMSNorm、<code>mla_prepare</code>，最后是
+            1247 us 的 MLA
+            decode。一段大约一层的量，但段的边界不在层的边界上</td>
+            </tr>
+            <tr>
+            <td>其他</td>
+            <td>少量</td>
+            <td>开头的 embedding、AllReduce，以及上面那条散落的 RMSNorm
+            轨道</td>
+            </tr>
+            </tbody>
+            </table>
+            <p><strong>有多少真正的并发。</strong> 把这次 replay 的所有
+            op 按时间扫一遍，统计同一时刻有几个 op 在跑：1 个占 46.4%，2
+            个占 48.0%，3 个占 4.1%，4 个占 0.9%，0 个占 0.6%。123
+            条轨道里，任意时刻只有一到三条在干活。</p>
+            <p><strong>时间花在哪。</strong> 每次 replay 的 GPU 跨度约
+            135 ms：</p>
+            <table>
+            <colgroup>
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>指标</th>
+            <th>时间</th>
+            <th>含义</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>计算 kernel 的并集</td>
+            <td>≈134 ms</td>
+            <td>除权重拷贝外，任意 kernel 在跑的时间</td>
+            </tr>
+            <tr>
+            <td>计算 kernel 时长之和</td>
+            <td>145.3 ms</td>
+            <td>比并集多 11 ms，是计算与计算的重叠（alt_stream
+            分叉）</td>
+            </tr>
+            <tr>
+            <td>stream 376 的权重拷贝</td>
+            <td>≈69 ms</td>
+            <td>几乎全部与计算重叠</td>
+            </tr>
+            <tr>
+            <td>只有拷贝在跑</td>
+            <td>0.5–0.9 ms</td>
+            <td>拷贝没被计算盖住的部分</td>
+            </tr>
+            <tr>
+            <td>GPU 全空</td>
+            <td>0.6–0.9 ms</td>
+            <td></td>
+            </tr>
+            </tbody>
+            </table>
+            <p>所以，并发有两类：一类是主链和权重 AllGather
+            侧流，另一类是主链和 MoE 里的 alt_stream
+            分叉。轨道数本身对性能没有影响，权重拷贝也基本藏住了。一步的时间由主链计算决定，和
+            stream 怎么摆放无关。</p>
+            <figure>
+            <img src="./WikiImage/cuda_graph_perfetto_k3_step.svg"
+            alt="K3 DP16 一次 TARGET_VERIFY replay：按轨道看是 120 段主链加一条拷贝流，按并集看几乎全是计算" />
+            <figcaption aria-hidden="true">K3 DP16 一次 TARGET_VERIFY
+            replay：按轨道看是 120
+            段主链加一条拷贝流，按并集看几乎全是计算</figcaption>
+            </figure>
+            <h3 id="在-sglang-中分叉和汇合从哪来">在 SGLang
+            中：分叉和汇合从哪来</h3>
+            <p>K3 的 decode forward 里，有两处代码在 capture
+            时制造分叉。它们是轨道被切碎的来源，也正好对应上面两类并发。</p>
+            <p><strong>权重 AllGather 侧流。</strong> 开了
+            <code>SGLANG_ENABLE_K3_WEIGHT_SHARD=1</code> 后，DP16
+            每张卡只存非专家权重的 1/8，每层前要从同节点的 8
+            张卡把完整权重拼回来（<code>srt/sharding.py</code>）。几个关键点：</p>
+            <ul>
+            <li>AllGather 跑在一条单独的侧流上，由
+            <code>get_weight_sharding_side_stream()</code> 从
+            RuntimeContext 租用，名字是
+            <code>k3_weight_shard</code>；</li>
+            <li>走的是 NCCL 的 Copy Engine 算法，通信组限制在一个 NVLink
+            域内的 8 张卡（<code>_K3_CE_GROUP_SIZE = 8</code>）。所以在
+            trace 里它显示为
+            <code>Memcpy PtoP (Device -&gt; Device)</code>，而不是
+            <code>ncclDevKernel_*</code>；</li>
+            <li><code>WeightShardForwardPlanner</code> 做深度为 1
+            的预取：<code>kimi_k3.py</code> 的层循环在跑第 i 层前调用
+            <code>maybe_dispatch(i + 1)</code>，提前发出下一层的
+            AllGather，并用上一层的
+            <code>_weight_shard_done_event</code> 作为 gate，保证
+            staging 槽位不会被提前覆盖。</li>
+            </ul>
+            <p><code>FlatAGScheduler.launch()</code>
+            里的分叉和汇合，就是图里的依赖边：</p>
+            <div class="sourceCode" id="cb1"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>stream.wait_stream(cur)              <span class="co"># 分叉：侧流等主链已提交的工作</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> torch.cuda.stream(stream):</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    dist.all_gather_into_tensor(...)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>._shared_event.record(stream)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 用到这一层权重前，prepare_layer_weight_shard_forward() -&gt; wait_ready_once():</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>torch.cuda.current_stream().wait_event(<span class="va">self</span>._shared_event)   <span class="co"># 汇合</span></span></code></pre></div>
+            <p>每个做了 weight shard 的层，主链都要等一次这个
+            event。主链段的数量和层数同一量级，推测这些汇合点就是主链换轨道的地方。</p>
+            <p><strong>MoE 的 alt_stream。</strong>
+            <code>kimi_k3.py</code> 的 MoE 层在两处用
+            <code>alt_stream</code>：</p>
+            <ul>
+            <li>front overlap：router gate 和 TopK 放到
+            <code>alt_stream</code>，主链同时算 latent
+            down-proj（<code>routed_expert_down_proj</code>），然后
+            <code>current_stream.wait_stream(self.alt_stream)</code>
+            汇合；</li>
+            <li>shared expert
+            overlap（<code>_sbo_shared_overlap</code>）：共享专家放到
+            <code>alt_stream</code> 上，与 routed 专家的 DeepEP 通信和
+            GEMM 重叠，在尾部汇合。</li>
+            </ul>
+            <p>trace 里 7.1 ms 附近能直接看到这种重叠：一条轨道在跑
+            <code>deep_ep::internode_ll::dispatch</code>，另一条同时在跑
+            quant、gemm、<code>situ_and_mul</code>。11 ms
+            的计算重叠应该主要来自这类分叉，没有逐个核对。</p>
+            <p><strong>对照 eager。</strong> 同样的代码不进 graph
+            时，kernel 落在 Python 实际提交的 stream 上，Perfetto
+            只会显示主
+            stream、<code>alt_stream</code>、<code>k3_weight_shard</code>
+            这几条。这份 trace 里的 eager kernel 只出现在 stream 31 和
+            87 上，可以作为对照。</p>
+            <h3 id="怎么读-graph-replay-的-trace">怎么读 graph replay 的
+            trace</h3>
+            <ul>
+            <li><strong>按 <code>correlation</code> 聚合一次
+            replay。</strong> 找到
+            <code>cudaGraphLaunch</code>，取所有同
+            <code>correlation</code> 的 GPU op，不要按轨道或 step
+            标注去圈。</li>
+            <li><strong>忙碌时间取所有 stream 的并集。</strong>
+            把各轨道的 kernel
+            时长相加，会把重叠部分算两次。上面的例子里，相加是 145.3
+            ms，并集是 134.2 ms。</li>
+            <li><strong>看并发，就看同一时刻有几条轨道在跑</strong>，不要看轨道总数。</li>
+            <li><strong>step 标注的长度只说明这条轨道上首尾 kernel
+            隔了多远。</strong> 想知道一步多长，看这次 replay 首个
+            kernel 到最后一个 kernel 的跨度。</li>
+            <li><strong>拷贝藏没藏住，看“只有拷贝在跑”的时间</strong>，不要看拷贝流本身有多忙。69
+            ms 的拷贝只露出不到 1 ms。</li>
+            </ul>
+            <h3 id="小结">小结</h3>
+            <p>CUDA Graph 合并的是提交，不是执行顺序。capture 时代码里的
+            stream 和 event 只用来推出依赖边，replay 时驱动按 DAG
+            把节点摆到自己的内部 stream 上，Perfetto
+            照实分轨，于是一条主链会在每个汇合点换一次轨道，最终散成上百条，每条都带一份
+            step 标注。读这种 trace 时，把轨道当作驱动的摆放结果：按
+            <code>correlation</code> 圈出一次 replay，对所有 stream
+            取并集算时间，用同一时刻的并发数来判断有没有并行。K3 DP16
+            decode 里的 123 条 stream 对应的只是两类真实的并发，权重
+            AllGather 侧流和 MoE 的 alt_stream
+            分叉，一步的时间几乎全花在主链计算上。</p>
+          </main>
+        <aside class="wiki-toc">
+      <ul>
+      <li><a href="#问题开了-graphstream-反而变多了"
+      id="toc-问题开了-graphstream-反而变多了">问题：开了 graph，stream
+      反而变多了</a></li>
+      <li><a
+      href="#抽象stream-是-capture-时写依赖的语法replay-时只剩-dag"
+      id="toc-抽象stream-是-capture-时写依赖的语法replay-时只剩-dag">抽象：stream
+      是 capture 时写依赖的语法，replay 时只剩 DAG</a></li>
+      <li><a href="#perfetto-里的轨道和标注是怎么来的"
+      id="toc-perfetto-里的轨道和标注是怎么来的">Perfetto
+      里的轨道和标注是怎么来的</a></li>
+      <li><a href="#实测k3-dp16-一次-target_verify-replay"
+      id="toc-实测k3-dp16-一次-target_verify-replay">实测：K3 DP16 一次
+      TARGET_VERIFY replay</a></li>
+      <li><a href="#在-sglang-中分叉和汇合从哪来"
+      id="toc-在-sglang-中分叉和汇合从哪来">在 SGLang
+      中：分叉和汇合从哪来</a></li>
+      <li><a href="#怎么读-graph-replay-的-trace"
+      id="toc-怎么读-graph-replay-的-trace">怎么读 graph replay 的
+      trace</a></li>
+      <li><a href="#小结" id="toc-小结">小结</a></li>
+      </ul>
+    </aside>
+      </div>
+</body>
+
+</html>

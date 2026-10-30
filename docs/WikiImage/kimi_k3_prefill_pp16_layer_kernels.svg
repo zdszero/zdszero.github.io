@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 530" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#868e96"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="920" height="530" rx="12" fill="#ffffff"/>
+  <text x="460" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">stage 内：一层 KDA 和一层 MLA 的 prefill 算子链</text>
+  <text x="460" y="56" text-anchor="middle" font-size="13" fill="#868e96">琥珀色是用环境变量换上的专用 kernel，与原路径 bit-exact；开关名省略 SGLANG_ / OPT_USE_ 前缀</text>
+
+  <!-- KDA panel -->
+  <rect x="20" y="74" width="880" height="190" rx="10" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="36" y="98" font-size="14" font-weight="700" fill="#0b7285">KDA 层 × 69（每个 stage 1 ~ 6 层）</text>
+  <rect x="36" y="116" width="120" height="80" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="96" y="140" text-anchor="middle" font-size="12.5" font-weight="700" fill="#495057">投影 GEMM</text>
+  <text x="96" y="160" text-anchor="middle" font-size="11" fill="#495057">q k v g + f_a | b</text>
+  <text x="96" y="178" text-anchor="middle" font-size="10" font-family="monospace" fill="#868e96">K3_ATTN_MOE_FP8</text>
+  <path d="M156 156 L168 156" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <rect x="172" y="116" width="280" height="80" rx="8" fill="#ffffff" stroke="#adb5bd" stroke-dasharray="4 3"/>
+  <rect x="180" y="121" width="264" height="22" rx="4" fill="#fff9db" stroke="#f08c00"/>
+  <text x="188" y="136" font-size="10"><tspan font-family="monospace" fill="#e8590c">K3_KDA_SHORT_CONV</tspan><tspan fill="#495057">：q/k/v 三次 conv → 1</tspan></text>
+  <rect x="180" y="146" width="264" height="22" rx="4" fill="#fff9db" stroke="#f08c00"/>
+  <text x="188" y="161" font-size="10"><tspan font-family="monospace" fill="#e8590c">K3_KDA_FUSED_BETA_SIGMOID</tspan><tspan fill="#495057">：copy、sigmoid 2 → 1</tspan></text>
+  <rect x="180" y="171" width="264" height="22" rx="4" fill="#fff9db" stroke="#f08c00"/>
+  <text x="188" y="186" font-size="10"><tspan font-family="monospace" fill="#e8590c">K3_KDA_FUSED_TRACK_CONV_STATE</tspan><tspan fill="#495057">：3 → 1</tspan></text>
+  <path d="M452 156 L464 156" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <rect x="468" y="116" width="160" height="80" rx="8" fill="#fff9db" stroke="#f08c00"/>
+  <text x="548" y="138" text-anchor="middle" font-size="12.5" font-weight="700" fill="#e8590c">FlashKDA 分块递推</text>
+  <text x="548" y="156" text-anchor="middle" font-size="11" fill="#495057">仓内 CuTe DSL 版（SM100）</text>
+  <text x="548" y="172" text-anchor="middle" font-size="10" font-family="monospace" fill="#e8590c">OPT_FLASH_KDA_CUTE</text>
+  <text x="548" y="188" text-anchor="middle" font-size="10.5" fill="#868e96">长度窗 [64, 24576]</text>
+  <path d="M628 156 L640 156" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <rect x="644" y="116" width="130" height="80" rx="8" fill="#fff9db" stroke="#f08c00"/>
+  <text x="709" y="140" text-anchor="middle" font-size="12.5" font-weight="700" fill="#e8590c">gated RMSNorm</text>
+  <text x="709" y="158" text-anchor="middle" font-size="11" fill="#495057">+ 非连续布局 copy</text>
+  <text x="709" y="178" text-anchor="middle" font-size="10" font-family="monospace" fill="#e8590c">KDA_STRIDED_ONORM</text>
+  <path d="M774 156 L786 156" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <rect x="790" y="116" width="94" height="80" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="837" y="152" text-anchor="middle" font-size="12.5" font-weight="700" fill="#495057">o_proj</text>
+  <text x="837" y="170" text-anchor="middle" font-size="11" fill="#868e96">GEMM</text>
+  <rect x="36" y="208" width="848" height="44" rx="6" fill="#fff4e6" stroke="#f08c00"/>
+  <text x="48" y="226" font-size="11.5" fill="#495057">FlashKDA 按整个 batch 判断：最短 extend &lt; 64 或最长 &gt; FLASHKDA_MAX_SEQ_LEN，69 层全部退回 Triton。</text>
+  <text x="48" y="244" font-size="11.5" fill="#495057">默认上限 2048，脚本放到 24576 让 16K chunk 留在 FlashKDA；原脚本实测退回 Triton 约 -5%，改 chunk 大小要一起改。</text>
+  <!-- MLA panel -->
+  <rect x="20" y="280" width="880" height="190" rx="10" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="36" y="304" font-size="14" font-weight="700" fill="#3b5bdb">MLA 层 × 24（每个 stage 1 ~ 2 层）</text>
+  <rect x="36" y="322" width="120" height="80" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="96" y="346" text-anchor="middle" font-size="12.5" font-weight="700" fill="#495057">投影 GEMM</text>
+  <text x="96" y="366" text-anchor="middle" font-size="11" fill="#495057">q / kv_a</text>
+  <text x="96" y="384" text-anchor="middle" font-size="10" font-family="monospace" fill="#868e96">K3_ATTN_MOE_FP8</text>
+  <path d="M156 362 L168 362" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <rect x="172" y="322" width="170" height="80" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="257" y="342" text-anchor="middle" font-size="12.5" font-weight="700" fill="#495057">前缀分块展开</text>
+  <text x="257" y="360" text-anchor="middle" font-size="11" fill="#495057">kv_b_proj：latent → K / V</text>
+  <text x="257" y="376" text-anchor="middle" font-size="10" font-family="monospace" fill="#495057">MAX_KV_CHUNK_CAPACITY</text>
+  <text x="257" y="392" text-anchor="middle" font-size="10.5" fill="#868e96">每块 ≤ 65536 / bs token</text>
+  <path d="M342 362 L354 362" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <rect x="358" y="322" width="140" height="80" rx="8" fill="#fff9db" stroke="#f08c00"/>
+  <text x="428" y="342" text-anchor="middle" font-size="12.5" font-weight="700" fill="#e8590c">拼 K</text>
+  <text x="428" y="360" text-anchor="middle" font-size="11" fill="#495057">k_nope + k_pe</text>
+  <text x="428" y="376" text-anchor="middle" font-size="10" font-family="monospace" fill="#e8590c">FLATROW_CONCAT_MHA_K</text>
+  <text x="428" y="392" text-anchor="middle" font-size="10.5" fill="#868e96">96 head 不是 2 的幂</text>
+  <path d="M498 362 L510 362" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <rect x="514" y="322" width="160" height="80" rx="8" fill="#fff9db" stroke="#f08c00"/>
+  <text x="594" y="342" text-anchor="middle" font-size="12.5" font-weight="700" fill="#e8590c">q / k / v → FP8</text>
+  <text x="594" y="360" text-anchor="middle" font-size="11" fill="#495057">3 次 Tensor.to → Triton</text>
+  <text x="594" y="376" text-anchor="middle" font-size="10" font-family="monospace" fill="#e8590c">TRITON_MLA_QKV_FP8_CAST</text>
+  <text x="594" y="392" text-anchor="middle" font-size="10.5" fill="#868e96">strided V 原来 0.67 TB/s</text>
+  <path d="M674 362 L686 362" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <rect x="690" y="322" width="110" height="80" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="745" y="346" text-anchor="middle" font-size="12.5" font-weight="700" fill="#3b5bdb">trtllm ragged</text>
+  <text x="745" y="364" text-anchor="middle" font-size="11" fill="#495057">attention</text>
+  <text x="745" y="382" text-anchor="middle" font-size="11" fill="#495057">+ 按 LSE 合并</text>
+  <path d="M800 362 L812 362" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <rect x="816" y="322" width="68" height="80" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="850" y="366" text-anchor="middle" font-size="12.5" font-weight="700" fill="#495057">o_proj</text>
+  <rect x="36" y="414" width="848" height="44" rx="6" fill="#ffffff" stroke="#e9ecef"/>
+  <text x="48" y="432" font-size="11.5" fill="#495057">trtllm_mla 的 extend 一律走 MHA_CHUNKED_KV：前缀按块展开、逐块算 attention，再按 LSE 合并。</text>
+  <text x="48" y="450" font-size="11.5" fill="#495057">把块容量从 128K 调到 64K 只会让长前缀多切几块，主要作用是压低展开 K/V 的显存峰值，不是提速开关。</text>
+
+  <rect x="20" y="482" width="880" height="34" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="36" y="504" font-size="12" fill="#495057">关键点：K3 本地 96 个 head、切片带 stride，PyTorch 通用路径在这些形状上退化成不能向量化的小 kernel。</text>
+</svg>
