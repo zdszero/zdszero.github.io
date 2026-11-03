@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 650" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#868e96"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="900" height="650" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">一轮 prefill 调度：先记账，最后才真正分配</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">Scheduler._get_new_batch_prefill_raw()；左边是步骤，右边是这一步动了哪本账</text>
+
+  <text x="110" y="86" font-size="11.5" fill="#868e96">步骤</text>
+  <text x="600" y="86" font-size="11.5" fill="#868e96">账本变化</text>
+  <path d="M86 100 L86 600" stroke="#dee2e6" stroke-width="2"/>
+
+  <!-- step 1 -->
+  <circle cx="86" cy="122" r="7" fill="#4c6ef5"/>
+  <rect x="110" y="98" width="470" height="50" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="126" y="119" font-size="13" font-weight="700" fill="#3b5bdb">① 新建 PrefillAdder</text>
+  <text x="126" y="138" font-size="11" fill="#495057">算力账取初值（rem_chunk = 16384）；PD prefill 节点没有 running decode</text>
+  <text x="600" y="119" font-size="11.5" fill="#495057" font-family="monospace">两个 offset = 0</text>
+  <text x="600" y="137" font-size="11" fill="#868e96">每轮重新开账</text>
+
+  <!-- step 2 -->
+  <circle cx="86" cy="186" r="7" fill="#f08c00"/>
+  <rect x="110" y="160" width="470" height="56" rx="8" fill="#fff9db" stroke="#f08c00"/>
+  <text x="126" y="181" font-size="13" font-weight="700" fill="#e8590c">② add_chunked_req：续算上一轮的半成品</text>
+  <text x="126" y="199" font-size="11" fill="#495057">片长 = min(rem_chunk, rem_total)，非末片对齐到 256</text>
+  <text x="126" y="212" font-size="11" fill="#c92a2a">≤ 0 时不放弃，强制取 rem_chunk_tokens（防泄漏）</text>
+  <text x="600" y="181" font-size="11.5" fill="#495057" font-family="monospace">两本账 += 本片 + page</text>
+  <text x="600" y="199" font-size="11" fill="#868e96">没有任何显存检查能拒绝它</text>
+  <text x="600" y="212" font-size="11" fill="#c92a2a">仍截断：rem_total_offset += 尾巴（修复）</text>
+
+  <!-- step 3 header -->
+  <circle cx="86" cy="248" r="7" fill="#0ca678"/>
+  <text x="110" y="253" font-size="13" font-weight="700" fill="#0b7285">③ for req in waiting_queue：add_one_req(req)</text>
+  <rect x="130" y="266" width="450" height="40" rx="7" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="144" y="283" font-size="12" font-weight="700" fill="#0b7285">a. 总量检查（before lock）</text>
+  <text x="144" y="299" font-size="10.5" fill="#495057">剩余 prompt（含 host hit）+ 1 + page &lt; rem_total，否则 NO_TOKEN</text>
+  <text x="600" y="291" font-size="11" fill="#868e96">只检查，不记账</text>
+
+  <rect x="130" y="314" width="450" height="40" rx="7" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="144" y="331" font-size="12" font-weight="700" fill="#0b7285">b. lock 命中前缀后复查（after lock）</text>
+  <text x="144" y="347" font-size="10.5" fill="#495057">被 lock 的前缀不再算 evictable，rem_total 可能变小</text>
+  <text x="600" y="339" font-size="11" fill="#868e96">evictable ↓</text>
+
+  <rect x="130" y="362" width="450" height="40" rx="7" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="144" y="379" font-size="12" font-weight="700" fill="#0b7285">c. 代价模型 / delayer / mamba slot</text>
+  <text x="144" y="395" font-size="10.5" fill="#495057">可能 defer（OTHER），或把 chunk 上限压小</text>
+  <text x="600" y="387" font-size="11" fill="#868e96">只检查</text>
+
+  <rect x="130" y="410" width="450" height="40" rx="7" fill="#fff4e6" stroke="#f08c00"/>
+  <text x="144" y="427" font-size="12" font-weight="700" fill="#e8590c">d. init_load_back：从 host 拷回命中的 KV</text>
+  <text x="144" y="443" font-size="10.5" fill="#495057">立刻分配 slot 并入树，prefix 变长，剩余要算的 token 变少</text>
+  <text x="600" y="435" font-size="11.5" fill="#495057" font-family="monospace">available −= host_hit</text>
+
+  <rect x="130" y="458" width="450" height="56" rx="7" fill="#fff5f5" stroke="#fa5252"/>
+  <text x="144" y="475" font-size="12" font-weight="700" fill="#c92a2a">e. 整段 or 截断</text>
+  <text x="144" y="491" font-size="10.5" fill="#495057">ceil(剩余) ≤ rem_chunk → 整段，记本片 + 1（首 token）+ page</text>
+  <text x="144" y="506" font-size="10.5" fill="#495057">否则截断（对齐 256），只记本片 + page</text>
+  <text x="600" y="483" font-size="11.5" fill="#495057" font-family="monospace">两本账 += 本片 + page</text>
+  <text x="600" y="501" font-size="11.5" fill="#c92a2a" font-family="monospace">rem_total_offset += 尾巴（修复）</text>
+
+  <rect x="130" y="522" width="450" height="26" rx="7" fill="#f8f9fa" stroke="#adb5bd"/>
+  <text x="144" y="540" font-size="11" fill="#495057">f. budget_state()：NO_TOKEN 停（批满）/ OTHER 停 / CONTINUE 看下一个</text>
+
+  <!-- step 4 -->
+  <circle cx="86" cy="582" r="7" fill="#7048e8"/>
+  <rect x="110" y="560" width="470" height="44" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="126" y="579" font-size="13" font-weight="700" fill="#5f3dc4">④ ScheduleBatch.init_new → prepare_for_extend</text>
+  <text x="126" y="596" font-size="11" fill="#495057">alloc_extend 才真正给每个请求的本片分配 slot</text>
+  <text x="600" y="579" font-size="11.5" fill="#c92a2a">池子不够就抛 Prefill out of memory</text>
+  <text x="600" y="596" font-size="11" fill="#868e96">offset 随 adder 丢弃，下一轮重新算</text>
+
+  <rect x="60" y="614" width="780" height="26" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="78" y="632" font-size="12" fill="#495057">记账发生在 ②③，分配发生在 ④：两者之间只要有一笔「将来要分配」没记进 offset，后面的请求就会把它当成空闲。</text>
+</svg>

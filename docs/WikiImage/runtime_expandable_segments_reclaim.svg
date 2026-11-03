@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 460" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="460" rx="12" fill="#ffffff"/>
+  <text x="40" y="34" font-size="20" font-weight="700" fill="#212529">物理显存的回收粒度：从整个 segment 到 2 MB 页</text>
+  <text x="40" y="56" font-size="13" fill="#868e96">示例：reserved − allocated ≈ 4 GB，新请求 3 GB（如一轮 prefill 的临时张量）</text>
+
+  <!-- Row A: default segments -->
+  <text x="40" y="92" font-size="13.5" font-weight="700" fill="#212529">默认：segment 只有整段空闲才能还给驱动</text>
+  <rect x="40" y="104" width="260" height="54" rx="8" fill="#f8f9fa" stroke="#adb5bd"/>
+  <rect x="42" y="106" width="36" height="50" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="60" y="135" font-size="10.5" fill="#3b5bdb" text-anchor="middle">小</text>
+  <rect x="82" y="106" width="216" height="50" rx="6" fill="#ffffff" stroke="#adb5bd" stroke-dasharray="4 3"/>
+  <text x="190" y="135" font-size="11.5" fill="#868e96" text-anchor="middle">空 1.5 GB</text>
+  <rect x="320" y="104" width="250" height="54" rx="8" fill="#f8f9fa" stroke="#adb5bd"/>
+  <rect x="322" y="106" width="70" height="50" rx="6" fill="#ffffff" stroke="#adb5bd" stroke-dasharray="4 3"/>
+  <text x="357" y="135" font-size="11.5" fill="#868e96" text-anchor="middle">空 0.5</text>
+  <rect x="396" y="106" width="36" height="50" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="414" y="135" font-size="10.5" fill="#3b5bdb" text-anchor="middle">小</text>
+  <rect x="436" y="106" width="132" height="50" rx="6" fill="#ffffff" stroke="#adb5bd" stroke-dasharray="4 3"/>
+  <text x="502" y="135" font-size="11.5" fill="#868e96" text-anchor="middle">空 0.9 GB</text>
+  <rect x="590" y="104" width="250" height="54" rx="8" fill="#f8f9fa" stroke="#adb5bd"/>
+  <rect x="592" y="106" width="170" height="50" rx="6" fill="#ffffff" stroke="#adb5bd" stroke-dasharray="4 3"/>
+  <text x="677" y="135" font-size="11.5" fill="#868e96" text-anchor="middle">空 1.1 GB</text>
+  <rect x="766" y="106" width="72" height="50" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="802" y="135" font-size="10.5" fill="#3b5bdb" text-anchor="middle">小张量</text>
+  <text x="40" y="180" font-size="12" fill="#495057">空闲共 4 GB，最大的空洞只有 1.5 GB；每段都被一个长寿的小张量钉住，整段还不掉</text>
+  <rect x="40" y="192" width="800" height="34" rx="8" fill="#fff5f5" stroke="#fa5252"/>
+  <text x="56" y="214" font-size="12" fill="#c92a2a">3 GB：找不到够大的空闲 block → cudaMalloc 失败 → 释放完全空闲的段（没有）→ 重试失败 → OOM</text>
+
+  <!-- Row B: expandable segment -->
+  <text x="40" y="262" font-size="13.5" font-weight="700" fill="#212529">expandable：一段很长的连续虚拟地址，物理页按 2 MB 映射</text>
+  <rect x="40" y="274" width="800" height="54" rx="8" fill="#f8f9fa" stroke="#adb5bd"/>
+  <rect x="42" y="276" width="36" height="50" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="60" y="305" font-size="10.5" fill="#3b5bdb" text-anchor="middle">小</text>
+  <rect x="82" y="276" width="110" height="50" rx="6" fill="#ffffff" stroke="#7048e8" stroke-dasharray="4 3"/>
+  <text x="137" y="298" font-size="11" fill="#5f3dc4" text-anchor="middle">已解除映射</text>
+  <text x="137" y="314" font-size="10.5" fill="#868e96" text-anchor="middle">不占物理显存</text>
+  <rect x="196" y="276" width="36" height="50" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="214" y="305" font-size="10.5" fill="#3b5bdb" text-anchor="middle">小</text>
+  <rect x="236" y="276" width="110" height="50" rx="6" fill="#ffffff" stroke="#7048e8" stroke-dasharray="4 3"/>
+  <text x="291" y="298" font-size="11" fill="#5f3dc4" text-anchor="middle">已解除映射</text>
+  <text x="291" y="314" font-size="10.5" fill="#868e96" text-anchor="middle">不占物理显存</text>
+  <rect x="350" y="276" width="36" height="50" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="368" y="305" font-size="10.5" fill="#3b5bdb" text-anchor="middle">小</text>
+  <rect x="390" y="276" width="300" height="50" rx="6" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="540" y="298" font-size="12" font-weight="700" fill="#0b7285" text-anchor="middle">新 3 GB：映射到段尾</text>
+  <text x="540" y="314" font-size="10.5" fill="#495057" text-anchor="middle">用的是刚还给驱动的物理页</text>
+  <rect x="694" y="276" width="144" height="50" rx="6" fill="#ffffff" stroke="#adb5bd" stroke-dasharray="2 4"/>
+  <text x="766" y="305" font-size="11" fill="#868e96" text-anchor="middle">未映射的虚拟地址</text>
+  <text x="40" y="350" font-size="12" fill="#495057">OOM 前的重试会把空闲 block 覆盖的整页解除映射、还给驱动，再把物理页映射到段尾；</text>
+  <text x="40" y="368" font-size="12" fill="#495057">每个空洞只剩两端不足 2 MB 的零头还不掉</text>
+
+  <!-- note strip -->
+  <rect x="40" y="392" width="800" height="52" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="56" y="413" font-size="12" font-weight="700" fill="#212529">关键</text>
+  <text x="56" y="432" font-size="12" fill="#495057">3 GB 能否分配，从“某个 segment 里有 3 GB 连续空闲”变成“空闲物理页总共够 3 GB”。</text>
+</svg>

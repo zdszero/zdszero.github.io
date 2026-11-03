@@ -101,6 +101,8 @@
 - 工作总结
     - [性能体系建设](./performance_system.md)
     - 稳定性建设
+        - [Prefill 准入与显存账](./prefill_admission_budget.md)
+        - [运行时显存碎片与 expandable_segments](./runtime_expandable_segments.md)
     - 模型性能优化
         - [DeepSeek V3 Prefill 通信优化](./deepseek_v3_comm_opt.md)
         - [DeepSeek V3 小 batch 双流优化](./deepseek_h200_small_batch_opt.md)

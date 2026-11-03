@@ -4,7 +4,7 @@
 - 同一个 8k token 的 prefill，只取最后一个 token 的 logits 和要返回每个位置的 input logprob，显存差距为什么能到几个 GB？
 - decode 每步只算一个 token，为什么 batch 一大也要给它留出可观的显存？
 
-[VRAM Usage](./vram_usage.md) 把推理显存分成七类。其中权重、KV cache 属于启动时就确定的 persistent 部分；本篇讨论剩下那些**随每次 forward 出现又消失**的部分：activation（中间张量）、kernel workspace，以及被 CUDA Graph 固定下来的运行时峰值。它们单个不大，却决定了 OOM 边界，因为它们必须塞进 persistent 部分用剩的那点余量里。
+[VRAM Usage](./vram_usage.md) 把推理显存分成七类。其中权重、KV cache 属于启动时就确定的 persistent 部分；本篇讨论剩下那些**随每次 forward 出现又消失**的部分：activation（中间张量）、kernel workspace，以及被 CUDA Graph 固定下来的运行时峰值。它们单个不大，却决定了 OOM 边界，因为它们必须塞进 persistent 部分用剩的那点余量里。和它们分享这份余量的，还有绕过 PyTorch、在运行期才长出来的池外显存，见“动态显存的两个账户”一节。
 
 ### 问题：运行时显存不能等用到时再算
 
@@ -98,6 +98,66 @@ SGLang 按 batch 从大到小捕获，多张图共享同一个私有池，因此
 
 私有池的机制和显存账见 [显存管理与生命周期](./torch_memory_management.md)，捕获与重放的约束见 [Cuda Graph](./cuda_graph.md)。这块常驻具体由哪几项组成、怎么从启动日志里量出来，见 [CUDA Graph 显存：怎么算、怎么测](./vram_cuda_graph.md)。
 
+### 动态显存的两个账户：池内与池外
+
+前面几节按“大小由谁决定”给运行时显存分类。排查运行期 OOM 时还要看另一个维度：**这块显存是谁向驱动要的**。算子的 buffer 是否进 PyTorch 显存池，取决于它的申请方式，和它是不是“算子的 buffer”无关。用 `torch.empty` 申请的 workspace 在池里；库内部直接调 `cudaMalloc` / `cuMemCreate` 的就不在。
+
+KV pool 在启动时按当时测得的空闲显存一次分满（公式见 [显存预算与统计口径](./vram_budget.md)），之后所有运行期分配都只能从剩下的余量里拿。这份余量被两个账户共享：
+
+- **池内的动态部分**：经过 PyTorch caching allocator 的分配，包括 activation、`torch.empty` 出来的 workspace，以及 allocator 缓存着、还没还给驱动的空闲块。张量释放后，block 回到缓存而不是还给驱动，下一次分配直接复用。碎片问题只会出现在这里：`reserved − allocated` 是空闲总量，但这些空闲可能分散在多个 segment 里，每个 segment 又被存活的小张量钉住，还不回驱动。
+- **池外、运行期才长出来的部分**：绕过 allocator 直接向驱动申请，并且发生在 KV 定容之后的显存。典型来源有三类：
+  - NCCL 与某个 peer 的连接和 buffer 往往在第一次真正通信时才分配（见 [通信与传输显存](./vram_communication.md)）。
+  - kernel 代码第一次被调用时才加载进显存。CUDA 12.2 起模块默认懒加载，一个没跑过的 kernel 不会提前占显存。
+  - Triton、DeepGEMM、CuTe 等 JIT kernel 在第一次遇到某种配置时编译，编译产物随即加载。新配置可能在服务运行几小时甚至几天后才第一次出现。
+
+![运行期余量被池内与池外两个账户共享](../docs/WikiImage/vram_runtime_pool_accounts.svg)
+
+两个账户的区别决定了排查方向：
+
+| | 池内的动态部分 | 池外的运行期增长 |
+| --- | --- | --- |
+| 谁看得见 | `memory_allocated()` / `memory_reserved()` | 只有 `mem_get_info()`、NVML / nvidia-smi |
+| 典型故障 | 碎片：空闲总量够，但没有一块连续的够大 | 余量被悄悄吃掉，池内峰值原本装得下，现在装不下了 |
+| `empty_cache()` | 只能还掉整段都空闲的 segment | 无效，这部分不归 PyTorch 管 |
+| `PYTORCH_CUDA_ALLOC_CONF` | `expandable_segments` 能减轻碎片 | 无效 |
+| 根本对策 | 封顶单次 forward 的 token 数（`chunked_prefill_size`），减少尺寸多变的分配 | 把分配挪到 KV 定容之前，让它进入预算 |
+
+两个账户会互相挤占，但不对等。caching allocator 只在**自己的**分配失败时才归还缓存的空闲块，其他库调 `cudaMalloc` 失败时它不会让出。所以 `reserved` 里还有几 GB 空闲时，NCCL 或第三方库的分配照样可能失败。反过来，池外已经占走的显存，池内永远用不上。
+
+#### 为什么池外增长危险：它发生在 KV 定容之后
+
+启动顺序是：建通信组，测 `pre_model_load_memory`，加载权重，按剩余显存分配 KV，capture CUDA Graph，warmup，然后接流量。KV 定容只能看见那一刻之前已经发生的分配。之后长出来的池外显存只能从余量里扣，而下一节的余量公式是按 activation、CUDA Graph 和 DeepEP 估的，除了按并行规模估的那一项，没有专门为它留的余量。
+
+结果是：每次 forward 的 activation 峰值本来装得下，余量被池外占掉一部分之后，某次长 chunk 的分配就失败了。报错发生在一个普通的 `torch.empty` 上，看起来像池内问题，根源却在池外。
+
+SGLang 处理这类问题的思路一致：**把池外分配提前到 KV 定容之前，让它被启动时的测量计入。**
+
+| 来源 | 做法 | 位置 |
+| --- | --- | --- |
+| NCCL 懒建立的连接 | 测 `pre_model_load_memory` 之前，先做一次通信，把传输资源分配出来（`--pre-warm-nccl`，以及 TP lm_head all-to-all 的预热） | `distributed/bootstrap.py` |
+| Kimi-K3 KDA 的 CuTe kernel | 权重加载完、测量加载后空闲显存之前，每个 PP worker 在本地编译全部 serving variant（luno-5588） | `KimiK3LinearForCausalLM.precompile_kernels_after_loading()`（`models/kimi_k3.py`） |
+| 其他 JIT 与 autotune | 接流量前按真实长度跑一轮 prefill，预热 DeepGEMM JIT、attention plan buffer、MoE all-to-all buffer 和 Triton autotune | `entrypoints/warmup_sweep.py`，由 `SGLANG_WARMUP_PREFILL_LENS` 开启 |
+
+几点细节：
+
+- **luno-5588 的直接动机是首请求延迟，显存是附带的收益。** 每个 PP worker 有自己的 CuTe 编译缓存。不预编译的话，第一个请求会在每个 stage 上依次冷编译，代码注释写的是 *Compile locally instead of letting the first request compile serially through all stages*。显存上的收益来自时机：预编译在 `load_model()` 内部执行（`maybe_precompile_model_kernels_after_loading()`），前后各做一次 `synchronize` 和 `empty_cache`，然后才测加载后的空闲显存。编译产物占用的驱动显存因此计入权重加载的增量，KV 定容时已经扣掉。编译时用来推导形状的样例张量是 `torch.empty` 申请的，属于池内，`empty_cache` 会把它们还掉。
+- **warmup sweep 发生在 KV 定容之后。** 它不能把池外增长计入 KV 预算，只能让这部分在启动时就出现。余量真的不够时，服务会在启动阶段 OOM，而不是运行几天后才出问题。
+- **`expandable_segments` 不是免费的。** 开启后，池内所有分配（默认也包括 KV pool）都改由 CUDA VMM 提供物理页。依赖 CUDA IPC 句柄的组件会受影响，PD 分离时注册给传输引擎的 KV 内存也变成了 VMM 内存。改之前要先实测 KV 传输，细节见 [显存管理与生命周期](./torch_memory_management.md)。
+
+#### 判断一次运行期 OOM 属于哪个账户
+
+PyTorch 的 OOM 报错里已经带了拆分（字段含义见 [显存管理与生命周期](./torch_memory_management.md)）：
+
+```text
+池外占用 ≈ this process has … in use − (allocated by PyTorch + reserved but unallocated)
+```
+
+- **池外占用比服务就绪时明显变大**：池外在增长。查运行期才出现的 NCCL 通信组合、新出现的 JIT 配置、第三方库的直接分配。调 allocator 配置没有用。
+- **`reserved but unallocated` 已经大于 `Tried to allocate`，分配仍然失败**：碎片。allocator 在抛 OOM 之前，已经把整段都空闲的 segment 还给驱动并重试过一次，剩下的空闲都在仍有存活张量的 segment 里。所以定期调用 `gc.collect()` 加 `empty_cache()` 解决不了碎片，除非钉住 segment 的小张量本来就是因为循环引用迟迟没被释放。
+- **`allocated` 在几天里持续上涨**：张量泄漏，用 memory snapshot 找到持有者。
+
+要让第一条可比，需要一个基线：服务就绪后记录一次 `mem_get_info()` 得到的已用量减去 `memory_reserved()`，之后定期对比。
+
 ### 在 SGLang 中：给运行时显存留多少余量
 
 KV cache pool 的大小由 `mem_fraction_static` 决定：它被定义为（权重 + KV pool）占总显存的比例，剩下的 `1 - mem_fraction_static` 就是留给本篇这些运行时显存的。用户不指定时，`server_args.py` 用一个启发式公式反推它（单位 MB）：
@@ -124,8 +184,9 @@ mem_fraction_static = (gpu_mem - reserved_mem) / gpu_mem
 2. **prefill 中 OOM**：看这一批的实际 token 数是否超过预期（chunked prefill 是否被关闭、`max_prefill_tokens` 是否过大），以及是否有请求要求 input logprob 让 logits 覆盖了全部位置。
 3. **MoE 模型**：把 `num_tokens × topk` 当作 MoE 层的有效 token 数，再估中间缓冲。
 4. **decode 中 OOM**：看 running batch 是否超过 capture 上限而退回 eager 路径，eager 路径的临时分配不在私有池里。
-5. **调参方向**：降低 `chunked_prefill_size` 直接压 prefill 峰值；降低 `mem_fraction_static` 给所有运行时显存让出空间，代价是 KV 容量变小。
+5. **服务运行很久之后才 OOM**：先按“动态显存的两个账户”一节的公式算池外占用，和就绪时的基线比，分清是池外增长、碎片还是泄漏，再决定调什么。
+6. **调参方向**：降低 `chunked_prefill_size` 直接压 prefill 峰值；降低 `mem_fraction_static` 给所有运行时显存让出空间，代价是 KV 容量变小。
 
 ### 小结
 
-运行时显存的关键不在“有哪些张量”，而在“最坏时刻同时存活多少”。逐层复用让几十层模型的 activation 峰值只相当于一层最宽处，真正的大头是词表维度的 logits；只为采样位置算 logits、按块算 input logprob、chunked prefill 限制单次 token 数，分别从不同方向把峰值封顶。workspace 要区分预分配（固定开销）和按需（计入峰值），CUDA Graph 则把 decode 最大 batch 的峰值变成常驻。SGLang 的 `mem_fraction_static` 启发式正是按这几个封顶量来给运行时留余量的，理解它们，就能判断一次 OOM 是该调 KV 容量，还是该限制单次 forward 的规模。
+运行时显存的关键不在“有哪些张量”，而在“最坏时刻同时存活多少”。逐层复用让几十层模型的 activation 峰值只相当于一层最宽处，真正的大头是词表维度的 logits；只为采样位置算 logits、按块算 input logprob、chunked prefill 限制单次 token 数，分别从不同方向把峰值封顶。workspace 要区分预分配（固定开销）和按需（计入峰值），CUDA Graph 则把 decode 最大 batch 的峰值变成常驻。按分配者看，余量还被池内和池外两个账户共享：池内的问题是碎片，靠封顶 token 数和 allocator 配置处理；池外的问题是在 KV 定容之后才长出来，只能靠预热、预编译把它提前到测量之前。SGLang 的 `mem_fraction_static` 启发式正是按这几个封顶量来给运行时留余量的，理解它们，就能判断一次 OOM 是该调 KV 容量，还是该限制单次 forward 的规模。

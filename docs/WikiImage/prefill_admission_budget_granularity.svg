@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 500" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="500" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">chunk 边界按 256 切，chunk 预算按 64 算</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">page 64，对齐 256，chunk 4096，池子 12000；A 算 1088，B prompt 8000 无命中，C host 命中 6000、只算 128</text>
+
+  <!-- compute ledger -->
+  <text x="60" y="92" font-size="13" font-weight="700" fill="#212529">算力账：本轮 chunk 预算 4096</text>
+
+  <text x="60" y="116" font-size="12" font-weight="700" fill="#495057">upstream</text>
+  <rect x="60" y="124" width="207.2" height="34" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="163.6" y="145" text-anchor="middle" font-size="11.5" fill="#3b5bdb" font-family="monospace">A 1088</text>
+  <rect x="267.2" y="124" width="572.8" height="34" rx="4" fill="#fff4e6" stroke="#f08c00"/>
+  <text x="553.6" y="145" text-anchor="middle" font-size="11.5" fill="#e8590c" font-family="monospace">B 截断 3008 = 剩余预算</text>
+  <text x="840" y="176" text-anchor="end" font-size="11" fill="#0b7285">预算归零 → OTHER，C 不会被检查</text>
+
+  <text x="60" y="206" font-size="12" font-weight="700" fill="#495057">本 fork（FlashKDA 对齐）</text>
+  <rect x="60" y="214" width="207.2" height="34" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="163.6" y="235" text-anchor="middle" font-size="11.5" fill="#3b5bdb" font-family="monospace">A 1088</text>
+  <rect x="267.2" y="214" width="536.3" height="34" rx="4" fill="#fff4e6" stroke="#f08c00"/>
+  <text x="535.4" y="235" text-anchor="middle" font-size="11.5" fill="#e8590c" font-family="monospace">B 截断 2816（3008 退到 256 边界）</text>
+  <rect x="803.5" y="214" width="24.4" height="34" rx="2" fill="#fff5f5" stroke="#fa5252"/>
+  <rect x="827.9" y="214" width="12.1" height="34" rx="2" fill="#f8f9fa" stroke="#adb5bd" stroke-dasharray="3 2"/>
+  <path d="M803.5 256 L803.5 262 L840 262 L840 256" fill="none" stroke="#fa5252" stroke-width="1.5"/>
+  <text x="840" y="280" text-anchor="end" font-size="11" fill="#c92a2a">缝隙 192：C 只算 128，按 64 一页放得下，整段接纳</text>
+
+  <!-- memory ledger -->
+  <text x="60" y="314" font-size="13" font-weight="700" fill="#212529">显存：本 fork 这一轮分配完（12000 slot）</text>
+  <rect x="60" y="324" width="70.7" height="34" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="95.4" y="345" text-anchor="middle" font-size="11" fill="#3b5bdb" font-family="monospace">A</text>
+  <rect x="130.7" y="324" width="183" height="34" rx="4" fill="#fff4e6" stroke="#f08c00"/>
+  <text x="222.2" y="345" text-anchor="middle" font-size="11" fill="#e8590c" font-family="monospace">B 本片 2816</text>
+  <rect x="313.7" y="324" width="398.3" height="34" rx="4" fill="#fff5f5" stroke="#fa5252"/>
+  <text x="512.9" y="345" text-anchor="middle" font-size="11.5" fill="#c92a2a" font-family="monospace">C load back 6000 + 本片 128</text>
+  <rect x="712" y="324" width="128" height="34" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="776" y="345" text-anchor="middle" font-size="11" fill="#0b7285" font-family="monospace">空闲 1968</text>
+
+  <rect x="313.7" y="368" width="337" height="26" rx="4" fill="none" stroke="#fa5252" stroke-width="1.5" stroke-dasharray="5 3"/>
+  <text x="482.2" y="385" text-anchor="middle" font-size="11" fill="#c92a2a">B 的尾巴 5184 本该留在这里，但没有记账</text>
+
+  <!-- note -->
+  <rect x="60" y="412" width="780" height="72" rx="10" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="78" y="436" font-size="12" fill="#495057">缝隙只在算力账上，最多 3 页；但 load back 不占 chunk 预算，C 用 128 的算力预算当场拿走 6000 个 slot。</text>
+  <text x="78" y="456" font-size="12" fill="#495057">之后 B 续算还要 5184，池子只剩 1968，片长被压小，最后强制分配时 OOM。</text>
+  <text x="78" y="476" font-size="12" fill="#0b7285">修复：B 截断时把尾巴记进 rem_total_token_offset，C 看到 8096 − 5184 = 2912 &lt; 6128，NO_TOKEN。</text>
+</svg>

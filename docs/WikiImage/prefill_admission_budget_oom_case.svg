@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="600" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">线上复盘：as-1keim4u1e8 的尾巴被同批请求花掉</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">K3 PD prefill，PP0，chunked_prefill_size = 16384，page_size = 64，AS checkpoint 对齐 256，max_new = 1</text>
+
+  <!-- pass 1 table -->
+  <text x="60" y="88" font-size="13" font-weight="700" fill="#212529">Pass 1（15:16:26）：同一批按顺序接纳三个请求</text>
+  <rect x="60" y="98" width="780" height="28" rx="6" fill="#f1f3f5" stroke="#dee2e6"/>
+  <text x="76" y="117" font-size="11.5" font-weight="700" fill="#495057">请求</text>
+  <text x="196" y="117" font-size="11.5" font-weight="700" fill="#495057">load back</text>
+  <text x="296" y="117" font-size="11.5" font-weight="700" fill="#495057">本批要算</text>
+  <text x="406" y="117" font-size="11.5" font-weight="700" fill="#495057">rem_chunk</text>
+  <text x="516" y="117" font-size="11.5" font-weight="700" fill="#495057">准入检查 / 记账</text>
+
+  <rect x="60" y="130" width="780" height="40" rx="6" fill="#ffffff" stroke="#dee2e6"/>
+  <text x="76" y="155" font-size="12" font-weight="700" fill="#343a40" font-family="monospace">v9uj</text>
+  <text x="196" y="155" font-size="11.5" fill="#495057" font-family="monospace">105728</text>
+  <text x="296" y="155" font-size="11.5" fill="#495057" font-family="monospace">13888 整段</text>
+  <text x="406" y="155" font-size="11.5" fill="#495057" font-family="monospace">16384→2496</text>
+  <text x="516" y="155" font-size="11.5" fill="#495057">offset += 13888 + 1 + 64 = 13953</text>
+
+  <rect x="60" y="174" width="780" height="56" rx="6" fill="#fff5f5" stroke="#fa5252"/>
+  <text x="76" y="200" font-size="12" font-weight="700" fill="#c92a2a" font-family="monospace">1keim</text>
+  <text x="76" y="218" font-size="10.5" fill="#868e96">prompt 94024</text>
+  <text x="196" y="200" font-size="11.5" fill="#495057" font-family="monospace">86784</text>
+  <text x="296" y="200" font-size="11.5" fill="#495057" font-family="monospace">2304 截断</text>
+  <text x="296" y="218" font-size="10.5" fill="#868e96">89280 对齐到 89088</text>
+  <text x="406" y="200" font-size="11.5" fill="#495057" font-family="monospace">2496→192</text>
+  <text x="516" y="200" font-size="11.5" fill="#495057">offset += 2304 + 0 + 64 = 2368</text>
+  <text x="516" y="218" font-size="11.5" fill="#c92a2a">尾巴 [89088, 94024) = 4936 没有记账</text>
+
+  <rect x="60" y="234" width="780" height="56" rx="6" fill="#fff9db" stroke="#f08c00"/>
+  <text x="76" y="260" font-size="12" font-weight="700" fill="#e8590c" font-family="monospace">xpkq</text>
+  <text x="196" y="260" font-size="11.5" fill="#495057" font-family="monospace">15360</text>
+  <text x="296" y="260" font-size="11.5" fill="#495057" font-family="monospace">192 整段</text>
+  <text x="296" y="278" font-size="10.5" fill="#868e96">185 页对齐</text>
+  <text x="406" y="260" font-size="11.5" fill="#495057" font-family="monospace">192→0</text>
+  <text x="516" y="260" font-size="11.5" fill="#495057">需要 15610 &lt; rem_total 18303，通过</text>
+  <text x="516" y="278" font-size="11.5" fill="#0b7285">修复后 rem_total = 13310，NO_TOKEN</text>
+  <!-- chunk bar -->
+  <text x="60" y="326" font-size="13" font-weight="700" fill="#212529">之后几轮：1keim 续算时只剩约 2.9K 空闲，而它还要 4936</text>
+  <rect x="60" y="340" width="60" height="34" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="90" y="361" text-anchor="middle" font-size="10" fill="#0b7285">load back</text>
+  <rect x="120" y="340" width="229.1" height="34" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="234.5" y="361" text-anchor="middle" font-size="11.5" fill="#3b5bdb" font-family="monospace">c1 2304</text>
+  <rect x="349.1" y="340" width="280.1" height="34" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="489.1" y="361" text-anchor="middle" font-size="11.5" fill="#3b5bdb" font-family="monospace">c2 2816</text>
+  <rect x="629.2" y="340" width="6.4" height="34" rx="1" fill="#fff4e6" stroke="#f08c00"/>
+  <rect x="635.6" y="340" width="204.4" height="34" rx="4" fill="#fff5f5" stroke="#fa5252"/>
+  <text x="737.8" y="361" text-anchor="middle" font-size="11.5" fill="#c92a2a" font-family="monospace">c4 2056 OOM</text>
+  <text x="60" y="392" font-size="10" fill="#868e96" font-family="monospace">0</text>
+  <text x="120" y="392" text-anchor="middle" font-size="10" fill="#868e96" font-family="monospace">86784</text>
+  <text x="349.1" y="392" text-anchor="middle" font-size="10" fill="#868e96" font-family="monospace">89088</text>
+  <text x="626" y="392" text-anchor="end" font-size="10" fill="#868e96" font-family="monospace">91904</text>
+  <text x="632" y="406" text-anchor="middle" font-size="10" fill="#e8590c" font-family="monospace">c3 64</text>
+  <text x="640" y="392" text-anchor="start" font-size="10" fill="#868e96" font-family="monospace">91968</text>
+  <text x="840" y="392" text-anchor="end" font-size="10" fill="#868e96" font-family="monospace">94024</text>
+  <path d="M349.1 418 L349.1 424 L840 424 L840 418" fill="none" stroke="#fa5252" stroke-width="1.5"/>
+  <text x="594.5" y="440" text-anchor="middle" font-size="11.5" fill="#c92a2a">尾巴 4936：Pass 1 没进 offset，同批后面的请求把它当成空闲</text>
+
+  <rect x="60" y="452" width="250" height="62" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="74" y="472" font-size="12" font-weight="700" fill="#3b5bdb">c2：rem_total ≈ 2.9K</text>
+  <text x="74" y="489" font-size="11" fill="#495057">片长被显存压到 2880 左右，</text>
+  <text x="74" y="505" font-size="11" fill="#495057">对齐 256 后 2816</text>
+  <rect x="325" y="452" width="250" height="62" rx="8" fill="#fff9db" stroke="#f08c00"/>
+  <text x="339" y="472" font-size="12" font-weight="700" fill="#e8590c">c3：只剩一页</text>
+  <text x="339" y="489" font-size="11" fill="#495057">对齐会退回起点，不允许，</text>
+  <text x="339" y="505" font-size="11" fill="#495057">保留 64</text>
+  <rect x="590" y="452" width="250" height="62" rx="8" fill="#fff5f5" stroke="#fa5252"/>
+  <text x="604" y="472" font-size="12" font-weight="700" fill="#c92a2a">c4：rem_total ≤ 0</text>
+  <text x="604" y="489" font-size="11" fill="#495057">强制取 rem_chunk，末片不对齐</text>
+  <text x="604" y="505" font-size="11" fill="#495057">分配 2056，可用 0 → 抛异常</text>
+
+  <rect x="60" y="528" width="780" height="56" rx="10" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="78" y="551" font-size="12" fill="#495057">xpkq 只算 192 个 token，chunk 预算放得下；它的 15360 load back 不进 chunk 预算，只对 rem_total 检查，</text>
+  <text x="78" y="570" font-size="12" fill="#495057">而 rem_total 没扣 1keim 的尾巴。修复把尾巴记进 rem_total_token_offset，xpkq 这一轮就会 NO_TOKEN。</text>
+</svg>

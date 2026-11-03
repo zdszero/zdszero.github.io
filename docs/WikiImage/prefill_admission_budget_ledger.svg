@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 520" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="520" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">PrefillAdder 的显存账（PD prefill 节点）：基线 − offset</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">offset 只记「本轮答应了、还没分配」的 KV；load back、lock、inflight 传输已经体现在基线里</text>
+
+  <!-- pool bar -->
+  <text x="60" y="88" font-size="12.5" font-weight="700" fill="#212529">KV pool（full token slot）</text>
+  <rect x="60" y="98" width="300" height="34" rx="4" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="210" y="120" text-anchor="middle" font-size="12" fill="#495057">已分配 / 被 lock（含已 load back 的前缀）</text>
+  <rect x="360" y="98" width="290" height="34" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="505" y="120" text-anchor="middle" font-size="12" fill="#0b7285" font-family="monospace">available_size()</text>
+  <rect x="650" y="98" width="190" height="34" rx="4" fill="#e6fcf5" stroke="#0ca678" stroke-dasharray="4 3"/>
+  <text x="745" y="120" text-anchor="middle" font-size="12" fill="#0b7285" font-family="monospace">evictable_size()</text>
+  <path d="M360 146 L360 152 L840 152 L840 146" fill="none" stroke="#0ca678" stroke-width="1.5"/>
+  <text x="600" y="168" text-anchor="middle" font-size="11.5" fill="#495057">基线 = available + evictable，即日志里的 local rem total（每次读 property 都重新算）</text>
+
+  <!-- rem_total row -->
+  <text x="60" y="202" font-size="12.5" font-weight="700" fill="#3b5bdb">rem_total_token_offset</text>
+  <text x="60" y="219" font-size="11" fill="#868e96">本批分配 + 以后几轮才分配的</text>
+  <rect x="360" y="192" width="150" height="34" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="435" y="207" text-anchor="middle" font-size="10.5" fill="#3b5bdb">每个请求的本片</text>
+  <text x="435" y="220" text-anchor="middle" font-size="10.5" fill="#3b5bdb">+ page_size</text>
+  <rect x="510" y="192" width="60" height="34" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="540" y="207" text-anchor="middle" font-size="10.5" fill="#3b5bdb">首 token</text>
+  <text x="540" y="220" text-anchor="middle" font-size="10.5" fill="#3b5bdb">每个 1</text>
+  <rect x="570" y="192" width="140" height="34" rx="4" fill="#fff5f5" stroke="#fa5252"/>
+  <text x="640" y="207" text-anchor="middle" font-size="10.5" fill="#c92a2a">截断请求的尾巴 + 1</text>
+  <text x="640" y="220" text-anchor="middle" font-size="10.5" fill="#c92a2a">（本次修复）</text>
+  <rect x="710" y="192" width="130" height="34" rx="4" fill="#ffffff" stroke="#0ca678" stroke-width="2"/>
+  <text x="775" y="214" text-anchor="middle" font-size="11.5" font-weight="700" fill="#0b7285" font-family="monospace">rem_total_tokens</text>
+
+  <!-- cur_rem row -->
+  <text x="60" y="262" font-size="12.5" font-weight="700" fill="#3b5bdb">cur_rem_token_offset</text>
+  <text x="60" y="279" font-size="11" fill="#868e96">本批 prepare_for_extend 马上分配的</text>
+  <rect x="360" y="252" width="150" height="34" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="435" y="267" text-anchor="middle" font-size="10.5" fill="#3b5bdb">每个请求的本片</text>
+  <text x="435" y="280" text-anchor="middle" font-size="10.5" fill="#3b5bdb">+ page_size</text>
+  <rect x="510" y="252" width="330" height="34" rx="4" fill="#ffffff" stroke="#0ca678" stroke-width="2"/>
+  <text x="675" y="274" text-anchor="middle" font-size="11.5" font-weight="700" fill="#0b7285" font-family="monospace">cur_rem_tokens</text>
+  <!-- compute ledgers -->
+  <text x="60" y="326" font-size="12.5" font-weight="700" fill="#212529">算力账：限制「这一批要算多少」，与显存无关</text>
+  <rect x="60" y="338" width="250" height="70" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="76" y="360" font-size="12.5" font-weight="700" fill="#5f3dc4" font-family="monospace">rem_chunk_tokens</text>
+  <text x="76" y="379" font-size="11" fill="#495057">本批最多算多少新 token</text>
+  <text x="76" y="396" font-size="11" fill="#868e96">初值 chunked_prefill_size（16384）</text>
+  <rect x="325" y="338" width="250" height="70" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="341" y="360" font-size="12.5" font-weight="700" fill="#5f3dc4" font-family="monospace">rem_input_tokens</text>
+  <text x="341" y="379" font-size="11" fill="#495057">本批输入 token 总上限</text>
+  <text x="341" y="396" font-size="11" fill="#868e96">初值 max_prefill_tokens</text>
+  <rect x="590" y="338" width="250" height="70" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="606" y="360" font-size="12.5" font-weight="700" fill="#5f3dc4" font-family="monospace">rem_cost</text>
+  <text x="606" y="379" font-size="11" fill="#495057">每个 PP stage 的预测耗时预算</text>
+  <text x="606" y="396" font-size="11" fill="#868e96">仅开 dynamic chunking 代价模型时</text>
+
+  <!-- note -->
+  <rect x="60" y="426" width="780" height="76" rx="10" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="78" y="449" font-size="12" fill="#495057">cur_rem：这一批分配完还剩多少；rem_total：再扣掉以后的片和首 token。任一 ≤ 0 时 budget_state 返回 NO_TOKEN。</text>
+  <text x="78" y="469" font-size="12" fill="#495057">host load back 的 token 不用算，所以不扣 rem_chunk；但它在准入时立刻分配 slot，直接压低 available。</text>
+  <text x="78" y="489" font-size="12" fill="#495057">修复前 prefill 节点上两者只差几个首 token；修复后两者之差主要是截断请求的尾巴。</text>
+</svg>

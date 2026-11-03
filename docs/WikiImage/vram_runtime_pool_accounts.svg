@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 560" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="560" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">运行期余量被两个账户共享：池内与池外</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">KV 按启动时测得的空闲显存一次分满；之后两类分配都只能从剩下的余量里拿</text>
+
+  <!-- bracket over runtime margin -->
+  <text x="670" y="86" text-anchor="middle" font-size="11.5" fill="#495057">运行期余量 ≈ (1 − f) × pre_model_load_memory</text>
+  <path d="M500 100 L500 94 L840 94 L840 100" fill="none" stroke="#868e96" stroke-width="1.5"/>
+
+  <!-- GPU memory bar -->
+  <rect x="60" y="106" width="70" height="40" rx="4" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="95" y="123" text-anchor="middle" font-size="10.5" fill="#495057">context</text>
+  <text x="95" y="137" text-anchor="middle" font-size="10.5" fill="#495057">NCCL 初始化</text>
+  <rect x="130" y="106" width="100" height="40" rx="4" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="180" y="131" text-anchor="middle" font-size="11.5" fill="#495057">权重</text>
+  <rect x="230" y="106" width="270" height="40" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="365" y="131" text-anchor="middle" font-size="11.5" fill="#0b7285">KV cache pool（启动时一次分满）</text>
+  <rect x="500" y="106" width="190" height="40" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="560" y="112" width="18" height="28" rx="2" fill="#ffffff" stroke="#4c6ef5" stroke-dasharray="3 2"/>
+  <rect x="626" y="112" width="24" height="28" rx="2" fill="#ffffff" stroke="#4c6ef5" stroke-dasharray="3 2"/>
+  <text x="530" y="131" text-anchor="middle" font-size="11" fill="#3b5bdb">池内</text>
+  <text x="670" y="131" text-anchor="middle" font-size="10" fill="#3b5bdb">空洞</text>
+  <rect x="690" y="106" width="90" height="40" rx="4" fill="#fff4e6" stroke="#f08c00"/>
+  <text x="735" y="131" text-anchor="middle" font-size="11" fill="#e8590c">池外增长</text>
+  <rect x="780" y="106" width="60" height="40" rx="4" fill="#ffffff" stroke="#adb5bd" stroke-dasharray="4 3"/>
+  <text x="810" y="131" text-anchor="middle" font-size="11" fill="#868e96">空闲</text>
+
+  <!-- KV sizing marker -->
+  <path d="M500 150 L500 168" fill="none" stroke="#0ca678" stroke-width="1.5"/>
+  <text x="490" y="182" text-anchor="end" font-size="11" fill="#0b7285">KV 定容只看得见这条线左边已经发生的分配</text>
+  <text x="510" y="182" font-size="11" fill="#e8590c">右边长出来的池外显存，余量公式里没有为它留</text>
+  <!-- in-pool box -->
+  <rect x="60" y="206" width="380" height="204" rx="10" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="78" y="232" font-size="13.5" font-weight="700" fill="#3b5bdb">池内的动态部分</text>
+  <text x="78" y="250" font-size="11" fill="#868e96">经过 PyTorch caching allocator</text>
+  <text x="78" y="276" font-size="11.5" fill="#495057">内容：activation、torch.empty 出来的 workspace，</text>
+  <text x="78" y="294" font-size="11.5" fill="#495057">以及缓存着、还没还给驱动的空闲块</text>
+  <text x="78" y="318" font-size="11.5" fill="#495057">看得见：memory_allocated / memory_reserved</text>
+  <text x="78" y="342" font-size="11.5" fill="#495057">碎片在这里：空闲块被存活的小张量钉在 segment 里</text>
+  <text x="78" y="366" font-size="11.5" fill="#495057">empty_cache 只能还掉整段都空闲的 segment</text>
+  <text x="78" y="390" font-size="11.5" fill="#3b5bdb">对策：封顶单次 token 数、expandable_segments</text>
+
+  <!-- off-pool box -->
+  <rect x="460" y="206" width="380" height="204" rx="10" fill="#fff4e6" stroke="#f08c00"/>
+  <text x="478" y="232" font-size="13.5" font-weight="700" fill="#e8590c">池外、运行期才长出来的部分</text>
+  <text x="478" y="250" font-size="11" fill="#868e96">绕过 allocator 直接向驱动申请，且发生在 KV 定容之后</text>
+  <text x="478" y="276" font-size="11.5" fill="#495057">内容：NCCL 懒建立的连接、kernel 首次加载、</text>
+  <text x="478" y="294" font-size="11.5" fill="#495057">JIT 编译后加载的模块、库内部的 cudaMalloc</text>
+  <text x="478" y="318" font-size="11.5" fill="#495057">看得见：只有 mem_get_info / nvidia-smi</text>
+  <text x="478" y="342" font-size="11.5" fill="#495057">一旦占住，PyTorch 拿不回来，empty_cache 也没用</text>
+  <text x="478" y="366" font-size="11.5" fill="#495057">调 PYTORCH_CUDA_ALLOC_CONF 对它无效</text>
+  <text x="478" y="390" font-size="11.5" fill="#e8590c">对策：挪到 KV 定容之前（预热通信、预编译）</text>
+
+  <!-- note -->
+  <rect x="60" y="430" width="780" height="110" rx="10" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="78" y="454" font-size="12" fill="#495057">两边互相挤占，但不对等：caching allocator 只在自己分配失败时才归还缓存，</text>
+  <text x="78" y="474" font-size="12" fill="#495057">所以 reserved 里还有几 GB 空闲时，NCCL 或第三方库的 cudaMalloc 照样可能失败；</text>
+  <text x="78" y="494" font-size="12" fill="#495057">反过来，池外占走的显存，池内的 activation 峰值再也用不上。</text>
+  <text x="78" y="522" font-size="12" fill="#0b7285">判断 OOM 属于哪边：池外占用 ≈ in use − (allocated + reserved but unallocated)，和服务就绪时的基线比。</text>
+</svg>

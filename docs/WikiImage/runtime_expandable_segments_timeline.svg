@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 480" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#868e96"/>
+    </marker>
+    <marker id="arAmber" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#e8590c"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="900" height="480" rx="12" fill="#ffffff"/>
+  <text x="40" y="34" font-size="20" font-weight="700" fill="#212529">scheduler 进程里的分界线：静态显存在前，运行时显存在后</text>
+  <text x="40" y="56" font-size="13" fill="#868e96">allocator 设置只影响之后新建的 segment，已有的 segment 保持原样</text>
+
+  <!-- phase labels -->
+  <text x="40" y="88" font-size="13" font-weight="700" fill="#0b7285">Scheduler.__init__（默认 allocator）</text>
+  <text x="640" y="88" font-size="13" font-weight="700" fill="#3b5bdb">run_event_loop（服务阶段）</text>
+
+  <!-- init phases -->
+  <rect x="40" y="100" width="125" height="70" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="102" y="128" font-size="13" font-weight="700" fill="#0b7285" text-anchor="middle">权重</text>
+  <text x="102" y="150" font-size="11" fill="#495057" text-anchor="middle">load_model</text>
+  <rect x="175" y="100" width="125" height="70" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="237" y="128" font-size="13" font-weight="700" fill="#0b7285" text-anchor="middle">KV / state pool</text>
+  <text x="237" y="150" font-size="11" fill="#495057" text-anchor="middle">init_memory_pool</text>
+  <rect x="310" y="100" width="125" height="70" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="372" y="128" font-size="13" font-weight="700" fill="#0b7285" text-anchor="middle">Mooncake 注册</text>
+  <text x="372" y="150" font-size="11" fill="#495057" text-anchor="middle">kv / aux / state buffer</text>
+  <rect x="445" y="100" width="125" height="70" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="507" y="128" font-size="13" font-weight="700" fill="#0b7285" text-anchor="middle">CUDA graph</text>
+  <text x="507" y="150" font-size="11" fill="#495057" text-anchor="middle">init_cuda_graphs</text>
+
+  <!-- serving phase -->
+  <rect x="640" y="100" width="220" height="70" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="750" y="128" font-size="13" font-weight="700" fill="#3b5bdb" text-anchor="middle">动态分配</text>
+  <text x="750" y="150" font-size="11" fill="#495057" text-anchor="middle">activation · workspace · logits</text>
+
+  <!-- time axis -->
+  <path d="M40 196 L868 196" fill="none" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <text x="866" y="186" font-size="11" fill="#868e96" text-anchor="end">时间</text>
+
+  <!-- switch point -->
+  <path d="M605 92 L605 284" fill="none" stroke="#f08c00" stroke-width="2" stroke-dasharray="5 4"/>
+  <rect x="485" y="210" width="240" height="60" rx="8" fill="#fff4e6" stroke="#f08c00"/>
+  <text x="605" y="230" font-size="12.5" font-weight="700" fill="#e8590c" text-anchor="middle">切换点（run_scheduler_process）</text>
+  <text x="605" y="247" font-size="11" font-family="monospace" fill="#495057" text-anchor="middle">empty_cache()</text>
+  <text x="605" y="262" font-size="11" font-family="monospace" fill="#495057" text-anchor="middle">expandable_segments:True</text>
+
+  <!-- segment lanes -->
+  <rect x="40" y="290" width="560" height="42" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="320" y="316" font-size="12.5" fill="#0b7285" text-anchor="middle">普通 segment（cudaMalloc）：静态 buffer，尺寸固定、常驻</text>
+  <rect x="610" y="290" width="250" height="42" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="735" y="316" font-size="12.5" fill="#3b5bdb" text-anchor="middle">expandable segment（VMM，2 MB 页）</text>
+
+  <!-- exception window -->
+  <path d="M735 368 L735 340" fill="none" stroke="#e8590c" stroke-width="2" marker-end="url(#arAmber)"/>
+  <rect x="610" y="368" width="250" height="52" rx="8" fill="#fff9db" stroke="#f08c00"/>
+  <text x="735" y="389" font-size="12" font-weight="700" fill="#e8590c" text-anchor="middle">例外：懒分配的 RDMA buffer</text>
+  <text x="735" y="408" font-size="11" fill="#495057" text-anchor="middle">non_expandable_segments() 内临时切回</text>
+  <text x="320" y="360" font-size="11.5" fill="#868e96" text-anchor="middle">切换后 init 期部分使用的 segment 继续服务能放进去的请求，一次性成本，不随时间增长</text>
+
+  <!-- note strip -->
+  <rect x="40" y="432" width="820" height="36" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="56" y="455" font-size="12" fill="#495057">静态显存有 RDMA / MemPool / IPC 约束但不碎；运行时显存会碎但没有这些约束。分界线把两件事分开处理。</text>
+</svg>
