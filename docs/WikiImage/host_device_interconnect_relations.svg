@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 590" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="590" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">一次传输的三种关系：以网卡写入 GPU 显存为例</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">驱使决定谁发起、谁知道完成；可见决定地址能否指到目标；连通决定字节走哪条路</text>
+
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#868e96"/></marker>
+    <marker id="ara" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#f08c00"/></marker>
+    <marker id="arg" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#7048e8"/></marker>
+    <marker id="art" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#0ca678"/></marker>
+  </defs>
+
+  <!-- Layer 1: drive -->
+  <rect x="40" y="76" width="540" height="130" rx="10" fill="#fff9db" stroke="#f08c00"/>
+  <rect x="40" y="76" width="540" height="26" rx="10" fill="#f08c00"/>
+  <text x="56" y="94" font-size="12.5" font-weight="700" fill="#ffffff">① 驱使：谁发起，谁知道完成</text>
+  <rect x="60" y="118" width="110" height="48" rx="8" fill="#ffffff" stroke="#f08c00"/>
+  <text x="115" y="139" text-anchor="middle" font-size="12.5" font-weight="700" fill="#e8590c">CPU 线程</text>
+  <text x="115" y="156" text-anchor="middle" font-size="11" fill="#868e96">ibv_post_recv</text>
+  <rect x="245" y="118" width="130" height="48" rx="8" fill="#ffffff" stroke="#f08c00"/>
+  <text x="310" y="139" text-anchor="middle" font-size="12.5" font-weight="700" fill="#e8590c">网卡 DMA 引擎</text>
+  <text x="310" y="156" text-anchor="middle" font-size="11" fill="#868e96">真正的发起者</text>
+  <rect x="450" y="118" width="110" height="48" rx="8" fill="#ffffff" stroke="#f08c00"/>
+  <text x="505" y="139" text-anchor="middle" font-size="12.5" font-weight="700" fill="#e8590c">完成队列 CQ</text>
+  <text x="505" y="156" text-anchor="middle" font-size="11" fill="#868e96">在 Host 内存里</text>
+  <path d="M172 142 L241 142" stroke="#f08c00" stroke-width="2" marker-end="url(#ara)"/>
+  <text x="206" y="132" text-anchor="middle" font-size="11" fill="#e8590c">WQE + 门铃</text>
+  <path d="M377 142 L446 142" stroke="#f08c00" stroke-width="2" marker-end="url(#ara)"/>
+  <text x="412" y="132" text-anchor="middle" font-size="11" fill="#e8590c">写 CQE</text>
+  <text x="60" y="190" font-size="11.5" fill="#495057">CPU 只出现在这一层：写一条描述符、敲一次门铃，之后轮询 CQ；字节不经过 CPU。</text>
+
+  <!-- Layer 2: visibility -->
+  <rect x="40" y="220" width="540" height="130" rx="10" fill="#f3f0ff" stroke="#7048e8"/>
+  <rect x="40" y="220" width="540" height="26" rx="10" fill="#7048e8"/>
+  <text x="56" y="238" font-size="12.5" font-weight="700" fill="#ffffff">② 可见：发起者的地址能否翻译到目标内存</text>
+  <g font-size="12" font-weight="700" text-anchor="middle" fill="#5f3dc4">
+    <rect x="60" y="262" width="106" height="48" rx="8" fill="#ffffff" stroke="#7048e8"/><text x="113" y="283">MR 地址</text>
+    <rect x="190" y="262" width="106" height="48" rx="8" fill="#ffffff" stroke="#7048e8"/><text x="243" y="283">网卡翻译表</text>
+    <rect x="320" y="262" width="106" height="48" rx="8" fill="#ffffff" stroke="#7048e8"/><text x="373" y="283">PCIe 总线地址</text>
+    <rect x="450" y="262" width="106" height="48" rx="8" fill="#edf2ff" stroke="#4c6ef5"/><text x="503" y="283" fill="#3b5bdb">HBM 物理页</text>
+  </g>
+  <g font-size="11" text-anchor="middle" fill="#868e96">
+    <text x="113" y="300">即 GPU VA</text><text x="243" y="300">rkey 校验</text><text x="373" y="300">落在 GPU BAR1</text><text x="503" y="300">BAR1 页表翻译</text>
+  </g>
+  <path d="M168 286 L186 286" stroke="#7048e8" stroke-width="2" marker-end="url(#arg)"/>
+  <path d="M298 286 L316 286" stroke="#7048e8" stroke-width="2" marker-end="url(#arg)"/>
+  <path d="M428 286 L446 286" stroke="#7048e8" stroke-width="2" marker-end="url(#arg)"/>
+  <text x="60" y="334" font-size="11.5" fill="#495057">这条链由注册（nvidia-peermem / dma-buf + ibv_reg_mr）在初始化时一次建好，传输期间保持不变。</text>
+  <!-- Layer 3: connectivity -->
+  <rect x="40" y="364" width="540" height="130" rx="10" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="40" y="364" width="540" height="26" rx="10" fill="#0ca678"/>
+  <text x="56" y="382" font-size="12.5" font-weight="700" fill="#ffffff">③ 连通：字节经过哪几段物理链路</text>
+  <rect x="60" y="406" width="110" height="48" rx="8" fill="#fff4e6" stroke="#f08c00"/>
+  <text x="115" y="427" text-anchor="middle" font-size="12.5" font-weight="700" fill="#e8590c">网卡</text>
+  <text x="115" y="444" text-anchor="middle" font-size="11" fill="#868e96">Endpoint</text>
+  <rect x="245" y="406" width="130" height="48" rx="8" fill="#f1f3f5" stroke="#868e96"/>
+  <text x="310" y="427" text-anchor="middle" font-size="12.5" font-weight="700" fill="#495057">PCIe Switch</text>
+  <text x="310" y="444" text-anchor="middle" font-size="11" fill="#868e96">按总线地址转发</text>
+  <rect x="450" y="406" width="110" height="48" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="505" y="427" text-anchor="middle" font-size="12.5" font-weight="700" fill="#3b5bdb">GPU 0</text>
+  <text x="505" y="444" text-anchor="middle" font-size="11" fill="#868e96">Endpoint</text>
+  <path d="M172 430 L241 430" stroke="#0ca678" stroke-width="2" marker-end="url(#art)"/>
+  <text x="206" y="420" text-anchor="middle" font-size="11" fill="#0b7285">×16 上行</text>
+  <path d="M377 430 L446 430" stroke="#0ca678" stroke-width="2" marker-end="url(#art)"/>
+  <text x="412" y="420" text-anchor="middle" font-size="11" fill="#0b7285">×16 下行</text>
+  <text x="60" y="478" font-size="11.5" fill="#495057">网卡和 GPU 在同一 Switch 下（PIX）时，流量在 Switch 内转发，不经过 RC 和 Host DRAM。</text>
+
+  <!-- right column: what if missing -->
+  <g font-size="11.5" fill="#495057">
+    <rect x="600" y="76" width="260" height="130" rx="10" fill="#fff5f5" stroke="#fa5252"/>
+    <text x="616" y="104" font-size="12.5" font-weight="700" fill="#c92a2a">没有发起者</text>
+    <text x="616" y="128">数据不会自己动。退回 CPU 逐字节</text>
+    <text x="616" y="148">拷贝时，Core 和内存带宽都被占用，</text>
+    <text x="616" y="168">而且没法和计算并行。</text>
+    <rect x="600" y="220" width="260" height="130" rx="10" fill="#fff5f5" stroke="#fa5252"/>
+    <text x="616" y="248" font-size="12.5" font-weight="700" fill="#c92a2a">网卡指不到显存</text>
+    <text x="616" y="272">只能先写进注册过的 Host DRAM，</text>
+    <text x="616" y="292">再做一次 H2D：多一次搬运，</text>
+    <text x="616" y="312">还多占一份 Host 内存带宽。</text>
+    <rect x="600" y="364" width="260" height="130" rx="10" fill="#fff5f5" stroke="#fa5252"/>
+    <text x="616" y="392" font-size="12.5" font-weight="700" fill="#c92a2a">路径绕远</text>
+    <text x="616" y="416">网卡挂在另一个 Socket（SYS）时，</text>
+    <text x="616" y="436">要穿过两个 RC 和 UPI，可能比经</text>
+    <text x="616" y="456">Host DRAM 中转还慢。</text>
+  </g>
+
+  <!-- note -->
+  <rect x="40" y="510" width="820" height="64" rx="10" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="56" y="536" font-size="12" fill="#495057">三种关系由不同机制建立：拓扑由硬件和 BIOS 决定，映射由驱动注册建立，驱使由内存里的队列和 BAR 里的门铃完成。</text>
+  <text x="56" y="558" font-size="11.5" fill="#868e96">分析任何一次传输，都分别回答三个问题：谁发起？它的地址翻译到哪里？字节走哪条路？</text>
+</svg>

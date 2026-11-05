@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 552" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="552" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">驱使设备的通用模式：队列在内存里，门铃在 BAR 里</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">CPU 只做两次轻量写；取描述符、搬数据、写完成记录都由设备自己发起</text>
+
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#868e96"/></marker>
+    <marker id="ara" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#f08c00"/></marker>
+    <marker id="art" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#0ca678"/></marker>
+    <marker id="artl" markerWidth="9" markerHeight="9" refX="1" refY="4" orient="auto"><path d="M8 0 L0 4 L8 8 z" fill="#0ca678"/></marker>
+  </defs>
+
+  <!-- CPU -->
+  <rect x="40" y="110" width="160" height="220" rx="10" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="56" y="134" font-size="13" font-weight="700" fill="#495057">CPU 线程</text>
+  <g font-size="11" fill="#868e96">
+    <text x="56" y="196">提交之后立即返回，</text>
+    <text x="56" y="214">继续调度、组 batch、</text>
+    <text x="56" y="232">发下一个 kernel</text>
+  </g>
+
+  <!-- Host memory -->
+  <rect x="260" y="110" width="300" height="220" rx="10" fill="#f8f9fa" stroke="#adb5bd"/>
+  <text x="276" y="132" font-size="13" font-weight="700" fill="#495057">Host 内存</text>
+  <text x="544" y="132" text-anchor="end" font-size="11" fill="#868e96">提交队列：CPU 写尾，设备读头</text>
+  <g stroke-width="1">
+    <rect x="280" y="142" width="40" height="32" rx="5" fill="#f1f3f5" stroke="#adb5bd"/>
+    <rect x="324" y="142" width="40" height="32" rx="5" fill="#f1f3f5" stroke="#adb5bd"/>
+    <rect x="368" y="142" width="40" height="32" rx="5" fill="#fff4e6" stroke="#f08c00"/>
+    <rect x="412" y="142" width="40" height="32" rx="5" fill="#fff4e6" stroke="#f08c00"/>
+    <rect x="456" y="142" width="40" height="32" rx="5" fill="#fff4e6" stroke="#f08c00"/>
+    <rect x="500" y="142" width="40" height="32" rx="5" fill="#ffffff" stroke="#adb5bd" stroke-dasharray="3 2"/>
+  </g>
+  <g font-size="10.5" font-family="monospace" text-anchor="middle">
+    <text x="300" y="162" fill="#adb5bd">done</text><text x="344" y="162" fill="#adb5bd">done</text>
+    <text x="388" y="162" fill="#e8590c">desc</text><text x="432" y="162" fill="#e8590c">desc</text><text x="476" y="162" fill="#e8590c">desc</text>
+  </g>
+  <rect x="280" y="196" width="260" height="50" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="294" y="217" font-size="12.5" font-weight="700" fill="#0b7285">数据缓冲</text>
+  <text x="294" y="235" font-size="11" fill="#495057">已锁页 / 已注册，设备的地址能指到它</text>
+  <text x="276" y="270" font-size="11" fill="#868e96">完成队列 / 信号量：设备写，CPU 或另一个引擎读</text>
+  <g stroke-width="1">
+    <rect x="280" y="278" width="40" height="32" rx="5" fill="#e6fcf5" stroke="#0ca678"/>
+    <rect x="324" y="278" width="40" height="32" rx="5" fill="#e6fcf5" stroke="#0ca678"/>
+    <rect x="368" y="278" width="40" height="32" rx="5" fill="#ffffff" stroke="#adb5bd" stroke-dasharray="3 2"/>
+    <rect x="412" y="278" width="40" height="32" rx="5" fill="#ffffff" stroke="#adb5bd" stroke-dasharray="3 2"/>
+    <rect x="456" y="278" width="40" height="32" rx="5" fill="#ffffff" stroke="#adb5bd" stroke-dasharray="3 2"/>
+    <rect x="500" y="278" width="40" height="32" rx="5" fill="#ffffff" stroke="#adb5bd" stroke-dasharray="3 2"/>
+  </g>
+  <g font-size="10.5" font-family="monospace" text-anchor="middle" fill="#0b7285">
+    <text x="300" y="298">cqe</text><text x="344" y="298">cqe</text>
+  </g>
+  <!-- Device -->
+  <rect x="620" y="110" width="240" height="220" rx="10" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="636" y="134" font-size="13" font-weight="700" fill="#3b5bdb">设备（GPU / 网卡 / NVMe）</text>
+  <rect x="640" y="146" width="200" height="34" rx="8" fill="#ffffff" stroke="#4c6ef5"/>
+  <text x="654" y="168" font-size="12" font-weight="700" fill="#3b5bdb">门铃寄存器</text>
+  <text x="826" y="168" text-anchor="end" font-size="11" fill="#868e96">在 BAR 里</text>
+  <rect x="640" y="196" width="200" height="114" rx="8" fill="#ffffff" stroke="#4c6ef5"/>
+  <text x="654" y="218" font-size="12" font-weight="700" fill="#3b5bdb">DMA 引擎 / 执行单元</text>
+  <text x="654" y="238" font-size="11" fill="#495057">Copy Engine、SM、</text>
+  <text x="654" y="254" font-size="11" fill="#495057">网卡 DMA、NVMe 控制器</text>
+  <text x="654" y="278" font-size="11" fill="#868e96">真正发起 PCIe 读写的</text>
+  <text x="654" y="294" font-size="11" fill="#868e96">是这里</text>
+
+  <!-- 1: write descriptor -->
+  <path d="M202 158 L276 158" stroke="#f08c00" stroke-width="2" marker-end="url(#ara)"/>
+  <text x="238" y="150" text-anchor="middle" font-size="11" font-weight="700" fill="#e8590c">① 写描述符</text>
+  <!-- 2: doorbell -->
+  <path d="M120 110 L120 92 L820 92 L820 142" fill="none" stroke="#f08c00" stroke-width="2" marker-end="url(#ara)"/>
+  <rect x="356" y="82" width="208" height="20" fill="#ffffff"/>
+  <text x="460" y="96" text-anchor="middle" font-size="11" font-weight="700" fill="#e8590c">② 写门铃：一次 MMIO 写，几个字节</text>
+  <!-- 3: fetch descriptor -->
+  <path d="M638 206 L544 166" stroke="#f08c00" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#ara)"/>
+  <text x="586" y="158" text-anchor="middle" font-size="11" font-weight="700" fill="#e8590c">③ 读描述符</text>
+  <!-- 4: data -->
+  <path d="M546 226 L634 226" stroke="#0ca678" stroke-width="3" marker-start="url(#artl)" marker-end="url(#art)"/>
+  <text x="590" y="246" text-anchor="middle" font-size="11" font-weight="700" fill="#0b7285">④ 搬数据</text>
+  <text x="590" y="260" text-anchor="middle" font-size="10.5" fill="#0b7285">大量 PCIe 读写</text>
+  <!-- 5: completion -->
+  <path d="M638 294 L544 294" stroke="#0ca678" stroke-width="2" marker-end="url(#art)"/>
+  <text x="590" y="286" text-anchor="middle" font-size="11" font-weight="700" fill="#0b7285">⑤ 写完成</text>
+  <!-- poll -->
+  <path d="M278 294 L204 294" stroke="#868e96" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#ar)"/>
+  <text x="240" y="286" text-anchor="middle" font-size="11" fill="#495057">轮询 / 中断</text>
+
+  <!-- table -->
+  <g font-size="11.5">
+    <rect x="40" y="350" width="820" height="26" rx="6" fill="#f1f3f5"/>
+    <g font-weight="700" fill="#495057">
+      <text x="54" y="368">设备</text><text x="160" y="368">提交队列</text><text x="350" y="368">门铃</text><text x="530" y="368">执行者</text><text x="690" y="368">完成记录</text>
+    </g>
+    <g fill="#495057">
+      <text x="54" y="396" font-weight="700" fill="#3b5bdb">GPU</text><text x="160" y="396">命令缓冲（pushbuffer）</text><text x="350" y="396">GPU 门铃寄存器</text><text x="530" y="396">Copy Engine / SM</text><text x="690" y="396">内存信号量 → CUDA event</text>
+      <text x="54" y="422" font-weight="700" fill="#e8590c">RDMA 网卡</text><text x="160" y="422">Send / Receive Queue</text><text x="350" y="422">UAR 门铃页（用户态）</text><text x="530" y="422">网卡 DMA 引擎</text><text x="690" y="422">CQE 写入 CQ</text>
+      <text x="54" y="448" font-weight="700" fill="#0b7285">NVMe</text><text x="160" y="448">Submission Queue</text><text x="350" y="448">BAR0 SQ Tail 寄存器</text><text x="530" y="448">NVMe 控制器</text><text x="690" y="448">CQ + MSI-X / 轮询</text>
+    </g>
+    <g stroke="#e9ecef"><path d="M40 404 L860 404"/><path d="M40 430 L860 430"/><path d="M40 456 L860 456"/></g>
+  </g>
+
+  <!-- note -->
+  <rect x="40" y="474" width="820" height="62" rx="10" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="56" y="498" font-size="12" fill="#495057">CPU 可以一次压入很多条描述符，设备按自己的节奏消费，两边不用逐条握手；这就是“控制平面”和“数据平面”能分开的原因。</text>
+  <text x="56" y="520" font-size="11.5" fill="#868e96">同一 GPU 上 stream 之间的等待（cudaStreamWaitEvent）是一个引擎等另一个引擎写下的信号量，不经过 CPU。</text>
+</svg>
