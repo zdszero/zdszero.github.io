@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 590" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="590" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">Rail-optimized：同号 GPU 一跳可达，异号 GPU 用 NVLink 换 rail</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">所有服务器的第 i 号网卡接到同一台（组）Leaf，这台 Leaf 就是第 i 条 rail</text>
+
+  <!-- spine -->
+  <rect x="40" y="78" width="820" height="36" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="450" y="101" text-anchor="middle" font-size="12.5" font-weight="700" fill="#5f3dc4">Spine 层（跨 rail、跨 SU 的流量才上来）</text>
+  <g stroke="#d0bfff" stroke-width="2">
+    <path d="M80 114 L80 176"/><path d="M186 114 L186 176"/><path d="M292 114 L292 176"/><path d="M398 114 L398 176"/>
+    <path d="M504 114 L504 176"/><path d="M610 114 L610 176"/><path d="M716 114 L716 176"/><path d="M822 114 L822 176"/>
+  </g>
+
+  <!-- leaf -> NIC wiring (gray) -->
+  <g stroke="#ced4da" stroke-width="1.3">
+    <path d="M80 210 L70 316"/><path d="M186 210 L117 316"/><path d="M292 210 L164 316"/><path d="M398 210 L211 316"/>
+    <path d="M504 210 L258 316"/><path d="M610 210 L305 316"/><path d="M716 210 L352 316"/><path d="M822 210 L399 316"/>
+    <path d="M80 210 L500 316"/><path d="M186 210 L547 316"/><path d="M292 210 L594 316"/><path d="M398 210 L641 316"/>
+    <path d="M504 210 L688 316"/><path d="M610 210 L735 316"/><path d="M716 210 L782 316"/><path d="M822 210 L829 316"/>
+  </g>
+
+  <!-- highlighted paths -->
+  <!-- no-PXN: via spine (red dashed) -->
+  <path d="M398 176 L398 120 M398 120 L610 120 M610 120 L610 176" stroke="#fa5252" stroke-width="2.5" stroke-dasharray="6 4" fill="none"/>
+  <!-- same rail: GPU3 -> rail3 -> GPU3 (teal) -->
+  <path d="M211 316 L398 210 L641 316" stroke="#0ca678" stroke-width="3.5" fill="none"/>
+  <!-- PXN: GPU5 -> rail5 -> GPU5 (amber) -->
+  <path d="M305 316 L610 210 L735 316" stroke="#f08c00" stroke-width="3.5" fill="none"/>
+
+  <!-- leaves -->
+  <g font-size="11.5" font-weight="700" fill="#0b7285" text-anchor="middle">
+    <rect x="40" y="176" width="80" height="34" rx="8" fill="#e6fcf5" stroke="#0ca678"/><text x="80" y="197">rail 0</text>
+    <rect x="146" y="176" width="80" height="34" rx="8" fill="#e6fcf5" stroke="#0ca678"/><text x="186" y="197">rail 1</text>
+    <rect x="252" y="176" width="80" height="34" rx="8" fill="#e6fcf5" stroke="#0ca678"/><text x="292" y="197">rail 2</text>
+    <rect x="358" y="176" width="80" height="34" rx="8" fill="#e6fcf5" stroke="#0ca678" stroke-width="2"/><text x="398" y="197">rail 3</text>
+    <rect x="464" y="176" width="80" height="34" rx="8" fill="#e6fcf5" stroke="#0ca678"/><text x="504" y="197">rail 4</text>
+    <rect x="570" y="176" width="80" height="34" rx="8" fill="#e6fcf5" stroke="#0ca678" stroke-width="2"/><text x="610" y="197">rail 5</text>
+    <rect x="676" y="176" width="80" height="34" rx="8" fill="#e6fcf5" stroke="#0ca678"/><text x="716" y="197">rail 6</text>
+    <rect x="782" y="176" width="80" height="34" rx="8" fill="#e6fcf5" stroke="#0ca678"/><text x="822" y="197">rail 7</text>
+  </g>
+  <rect x="40" y="300" width="390" height="138" rx="10" fill="#f8f9fa" stroke="#adb5bd"/>
+  <rect x="52" y="388" width="366" height="18" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="235" y="401" text-anchor="middle" font-size="10.5" font-weight="700" fill="#0b7285">NVSwitch（节点内 NVLink）</text>
+  <text x="54" y="428" font-size="12" font-weight="700" fill="#495057">服务器 A</text>
+  <rect x="51" y="316" width="38" height="20" rx="4" fill="#fff4e6" stroke="#f08c00"/><text x="70" y="330" text-anchor="middle" font-size="9.5" fill="#e8590c">NIC0</text>
+  <rect x="51" y="346" width="38" height="30" rx="5" fill="#edf2ff" stroke="#4c6ef5"/><text x="70" y="365" text-anchor="middle" font-size="10.5" font-weight="700" fill="#3b5bdb">GPU0</text>
+  <path d="M70 336 L70 346" stroke="#adb5bd" stroke-width="1.5"/>
+  <rect x="98" y="316" width="38" height="20" rx="4" fill="#fff4e6" stroke="#f08c00"/><text x="117" y="330" text-anchor="middle" font-size="9.5" fill="#e8590c">NIC1</text>
+  <rect x="98" y="346" width="38" height="30" rx="5" fill="#edf2ff" stroke="#4c6ef5"/><text x="117" y="365" text-anchor="middle" font-size="10.5" font-weight="700" fill="#3b5bdb">GPU1</text>
+  <path d="M117 336 L117 346" stroke="#adb5bd" stroke-width="1.5"/>
+  <rect x="145" y="316" width="38" height="20" rx="4" fill="#fff4e6" stroke="#f08c00"/><text x="164" y="330" text-anchor="middle" font-size="9.5" fill="#e8590c">NIC2</text>
+  <rect x="145" y="346" width="38" height="30" rx="5" fill="#edf2ff" stroke="#4c6ef5"/><text x="164" y="365" text-anchor="middle" font-size="10.5" font-weight="700" fill="#3b5bdb">GPU2</text>
+  <path d="M164 336 L164 346" stroke="#adb5bd" stroke-width="1.5"/>
+  <rect x="192" y="316" width="38" height="20" rx="4" fill="#fff4e6" stroke="#f08c00"/><text x="211" y="330" text-anchor="middle" font-size="9.5" fill="#e8590c">NIC3</text>
+  <rect x="192" y="346" width="38" height="30" rx="5" fill="#edf2ff" stroke="#4c6ef5" stroke-width="2"/><text x="211" y="365" text-anchor="middle" font-size="10.5" font-weight="700" fill="#3b5bdb">GPU3</text>
+  <path d="M211 336 L211 346" stroke="#adb5bd" stroke-width="1.5"/>
+  <rect x="239" y="316" width="38" height="20" rx="4" fill="#fff4e6" stroke="#f08c00"/><text x="258" y="330" text-anchor="middle" font-size="9.5" fill="#e8590c">NIC4</text>
+  <rect x="239" y="346" width="38" height="30" rx="5" fill="#edf2ff" stroke="#4c6ef5"/><text x="258" y="365" text-anchor="middle" font-size="10.5" font-weight="700" fill="#3b5bdb">GPU4</text>
+  <path d="M258 336 L258 346" stroke="#adb5bd" stroke-width="1.5"/>
+  <rect x="286" y="316" width="38" height="20" rx="4" fill="#fff4e6" stroke="#f08c00"/><text x="305" y="330" text-anchor="middle" font-size="9.5" fill="#e8590c">NIC5</text>
+  <rect x="286" y="346" width="38" height="30" rx="5" fill="#edf2ff" stroke="#4c6ef5" stroke-width="2"/><text x="305" y="365" text-anchor="middle" font-size="10.5" font-weight="700" fill="#3b5bdb">GPU5</text>
+  <path d="M305 336 L305 346" stroke="#adb5bd" stroke-width="1.5"/>
+  <rect x="333" y="316" width="38" height="20" rx="4" fill="#fff4e6" stroke="#f08c00"/><text x="352" y="330" text-anchor="middle" font-size="9.5" fill="#e8590c">NIC6</text>
+  <rect x="333" y="346" width="38" height="30" rx="5" fill="#edf2ff" stroke="#4c6ef5"/><text x="352" y="365" text-anchor="middle" font-size="10.5" font-weight="700" fill="#3b5bdb">GPU6</text>
+  <path d="M352 336 L352 346" stroke="#adb5bd" stroke-width="1.5"/>
+  <rect x="380" y="316" width="38" height="20" rx="4" fill="#fff4e6" stroke="#f08c00"/><text x="399" y="330" text-anchor="middle" font-size="9.5" fill="#e8590c">NIC7</text>
+  <rect x="380" y="346" width="38" height="30" rx="5" fill="#edf2ff" stroke="#4c6ef5"/><text x="399" y="365" text-anchor="middle" font-size="10.5" font-weight="700" fill="#3b5bdb">GPU7</text>
+  <path d="M399 336 L399 346" stroke="#adb5bd" stroke-width="1.5"/>
+  <rect x="470" y="300" width="390" height="138" rx="10" fill="#f8f9fa" stroke="#adb5bd"/>
+  <rect x="482" y="388" width="366" height="18" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="665" y="401" text-anchor="middle" font-size="10.5" font-weight="700" fill="#0b7285">NVSwitch（节点内 NVLink）</text>
+  <text x="484" y="428" font-size="12" font-weight="700" fill="#495057">服务器 B</text>
+  <rect x="481" y="316" width="38" height="20" rx="4" fill="#fff4e6" stroke="#f08c00"/><text x="500" y="330" text-anchor="middle" font-size="9.5" fill="#e8590c">NIC0</text>
+  <rect x="481" y="346" width="38" height="30" rx="5" fill="#edf2ff" stroke="#4c6ef5"/><text x="500" y="365" text-anchor="middle" font-size="10.5" font-weight="700" fill="#3b5bdb">GPU0</text>
+  <path d="M500 336 L500 346" stroke="#adb5bd" stroke-width="1.5"/>
+  <rect x="528" y="316" width="38" height="20" rx="4" fill="#fff4e6" stroke="#f08c00"/><text x="547" y="330" text-anchor="middle" font-size="9.5" fill="#e8590c">NIC1</text>
+  <rect x="528" y="346" width="38" height="30" rx="5" fill="#edf2ff" stroke="#4c6ef5"/><text x="547" y="365" text-anchor="middle" font-size="10.5" font-weight="700" fill="#3b5bdb">GPU1</text>
+  <path d="M547 336 L547 346" stroke="#adb5bd" stroke-width="1.5"/>
+  <rect x="575" y="316" width="38" height="20" rx="4" fill="#fff4e6" stroke="#f08c00"/><text x="594" y="330" text-anchor="middle" font-size="9.5" fill="#e8590c">NIC2</text>
+  <rect x="575" y="346" width="38" height="30" rx="5" fill="#edf2ff" stroke="#4c6ef5"/><text x="594" y="365" text-anchor="middle" font-size="10.5" font-weight="700" fill="#3b5bdb">GPU2</text>
+  <path d="M594 336 L594 346" stroke="#adb5bd" stroke-width="1.5"/>
+  <rect x="622" y="316" width="38" height="20" rx="4" fill="#fff4e6" stroke="#f08c00"/><text x="641" y="330" text-anchor="middle" font-size="9.5" fill="#e8590c">NIC3</text>
+  <rect x="622" y="346" width="38" height="30" rx="5" fill="#edf2ff" stroke="#4c6ef5" stroke-width="2"/><text x="641" y="365" text-anchor="middle" font-size="10.5" font-weight="700" fill="#3b5bdb">GPU3</text>
+  <path d="M641 336 L641 346" stroke="#adb5bd" stroke-width="1.5"/>
+  <rect x="669" y="316" width="38" height="20" rx="4" fill="#fff4e6" stroke="#f08c00"/><text x="688" y="330" text-anchor="middle" font-size="9.5" fill="#e8590c">NIC4</text>
+  <rect x="669" y="346" width="38" height="30" rx="5" fill="#edf2ff" stroke="#4c6ef5"/><text x="688" y="365" text-anchor="middle" font-size="10.5" font-weight="700" fill="#3b5bdb">GPU4</text>
+  <path d="M688 336 L688 346" stroke="#adb5bd" stroke-width="1.5"/>
+  <rect x="716" y="316" width="38" height="20" rx="4" fill="#fff4e6" stroke="#f08c00"/><text x="735" y="330" text-anchor="middle" font-size="9.5" fill="#e8590c">NIC5</text>
+  <rect x="716" y="346" width="38" height="30" rx="5" fill="#edf2ff" stroke="#4c6ef5" stroke-width="2"/><text x="735" y="365" text-anchor="middle" font-size="10.5" font-weight="700" fill="#3b5bdb">GPU5</text>
+  <path d="M735 336 L735 346" stroke="#adb5bd" stroke-width="1.5"/>
+  <rect x="763" y="316" width="38" height="20" rx="4" fill="#fff4e6" stroke="#f08c00"/><text x="782" y="330" text-anchor="middle" font-size="9.5" fill="#e8590c">NIC6</text>
+  <rect x="763" y="346" width="38" height="30" rx="5" fill="#edf2ff" stroke="#4c6ef5"/><text x="782" y="365" text-anchor="middle" font-size="10.5" font-weight="700" fill="#3b5bdb">GPU6</text>
+  <path d="M782 336 L782 346" stroke="#adb5bd" stroke-width="1.5"/>
+  <rect x="810" y="316" width="38" height="20" rx="4" fill="#fff4e6" stroke="#f08c00"/><text x="829" y="330" text-anchor="middle" font-size="9.5" fill="#e8590c">NIC7</text>
+  <rect x="810" y="346" width="38" height="30" rx="5" fill="#edf2ff" stroke="#4c6ef5"/><text x="829" y="365" text-anchor="middle" font-size="10.5" font-weight="700" fill="#3b5bdb">GPU7</text>
+  <path d="M829 336 L829 346" stroke="#adb5bd" stroke-width="1.5"/>
+  <path d="M211 376 L211 383 L305 383 L305 376" stroke="#f08c00" stroke-width="3" fill="none"/>
+  <text x="258" y="424" text-anchor="middle" font-size="10" font-weight="700" fill="#e8590c">① 经 NVLink 换到 GPU5</text>
+  <text x="618" y="152" font-size="10.5" font-weight="700" fill="#c92a2a">不用 PXN：多 2 跳</text>
+  <!-- legend -->
+  <rect x="40" y="454" width="820" height="88" rx="10" fill="#ffffff" stroke="#e9ecef"/>
+  <path d="M58 476 L92 476" stroke="#0ca678" stroke-width="3.5"/>
+  <text x="102" y="480" font-size="12" fill="#495057"><tspan font-weight="700" fill="#0b7285">同号：</tspan>A.GPU3 → NIC3 → rail 3 → B.NIC3 → B.GPU3，只经过 1 台 Leaf</text>
+  <path d="M58 502 L92 502" stroke="#fa5252" stroke-width="2.5" stroke-dasharray="6 4"/>
+  <text x="102" y="506" font-size="12" fill="#495057"><tspan font-weight="700" fill="#c92a2a">异号，直接发：</tspan>A.GPU3 → NIC3 → rail 3 → Spine → rail 5 → B.GPU5，3 台交换机，还可能撞上 ECMP 冲突</text>
+  <path d="M58 528 L92 528" stroke="#f08c00" stroke-width="3.5"/>
+  <text x="102" y="532" font-size="12" fill="#495057"><tspan font-weight="700" fill="#e8590c">异号，PXN：</tspan>① A.GPU3 经 NVLink 交给 A.GPU5，② 由 NIC5 沿 rail 5 一跳到 B.GPU5</text>
+
+  <!-- note -->
+  <rect x="40" y="550" width="820" height="30" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="450" y="570" text-anchor="middle" font-size="12" fill="#495057">NVLink 比网卡快一个数量级：多走一段节点内路径，换来跨机只走一跳</text>
+</svg>

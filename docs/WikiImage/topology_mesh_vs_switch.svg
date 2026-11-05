@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 468" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="468" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">节点内拓扑：mesh 与 NVSwitch</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">mesh 的带宽取决于两张卡的相对位置；接到交换机上以后，任意两卡都一样</text>
+
+  <!-- left panel -->
+  <rect x="30" y="74" width="410" height="300" rx="10" fill="#fff5f5" stroke="#fa5252"/>
+  <rect x="30" y="74" width="410" height="26" rx="10" fill="#fa5252"/>
+  <text x="44" y="92" font-size="12.5" font-weight="700" fill="#ffffff">直连 mesh（DGX-1 V100，hybrid cube-mesh）</text>
+
+  <!-- quad links -->
+  <g stroke="#adb5bd" stroke-width="2">
+    <path d="M80 148 L180 148"/><path d="M80 258 L180 258"/><path d="M80 148 L80 258"/><path d="M180 148 L180 258"/>
+    <path d="M80 148 L180 258"/><path d="M180 148 L80 258"/>
+    <path d="M290 148 L390 148"/><path d="M290 258 L390 258"/><path d="M290 148 L290 258"/><path d="M390 148 L390 258"/>
+    <path d="M290 148 L390 258"/><path d="M390 148 L290 258"/>
+  </g>
+  <!-- cross links i <-> i+4 -->
+  <g stroke="#adb5bd" stroke-width="2" fill="none">
+    <path d="M80 130 C 120 104, 250 104, 290 130"/>
+    <path d="M180 130 C 220 112, 350 112, 390 130"/>
+    <path d="M80 276 C 120 302, 250 302, 290 276"/>
+    <path d="M180 276 C 220 294, 350 294, 390 276"/>
+  </g>
+  <!-- missing pair 0 -> 5 -->
+  <path d="M110 160 C 200 196, 300 196, 360 160" stroke="#fa5252" stroke-width="2" stroke-dasharray="5 4" fill="none"/>
+  <text x="235" y="212" text-anchor="middle" font-size="10.5" font-weight="700" fill="#c92a2a">GPU 0 ↔ 5 无直连</text>
+
+  <g font-size="12" font-weight="700" fill="#3b5bdb" text-anchor="middle">
+    <rect x="50" y="130" width="60" height="36" rx="7" fill="#edf2ff" stroke="#4c6ef5"/><text x="80" y="153">GPU 0</text>
+    <rect x="150" y="130" width="60" height="36" rx="7" fill="#edf2ff" stroke="#4c6ef5"/><text x="180" y="153">GPU 1</text>
+    <rect x="50" y="240" width="60" height="36" rx="7" fill="#edf2ff" stroke="#4c6ef5"/><text x="80" y="263">GPU 2</text>
+    <rect x="150" y="240" width="60" height="36" rx="7" fill="#edf2ff" stroke="#4c6ef5"/><text x="180" y="263">GPU 3</text>
+    <rect x="260" y="130" width="60" height="36" rx="7" fill="#edf2ff" stroke="#4c6ef5"/><text x="290" y="153">GPU 4</text>
+    <rect x="360" y="130" width="60" height="36" rx="7" fill="#edf2ff" stroke="#4c6ef5"/><text x="390" y="153">GPU 5</text>
+    <rect x="260" y="240" width="60" height="36" rx="7" fill="#edf2ff" stroke="#4c6ef5"/><text x="290" y="263">GPU 6</text>
+    <rect x="360" y="240" width="60" height="36" rx="7" fill="#edf2ff" stroke="#4c6ef5"/><text x="390" y="263">GPU 7</text>
+  </g>
+  <g font-size="11.5" fill="#495057">
+    <text x="48" y="328">每卡只有 6 个 NVLink 口，连不满其余 7 张卡</text>
+    <text x="48" y="348">有的卡对 2 条 link，有的 1 条，有的要经第三张卡转发</text>
+    <text x="48" y="366" fill="#c92a2a" font-weight="700">ring 要挑路径，All2All 被最慢的卡对拖住</text>
+  </g>
+  <!-- right panel -->
+  <rect x="460" y="74" width="410" height="300" rx="10" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="460" y="74" width="410" height="26" rx="10" fill="#0ca678"/>
+  <text x="474" y="92" font-size="12.5" font-weight="700" fill="#ffffff">NVSwitch（HGX H100）</text>
+
+  <!-- links GPU -> switch block -->
+  <g stroke="#0ca678" stroke-width="4" opacity="0.75">
+    <path d="M510 146 L510 182"/><path d="M610 146 L610 182"/><path d="M720 146 L720 182"/><path d="M820 146 L820 182"/>
+    <path d="M510 230 L510 262"/><path d="M610 230 L610 262"/><path d="M720 230 L720 262"/><path d="M820 230 L820 262"/>
+  </g>
+  <g font-size="12" font-weight="700" fill="#3b5bdb" text-anchor="middle">
+    <rect x="480" y="110" width="60" height="36" rx="7" fill="#edf2ff" stroke="#4c6ef5"/><text x="510" y="133">GPU 0</text>
+    <rect x="580" y="110" width="60" height="36" rx="7" fill="#edf2ff" stroke="#4c6ef5"/><text x="610" y="133">GPU 1</text>
+    <rect x="690" y="110" width="60" height="36" rx="7" fill="#edf2ff" stroke="#4c6ef5"/><text x="720" y="133">GPU 2</text>
+    <rect x="790" y="110" width="60" height="36" rx="7" fill="#edf2ff" stroke="#4c6ef5"/><text x="820" y="133">GPU 3</text>
+    <rect x="480" y="262" width="60" height="36" rx="7" fill="#edf2ff" stroke="#4c6ef5"/><text x="510" y="285">GPU 4</text>
+    <rect x="580" y="262" width="60" height="36" rx="7" fill="#edf2ff" stroke="#4c6ef5"/><text x="610" y="285">GPU 5</text>
+    <rect x="690" y="262" width="60" height="36" rx="7" fill="#edf2ff" stroke="#4c6ef5"/><text x="720" y="285">GPU 6</text>
+    <rect x="790" y="262" width="60" height="36" rx="7" fill="#edf2ff" stroke="#4c6ef5"/><text x="820" y="285">GPU 7</text>
+  </g>
+  <rect x="480" y="182" width="370" height="48" rx="8" fill="#ffffff" stroke="#0ca678"/>
+  <g fill="#e6fcf5" stroke="#0ca678">
+    <rect x="492" y="192" width="78" height="28" rx="5"/><rect x="580" y="192" width="78" height="28" rx="5"/>
+    <rect x="672" y="192" width="78" height="28" rx="5"/><rect x="760" y="192" width="78" height="28" rx="5"/>
+  </g>
+  <g font-size="11" font-weight="700" fill="#0b7285" text-anchor="middle">
+    <text x="531" y="210">NVSwitch</text><text x="619" y="210">NVSwitch</text><text x="711" y="210">NVSwitch</text><text x="799" y="210">NVSwitch</text>
+  </g>
+  <text x="528" y="167" font-size="10" fill="#868e96">18 link</text>
+  <g font-size="11.5" fill="#495057">
+    <text x="478" y="328">GPU 之间不直连，18 条 link 按 5 / 4 / 4 / 5 分给 4 颗芯片</text>
+    <text x="478" y="348">任意两卡、任意访问模式：单向 450 GB/s</text>
+    <text x="478" y="366" fill="#0b7285" font-weight="700">可以当作一台无阻塞交换机来建模</text>
+  </g>
+
+  <!-- note -->
+  <rect x="30" y="390" width="840" height="62" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="450" y="414" text-anchor="middle" font-size="12" fill="#495057">剩下的上限是单卡出入口：8 张卡同时发给同一张卡（incast），这张卡的入口仍只有 450 GB/s</text>
+  <text x="450" y="436" text-anchor="middle" font-size="12" fill="#495057">第三代起 NVSwitch 还能在芯片内做归约和组播（NVLS），AllReduce 的加法可以交给交换机</text>
+</svg>

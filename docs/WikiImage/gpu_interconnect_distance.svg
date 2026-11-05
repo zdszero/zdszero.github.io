@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 480" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="480" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">从一颗 GPU 往外走：距离决定介质</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">每跨出一层物理空间，就换一种介质，每卡带宽降一档</text>
+
+  <!-- column headers -->
+  <g font-size="11.5" font-weight="700" fill="#868e96">
+    <text x="84" y="86">距离</text>
+    <text x="196" y="86">介质</text>
+    <text x="336" y="86">连接什么</text>
+    <text x="616" y="86">每卡带宽（单向，对数长度示意）</text>
+  </g>
+
+  <!-- row 0: package -->
+  <rect x="70" y="96" width="800" height="70" rx="9" fill="#f8f9fa" stroke="#adb5bd"/>
+  <text x="84" y="128" font-size="15" font-weight="700" fill="#495057">封装内</text>
+  <text x="84" y="148" font-size="11.5" fill="#868e96">毫米级</text>
+  <text x="196" y="128" font-size="12.5" font-weight="700" fill="#495057">硅中介层</text>
+  <text x="196" y="148" font-size="11.5" fill="#868e96">封装基板</text>
+  <text x="336" y="128" font-size="12" fill="#495057">GPU die ↔ HBM</text>
+  <text x="336" y="148" font-size="11.5" fill="#868e96">作为参照：这还不是 GPU 之间的互联</text>
+  <rect x="616" y="118" width="232" height="16" rx="4" fill="#adb5bd"/>
+  <text x="616" y="152" font-size="11" fill="#495057">HBM3e ≈ 8 TB/s</text>
+
+  <!-- row 1: board -->
+  <rect x="70" y="176" width="800" height="70" rx="9" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="84" y="208" font-size="15" font-weight="700" fill="#0b7285">主板</text>
+  <text x="84" y="228" font-size="11.5" fill="#868e96">厘米级</text>
+  <text x="196" y="208" font-size="12.5" font-weight="700" fill="#0b7285">PCB 走线</text>
+  <text x="196" y="228" font-size="11.5" fill="#868e96">同一块基板</text>
+  <text x="336" y="208" font-size="12" fill="#495057">HGX：8 颗 GPU ↔ 2 颗 NVSwitch</text>
+  <text x="336" y="228" font-size="11.5" fill="#868e96">全部焊在 HGX 基板上，机箱外看不到</text>
+  <rect x="616" y="198" width="156" height="16" rx="4" fill="#0ca678"/>
+  <text x="616" y="232" font-size="11" fill="#495057">NVLink 5 · 900 GB/s</text>
+
+  <!-- row 2: rack -->
+  <rect x="70" y="256" width="800" height="70" rx="9" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="84" y="288" font-size="15" font-weight="700" fill="#0b7285">机柜内</text>
+  <text x="84" y="308" font-size="11.5" fill="#868e96">1 – 2 米</text>
+  <text x="196" y="288" font-size="12.5" font-weight="700" fill="#0b7285">铜缆</text>
+  <text x="196" y="308" font-size="11.5" fill="#868e96">无电光转换</text>
+  <text x="336" y="288" font-size="12" fill="#495057">NVL72：72 颗 GPU ↔ 9 个交换托盘</text>
+  <text x="336" y="308" font-size="11.5" fill="#868e96">也用于网卡 ↔ 同柜 Leaf（DAC）</text>
+  <rect x="616" y="278" width="156" height="16" rx="4" fill="#0ca678"/>
+  <text x="616" y="312" font-size="11" fill="#495057">NVLink 5 · 900 GB/s</text>
+
+  <!-- row 3: cluster -->
+  <rect x="70" y="346" width="800" height="70" rx="9" fill="#fff4e6" stroke="#f08c00"/>
+  <text x="84" y="378" font-size="15" font-weight="700" fill="#e8590c">机柜之间</text>
+  <text x="84" y="398" font-size="11.5" fill="#868e96">几十米 – 公里</text>
+  <text x="196" y="378" font-size="12.5" font-weight="700" fill="#e8590c">光纤 + 光模块</text>
+  <text x="196" y="398" font-size="11.5" fill="#868e96">两端电 ↔ 光</text>
+  <text x="336" y="378" font-size="12" fill="#495057">网卡 ↔ Leaf ↔ Spine ↔ 对端网卡</text>
+  <text x="336" y="398" font-size="11.5" fill="#868e96">InfiniBand / RoCE，RDMA</text>
+  <rect x="616" y="368" width="80" height="16" rx="4" fill="#ffd8a8"/>
+  <rect x="616" y="368" width="56" height="16" rx="4" fill="#f08c00"/>
+  <text x="616" y="402" font-size="11" fill="#495057">400G / 800G 网卡 · 50 – 100 GB/s</text>
+
+  <!-- brackets -->
+  <path d="M60 180 L50 180 L50 322 L60 322" fill="none" stroke="#0ca678" stroke-width="2"/>
+  <text x="40" y="251" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0b7285" transform="rotate(-90 40 251)">Scale-up</text>
+  <path d="M60 350 L50 350 L50 412 L60 412" fill="none" stroke="#f08c00" stroke-width="2"/>
+  <text x="40" y="381" text-anchor="middle" font-size="12.5" font-weight="700" fill="#e8590c" transform="rotate(-90 40 381)">Scale-out</text>
+  <text x="560" y="341" text-anchor="middle" font-size="11" font-weight="700" fill="#c92a2a">— 铜的极限：跨出机柜就要光模块 —</text>
+
+  <!-- note -->
+  <rect x="30" y="432" width="840" height="34" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="450" y="454" text-anchor="middle" font-size="12" fill="#495057">铜能覆盖的范围 ≈ Scale-up 域的物理上限；NVLink 在里面，网卡 + 光模块 + 交换机在外面</text>
+</svg>

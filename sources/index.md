@@ -93,6 +93,7 @@
         - [CPU & GPU](./cpu_gpu.md)
         - [Stream](./cuda_stream.md)
         - [Host Device Interconnect](./host_device_interconnect.md)
+        - [GPU Interconnect](./gpu_interconnect.md)
     - Cuda Kernel
         - [Softmax](./softmax.md)
         - [LayerNorm](./layernorm.md)

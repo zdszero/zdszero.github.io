@@ -1,0 +1,143 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 644" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="644" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">GB200 NVL72：一个 NVLink 域横跨 18 台机器</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">把 NVSwitch 从主板上拿出来做成交换托盘，用柜内铜缆接满 72 颗 GPU</text>
+
+  <!-- rack frame -->
+  <rect x="110" y="80" width="230" height="492" rx="8" fill="#f8f9fa" stroke="#495057" stroke-width="1.5"/>
+  <rect x="110" y="80" width="230" height="24" rx="8" fill="#495057"/>
+  <text x="225" y="97" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">机柜正面（示意）</text>
+
+  <!-- power shelves -->
+  <rect x="124" y="112" width="202" height="12" rx="2" fill="#dee2e6"/>
+  <text x="225" y="121.5" text-anchor="middle" font-size="8.5" fill="#495057">电源</text>
+  <rect x="124" y="548" width="202" height="12" rx="2" fill="#dee2e6"/>
+  <text x="225" y="557.5" text-anchor="middle" font-size="8.5" fill="#495057">电源</text>
+
+  <!-- compute trays: rects -->
+  <g fill="#edf2ff" stroke="#4c6ef5">
+    <rect x="124" y="130" width="202" height="12" rx="2"/><rect x="124" y="145" width="202" height="12" rx="2"/>
+    <rect x="124" y="160" width="202" height="12" rx="2"/><rect x="124" y="175" width="202" height="12" rx="2"/>
+    <rect x="124" y="190" width="202" height="12" rx="2"/><rect x="124" y="205" width="202" height="12" rx="2"/>
+    <rect x="124" y="220" width="202" height="12" rx="2"/><rect x="124" y="235" width="202" height="12" rx="2"/>
+    <rect x="124" y="250" width="202" height="12" rx="2"/><rect x="124" y="265" width="202" height="12" rx="2"/>
+    <rect x="124" y="423" width="202" height="12" rx="2"/><rect x="124" y="438" width="202" height="12" rx="2"/>
+    <rect x="124" y="453" width="202" height="12" rx="2"/><rect x="124" y="468" width="202" height="12" rx="2"/>
+    <rect x="124" y="483" width="202" height="12" rx="2"/><rect x="124" y="498" width="202" height="12" rx="2"/>
+    <rect x="124" y="513" width="202" height="12" rx="2"/><rect x="124" y="528" width="202" height="12" rx="2"/>
+  </g>
+  <!-- switch trays -->
+  <g fill="#e6fcf5" stroke="#0ca678">
+    <rect x="124" y="284" width="202" height="12" rx="2"/><rect x="124" y="299" width="202" height="12" rx="2"/>
+    <rect x="124" y="314" width="202" height="12" rx="2"/><rect x="124" y="329" width="202" height="12" rx="2"/>
+    <rect x="124" y="344" width="202" height="12" rx="2"/><rect x="124" y="359" width="202" height="12" rx="2"/>
+    <rect x="124" y="374" width="202" height="12" rx="2"/><rect x="124" y="389" width="202" height="12" rx="2"/>
+    <rect x="124" y="404" width="202" height="12" rx="2"/>
+  </g>
+  <defs>
+    <g id="ct"><rect x="132" y="2" width="11" height="8" rx="1.5" fill="#4c6ef5"/><rect x="146" y="2" width="11" height="8" rx="1.5" fill="#4c6ef5"/><rect x="160" y="2" width="11" height="8" rx="1.5" fill="#4c6ef5"/><rect x="174" y="2" width="11" height="8" rx="1.5" fill="#4c6ef5"/><rect x="290" y="3" width="8" height="6" rx="1" fill="#f08c00"/><rect x="302" y="3" width="8" height="6" rx="1" fill="#f08c00"/><rect x="314" y="3" width="8" height="6" rx="1" fill="#f08c00"/></g>
+    <g id="st"><rect x="190" y="2" width="30" height="8" rx="1.5" fill="#0ca678"/><rect x="236" y="2" width="30" height="8" rx="1.5" fill="#0ca678"/></g>
+  </defs>
+  <use href="#ct" transform="translate(0 130)"/>
+  <use href="#ct" transform="translate(0 145)"/>
+  <use href="#ct" transform="translate(0 160)"/>
+  <use href="#ct" transform="translate(0 175)"/>
+  <use href="#ct" transform="translate(0 190)"/>
+  <use href="#ct" transform="translate(0 205)"/>
+  <use href="#ct" transform="translate(0 220)"/>
+  <use href="#ct" transform="translate(0 235)"/>
+  <use href="#ct" transform="translate(0 250)"/>
+  <use href="#ct" transform="translate(0 265)"/>
+  <use href="#ct" transform="translate(0 423)"/>
+  <use href="#ct" transform="translate(0 438)"/>
+  <use href="#ct" transform="translate(0 453)"/>
+  <use href="#ct" transform="translate(0 468)"/>
+  <use href="#ct" transform="translate(0 483)"/>
+  <use href="#ct" transform="translate(0 498)"/>
+  <use href="#ct" transform="translate(0 513)"/>
+  <use href="#ct" transform="translate(0 528)"/>
+  <use href="#st" transform="translate(0 284)"/>
+  <use href="#st" transform="translate(0 299)"/>
+  <use href="#st" transform="translate(0 314)"/>
+  <use href="#st" transform="translate(0 329)"/>
+  <use href="#st" transform="translate(0 344)"/>
+  <use href="#st" transform="translate(0 359)"/>
+  <use href="#st" transform="translate(0 374)"/>
+  <use href="#st" transform="translate(0 389)"/>
+  <use href="#st" transform="translate(0 404)"/>
+  <!-- back-side copper spine -->
+  <rect x="72" y="130" width="14" height="410" rx="4" fill="#ffe8cc" stroke="#c2703d"/>
+  <g stroke="#c2703d" stroke-width="1.2">
+    <path d="M86 136 L124 136"/><path d="M86 196 L124 196"/><path d="M86 256 L124 256"/>
+    <path d="M86 290 L124 290"/><path d="M86 350 L124 350"/><path d="M86 410 L124 410"/>
+    <path d="M86 444 L124 444"/><path d="M86 489 L124 489"/><path d="M86 534 L124 534"/>
+  </g>
+  <text x="54" y="335" text-anchor="middle" font-size="12" font-weight="700" fill="#c2703d" transform="rotate(-90 54 335)">背面：NVLink 铜缆背板（spine）</text>
+
+  <!-- left labels on rack -->
+  <g font-size="10" fill="#868e96" text-anchor="middle">
+    <text x="225" y="582">托盘内：蓝 = GPU，绿 = NVLink Switch 芯片，橙 = 网卡口</text>
+  </g>
+
+  <!-- leader lines -->
+  <g stroke="#adb5bd" stroke-width="1.2" stroke-dasharray="3 3" fill="none">
+    <path d="M326 136 L400 136"/>
+    <path d="M326 350 L400 290"/>
+    <path d="M326 534 L400 456"/>
+  </g>
+
+  <!-- box 1: compute tray -->
+  <rect x="400" y="80" width="470" height="168" rx="10" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="400" y="80" width="470" height="26" rx="10" fill="#4c6ef5"/>
+  <text x="414" y="98" font-size="12.5" font-weight="700" fill="#ffffff">计算托盘 × 18（上 10 + 下 8）：每个都是一台独立服务器</text>
+  <g>
+    <rect x="416" y="118" width="200" height="66" rx="8" fill="#ffffff" stroke="#4c6ef5"/>
+    <text x="516" y="134" text-anchor="middle" font-size="11.5" font-weight="700" fill="#3b5bdb">GB200 Superchip</text>
+    <rect x="426" y="142" width="56" height="32" rx="6" fill="#f1f3f5" stroke="#adb5bd"/>
+    <text x="454" y="162" text-anchor="middle" font-size="10.5" font-weight="700" fill="#495057">Grace</text>
+    <rect x="490" y="142" width="56" height="32" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+    <text x="518" y="162" text-anchor="middle" font-size="10.5" font-weight="700" fill="#3b5bdb">B200</text>
+    <rect x="552" y="142" width="56" height="32" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+    <text x="580" y="162" text-anchor="middle" font-size="10.5" font-weight="700" fill="#3b5bdb">B200</text>
+  </g>
+  <g>
+    <rect x="628" y="118" width="200" height="66" rx="8" fill="#ffffff" stroke="#4c6ef5"/>
+    <text x="728" y="134" text-anchor="middle" font-size="11.5" font-weight="700" fill="#3b5bdb">GB200 Superchip</text>
+    <rect x="638" y="142" width="56" height="32" rx="6" fill="#f1f3f5" stroke="#adb5bd"/>
+    <text x="666" y="162" text-anchor="middle" font-size="10.5" font-weight="700" fill="#495057">Grace</text>
+    <rect x="702" y="142" width="56" height="32" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+    <text x="730" y="162" text-anchor="middle" font-size="10.5" font-weight="700" fill="#3b5bdb">B200</text>
+    <rect x="764" y="142" width="56" height="32" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+    <text x="792" y="162" text-anchor="middle" font-size="10.5" font-weight="700" fill="#3b5bdb">B200</text>
+  </g>
+  <text x="416" y="210" font-size="11.5" fill="#495057">每托盘 2 颗 Superchip = 4 GPU，有自己的 OS 和 PCIe 树；18 × 4 = 72</text>
+  <text x="416" y="232" font-size="11" fill="#868e96">前面板 ConnectX 网卡 / BlueField DPU（橙色）：通往 Scale-out 网和存储网</text>
+
+  <!-- box 2: switch tray -->
+  <rect x="400" y="262" width="470" height="168" rx="10" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="400" y="262" width="470" height="26" rx="10" fill="#0ca678"/>
+  <text x="414" y="280" font-size="12.5" font-weight="700" fill="#ffffff">NVLink 交换托盘 × 9：每个 2 颗 Switch 芯片，全柜 18 颗</text>
+  <rect x="416" y="300" width="140" height="38" rx="8" fill="#ffffff" stroke="#0ca678"/>
+  <text x="486" y="316" text-anchor="middle" font-size="11.5" font-weight="700" fill="#0b7285">NVLink Switch</text>
+  <text x="486" y="331" text-anchor="middle" font-size="10" fill="#868e96">72 口</text>
+  <rect x="566" y="300" width="140" height="38" rx="8" fill="#ffffff" stroke="#0ca678"/>
+  <text x="636" y="316" text-anchor="middle" font-size="11.5" font-weight="700" fill="#0b7285">NVLink Switch</text>
+  <text x="636" y="331" text-anchor="middle" font-size="10" fill="#868e96">72 口</text>
+  <text x="716" y="324" font-size="11" fill="#868e96">无 GPU、无 OS 负载</text>
+  <text x="416" y="364" font-size="11.5" font-weight="700" fill="#0b7285">接线规则：每颗 GPU 的 18 条 link，分别接 18 颗不同的 Switch 芯片</text>
+  <text x="416" y="386" font-size="11.5" fill="#495057" font-family="monospace">72 GPU × 18 link = 1296 = 18 芯片 × 72 口</text>
+  <text x="416" y="410" font-size="11" fill="#868e96">任意两颗 GPU 都只隔一跳 Switch，单向 900 GB/s，全柜约 130 TB/s（双向）</text>
+
+  <!-- box 3: domains -->
+  <rect x="400" y="444" width="470" height="128" rx="10" fill="#fff4e6" stroke="#f08c00"/>
+  <rect x="400" y="444" width="470" height="26" rx="10" fill="#f08c00"/>
+  <text x="414" y="462" font-size="12.5" font-weight="700" fill="#ffffff">“节点”和 NVLink 域不再重合</text>
+  <text x="416" y="492" font-size="11.5" fill="#495057">18 个 OS 节点同属 1 个 NVLink 域 → MNNVL（Multi-Node NVLink）</text>
+  <text x="416" y="514" font-size="11" fill="#868e96">跨节点共享显存要用 IMEX + fabric handle，cudaIpc 句柄只在单个 OS 内有效</text>
+  <text x="416" y="540" font-size="11.5" fill="#495057">柜内托盘之间：铜缆（不需要光模块）</text>
+  <text x="416" y="560" font-size="11.5" fill="#e8590c" font-weight="700">机柜之间：仍是每颗 GPU 一张网卡 → 光模块 → Leaf / Spine</text>
+
+  <!-- note -->
+  <rect x="30" y="596" width="840" height="34" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="450" y="618" text-anchor="middle" font-size="12" fill="#495057">HGX 是“一块主板 = 一个 NVLink 域（8 卡）”；NVL72 是“一个机柜 = 一个 NVLink 域（72 卡）”，边界都是铜能覆盖的范围</text>
+</svg>

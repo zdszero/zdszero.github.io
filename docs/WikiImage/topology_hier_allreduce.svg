@@ -1,0 +1,226 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 578" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="578" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">分层 AllReduce：重的部分留在 NVLink，跨机只在同号 rail 上做</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">2 台机器，每台画 4 卡示意（8 卡同理）；每个方框是一张卡，里面 4 格是数据的 4 份</text>
+  <defs><marker id="ara" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#f08c00"/></marker></defs>
+  <text x="373" y="86" text-anchor="middle" font-size="12.5" font-weight="700" fill="#495057">服务器 A</text>
+  <text x="713" y="86" text-anchor="middle" font-size="12.5" font-weight="700" fill="#495057">服务器 B</text>
+  <rect x="30" y="94" width="840" height="58" rx="9" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="44" y="118" font-size="12.5" font-weight="700" fill="#212529">初始</text>
+  <text x="44" y="136" font-size="10.5" fill="#868e96">每卡持有完整的 S（本卡的部分和）</text>
+  <rect x="230" y="100" width="68" height="46" rx="7" fill="#ffffff" stroke="#adb5bd"/>
+  <text x="264" y="114" text-anchor="middle" font-size="10" font-weight="700" fill="#495057">GPU0</text>
+  <rect x="235" y="120" width="13" height="20" rx="2" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="250" y="120" width="13" height="20" rx="2" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="265" y="120" width="13" height="20" rx="2" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="280" y="120" width="13" height="20" rx="2" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="304" y="100" width="68" height="46" rx="7" fill="#ffffff" stroke="#adb5bd"/>
+  <text x="338" y="114" text-anchor="middle" font-size="10" font-weight="700" fill="#495057">GPU1</text>
+  <rect x="309" y="120" width="13" height="20" rx="2" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="324" y="120" width="13" height="20" rx="2" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="339" y="120" width="13" height="20" rx="2" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="354" y="120" width="13" height="20" rx="2" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="378" y="100" width="68" height="46" rx="7" fill="#ffffff" stroke="#adb5bd"/>
+  <text x="412" y="114" text-anchor="middle" font-size="10" font-weight="700" fill="#495057">GPU2</text>
+  <rect x="383" y="120" width="13" height="20" rx="2" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="398" y="120" width="13" height="20" rx="2" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="413" y="120" width="13" height="20" rx="2" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="428" y="120" width="13" height="20" rx="2" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="452" y="100" width="68" height="46" rx="7" fill="#ffffff" stroke="#adb5bd"/>
+  <text x="486" y="114" text-anchor="middle" font-size="10" font-weight="700" fill="#495057">GPU3</text>
+  <rect x="457" y="120" width="13" height="20" rx="2" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="472" y="120" width="13" height="20" rx="2" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="487" y="120" width="13" height="20" rx="2" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="502" y="120" width="13" height="20" rx="2" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="570" y="100" width="68" height="46" rx="7" fill="#ffffff" stroke="#adb5bd"/>
+  <text x="604" y="114" text-anchor="middle" font-size="10" font-weight="700" fill="#495057">GPU0</text>
+  <rect x="575" y="120" width="13" height="20" rx="2" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="590" y="120" width="13" height="20" rx="2" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="605" y="120" width="13" height="20" rx="2" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="620" y="120" width="13" height="20" rx="2" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="644" y="100" width="68" height="46" rx="7" fill="#ffffff" stroke="#adb5bd"/>
+  <text x="678" y="114" text-anchor="middle" font-size="10" font-weight="700" fill="#495057">GPU1</text>
+  <rect x="649" y="120" width="13" height="20" rx="2" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="664" y="120" width="13" height="20" rx="2" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="679" y="120" width="13" height="20" rx="2" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="694" y="120" width="13" height="20" rx="2" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="718" y="100" width="68" height="46" rx="7" fill="#ffffff" stroke="#adb5bd"/>
+  <text x="752" y="114" text-anchor="middle" font-size="10" font-weight="700" fill="#495057">GPU2</text>
+  <rect x="723" y="120" width="13" height="20" rx="2" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="738" y="120" width="13" height="20" rx="2" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="753" y="120" width="13" height="20" rx="2" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="768" y="120" width="13" height="20" rx="2" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="792" y="100" width="68" height="46" rx="7" fill="#ffffff" stroke="#adb5bd"/>
+  <text x="826" y="114" text-anchor="middle" font-size="10" font-weight="700" fill="#495057">GPU3</text>
+  <rect x="797" y="120" width="13" height="20" rx="2" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="812" y="120" width="13" height="20" rx="2" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="827" y="120" width="13" height="20" rx="2" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="842" y="120" width="13" height="20" rx="2" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="30" y="172" width="840" height="58" rx="9" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="44" y="196" font-size="12.5" font-weight="700" fill="#212529">① 节点内 ReduceScatter</text>
+  <text x="44" y="214" font-size="10.5" fill="#868e96">NVLink · 每卡发 7/8·S · ≈ 0.14 ms</text>
+  <rect x="230" y="178" width="68" height="46" rx="7" fill="#ffffff" stroke="#adb5bd"/>
+  <text x="264" y="192" text-anchor="middle" font-size="10" font-weight="700" fill="#495057">GPU0</text>
+  <rect x="235" y="198" width="13" height="20" rx="2" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="250" y="198" width="13" height="20" rx="2" fill="#f8f9fa" stroke="#dee2e6"/>
+  <rect x="265" y="198" width="13" height="20" rx="2" fill="#f8f9fa" stroke="#dee2e6"/>
+  <rect x="280" y="198" width="13" height="20" rx="2" fill="#f8f9fa" stroke="#dee2e6"/>
+  <rect x="304" y="178" width="68" height="46" rx="7" fill="#ffffff" stroke="#adb5bd"/>
+  <text x="338" y="192" text-anchor="middle" font-size="10" font-weight="700" fill="#495057">GPU1</text>
+  <rect x="309" y="198" width="13" height="20" rx="2" fill="#f8f9fa" stroke="#dee2e6"/>
+  <rect x="324" y="198" width="13" height="20" rx="2" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="339" y="198" width="13" height="20" rx="2" fill="#f8f9fa" stroke="#dee2e6"/>
+  <rect x="354" y="198" width="13" height="20" rx="2" fill="#f8f9fa" stroke="#dee2e6"/>
+  <rect x="378" y="178" width="68" height="46" rx="7" fill="#ffffff" stroke="#adb5bd"/>
+  <text x="412" y="192" text-anchor="middle" font-size="10" font-weight="700" fill="#495057">GPU2</text>
+  <rect x="383" y="198" width="13" height="20" rx="2" fill="#f8f9fa" stroke="#dee2e6"/>
+  <rect x="398" y="198" width="13" height="20" rx="2" fill="#f8f9fa" stroke="#dee2e6"/>
+  <rect x="413" y="198" width="13" height="20" rx="2" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="428" y="198" width="13" height="20" rx="2" fill="#f8f9fa" stroke="#dee2e6"/>
+  <rect x="452" y="178" width="68" height="46" rx="7" fill="#ffffff" stroke="#adb5bd"/>
+  <text x="486" y="192" text-anchor="middle" font-size="10" font-weight="700" fill="#495057">GPU3</text>
+  <rect x="457" y="198" width="13" height="20" rx="2" fill="#f8f9fa" stroke="#dee2e6"/>
+  <rect x="472" y="198" width="13" height="20" rx="2" fill="#f8f9fa" stroke="#dee2e6"/>
+  <rect x="487" y="198" width="13" height="20" rx="2" fill="#f8f9fa" stroke="#dee2e6"/>
+  <rect x="502" y="198" width="13" height="20" rx="2" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="570" y="178" width="68" height="46" rx="7" fill="#ffffff" stroke="#adb5bd"/>
+  <text x="604" y="192" text-anchor="middle" font-size="10" font-weight="700" fill="#495057">GPU0</text>
+  <rect x="575" y="198" width="13" height="20" rx="2" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="590" y="198" width="13" height="20" rx="2" fill="#f8f9fa" stroke="#dee2e6"/>
+  <rect x="605" y="198" width="13" height="20" rx="2" fill="#f8f9fa" stroke="#dee2e6"/>
+  <rect x="620" y="198" width="13" height="20" rx="2" fill="#f8f9fa" stroke="#dee2e6"/>
+  <rect x="644" y="178" width="68" height="46" rx="7" fill="#ffffff" stroke="#adb5bd"/>
+  <text x="678" y="192" text-anchor="middle" font-size="10" font-weight="700" fill="#495057">GPU1</text>
+  <rect x="649" y="198" width="13" height="20" rx="2" fill="#f8f9fa" stroke="#dee2e6"/>
+  <rect x="664" y="198" width="13" height="20" rx="2" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="679" y="198" width="13" height="20" rx="2" fill="#f8f9fa" stroke="#dee2e6"/>
+  <rect x="694" y="198" width="13" height="20" rx="2" fill="#f8f9fa" stroke="#dee2e6"/>
+  <rect x="718" y="178" width="68" height="46" rx="7" fill="#ffffff" stroke="#adb5bd"/>
+  <text x="752" y="192" text-anchor="middle" font-size="10" font-weight="700" fill="#495057">GPU2</text>
+  <rect x="723" y="198" width="13" height="20" rx="2" fill="#f8f9fa" stroke="#dee2e6"/>
+  <rect x="738" y="198" width="13" height="20" rx="2" fill="#f8f9fa" stroke="#dee2e6"/>
+  <rect x="753" y="198" width="13" height="20" rx="2" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="768" y="198" width="13" height="20" rx="2" fill="#f8f9fa" stroke="#dee2e6"/>
+  <rect x="792" y="178" width="68" height="46" rx="7" fill="#ffffff" stroke="#adb5bd"/>
+  <text x="826" y="192" text-anchor="middle" font-size="10" font-weight="700" fill="#495057">GPU3</text>
+  <rect x="797" y="198" width="13" height="20" rx="2" fill="#f8f9fa" stroke="#dee2e6"/>
+  <rect x="812" y="198" width="13" height="20" rx="2" fill="#f8f9fa" stroke="#dee2e6"/>
+  <rect x="827" y="198" width="13" height="20" rx="2" fill="#f8f9fa" stroke="#dee2e6"/>
+  <rect x="842" y="198" width="13" height="20" rx="2" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="30" y="262" width="840" height="88" rx="9" fill="#fff9db" stroke="#f08c00"/>
+  <text x="44" y="286" font-size="12.5" font-weight="700" fill="#e8590c">② 每条 rail 上 AllReduce</text>
+  <text x="44" y="304" font-size="10.5" fill="#868e96">网卡 · 8 个 2 卡组并行 · ≈ 0.18 ms</text>
+  <rect x="230" y="268" width="68" height="46" rx="7" fill="#ffffff" stroke="#adb5bd"/>
+  <text x="264" y="282" text-anchor="middle" font-size="10" font-weight="700" fill="#495057">GPU0</text>
+  <rect x="235" y="288" width="13" height="20" rx="2" fill="#f08c00" stroke="#e8590c"/>
+  <rect x="250" y="288" width="13" height="20" rx="2" fill="#f8f9fa" stroke="#dee2e6"/>
+  <rect x="265" y="288" width="13" height="20" rx="2" fill="#f8f9fa" stroke="#dee2e6"/>
+  <rect x="280" y="288" width="13" height="20" rx="2" fill="#f8f9fa" stroke="#dee2e6"/>
+  <rect x="304" y="268" width="68" height="46" rx="7" fill="#ffffff" stroke="#adb5bd"/>
+  <text x="338" y="282" text-anchor="middle" font-size="10" font-weight="700" fill="#495057">GPU1</text>
+  <rect x="309" y="288" width="13" height="20" rx="2" fill="#f8f9fa" stroke="#dee2e6"/>
+  <rect x="324" y="288" width="13" height="20" rx="2" fill="#f08c00" stroke="#e8590c"/>
+  <rect x="339" y="288" width="13" height="20" rx="2" fill="#f8f9fa" stroke="#dee2e6"/>
+  <rect x="354" y="288" width="13" height="20" rx="2" fill="#f8f9fa" stroke="#dee2e6"/>
+  <rect x="378" y="268" width="68" height="46" rx="7" fill="#ffffff" stroke="#adb5bd"/>
+  <text x="412" y="282" text-anchor="middle" font-size="10" font-weight="700" fill="#495057">GPU2</text>
+  <rect x="383" y="288" width="13" height="20" rx="2" fill="#f8f9fa" stroke="#dee2e6"/>
+  <rect x="398" y="288" width="13" height="20" rx="2" fill="#f8f9fa" stroke="#dee2e6"/>
+  <rect x="413" y="288" width="13" height="20" rx="2" fill="#f08c00" stroke="#e8590c"/>
+  <rect x="428" y="288" width="13" height="20" rx="2" fill="#f8f9fa" stroke="#dee2e6"/>
+  <rect x="452" y="268" width="68" height="46" rx="7" fill="#ffffff" stroke="#adb5bd"/>
+  <text x="486" y="282" text-anchor="middle" font-size="10" font-weight="700" fill="#495057">GPU3</text>
+  <rect x="457" y="288" width="13" height="20" rx="2" fill="#f8f9fa" stroke="#dee2e6"/>
+  <rect x="472" y="288" width="13" height="20" rx="2" fill="#f8f9fa" stroke="#dee2e6"/>
+  <rect x="487" y="288" width="13" height="20" rx="2" fill="#f8f9fa" stroke="#dee2e6"/>
+  <rect x="502" y="288" width="13" height="20" rx="2" fill="#f08c00" stroke="#e8590c"/>
+  <rect x="570" y="268" width="68" height="46" rx="7" fill="#ffffff" stroke="#adb5bd"/>
+  <text x="604" y="282" text-anchor="middle" font-size="10" font-weight="700" fill="#495057">GPU0</text>
+  <rect x="575" y="288" width="13" height="20" rx="2" fill="#f08c00" stroke="#e8590c"/>
+  <rect x="590" y="288" width="13" height="20" rx="2" fill="#f8f9fa" stroke="#dee2e6"/>
+  <rect x="605" y="288" width="13" height="20" rx="2" fill="#f8f9fa" stroke="#dee2e6"/>
+  <rect x="620" y="288" width="13" height="20" rx="2" fill="#f8f9fa" stroke="#dee2e6"/>
+  <rect x="644" y="268" width="68" height="46" rx="7" fill="#ffffff" stroke="#adb5bd"/>
+  <text x="678" y="282" text-anchor="middle" font-size="10" font-weight="700" fill="#495057">GPU1</text>
+  <rect x="649" y="288" width="13" height="20" rx="2" fill="#f8f9fa" stroke="#dee2e6"/>
+  <rect x="664" y="288" width="13" height="20" rx="2" fill="#f08c00" stroke="#e8590c"/>
+  <rect x="679" y="288" width="13" height="20" rx="2" fill="#f8f9fa" stroke="#dee2e6"/>
+  <rect x="694" y="288" width="13" height="20" rx="2" fill="#f8f9fa" stroke="#dee2e6"/>
+  <rect x="718" y="268" width="68" height="46" rx="7" fill="#ffffff" stroke="#adb5bd"/>
+  <text x="752" y="282" text-anchor="middle" font-size="10" font-weight="700" fill="#495057">GPU2</text>
+  <rect x="723" y="288" width="13" height="20" rx="2" fill="#f8f9fa" stroke="#dee2e6"/>
+  <rect x="738" y="288" width="13" height="20" rx="2" fill="#f8f9fa" stroke="#dee2e6"/>
+  <rect x="753" y="288" width="13" height="20" rx="2" fill="#f08c00" stroke="#e8590c"/>
+  <rect x="768" y="288" width="13" height="20" rx="2" fill="#f8f9fa" stroke="#dee2e6"/>
+  <rect x="792" y="268" width="68" height="46" rx="7" fill="#ffffff" stroke="#adb5bd"/>
+  <text x="826" y="282" text-anchor="middle" font-size="10" font-weight="700" fill="#495057">GPU3</text>
+  <rect x="797" y="288" width="13" height="20" rx="2" fill="#f8f9fa" stroke="#dee2e6"/>
+  <rect x="812" y="288" width="13" height="20" rx="2" fill="#f8f9fa" stroke="#dee2e6"/>
+  <rect x="827" y="288" width="13" height="20" rx="2" fill="#f8f9fa" stroke="#dee2e6"/>
+  <rect x="842" y="288" width="13" height="20" rx="2" fill="#f08c00" stroke="#e8590c"/>
+  <rect x="30" y="374" width="840" height="58" rx="9" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="44" y="398" font-size="12.5" font-weight="700" fill="#212529">③ 节点内 AllGather</text>
+  <text x="44" y="416" font-size="10.5" fill="#868e96">NVLink · ≈ 0.14 ms</text>
+  <rect x="230" y="380" width="68" height="46" rx="7" fill="#ffffff" stroke="#adb5bd"/>
+  <text x="264" y="394" text-anchor="middle" font-size="10" font-weight="700" fill="#495057">GPU0</text>
+  <rect x="235" y="400" width="13" height="20" rx="2" fill="#f08c00" stroke="#e8590c"/>
+  <rect x="250" y="400" width="13" height="20" rx="2" fill="#f08c00" stroke="#e8590c"/>
+  <rect x="265" y="400" width="13" height="20" rx="2" fill="#f08c00" stroke="#e8590c"/>
+  <rect x="280" y="400" width="13" height="20" rx="2" fill="#f08c00" stroke="#e8590c"/>
+  <rect x="304" y="380" width="68" height="46" rx="7" fill="#ffffff" stroke="#adb5bd"/>
+  <text x="338" y="394" text-anchor="middle" font-size="10" font-weight="700" fill="#495057">GPU1</text>
+  <rect x="309" y="400" width="13" height="20" rx="2" fill="#f08c00" stroke="#e8590c"/>
+  <rect x="324" y="400" width="13" height="20" rx="2" fill="#f08c00" stroke="#e8590c"/>
+  <rect x="339" y="400" width="13" height="20" rx="2" fill="#f08c00" stroke="#e8590c"/>
+  <rect x="354" y="400" width="13" height="20" rx="2" fill="#f08c00" stroke="#e8590c"/>
+  <rect x="378" y="380" width="68" height="46" rx="7" fill="#ffffff" stroke="#adb5bd"/>
+  <text x="412" y="394" text-anchor="middle" font-size="10" font-weight="700" fill="#495057">GPU2</text>
+  <rect x="383" y="400" width="13" height="20" rx="2" fill="#f08c00" stroke="#e8590c"/>
+  <rect x="398" y="400" width="13" height="20" rx="2" fill="#f08c00" stroke="#e8590c"/>
+  <rect x="413" y="400" width="13" height="20" rx="2" fill="#f08c00" stroke="#e8590c"/>
+  <rect x="428" y="400" width="13" height="20" rx="2" fill="#f08c00" stroke="#e8590c"/>
+  <rect x="452" y="380" width="68" height="46" rx="7" fill="#ffffff" stroke="#adb5bd"/>
+  <text x="486" y="394" text-anchor="middle" font-size="10" font-weight="700" fill="#495057">GPU3</text>
+  <rect x="457" y="400" width="13" height="20" rx="2" fill="#f08c00" stroke="#e8590c"/>
+  <rect x="472" y="400" width="13" height="20" rx="2" fill="#f08c00" stroke="#e8590c"/>
+  <rect x="487" y="400" width="13" height="20" rx="2" fill="#f08c00" stroke="#e8590c"/>
+  <rect x="502" y="400" width="13" height="20" rx="2" fill="#f08c00" stroke="#e8590c"/>
+  <rect x="570" y="380" width="68" height="46" rx="7" fill="#ffffff" stroke="#adb5bd"/>
+  <text x="604" y="394" text-anchor="middle" font-size="10" font-weight="700" fill="#495057">GPU0</text>
+  <rect x="575" y="400" width="13" height="20" rx="2" fill="#f08c00" stroke="#e8590c"/>
+  <rect x="590" y="400" width="13" height="20" rx="2" fill="#f08c00" stroke="#e8590c"/>
+  <rect x="605" y="400" width="13" height="20" rx="2" fill="#f08c00" stroke="#e8590c"/>
+  <rect x="620" y="400" width="13" height="20" rx="2" fill="#f08c00" stroke="#e8590c"/>
+  <rect x="644" y="380" width="68" height="46" rx="7" fill="#ffffff" stroke="#adb5bd"/>
+  <text x="678" y="394" text-anchor="middle" font-size="10" font-weight="700" fill="#495057">GPU1</text>
+  <rect x="649" y="400" width="13" height="20" rx="2" fill="#f08c00" stroke="#e8590c"/>
+  <rect x="664" y="400" width="13" height="20" rx="2" fill="#f08c00" stroke="#e8590c"/>
+  <rect x="679" y="400" width="13" height="20" rx="2" fill="#f08c00" stroke="#e8590c"/>
+  <rect x="694" y="400" width="13" height="20" rx="2" fill="#f08c00" stroke="#e8590c"/>
+  <rect x="718" y="380" width="68" height="46" rx="7" fill="#ffffff" stroke="#adb5bd"/>
+  <text x="752" y="394" text-anchor="middle" font-size="10" font-weight="700" fill="#495057">GPU2</text>
+  <rect x="723" y="400" width="13" height="20" rx="2" fill="#f08c00" stroke="#e8590c"/>
+  <rect x="738" y="400" width="13" height="20" rx="2" fill="#f08c00" stroke="#e8590c"/>
+  <rect x="753" y="400" width="13" height="20" rx="2" fill="#f08c00" stroke="#e8590c"/>
+  <rect x="768" y="400" width="13" height="20" rx="2" fill="#f08c00" stroke="#e8590c"/>
+  <rect x="792" y="380" width="68" height="46" rx="7" fill="#ffffff" stroke="#adb5bd"/>
+  <text x="826" y="394" text-anchor="middle" font-size="10" font-weight="700" fill="#495057">GPU3</text>
+  <rect x="797" y="400" width="13" height="20" rx="2" fill="#f08c00" stroke="#e8590c"/>
+  <rect x="812" y="400" width="13" height="20" rx="2" fill="#f08c00" stroke="#e8590c"/>
+  <rect x="827" y="400" width="13" height="20" rx="2" fill="#f08c00" stroke="#e8590c"/>
+  <rect x="842" y="400" width="13" height="20" rx="2" fill="#f08c00" stroke="#e8590c"/>
+  <path d="M264 314 C 264 332, 604 332, 604 314" stroke="#f08c00" stroke-width="1.8" fill="none" opacity="0.8"/>
+  <path d="M338 314 C 338 332, 678 332, 678 314" stroke="#f08c00" stroke-width="1.8" fill="none" opacity="0.8"/>
+  <path d="M412 314 C 412 332, 752 332, 752 314" stroke="#f08c00" stroke-width="1.8" fill="none" opacity="0.8"/>
+  <path d="M486 314 C 486 332, 826 332, 826 314" stroke="#f08c00" stroke-width="1.8" fill="none" opacity="0.8"/>
+  <text x="713" y="342" text-anchor="middle" font-size="10" font-weight="700" fill="#e8590c">rail i：A.GPU i ↔ B.GPU i，一跳</text>
+  <rect x="44" y="452" width="13" height="16" rx="2" fill="#edf2ff" stroke="#4c6ef5"/><text x="64" y="464" font-size="11.5" fill="#495057">本卡部分和</text>
+  <rect x="170" y="452" width="13" height="16" rx="2" fill="#e6fcf5" stroke="#0ca678"/><text x="190" y="464" font-size="11.5" fill="#495057">本机所有卡之和（其中 1 份）</text>
+  <rect x="400" y="452" width="13" height="16" rx="2" fill="#f08c00" stroke="#e8590c"/><text x="420" y="464" font-size="11.5" fill="#495057">两台机器所有卡之和</text>
+  <rect x="580" y="452" width="13" height="16" rx="2" fill="#f8f9fa" stroke="#dee2e6"/><text x="600" y="464" font-size="11.5" fill="#495057">不持有</text>
+  <rect x="30" y="480" width="840" height="56" rx="8" fill="#ffffff" stroke="#e9ecef"/>
+  <text x="44" y="502" font-size="11.5" fill="#495057"><tspan font-weight="700">每台机器向外发：</tspan>分层 = S；16 卡 ring（8 channel 各走一条 rail）≈ 1.875·S</text>
+  <text x="44" y="524" font-size="11.5" fill="#495057"><tspan font-weight="700">58.7 MB 算例：</tspan>单机 8 卡 0.29 ms · ring 只用 1 张网卡 2.75 ms · ring 用满 8 rail ≈ 0.34 ms · 分层顺序执行 0.47 ms，切块流水后接近 0.29 ms</text>
+  <rect x="30" y="540" width="840" height="30" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="450" y="560" text-anchor="middle" font-size="12" fill="#495057">关键在第 ② 步：跨机的只有 1/8 的数据，而且 8 条 rail 同时工作，整机出口 400 GB/s 全部用上</text>
+</svg>

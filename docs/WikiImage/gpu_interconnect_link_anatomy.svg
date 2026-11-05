@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 496" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="496" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">一条跨机链路的解剖</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">网卡和交换芯片只处理电信号；光模块在每个端口上做电 ↔ 光转换</text>
+
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#868e96"/></marker>
+    <marker id="arg" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#7048e8"/></marker>
+  </defs>
+
+  <!-- pipeline -->
+  <rect x="30" y="100" width="110" height="60" rx="9" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="85" y="126" text-anchor="middle" font-size="12.5" font-weight="700" fill="#3b5bdb">本机 GPU 0</text>
+  <text x="85" y="144" text-anchor="middle" font-size="11" fill="#868e96">HBM 中的数据</text>
+  <path d="M140 130 L178 130" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <text x="159" y="122" text-anchor="middle" font-size="10.5" fill="#868e96">PCIe</text>
+
+  <rect x="180" y="100" width="124" height="60" rx="9" fill="#fff4e6" stroke="#f08c00"/>
+  <text x="240" y="126" text-anchor="middle" font-size="12.5" font-weight="700" fill="#e8590c">ConnectX 网卡</text>
+  <text x="240" y="144" text-anchor="middle" font-size="11" fill="#868e96">打包成 RDMA 报文</text>
+  <rect x="304" y="110" width="48" height="40" rx="6" fill="#e5dbff" stroke="#7048e8"/>
+  <text x="328" y="134" text-anchor="middle" font-size="11" font-weight="700" fill="#5f3dc4">光模块</text>
+
+  <path d="M352 124 L452 124" stroke="#f08c00" stroke-width="2.5"/>
+  <path d="M352 136 L452 136" stroke="#f08c00" stroke-width="2.5"/>
+  <text x="402" y="114" text-anchor="middle" font-size="10.5" fill="#e8590c">光纤（一发一收）</text>
+
+  <rect x="452" y="110" width="48" height="40" rx="6" fill="#e5dbff" stroke="#7048e8"/>
+  <text x="476" y="134" text-anchor="middle" font-size="11" font-weight="700" fill="#5f3dc4">光模块</text>
+  <rect x="500" y="100" width="120" height="60" rx="9" fill="#f1f3f5" stroke="#868e96"/>
+  <text x="560" y="126" text-anchor="middle" font-size="12.5" font-weight="700" fill="#495057">Leaf 交换机</text>
+  <text x="560" y="144" text-anchor="middle" font-size="11" fill="#868e96">交换芯片按地址转发</text>
+  <rect x="620" y="110" width="48" height="40" rx="6" fill="#e5dbff" stroke="#7048e8"/>
+  <text x="644" y="134" text-anchor="middle" font-size="11" font-weight="700" fill="#5f3dc4">光模块</text>
+
+  <path d="M668 124 L738 124" stroke="#f08c00" stroke-width="2.5"/>
+  <path d="M668 136 L738 136" stroke="#f08c00" stroke-width="2.5"/>
+
+  <rect x="738" y="100" width="132" height="60" rx="9" fill="#f8f9fa" stroke="#adb5bd" stroke-dasharray="4 3"/>
+  <text x="804" y="126" text-anchor="middle" font-size="12" font-weight="700" fill="#495057">→ Spine → 对端 Leaf</text>
+  <text x="804" y="144" text-anchor="middle" font-size="11" fill="#868e96">→ 对端网卡 → 对端 GPU</text>
+
+  <!-- signal domain bar -->
+  <rect x="30" y="180" width="298" height="10" rx="3" fill="#adb5bd"/>
+  <rect x="328" y="180" width="148" height="10" rx="3" fill="#f08c00"/>
+  <rect x="476" y="180" width="168" height="10" rx="3" fill="#adb5bd"/>
+  <rect x="644" y="180" width="94" height="10" rx="3" fill="#f08c00"/>
+  <g font-size="11.5" font-weight="700" text-anchor="middle">
+    <text x="179" y="208" fill="#495057">电信号</text>
+    <text x="402" y="208" fill="#e8590c">光信号</text>
+    <text x="560" y="208" fill="#495057">电信号</text>
+    <text x="691" y="208" fill="#e8590c">光信号</text>
+  </g>
+  <text x="450" y="232" text-anchor="middle" font-size="12" fill="#868e96">每经过一台交换机：光 → 电 → 交换 → 电 → 光，所以每条光链路两端各需要一个光模块</text>
+  <!-- zoom: optical module -->
+  <rect x="30" y="256" width="540" height="176" rx="10" fill="#f3f0ff" stroke="#7048e8"/>
+  <rect x="30" y="256" width="540" height="26" rx="10" fill="#7048e8"/>
+  <text x="44" y="274" font-size="12.5" font-weight="700" fill="#ffffff">放大一个光模块（OSFP / QSFP 外形，可热插拔）</text>
+
+  <rect x="46" y="300" width="96" height="60" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="94" y="325" text-anchor="middle" font-size="12" font-weight="700" fill="#495057">电接口</text>
+  <text x="94" y="343" text-anchor="middle" font-size="10.5" fill="#868e96">插进端口笼子</text>
+  <path d="M142 330 L164 330" stroke="#7048e8" stroke-width="2" marker-end="url(#arg)"/>
+
+  <rect x="166" y="300" width="100" height="60" rx="8" fill="#ffffff" stroke="#7048e8"/>
+  <text x="216" y="325" text-anchor="middle" font-size="12" font-weight="700" fill="#5f3dc4">DSP</text>
+  <text x="216" y="343" text-anchor="middle" font-size="10.5" fill="#868e96">整形、重定时</text>
+  <path d="M266 318 L288 311" stroke="#7048e8" stroke-width="2" marker-end="url(#arg)"/>
+  <path d="M288 349 L268 342" stroke="#7048e8" stroke-width="2" marker-end="url(#arg)"/>
+
+  <rect x="290" y="296" width="112" height="30" rx="7" fill="#ffffff" stroke="#7048e8"/>
+  <text x="346" y="315" text-anchor="middle" font-size="11" font-weight="700" fill="#5f3dc4">激光器：电 → 光</text>
+  <rect x="290" y="334" width="112" height="30" rx="7" fill="#ffffff" stroke="#7048e8"/>
+  <text x="346" y="353" text-anchor="middle" font-size="11" font-weight="700" fill="#5f3dc4">探测器：光 → 电</text>
+  <path d="M402 311 L422 311" stroke="#f08c00" stroke-width="2.5"/>
+  <path d="M402 349 L422 349" stroke="#f08c00" stroke-width="2.5"/>
+
+  <rect x="424" y="300" width="130" height="60" rx="8" fill="#fff4e6" stroke="#f08c00"/>
+  <text x="489" y="325" text-anchor="middle" font-size="12" font-weight="700" fill="#e8590c">光纤接口</text>
+  <text x="489" y="343" text-anchor="middle" font-size="10.5" fill="#868e96">Tx 发 / Rx 收</text>
+
+  <text x="46" y="392" font-size="11.5" fill="#495057">800G 模块：内部 8 路 × 100G 通道，功耗约 15 W；按距离分 SR / DR / FR 等型号</text>
+  <text x="46" y="414" font-size="11" fill="#868e96">降功耗方向：LPO 去掉 DSP；CPO 把光引擎直接封装到交换芯片旁边</text>
+
+  <!-- copper alternative -->
+  <rect x="590" y="256" width="280" height="176" rx="10" fill="#f8f9fa" stroke="#adb5bd"/>
+  <rect x="590" y="256" width="280" height="26" rx="10" fill="#495057"/>
+  <text x="604" y="274" font-size="12.5" font-weight="700" fill="#ffffff">短距离替代：铜缆</text>
+  <rect x="610" y="298" width="36" height="22" rx="4" fill="#f1f3f5" stroke="#868e96"/>
+  <path d="M646 309 L814 309" stroke="#c2703d" stroke-width="5" stroke-linecap="round"/>
+  <rect x="814" y="298" width="36" height="22" rx="4" fill="#f1f3f5" stroke="#868e96"/>
+  <text x="730" y="301" text-anchor="middle" font-size="10" fill="#868e96">铜线</text>
+  <g font-size="11.5" fill="#495057">
+    <text x="606" y="346">DAC：两端是同外形的插头，中间铜线</text>
+    <text x="606" y="366">不做电光转换，几乎不耗电，便宜</text>
+    <text x="606" y="386" font-weight="700">只能走 1 – 2 m → 用在机柜内</text>
+  </g>
+  <text x="606" y="412" font-size="11" fill="#868e96">AEC：线里加重定时芯片，可到几米</text>
+
+  <!-- note -->
+  <rect x="30" y="448" width="840" height="34" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="450" y="470" text-anchor="middle" font-size="12" fill="#495057">网卡端口和交换机端口是同一种笼子：插光模块 + 光纤走远距离，插铜缆走柜内短距离</text>
+</svg>

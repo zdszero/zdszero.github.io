@@ -1,0 +1,159 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 666" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="666" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">一台 HGX B200 服务器：两张网在机箱里的位置</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">俯视示意：NVLink 留在基板上，离开机箱的只有网卡的光纤</text>
+
+  <defs>
+    <marker id="ara" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#f08c00"/></marker>
+  </defs>
+
+  <!-- chassis -->
+  <rect x="20" y="72" width="860" height="470" rx="10" fill="#ffffff" stroke="#adb5bd" stroke-dasharray="6 4"/>
+
+  <!-- HGX baseboard -->
+  <rect x="40" y="92" width="660" height="200" rx="10" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="40" y="92" width="660" height="26" rx="10" fill="#0ca678"/>
+  <text x="54" y="110" font-size="12.5" font-weight="700" fill="#ffffff">HGX 基板 = Scale-up 域（NVLink 全部是 PCB 走线）</text>
+
+  <!-- NVSwitch chips -->
+  <rect x="100" y="128" width="220" height="36" rx="8" fill="#ffffff" stroke="#0ca678"/>
+  <text x="210" y="144" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0b7285">NVLink Switch 芯片 A</text>
+  <text x="210" y="158" text-anchor="middle" font-size="10.5" fill="#868e96">72 口 · 每颗 GPU 接 9 条</text>
+  <rect x="426" y="128" width="220" height="36" rx="8" fill="#ffffff" stroke="#0ca678"/>
+  <text x="536" y="144" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0b7285">NVLink Switch 芯片 B</text>
+  <text x="536" y="158" text-anchor="middle" font-size="10.5" fill="#868e96">72 口 · 每颗 GPU 接 9 条</text>
+
+  <!-- NVLink fan: GPU i -> A and B -->
+  <g stroke="#0ca678" stroke-width="1.4" opacity="0.85">
+    <path d="M93 224 L112 164"/><path d="M173 224 L140 164"/><path d="M253 224 L168 164"/><path d="M333 224 L196 164"/>
+    <path d="M413 224 L224 164"/><path d="M493 224 L252 164"/><path d="M573 224 L280 164"/><path d="M653 224 L308 164"/>
+    <path d="M93 224 L438 164"/><path d="M173 224 L466 164"/><path d="M253 224 L494 164"/><path d="M333 224 L522 164"/>
+    <path d="M413 224 L550 164"/><path d="M493 224 L578 164"/><path d="M573 224 L606 164"/><path d="M653 224 L634 164"/>
+  </g>
+
+  <!-- GPUs -->
+  <g font-size="12" font-weight="700" fill="#3b5bdb" text-anchor="middle">
+    <rect x="60" y="224" width="66" height="48" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+    <rect x="140" y="224" width="66" height="48" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+    <rect x="220" y="224" width="66" height="48" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+    <rect x="300" y="224" width="66" height="48" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+    <rect x="380" y="224" width="66" height="48" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+    <rect x="460" y="224" width="66" height="48" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+    <rect x="540" y="224" width="66" height="48" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+    <rect x="620" y="224" width="66" height="48" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+    <text x="93" y="245">GPU 0</text><text x="173" y="245">GPU 1</text><text x="253" y="245">GPU 2</text><text x="333" y="245">GPU 3</text>
+    <text x="413" y="245">GPU 4</text><text x="493" y="245">GPU 5</text><text x="573" y="245">GPU 6</text><text x="653" y="245">GPU 7</text>
+  </g>
+  <g font-size="10.5" fill="#868e96" text-anchor="middle">
+    <text x="93" y="262">18 link</text><text x="173" y="262">18 link</text><text x="253" y="262">18 link</text><text x="333" y="262">18 link</text>
+    <text x="413" y="262">18 link</text><text x="493" y="262">18 link</text><text x="573" y="262">18 link</text><text x="653" y="262">18 link</text>
+  </g>
+  <!-- GPU -> PCIe switch -->
+  <g stroke="#adb5bd" stroke-width="2">
+    <path d="M93 272 L93 322"/><path d="M173 272 L173 322"/><path d="M253 272 L253 322"/><path d="M333 272 L333 322"/>
+    <path d="M413 272 L413 322"/><path d="M493 272 L493 322"/><path d="M573 272 L573 322"/><path d="M653 272 L653 322"/>
+  </g>
+  <text x="100" y="304" font-size="10" fill="#868e96">PCIe 5.0 ×16</text>
+
+  <!-- PCIe switches -->
+  <g font-size="12" font-weight="700" fill="#495057" text-anchor="middle">
+    <rect x="60" y="322" width="146" height="34" rx="8" fill="#f1f3f5" stroke="#868e96"/>
+    <rect x="220" y="322" width="146" height="34" rx="8" fill="#f1f3f5" stroke="#868e96"/>
+    <rect x="380" y="322" width="146" height="34" rx="8" fill="#f1f3f5" stroke="#868e96"/>
+    <rect x="540" y="322" width="146" height="34" rx="8" fill="#f1f3f5" stroke="#868e96"/>
+    <text x="133" y="344">PCIe Switch</text><text x="293" y="344">PCIe Switch</text>
+    <text x="453" y="344">PCIe Switch</text><text x="613" y="344">PCIe Switch</text>
+  </g>
+
+  <!-- PCIe switch -> NIC -->
+  <g stroke="#adb5bd" stroke-width="2">
+    <path d="M93 356 L93 396"/><path d="M173 356 L173 396"/><path d="M253 356 L253 396"/><path d="M333 356 L333 396"/>
+    <path d="M413 356 L413 396"/><path d="M493 356 L493 396"/><path d="M573 356 L573 396"/><path d="M653 356 L653 396"/>
+  </g>
+
+  <!-- NICs -->
+  <g>
+    <rect x="61" y="396" width="64" height="44" rx="8" fill="#fff4e6" stroke="#f08c00"/>
+    <rect x="141" y="396" width="64" height="44" rx="8" fill="#fff4e6" stroke="#f08c00"/>
+    <rect x="221" y="396" width="64" height="44" rx="8" fill="#fff4e6" stroke="#f08c00"/>
+    <rect x="301" y="396" width="64" height="44" rx="8" fill="#fff4e6" stroke="#f08c00"/>
+    <rect x="381" y="396" width="64" height="44" rx="8" fill="#fff4e6" stroke="#f08c00"/>
+    <rect x="461" y="396" width="64" height="44" rx="8" fill="#fff4e6" stroke="#f08c00"/>
+    <rect x="541" y="396" width="64" height="44" rx="8" fill="#fff4e6" stroke="#f08c00"/>
+    <rect x="621" y="396" width="64" height="44" rx="8" fill="#fff4e6" stroke="#f08c00"/>
+  </g>
+  <g font-size="11.5" font-weight="700" fill="#e8590c" text-anchor="middle">
+    <text x="93" y="415">CX-7 #0</text><text x="173" y="415">CX-7 #1</text><text x="253" y="415">CX-7 #2</text><text x="333" y="415">CX-7 #3</text>
+    <text x="413" y="415">CX-7 #4</text><text x="493" y="415">CX-7 #5</text><text x="573" y="415">CX-7 #6</text><text x="653" y="415">CX-7 #7</text>
+  </g>
+  <g font-size="10.5" fill="#868e96" text-anchor="middle">
+    <text x="93" y="431">400G 网卡</text><text x="173" y="431">400G 网卡</text><text x="253" y="431">400G 网卡</text><text x="333" y="431">400G 网卡</text>
+    <text x="413" y="431">400G 网卡</text><text x="493" y="431">400G 网卡</text><text x="573" y="431">400G 网卡</text><text x="653" y="431">400G 网卡</text>
+  </g>
+  <!-- back panel -->
+  <rect x="40" y="470" width="820" height="30" rx="6" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="852" y="489" text-anchor="end" font-size="11" fill="#495057">← 机箱背面：8 个计算网 OSFP 口</text>
+  <g stroke="#f08c00" stroke-width="2">
+    <path d="M93 440 L93 478"/><path d="M173 440 L173 478"/><path d="M253 440 L253 478"/><path d="M333 440 L333 478"/>
+    <path d="M413 440 L413 478"/><path d="M493 440 L493 478"/><path d="M573 440 L573 478"/><path d="M653 440 L653 478"/>
+  </g>
+  <g fill="#ffd8a8" stroke="#f08c00">
+    <rect x="81" y="478" width="24" height="14" rx="2"/><rect x="161" y="478" width="24" height="14" rx="2"/>
+    <rect x="241" y="478" width="24" height="14" rx="2"/><rect x="321" y="478" width="24" height="14" rx="2"/>
+    <rect x="401" y="478" width="24" height="14" rx="2"/><rect x="481" y="478" width="24" height="14" rx="2"/>
+    <rect x="561" y="478" width="24" height="14" rx="2"/><rect x="641" y="478" width="24" height="14" rx="2"/>
+  </g>
+
+  <!-- fibers leaving the box -->
+  <g stroke="#f08c00" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#ara)">
+    <path d="M93 492 L93 568"/><path d="M173 492 L173 568"/><path d="M253 492 L253 568"/><path d="M333 492 L333 568"/>
+    <path d="M413 492 L413 568"/><path d="M493 492 L493 568"/><path d="M573 492 L573 568"/><path d="M653 492 L653 568"/>
+  </g>
+  <text x="102" y="532" font-size="10" fill="#868e96">光模块 + 光纤</text>
+  <g font-size="11" font-weight="700" fill="#e8590c" text-anchor="middle">
+    <text x="93" y="588">rail 0</text><text x="173" y="588">rail 1</text><text x="253" y="588">rail 2</text><text x="333" y="588">rail 3</text>
+    <text x="413" y="588">rail 4</text><text x="493" y="588">rail 5</text><text x="573" y="588">rail 6</text><text x="653" y="588">rail 7</text>
+  </g>
+  <g font-size="10.5" fill="#868e96" text-anchor="middle">
+    <text x="93" y="603">Leaf</text><text x="173" y="603">Leaf</text><text x="253" y="603">Leaf</text><text x="333" y="603">Leaf</text>
+    <text x="413" y="603">Leaf</text><text x="493" y="603">Leaf</text><text x="573" y="603">Leaf</text><text x="653" y="603">Leaf</text>
+  </g>
+  <text x="716" y="588" font-size="11" fill="#495057">同号 GPU → 同号 rail</text>
+  <text x="716" y="603" font-size="10.5" fill="#868e96">（rail-optimized 布线）</text>
+
+  <!-- right column: note -->
+  <rect x="716" y="92" width="148" height="200" rx="10" fill="#f8f9fa" stroke="#0ca678" stroke-dasharray="4 3"/>
+  <text x="790" y="120" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0b7285">NVLink 不出机箱</text>
+  <g font-size="11" fill="#495057" text-anchor="middle">
+    <text x="790" y="148">8 × 18 = 144 条 link</text>
+    <text x="790" y="166">全部接在 2 颗 Switch 上</text>
+    <text x="790" y="184">任意两卡 900 GB/s</text>
+    <text x="790" y="212" font-weight="700" fill="#0b7285">Scale-up 域 = 8 卡</text>
+    <text x="790" y="240" fill="#868e96">要和别的机器通信，</text>
+    <text x="790" y="258" fill="#868e96">只能经下方的 8 张网卡</text>
+  </g>
+
+  <!-- host -->
+  <path d="M686 339 L716 339" stroke="#adb5bd" stroke-width="2"/>
+  <rect x="716" y="300" width="148" height="104" rx="10" fill="#f8f9fa" stroke="#adb5bd"/>
+  <rect x="716" y="300" width="148" height="24" rx="10" fill="#495057"/>
+  <text x="728" y="317" font-size="12" font-weight="700" fill="#ffffff">Host</text>
+  <rect x="728" y="332" width="60" height="28" rx="6" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="758" y="351" text-anchor="middle" font-size="11.5" font-weight="700" fill="#495057">CPU 0</text>
+  <rect x="796" y="332" width="60" height="28" rx="6" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="826" y="351" text-anchor="middle" font-size="11.5" font-weight="700" fill="#495057">CPU 1</text>
+  <text x="790" y="378" text-anchor="middle" font-size="10.5" fill="#868e96">4 颗 PCIe Switch 的上行</text>
+  <text x="790" y="394" text-anchor="middle" font-size="10.5" fill="#868e96">接到 CPU（图中合并画）</text>
+  <rect x="716" y="412" width="148" height="44" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="790" y="430" text-anchor="middle" font-size="11" font-weight="700" fill="#495057">前端 / 存储网卡 · BMC</text>
+  <text x="790" y="446" text-anchor="middle" font-size="10" fill="#868e96">不承载 GPU 间计算流量</text>
+
+  <!-- legend / note -->
+  <rect x="20" y="620" width="860" height="34" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <path d="M60 637 L90 637" stroke="#0ca678" stroke-width="2.5"/>
+  <text x="98" y="641" font-size="12" fill="#495057">NVLink（Scale-up）</text>
+  <path d="M260 637 L290 637" stroke="#adb5bd" stroke-width="2.5"/>
+  <text x="298" y="641" font-size="12" fill="#495057">PCIe（GPU / 网卡 / CPU）</text>
+  <path d="M490 637 L520 637" stroke="#f08c00" stroke-width="2.5" stroke-dasharray="5 3"/>
+  <text x="528" y="641" font-size="12" fill="#495057">计算网络（Scale-out）：每卡一张网卡、一根光纤</text>
+</svg>

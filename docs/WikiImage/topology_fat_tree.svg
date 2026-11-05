@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 520" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="520" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">两层胖树：端口数决定规模，上下行比例决定收敛比</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">以 64 口 400G 交换机为例</text>
+
+  <!-- left panel -->
+  <rect x="30" y="74" width="570" height="380" rx="10" fill="#f8f9fa" stroke="#adb5bd"/>
+
+  <!-- spine-leaf mesh -->
+  <g stroke="#adb5bd" stroke-width="1.1">
+    <path d="M110 140 L88 236"/><path d="M110 140 L178 236"/><path d="M110 140 L268 236"/><path d="M110 140 L358 236"/><path d="M110 140 L448 236"/><path d="M110 140 L538 236"/>
+    <path d="M240 140 L88 236"/><path d="M240 140 L178 236"/><path d="M240 140 L268 236"/><path d="M240 140 L358 236"/><path d="M240 140 L448 236"/><path d="M240 140 L538 236"/>
+    <path d="M370 140 L88 236"/><path d="M370 140 L178 236"/><path d="M370 140 L268 236"/><path d="M370 140 L358 236"/><path d="M370 140 L448 236"/><path d="M370 140 L538 236"/>
+    <path d="M500 140 L88 236"/><path d="M500 140 L178 236"/><path d="M500 140 L268 236"/><path d="M500 140 L358 236"/><path d="M500 140 L448 236"/><path d="M500 140 L538 236"/>
+  </g>
+
+  <!-- spines -->
+  <g font-size="12" font-weight="700" fill="#5f3dc4" text-anchor="middle">
+    <rect x="62" y="104" width="96" height="36" rx="8" fill="#f3f0ff" stroke="#7048e8"/><text x="110" y="127">Spine 0</text>
+    <rect x="192" y="104" width="96" height="36" rx="8" fill="#f3f0ff" stroke="#7048e8"/><text x="240" y="127">Spine 1</text>
+    <rect x="322" y="104" width="96" height="36" rx="8" fill="#f3f0ff" stroke="#7048e8"/><text x="370" y="127">Spine 2</text>
+    <rect x="452" y="104" width="96" height="36" rx="8" fill="#f3f0ff" stroke="#7048e8"/><text x="500" y="127">…</text>
+  </g>
+  <text x="48" y="94" font-size="11" font-weight="700" fill="#0b7285">Leaf：32 口向下接网卡，32 口向上各接一台 Spine</text>
+  <text x="584" y="94" text-anchor="end" font-size="11" font-weight="700" fill="#5f3dc4">Spine × 32：64 口全部向下</text>
+
+  <!-- leaves -->
+  <g font-size="12" font-weight="700" fill="#0b7285" text-anchor="middle">
+    <rect x="52" y="236" width="72" height="34" rx="8" fill="#e6fcf5" stroke="#0ca678"/><text x="88" y="258">Leaf 0</text>
+    <rect x="142" y="236" width="72" height="34" rx="8" fill="#e6fcf5" stroke="#0ca678"/><text x="178" y="258">Leaf 1</text>
+    <rect x="232" y="236" width="72" height="34" rx="8" fill="#e6fcf5" stroke="#0ca678"/><text x="268" y="258">Leaf 2</text>
+    <rect x="322" y="236" width="72" height="34" rx="8" fill="#e6fcf5" stroke="#0ca678"/><text x="358" y="258">Leaf 3</text>
+    <rect x="412" y="236" width="72" height="34" rx="8" fill="#e6fcf5" stroke="#0ca678"/><text x="448" y="258">…</text>
+    <rect x="502" y="236" width="72" height="34" rx="8" fill="#e6fcf5" stroke="#0ca678"/><text x="538" y="258">Leaf 63</text>
+  </g>
+
+  <!-- NICs -->
+  <g stroke="#adb5bd" stroke-width="1.2">
+    <path d="M70 270 L64 300"/><path d="M88 270 L88 300"/><path d="M106 270 L112 300"/>
+    <path d="M160 270 L154 300"/><path d="M178 270 L178 300"/><path d="M196 270 L202 300"/>
+    <path d="M250 270 L244 300"/><path d="M268 270 L268 300"/><path d="M286 270 L292 300"/>
+    <path d="M340 270 L334 300"/><path d="M358 270 L358 300"/><path d="M376 270 L382 300"/>
+    <path d="M430 270 L424 300"/><path d="M448 270 L448 300"/><path d="M466 270 L472 300"/>
+    <path d="M520 270 L514 300"/><path d="M538 270 L538 300"/><path d="M556 270 L562 300"/>
+  </g>
+  <g fill="#fff4e6" stroke="#f08c00">
+    <rect x="52" y="300" width="72" height="18" rx="4"/><rect x="142" y="300" width="72" height="18" rx="4"/>
+    <rect x="232" y="300" width="72" height="18" rx="4"/><rect x="322" y="300" width="72" height="18" rx="4"/>
+    <rect x="412" y="300" width="72" height="18" rx="4"/><rect x="502" y="300" width="72" height="18" rx="4"/>
+  </g>
+  <g font-size="10" fill="#e8590c" text-anchor="middle">
+    <text x="88" y="313">32 网卡</text><text x="178" y="313">32 网卡</text><text x="268" y="313">32 网卡</text>
+    <text x="358" y="313">32 网卡</text><text x="448" y="313">…</text><text x="538" y="313">32 网卡</text>
+  </g>
+
+  <!-- capacity formula -->
+  <text x="48" y="352" font-size="12.5" font-weight="700" fill="#212529">规模：每台 Spine 最多接 k = 64 台 Leaf</text>
+  <text x="48" y="376" font-size="12" fill="#495057" font-family="monospace">64 Leaf × 32 网卡 = 2048 张网卡 = k² / 2</text>
+  <text x="48" y="400" font-size="11.5" fill="#495057">最远路径：网卡 → Leaf → Spine → Leaf → 网卡，经过 3 台交换机</text>
+  <text x="48" y="422" font-size="11.5" fill="#868e96">再多就要第三层，规模到 k³ / 4 = 65536，最远经过 5 台交换机</text>
+  <text x="48" y="442" font-size="11" fill="#868e96">图中只画了部分 Spine / Leaf；每台 Leaf 和每台 Spine 之间都有一条链路</text>
+  <!-- right box 1: oversubscription -->
+  <rect x="620" y="74" width="250" height="178" rx="10" fill="#fff9db" stroke="#f08c00"/>
+  <rect x="620" y="74" width="250" height="26" rx="10" fill="#f08c00"/>
+  <text x="634" y="92" font-size="12.5" font-weight="700" fill="#ffffff">收敛比 = 下行 : 上行</text>
+  <text x="636" y="122" font-size="11.5" font-weight="700" fill="#495057">1 : 1（无阻塞）</text>
+  <rect x="636" y="130" width="109" height="16" rx="3" fill="#f08c00"/>
+  <rect x="745" y="130" width="109" height="16" rx="3" fill="#0ca678"/>
+  <text x="690" y="142" text-anchor="middle" font-size="10" fill="#ffffff">32 下</text>
+  <text x="800" y="142" text-anchor="middle" font-size="10" fill="#ffffff">32 上</text>
+  <text x="636" y="176" font-size="11.5" font-weight="700" fill="#495057">3 : 1</text>
+  <rect x="636" y="184" width="164" height="16" rx="3" fill="#f08c00"/>
+  <rect x="800" y="184" width="54" height="16" rx="3" fill="#0ca678"/>
+  <text x="718" y="196" text-anchor="middle" font-size="10" fill="#ffffff">48 下</text>
+  <text x="827" y="196" text-anchor="middle" font-size="10" fill="#ffffff">16 上</text>
+  <text x="636" y="222" font-size="10.5" fill="#495057">省 2/3 Spine 和光模块，但所有卡</text>
+  <text x="636" y="238" font-size="10.5" fill="#495057">同时跨 Leaf 时每卡只剩 1/3 带宽</text>
+
+  <!-- right box 2: ECMP collision -->
+  <rect x="620" y="264" width="250" height="190" rx="10" fill="#fff5f5" stroke="#fa5252"/>
+  <rect x="620" y="264" width="250" height="26" rx="10" fill="#fa5252"/>
+  <text x="634" y="282" font-size="12.5" font-weight="700" fill="#ffffff">无阻塞 ≠ 不拥塞：ECMP 冲突</text>
+  <rect x="644" y="300" width="80" height="28" rx="7" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="684" y="319" text-anchor="middle" font-size="11.5" font-weight="700" fill="#5f3dc4">Spine A</text>
+  <rect x="770" y="300" width="80" height="28" rx="7" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="810" y="319" text-anchor="middle" font-size="11.5" font-weight="700" fill="#5f3dc4">Spine B</text>
+  <path d="M740 374 L690 328" stroke="#fa5252" stroke-width="2.5"/>
+  <path d="M746 374 L698 328" stroke="#fa5252" stroke-width="2.5"/>
+  <path d="M760 374 L806 328" stroke="#adb5bd" stroke-width="2" stroke-dasharray="4 3"/>
+  <text x="664" y="356" font-size="10" font-weight="700" fill="#c92a2a">流 1 + 流 2</text>
+  <text x="790" y="356" font-size="10" fill="#868e96">空闲</text>
+  <rect x="712" y="374" width="80" height="28" rx="7" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="752" y="393" text-anchor="middle" font-size="11.5" font-weight="700" fill="#0b7285">Leaf</text>
+  <text x="636" y="424" font-size="10.5" fill="#495057">哈希只看报文头，不看负载；集合通信</text>
+  <text x="636" y="440" font-size="10.5" fill="#495057">大流少，两条撞到一起，各剩一半带宽</text>
+
+  <!-- note -->
+  <rect x="30" y="468" width="840" height="36" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="450" y="491" text-anchor="middle" font-size="12" fill="#495057">AI 集群通常坚持 1:1，再用 adaptive routing、多 QP 和 rail 布线减少路由冲突</text>
+</svg>
