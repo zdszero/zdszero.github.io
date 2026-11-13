@@ -143,10 +143,17 @@
         - [先进封装](./advanced_packaging.md)
         - [ODM](./2026-ODM.md)
         - [算力租赁](./gpu_rent.md)
+    - [存储周期](./storage_cicle.md)
 - 随笔
+    - [感受市场温度](./market_temperature.md)
     - [读书学习投资有用么](./should_i_learn_by_books.md)
     - [谈一谈历史的失真](./wrong_history_record.md)
     - [A 股中的博弈势力](./stock_investor_types.md)
     - [A 股特性](./stock_feature.md)
     - [A 股的价值投资](./value_investment.md)
-- [基础技术分析](./concepts.md)
+    - [基础技术分析](./concepts.md)
+- 历史
+    - [自发秩序和复杂性](./spontaneous_order.md)
+    - [中国国家机器](./china_system.md)
+    - [人类的自我欺骗](./everyone_is_a_hypocrite.md)
+    - [秦晖历史观念](./qinhui_viewpoint.md)
