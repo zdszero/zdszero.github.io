@@ -137,19 +137,18 @@
         - [924](./2024-924.md)
     - [2025-2026](./2025-2026.md)
 - 个股研究
-    - 2020
-        - [CATL](./CATL.md)
-    - 2026
-        - [先进封装](./advanced_packaging.md)
-        - [ODM](./2026-ODM.md)
-        - [算力租赁](./gpu_rent.md)
+    - [CATL](./CATL.md)
+    - [GYFL](./gyfl.md)
+    - [先进封装](./advanced_packaging.md)
+    - [ODM](./2026-ODM.md)
+    - [算力租赁](./gpu_rent.md)
     - [存储周期](./storage_cicle.md)
 - 随笔
+    - [A 股特性](./stock_feature.md)
     - [感受市场温度](./market_temperature.md)
     - [读书学习投资有用么](./should_i_learn_by_books.md)
     - [谈一谈历史的失真](./wrong_history_record.md)
     - [A 股中的博弈势力](./stock_investor_types.md)
-    - [A 股特性](./stock_feature.md)
     - [A 股的价值投资](./value_investment.md)
     - [基础技术分析](./concepts.md)
 - 历史
