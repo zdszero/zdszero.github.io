@@ -1,0 +1,151 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 680" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="680" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">一台 NVL72 的七层物料流</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">物料从原材料逐层加工到集群网络；右列是每层在 2023—2026 年最紧的环节</text>
+
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#868e96"/></marker>
+  </defs>
+
+  <text x="90" y="78" text-anchor="middle" font-size="11" fill="#868e96">层级</text>
+  <text x="422" y="78" text-anchor="middle" font-size="11" fill="#868e96">主要部件 · 代表供应商</text>
+  <text x="785" y="78" text-anchor="middle" font-size="11" fill="#868e96">主要瓶颈</text>
+
+  <!-- L0 -->
+  <rect x="30" y="86" width="120" height="60" rx="9" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="90" y="112" text-anchor="middle" font-size="14" font-weight="700" fill="#3b5bdb">L0</text>
+  <text x="90" y="131" text-anchor="middle" font-size="12" fill="#495057">原材料</text>
+  <rect x="165" y="86" width="121" height="60" rx="8" fill="#f8f9fa" stroke="#adb5bd"/>
+  <text x="225.5" y="111" text-anchor="middle" font-size="12.5" font-weight="700" fill="#495057">硅片 · 光刻胶</text>
+  <text x="225.5" y="129" text-anchor="middle" font-size="11" fill="#868e96">信越 · SUMCO · JSR</text>
+  <rect x="296" y="86" width="121" height="60" rx="8" fill="#f8f9fa" stroke="#adb5bd"/>
+  <text x="356.5" y="111" text-anchor="middle" font-size="12.5" font-weight="700" fill="#495057">ABF 膜 · 玻纤布</text>
+  <text x="356.5" y="129" text-anchor="middle" font-size="11" fill="#868e96">味之素 · 日东纺</text>
+  <rect x="427" y="86" width="121" height="60" rx="8" fill="#f8f9fa" stroke="#adb5bd"/>
+  <text x="487.5" y="111" text-anchor="middle" font-size="12.5" font-weight="700" fill="#495057">铜箔 · 树脂 · CCL</text>
+  <text x="487.5" y="129" text-anchor="middle" font-size="11" fill="#868e96">三井 · 台光电 · 生益</text>
+  <rect x="558" y="86" width="121" height="60" rx="8" fill="#f8f9fa" stroke="#adb5bd"/>
+  <text x="618.5" y="111" text-anchor="middle" font-size="12.5" font-weight="700" fill="#495057">InP 衬底 · 铜材</text>
+  <text x="618.5" y="129" text-anchor="middle" font-size="11" fill="#868e96">住友电工 · AXT</text>
+  <rect x="700" y="86" width="170" height="60" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="785" y="111" text-anchor="middle" font-size="12.5" font-weight="700" fill="#5f3dc4">T-glass · HVLP 铜箔</text>
+  <text x="785" y="129" text-anchor="middle" font-size="11" fill="#868e96">供应集中</text>
+  <path d="M90 147 L90 158" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+
+  <!-- L1 -->
+  <rect x="30" y="160" width="120" height="60" rx="9" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="90" y="186" text-anchor="middle" font-size="14" font-weight="700" fill="#3b5bdb">L1</text>
+  <text x="90" y="205" text-anchor="middle" font-size="12" fill="#495057">晶圆制造</text>
+  <rect x="165" y="160" width="165" height="60" rx="8" fill="#f8f9fa" stroke="#adb5bd"/>
+  <text x="247.5" y="185" text-anchor="middle" font-size="12.5" font-weight="700" fill="#495057">GPU · Grace · NVSwitch</text>
+  <text x="247.5" y="203" text-anchor="middle" font-size="11" fill="#868e96">NVIDIA 设计 · 台积电 4NP</text>
+  <rect x="340" y="160" width="165" height="60" rx="8" fill="#f8f9fa" stroke="#adb5bd"/>
+  <text x="422.5" y="185" text-anchor="middle" font-size="12.5" font-weight="700" fill="#495057">网卡 · 交换 · DSP 芯片</text>
+  <text x="422.5" y="203" text-anchor="middle" font-size="11" fill="#868e96">NVIDIA · Broadcom · Marvell</text>
+  <rect x="515" y="160" width="165" height="60" rx="8" fill="#f8f9fa" stroke="#adb5bd"/>
+  <text x="597.5" y="185" text-anchor="middle" font-size="12.5" font-weight="700" fill="#495057">DRAM 晶圆</text>
+  <text x="597.5" y="203" text-anchor="middle" font-size="11" fill="#868e96">SK 海力士 · 三星 · 美光</text>
+  <rect x="700" y="160" width="170" height="60" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="785" y="185" text-anchor="middle" font-size="12.5" font-weight="700" fill="#495057">先进逻辑产能充足</text>
+  <text x="785" y="203" text-anchor="middle" font-size="11" fill="#868e96">基本不卡</text>
+  <path d="M90 221 L90 232" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <!-- L2 -->
+  <rect x="30" y="234" width="120" height="60" rx="9" fill="#fff4e6" stroke="#f08c00"/>
+  <text x="90" y="260" text-anchor="middle" font-size="14" font-weight="700" fill="#e8590c">L2</text>
+  <text x="90" y="279" text-anchor="middle" font-size="12" fill="#495057">芯片封装</text>
+  <rect x="165" y="234" width="165" height="60" rx="8" fill="#fff9db" stroke="#f08c00"/>
+  <text x="247.5" y="259" text-anchor="middle" font-size="12.5" font-weight="700" fill="#e8590c">CoWoS-L 封装</text>
+  <text x="247.5" y="277" text-anchor="middle" font-size="11" fill="#868e96">2 die + 8 HBM → 一颗 GPU</text>
+  <rect x="340" y="234" width="165" height="60" rx="8" fill="#fff9db" stroke="#f08c00"/>
+  <text x="422.5" y="259" text-anchor="middle" font-size="12.5" font-weight="700" fill="#e8590c">HBM3E 12 层堆叠</text>
+  <text x="422.5" y="277" text-anchor="middle" font-size="11" fill="#868e96">TSV · 键合 · KGSD 测试</text>
+  <rect x="515" y="234" width="165" height="60" rx="8" fill="#f8f9fa" stroke="#adb5bd"/>
+  <text x="597.5" y="259" text-anchor="middle" font-size="12.5" font-weight="700" fill="#495057">光芯片 EML / CW</text>
+  <text x="597.5" y="277" text-anchor="middle" font-size="11" fill="#868e96">Lumentum · Coherent · 三菱</text>
+  <rect x="700" y="234" width="170" height="60" rx="8" fill="#fff5f5" stroke="#fa5252"/>
+  <text x="785" y="259" text-anchor="middle" font-size="12.5" font-weight="700" fill="#c92a2a">CoWoS 产能 · HBM</text>
+  <text x="785" y="277" text-anchor="middle" font-size="11" fill="#868e96">产能刚性 + 良率爬坡</text>
+  <path d="M90 295 L90 306" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+
+  <!-- L3 -->
+  <rect x="30" y="308" width="120" height="60" rx="9" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="90" y="334" text-anchor="middle" font-size="14" font-weight="700" fill="#0b7285">L3</text>
+  <text x="90" y="353" text-anchor="middle" font-size="12" fill="#495057">载板与板卡</text>
+  <rect x="165" y="308" width="165" height="60" rx="8" fill="#f8f9fa" stroke="#adb5bd"/>
+  <text x="247.5" y="333" text-anchor="middle" font-size="12.5" font-weight="700" fill="#495057">ABF 封装载板</text>
+  <text x="247.5" y="351" text-anchor="middle" font-size="11" fill="#868e96">揖斐电 · 欣兴 · 南电</text>
+  <rect x="340" y="308" width="165" height="60" rx="8" fill="#f8f9fa" stroke="#adb5bd"/>
+  <text x="422.5" y="333" text-anchor="middle" font-size="12.5" font-weight="700" fill="#495057">计算托盘主板</text>
+  <text x="422.5" y="351" text-anchor="middle" font-size="11" fill="#868e96">HDI · 高多层 · 胜宏</text>
+  <rect x="515" y="308" width="165" height="60" rx="8" fill="#f8f9fa" stroke="#adb5bd"/>
+  <text x="597.5" y="333" text-anchor="middle" font-size="12.5" font-weight="700" fill="#495057">交换托盘 · 交换机板</text>
+  <text x="597.5" y="351" text-anchor="middle" font-size="11" fill="#868e96">高多层高速板 · 沪电</text>
+  <rect x="700" y="308" width="170" height="60" rx="8" fill="#fff5f5" stroke="#fa5252"/>
+  <text x="785" y="333" text-anchor="middle" font-size="12.5" font-weight="700" fill="#c92a2a">高端 PCB 产能</text>
+  <text x="785" y="351" text-anchor="middle" font-size="11" fill="#868e96">产能刚性，随后退到材料</text>
+  <path d="M90 369 L90 380" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+
+  <!-- L4 -->
+  <rect x="30" y="382" width="120" height="60" rx="9" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="90" y="408" text-anchor="middle" font-size="14" font-weight="700" fill="#0b7285">L4</text>
+  <text x="90" y="427" text-anchor="middle" font-size="12" fill="#495057">托盘部件</text>
+  <rect x="165" y="382" width="121" height="60" rx="8" fill="#f8f9fa" stroke="#adb5bd"/>
+  <text x="225.5" y="407" text-anchor="middle" font-size="12.5" font-weight="700" fill="#495057">电源架 · VRM</text>
+  <text x="225.5" y="425" text-anchor="middle" font-size="11" fill="#868e96">台达 · 光宝 · MPS</text>
+  <rect x="296" y="382" width="121" height="60" rx="8" fill="#f8f9fa" stroke="#adb5bd"/>
+  <text x="356.5" y="407" text-anchor="middle" font-size="12.5" font-weight="700" fill="#495057">冷板 · 快接头</text>
+  <text x="356.5" y="425" text-anchor="middle" font-size="11" fill="#868e96">奇鋐 · 双鸿 · 富世达</text>
+  <rect x="427" y="382" width="121" height="60" rx="8" fill="#f8f9fa" stroke="#adb5bd"/>
+  <text x="487.5" y="407" text-anchor="middle" font-size="12.5" font-weight="700" fill="#495057">NVLink 铜背板</text>
+  <text x="487.5" y="425" text-anchor="middle" font-size="11" fill="#868e96">安费诺 · 约 5000 根</text>
+  <rect x="558" y="382" width="121" height="60" rx="8" fill="#f8f9fa" stroke="#adb5bd"/>
+  <text x="618.5" y="407" text-anchor="middle" font-size="12.5" font-weight="700" fill="#495057">机箱 · 滑轨</text>
+  <text x="618.5" y="425" text-anchor="middle" font-size="11" fill="#868e96">鸿海 · 川湖 · 勤诚</text>
+  <rect x="700" y="382" width="170" height="60" rx="8" fill="#fff9db" stroke="#f08c00"/>
+  <text x="785" y="407" text-anchor="middle" font-size="12.5" font-weight="700" fill="#e8590c">背板 · 液冷可靠性</text>
+  <text x="785" y="425" text-anchor="middle" font-size="11" fill="#868e96">良率爬坡</text>
+  <path d="M90 443 L90 454" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <!-- L5 -->
+  <rect x="30" y="456" width="120" height="60" rx="9" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="90" y="482" text-anchor="middle" font-size="14" font-weight="700" fill="#5f3dc4">L5</text>
+  <text x="90" y="501" text-anchor="middle" font-size="12" fill="#495057">机柜集成</text>
+  <rect x="165" y="456" width="515" height="60" rx="8" fill="#f8f9fa" stroke="#adb5bd"/>
+  <text x="422.5" y="481" text-anchor="middle" font-size="12.5" font-weight="700" fill="#495057">ODM 整柜（L11）：18 计算托盘 + 9 交换托盘 + 电源架 + 液冷歧管，通电通液测试</text>
+  <text x="422.5" y="499" text-anchor="middle" font-size="11" fill="#868e96">鸿海／工业富联 · 广达 · 纬创／纬颖 · Supermicro · Dell</text>
+  <rect x="700" y="456" width="170" height="60" rx="8" fill="#fff9db" stroke="#f08c00"/>
+  <text x="785" y="481" text-anchor="middle" font-size="12.5" font-weight="700" fill="#e8590c">整柜调试周期</text>
+  <text x="785" y="499" text-anchor="middle" font-size="11" fill="#868e96">良率爬坡</text>
+  <path d="M90 517 L90 528" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+
+  <!-- L6 -->
+  <rect x="30" y="530" width="120" height="60" rx="9" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="90" y="556" text-anchor="middle" font-size="14" font-weight="700" fill="#5f3dc4">L6</text>
+  <text x="90" y="575" text-anchor="middle" font-size="12" fill="#495057">集群网络</text>
+  <rect x="165" y="530" width="121" height="60" rx="8" fill="#f8f9fa" stroke="#adb5bd"/>
+  <text x="225.5" y="555" text-anchor="middle" font-size="12.5" font-weight="700" fill="#495057">ConnectX-8</text>
+  <text x="225.5" y="573" text-anchor="middle" font-size="11" fill="#868e96">每 GPU 一张 800G</text>
+  <rect x="296" y="530" width="121" height="60" rx="8" fill="#fff9db" stroke="#f08c00"/>
+  <text x="356.5" y="555" text-anchor="middle" font-size="12.5" font-weight="700" fill="#e8590c">光模块</text>
+  <text x="356.5" y="573" text-anchor="middle" font-size="11" fill="#868e96">旭创 · 新易盛</text>
+  <rect x="427" y="530" width="121" height="60" rx="8" fill="#f8f9fa" stroke="#adb5bd"/>
+  <text x="487.5" y="555" text-anchor="middle" font-size="12.5" font-weight="700" fill="#495057">光纤 · 连接器</text>
+  <text x="487.5" y="573" text-anchor="middle" font-size="11" fill="#868e96">康宁 · 天孚 · 藤仓</text>
+  <rect x="558" y="530" width="121" height="60" rx="8" fill="#f8f9fa" stroke="#adb5bd"/>
+  <text x="618.5" y="555" text-anchor="middle" font-size="12.5" font-weight="700" fill="#495057">交换机</text>
+  <text x="618.5" y="573" text-anchor="middle" font-size="11" fill="#868e96">NVIDIA · Arista · 智邦</text>
+  <rect x="700" y="530" width="170" height="60" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="785" y="555" text-anchor="middle" font-size="12.5" font-weight="700" fill="#5f3dc4">激光器 · DSP</text>
+  <text x="785" y="573" text-anchor="middle" font-size="11" fill="#868e96">供应集中</text>
+
+  <!-- legend + note -->
+  <rect x="30" y="606" width="840" height="58" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <rect x="48" y="618" width="12" height="12" rx="2" fill="#fff5f5" stroke="#fa5252"/>
+  <text x="66" y="628" font-size="11.5" fill="#495057">产能刚性</text>
+  <rect x="136" y="618" width="12" height="12" rx="2" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="154" y="628" font-size="11.5" fill="#495057">供应集中</text>
+  <rect x="224" y="618" width="12" height="12" rx="2" fill="#fff9db" stroke="#f08c00"/>
+  <text x="242" y="628" font-size="11.5" fill="#495057">良率爬坡</text>
+  <rect x="312" y="618" width="12" height="12" rx="2" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="330" y="628" font-size="11.5" fill="#495057">基本不卡</text>
+  <text x="48" y="652" font-size="12" fill="#495057">各层是串联关系：整柜产出 ≈ 各层可供数量 ÷ 单柜用量的最小值。最紧的一层决定出货，也拿走最多的定价权。</text>
+</svg>

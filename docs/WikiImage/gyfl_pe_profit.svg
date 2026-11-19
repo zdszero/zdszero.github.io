@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 740" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect x="0" y="0" width="900" height="740" rx="12" fill="#ffffff"/>
+<text x="30.0" y="34.0" font-size="20" fill="#212529" font-weight="700" text-anchor="start">TTM 利润升到 2022 年的 2.6 倍，PE 却从 60 倍跌回 14 倍：工业富联 2020—2026</text>
+<text x="30.0" y="56.0" font-size="13" fill="#868e96" text-anchor="start">上：PE（TTM）日度平均与年末值；下：归母净利润（亿元）。2026 为截至 11-18 的 YTD，利润为前三季度</text>
+<rect x="80.0" y="126.0" width="334.3" height="452.0" rx="0" fill="#f1f3f5" opacity="0.6"/>
+<text x="247.1" y="88.0" font-size="11.5" fill="#495057" font-weight="700" text-anchor="middle">传统代工估值</text>
+<rect x="414.3" y="126.0" width="222.9" height="452.0" rx="0" fill="#fff4e6" opacity="0.6"/>
+<text x="525.7" y="88.0" font-size="11.5" fill="#e8590c" font-weight="700" text-anchor="middle">AI 主题与验证</text>
+<rect x="637.1" y="126.0" width="111.4" height="452.0" rx="0" fill="#fff5f5" opacity="0.6"/>
+<text x="692.9" y="88.0" font-size="11.5" fill="#c92a2a" font-weight="700" text-anchor="middle">戴维斯双击</text>
+<rect x="748.6" y="126.0" width="111.4" height="452.0" rx="0" fill="#edf2ff" opacity="0.6"/>
+<text x="804.3" y="88.0" font-size="11.5" fill="#3b5bdb" font-weight="700" text-anchor="middle">利润增、估值降</text>
+<text x="80.0" y="116.0" font-size="12.5" fill="#3b5bdb" font-weight="700" text-anchor="start">PE（TTM，倍）</text>
+<line x1="80.0" y1="336.0" x2="860.0" y2="336.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="340.0" font-size="11" fill="#868e96" text-anchor="end">0</text>
+<line x1="80.0" y1="286.8" x2="860.0" y2="286.8" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="290.8" font-size="11" fill="#868e96" text-anchor="end">15</text>
+<line x1="80.0" y1="237.6" x2="860.0" y2="237.6" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="241.6" font-size="11" fill="#868e96" text-anchor="end">30</text>
+<line x1="80.0" y1="188.3" x2="860.0" y2="188.3" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="192.3" font-size="11" fill="#868e96" text-anchor="end">45</text>
+<line x1="80.0" y1="139.1" x2="860.0" y2="139.1" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="143.1" font-size="11" fill="#868e96" text-anchor="end">60</text>
+<line x1="80.0" y1="126.0" x2="80.0" y2="336.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="191.4" y1="126.0" x2="191.4" y2="336.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="302.9" y1="126.0" x2="302.9" y2="336.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="414.3" y1="126.0" x2="414.3" y2="336.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="525.7" y1="126.0" x2="525.7" y2="336.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="637.1" y1="126.0" x2="637.1" y2="336.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="748.6" y1="126.0" x2="748.6" y2="336.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<path d="M135.7 280.8 L247.1 291.0 L358.6 304.5 L470.0 282.4 L581.4 270.6 L692.9 243.8 L804.3 236.0" fill="none" stroke="#4c6ef5" stroke-width="2" stroke-linejoin="round"/>
+<circle cx="135.7" cy="280.8" r="3" fill="#4c6ef5"/>
+<circle cx="247.1" cy="291.0" r="3" fill="#4c6ef5"/>
+<circle cx="358.6" cy="304.5" r="3" fill="#4c6ef5"/>
+<circle cx="470.0" cy="282.4" r="3" fill="#4c6ef5"/>
+<circle cx="581.4" cy="270.6" r="3" fill="#4c6ef5"/>
+<circle cx="692.9" cy="243.8" r="3" fill="#4c6ef5"/>
+<circle cx="804.3" cy="236.0" r="3" fill="#4c6ef5"/>
+<path d="M135.7 284.2 L247.1 296.4 L358.6 307.2 L470.0 290.7 L581.4 274.2 L692.9 203.7 L804.3 289.5" fill="none" stroke="#adb5bd" stroke-width="2" stroke-linejoin="round" stroke-dasharray="5 4"/>
+<circle cx="135.7" cy="284.2" r="3" fill="#adb5bd"/>
+<circle cx="247.1" cy="296.4" r="3" fill="#adb5bd"/>
+<circle cx="358.6" cy="307.2" r="3" fill="#adb5bd"/>
+<circle cx="470.0" cy="290.7" r="3" fill="#adb5bd"/>
+<circle cx="581.4" cy="274.2" r="3" fill="#adb5bd"/>
+<circle cx="692.9" cy="203.7" r="3" fill="#adb5bd"/>
+<circle cx="804.3" cy="289.5" r="3" fill="#adb5bd"/>
+<circle cx="395.5" cy="310.3" r="5" fill="#adb5bd"/>
+<text x="395.5" y="330.3" font-size="12.5" fill="#212529" font-weight="700" text-anchor="middle">7.83×</text>
+<text x="395.5" y="346.3" font-size="11" fill="#495057" text-anchor="middle">2022-10-31 最低</text>
+<circle cx="729.2" cy="138.0" r="5" fill="#fa5252"/>
+<text x="719.2" y="142.0" font-size="12.5" fill="#212529" font-weight="700" text-anchor="end">60.34×</text>
+<text x="719.2" y="158.0" font-size="11" fill="#495057" text-anchor="end">2025-10-29 最高</text>
+<circle cx="846.4" cy="292.0" r="5" fill="#4c6ef5"/>
+<text x="836.4" y="310.0" font-size="12.5" fill="#212529" font-weight="700" text-anchor="end">13.40×</text>
+<text x="836.4" y="326.0" font-size="11" fill="#495057" text-anchor="end">2026-11-17</text>
+<text x="80.0" y="388.0" font-size="12.5" fill="#0b7285" font-weight="700" text-anchor="start">归母净利润（亿元）</text>
+<line x1="80.0" y1="578.0" x2="860.0" y2="578.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="582.0" font-size="11" fill="#868e96" text-anchor="end">0</text>
+<line x1="80.0" y1="542.0" x2="860.0" y2="542.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="546.0" font-size="11" fill="#868e96" text-anchor="end">100</text>
+<line x1="80.0" y1="506.0" x2="860.0" y2="506.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="510.0" font-size="11" fill="#868e96" text-anchor="end">200</text>
+<line x1="80.0" y1="470.0" x2="860.0" y2="470.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="474.0" font-size="11" fill="#868e96" text-anchor="end">300</text>
+<line x1="80.0" y1="434.0" x2="860.0" y2="434.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="438.0" font-size="11" fill="#868e96" text-anchor="end">400</text>
+<line x1="80.0" y1="398.0" x2="860.0" y2="398.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="402.0" font-size="11" fill="#868e96" text-anchor="end">500</text>
+<line x1="80.0" y1="398.0" x2="80.0" y2="578.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="191.4" y1="398.0" x2="191.4" y2="578.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="302.9" y1="398.0" x2="302.9" y2="578.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="414.3" y1="398.0" x2="414.3" y2="578.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="525.7" y1="398.0" x2="525.7" y2="578.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="637.1" y1="398.0" x2="637.1" y2="578.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="748.6" y1="398.0" x2="748.6" y2="578.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<rect x="105.1" y="515.2" width="61.3" height="62.8" rx="3" fill="#0ca678"/>
+<text x="135.7" y="508.2" font-size="11" fill="#495057" text-anchor="middle">174.3</text>
+<rect x="216.5" y="506.0" width="61.3" height="72.0" rx="3" fill="#0ca678"/>
+<text x="247.1" y="499.0" font-size="11" fill="#495057" text-anchor="middle">200.1</text>
+<rect x="327.9" y="505.7" width="61.3" height="72.3" rx="3" fill="#0ca678"/>
+<text x="358.6" y="498.7" font-size="11" fill="#495057" text-anchor="middle">200.7</text>
+<rect x="439.4" y="502.3" width="61.3" height="75.7" rx="3" fill="#0ca678"/>
+<text x="470.0" y="495.3" font-size="11" fill="#495057" text-anchor="middle">210.4</text>
+<rect x="550.8" y="494.4" width="61.3" height="83.6" rx="3" fill="#0ca678"/>
+<text x="581.4" y="487.4" font-size="11" fill="#495057" text-anchor="middle">232.2</text>
+<rect x="662.2" y="451.0" width="61.3" height="127.0" rx="3" fill="#f08c00"/>
+<text x="692.9" y="444.0" font-size="11" fill="#212529" font-weight="700" text-anchor="middle">352.9</text>
+<rect x="773.6" y="432.6" width="61.3" height="145.4" rx="3" fill="#adb5bd"/>
+<text x="804.3" y="425.6" font-size="11" fill="#212529" font-weight="700" text-anchor="middle">403.8</text>
+<text x="135.7" y="598.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="middle">2020</text>
+<text x="247.1" y="598.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="middle">2021</text>
+<text x="358.6" y="598.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="middle">2022</text>
+<text x="470.0" y="598.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="middle">2023</text>
+<text x="581.4" y="598.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="middle">2024</text>
+<text x="692.9" y="598.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="middle">2025</text>
+<text x="804.3" y="598.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="middle">2026 YTD</text>
+<line x1="80.0" y1="620.0" x2="104.0" y2="620.0" stroke="#4c6ef5" stroke-width="2"/>
+<circle cx="92.0" cy="620.0" r="3.5" fill="#4c6ef5"/>
+<text x="112.0" y="624.0" font-size="12" fill="#495057" text-anchor="start">全年平均 PE</text>
+<line x1="205.0" y1="620.0" x2="229.0" y2="620.0" stroke="#adb5bd" stroke-width="2" stroke-dasharray="5 3"/>
+<circle cx="217.0" cy="620.0" r="3.5" fill="#adb5bd"/>
+<text x="237.0" y="624.0" font-size="12" fill="#495057" text-anchor="start">年末 PE</text>
+<rect x="310.1" y="613.0" width="16.0" height="12.0" rx="2" fill="#0ca678" stroke="#0ca678"/>
+<text x="338.1" y="624.0" font-size="12" fill="#495057" text-anchor="start">年度归母净利润</text>
+<rect x="454.1" y="613.0" width="16.0" height="12.0" rx="2" fill="#adb5bd" stroke="#adb5bd"/>
+<text x="482.1" y="624.0" font-size="12" fill="#495057" text-anchor="start">2026 前三季度</text>
+<rect x="30.0" y="650.0" width="840.0" height="74.0" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+<text x="48.0" y="674.0" font-size="12" fill="#495057" text-anchor="start">2022 年利润与 2021 年持平，平均 PE 压到 9.6 倍；2025 年利润增长 52%，平均 PE 升到 28 倍。2026 年前三季度利润已达 403.75 亿元，相当于</text>
+<text x="48.0" y="692.0" font-size="12" fill="#495057" text-anchor="start">2025 全年的 114%，11-18 的 PE 却只剩 14 倍，估值收缩的幅度超过了利润增长。</text>
+<text x="48.0" y="710.0" font-size="12" fill="#495057" text-anchor="start">来源：东方财富估值分析（PE_TTM = 总市值 / 已披露最近四季度归母净利润）与 F10 主要财务指标，2026-11-18 提取。</text>
+</svg>

@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 530" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="530" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">瓶颈怎样迁移：2023—2026</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">每一行是一个阶段性最紧的环节；时间为公开报道的大致区间，半年粒度</text>
+
+  <!-- grid -->
+  <rect x="220" y="72" width="640" height="22" rx="4" fill="#f1f3f5"/>
+  <text x="300" y="87" text-anchor="middle" font-size="12" font-weight="700" fill="#495057">2023</text>
+  <text x="460" y="87" text-anchor="middle" font-size="12" font-weight="700" fill="#495057">2024</text>
+  <text x="620" y="87" text-anchor="middle" font-size="12" font-weight="700" fill="#495057">2025</text>
+  <text x="780" y="87" text-anchor="middle" font-size="12" font-weight="700" fill="#495057">2026</text>
+  <path d="M220 96 L220 438 M380 96 L380 438 M540 96 L540 438 M700 96 L700 438 M860 96 L860 438" stroke="#dee2e6" stroke-width="1"/>
+  <path d="M300 96 L300 438 M460 96 L460 438 M620 96 L620 438 M780 96 L780 438" stroke="#f1f3f5" stroke-width="1" stroke-dasharray="3 3"/>
+
+  <!-- rows -->
+  <text x="30" y="118" font-size="12" fill="#495057"><tspan font-weight="700" fill="#e8590c">L2</tspan>  CoWoS-S 产能 · HBM3</text>
+  <rect x="220" y="103" width="240" height="22" rx="5" fill="#fff5f5" stroke="#fa5252"/>
+  <text x="340" y="118" text-anchor="middle" font-size="11" fill="#c92a2a">H100／H200 交期以季度计</text>
+
+  <text x="30" y="156" font-size="12" fill="#495057"><tspan font-weight="700" fill="#e8590c">L2</tspan>  HBM3E 认证 · 12 层良率</text>
+  <rect x="380" y="141" width="240" height="22" rx="5" fill="#fff9db" stroke="#f08c00"/>
+  <text x="500" y="156" text-anchor="middle" font-size="11" fill="#e8590c">三星认证推迟，海力士份额扩大</text>
+
+  <text x="30" y="194" font-size="12" fill="#495057"><tspan font-weight="700" fill="#e8590c">L2</tspan>  CoWoS-L 良率 · 改版</text>
+  <rect x="440" y="179" width="100" height="22" rx="5" fill="#fff9db" stroke="#f08c00"/>
+  <text x="490" y="194" text-anchor="middle" font-size="11" fill="#e8590c">B200 延期</text>
+
+  <text x="30" y="232" font-size="12" fill="#495057"><tspan font-weight="700" fill="#5f3dc4">L4–5</tspan>  NVL72 背板 · 液冷 · 测试</text>
+  <rect x="500" y="217" width="160" height="22" rx="5" fill="#fff9db" stroke="#f08c00"/>
+  <text x="580" y="232" text-anchor="middle" font-size="11" fill="#e8590c">芯片够了，整柜慢</text>
+
+  <text x="30" y="270" font-size="12" fill="#495057"><tspan font-weight="700" fill="#5f3dc4">L6</tspan>  光模块激光器 · DSP</text>
+  <rect x="540" y="255" width="320" height="22" rx="5" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="700" y="270" text-anchor="middle" font-size="11" fill="#5f3dc4">800G → 1.6T，EML／CW 激光器供不应求</text>
+
+  <text x="30" y="308" font-size="12" fill="#495057"><tspan font-weight="700" fill="#0b7285">L3</tspan>  高端 PCB 产能</text>
+  <rect x="540" y="293" width="240" height="22" rx="5" fill="#fff5f5" stroke="#fa5252"/>
+  <text x="660" y="308" text-anchor="middle" font-size="11" fill="#c92a2a">板厂大规模扩产</text>
+
+  <text x="30" y="346" font-size="12" fill="#495057"><tspan font-weight="700" fill="#3b5bdb">L0</tspan>  T-glass · 玻纤布 · HVLP 铜箔</text>
+  <rect x="620" y="331" width="240" height="22" rx="5" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="740" y="346" text-anchor="middle" font-size="11" fill="#5f3dc4">瓶颈退到原材料</text>
+
+  <text x="30" y="384" font-size="12" fill="#495057"><tspan font-weight="700" fill="#e8590c">L1–2</tspan>  通用 DRAM · NAND</text>
+  <rect x="620" y="369" width="240" height="22" rx="5" fill="#fff5f5" stroke="#fa5252"/>
+  <text x="740" y="384" text-anchor="middle" font-size="11" fill="#c92a2a">HBM 挤占晶圆，全品类涨价</text>
+
+  <text x="30" y="422" font-size="12" fill="#495057"><tspan font-weight="700" fill="#495057">全链</tspan>  Rubin 新物料 · 机房电力</text>
+  <rect x="700" y="407" width="160" height="22" rx="5" fill="#f8f9fa" stroke="#adb5bd" stroke-dasharray="4 3"/>
+  <text x="780" y="422" text-anchor="middle" font-size="11" fill="#495057">HBM4 · M9 · CPO · 800V</text>
+
+  <!-- note -->
+  <rect x="30" y="452" width="840" height="62" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <rect x="48" y="464" width="12" height="12" rx="2" fill="#fff5f5" stroke="#fa5252"/>
+  <text x="66" y="474" font-size="11.5" fill="#495057">产能刚性</text>
+  <rect x="136" y="464" width="12" height="12" rx="2" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="154" y="474" font-size="11.5" fill="#495057">供应集中</text>
+  <rect x="224" y="464" width="12" height="12" rx="2" fill="#fff9db" stroke="#f08c00"/>
+  <text x="242" y="474" font-size="11.5" fill="#495057">良率爬坡</text>
+  <text x="48" y="500" font-size="12" fill="#495057">方向：芯片内部（CoWoS、HBM）→ 整个系统（整柜、光互连）→ 原材料与通用存储。先被重金解决的环节，会暴露出被它掩盖的下一环。</text>
+</svg>

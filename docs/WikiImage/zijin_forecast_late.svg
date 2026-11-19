@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 762" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect x="0" y="0" width="900" height="762" rx="12" fill="#ffffff"/>
+<text x="30.0" y="34.0" font-size="20" fill="#212529" font-weight="700" text-anchor="start">市值见顶后，研报才把 2026 年预测上调到 779 亿元</text>
+<text x="30.0" y="56.0" font-size="13" fill="#868e96" text-anchor="start">上：月末市值（亿元）；下：2026、2027 年归母净利润的历次预测（亿元），横轴为发布日。据东方财富研报中心摘要整理</text>
+<text x="80.0" y="94.0" font-size="12.5" fill="#3b5bdb" font-weight="700" text-anchor="start">市值（亿元）</text>
+<line x1="80.0" y1="254.0" x2="860.0" y2="254.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="258.0" font-size="11" fill="#868e96" text-anchor="end">0</text>
+<line x1="80.0" y1="204.0" x2="860.0" y2="204.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="208.0" font-size="11" fill="#868e96" text-anchor="end">5,000</text>
+<line x1="80.0" y1="154.0" x2="860.0" y2="154.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="158.0" font-size="11" fill="#868e96" text-anchor="end">10,000</text>
+<line x1="80.0" y1="104.0" x2="860.0" y2="104.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="108.0" font-size="11" fill="#868e96" text-anchor="end">15,000</text>
+<line x1="316.4" y1="104.0" x2="316.4" y2="254.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="600.0" y1="104.0" x2="600.0" y2="254.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<path d="M91.8 209.7 L115.5 207.6 L139.1 208.2 L162.7 207.3 L186.4 209.9 L210.0 211.5 L233.6 205.8 L257.3 209.3 L280.9 212.3 L304.5 213.8 L328.2 210.8 L351.8 213.2 L375.5 205.8 L399.1 207.6 L422.7 206.9 L446.4 202.2 L470.0 203.1 L493.6 192.7 L517.3 175.8 L540.9 172.9 L564.5 178.0 L588.2 162.4 L611.8 147.3 L635.5 148.8 L659.1 167.0 L682.7 165.4 L706.4 173.1 L730.0 187.2 L753.6 166.4 L777.3 164.5 L800.9 174.8 L824.5 180.6 L848.2 188.8" fill="none" stroke="#4c6ef5" stroke-width="2" stroke-linejoin="round"/>
+<circle cx="848.2" cy="188.8" r="5" fill="#4c6ef5"/>
+<text x="842.2" y="208.8" font-size="12.5" fill="#212529" font-weight="700" text-anchor="end">6,520</text>
+<line x1="80.0" y1="600.0" x2="860.0" y2="600.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="604.0" font-size="11" fill="#868e96" text-anchor="end">300</text>
+<line x1="80.0" y1="514.3" x2="860.0" y2="514.3" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="518.3" font-size="11" fill="#868e96" text-anchor="end">500</text>
+<line x1="80.0" y1="428.6" x2="860.0" y2="428.6" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="432.6" font-size="11" fill="#868e96" text-anchor="end">700</text>
+<line x1="80.0" y1="342.9" x2="860.0" y2="342.9" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="346.9" font-size="11" fill="#868e96" text-anchor="end">900</text>
+<line x1="316.4" y1="300.0" x2="316.4" y2="600.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="600.0" y1="300.0" x2="600.0" y2="600.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<path d="M98.2 586.3 L261.0 536.1 L396.0 531.0 L504.8 516.9 L543.7 444.4" fill="none" stroke="#0ca678" stroke-width="2" stroke-linejoin="round"/>
+<circle cx="98.2" cy="586.3" r="4.5" fill="#0ca678"/>
+<text x="98.2" y="604.3" font-size="11.5" fill="#495057" text-anchor="middle">332</text>
+<circle cx="261.0" cy="536.1" r="4.5" fill="#0ca678"/>
+<text x="261.0" y="526.1" font-size="11.5" fill="#495057" text-anchor="middle">449</text>
+<circle cx="396.0" cy="531.0" r="4.5" fill="#0ca678"/>
+<text x="396.0" y="549.0" font-size="11.5" fill="#495057" text-anchor="middle">461</text>
+<circle cx="504.8" cy="516.9" r="4.5" fill="#0ca678"/>
+<text x="504.8" y="534.9" font-size="11.5" fill="#495057" text-anchor="middle">494</text>
+<circle cx="543.7" cy="444.4" r="4.5" fill="#0ca678"/>
+<text x="535.7" y="448.4" font-size="11.5" fill="#495057" text-anchor="end">663</text>
+<path d="M381.3 530.1 L545.2 475.7 L664.1 394.7 L838.2 408.4" fill="none" stroke="#4c6ef5" stroke-width="2" stroke-linejoin="round"/>
+<circle cx="381.3" cy="530.1" r="4.5" fill="#4c6ef5"/>
+<text x="381.3" y="520.1" font-size="11.5" fill="#495057" text-anchor="middle">463</text>
+<circle cx="545.2" cy="475.7" r="4.5" fill="#4c6ef5"/>
+<text x="553.2" y="491.7" font-size="11.5" fill="#495057" text-anchor="start">590</text>
+<circle cx="664.1" cy="394.7" r="4.5" fill="#4c6ef5"/>
+<text x="664.1" y="384.7" font-size="11.5" fill="#495057" text-anchor="middle">779</text>
+<circle cx="838.2" cy="408.4" r="4.5" fill="#4c6ef5"/>
+<text x="832.2" y="426.4" font-size="11.5" fill="#495057" text-anchor="end">747</text>
+<path d="M381.3 492.4 L545.2 432.9 L664.1 319.7 L838.2 336.0" fill="none" stroke="#f08c00" stroke-width="2" stroke-linejoin="round"/>
+<circle cx="381.3" cy="492.4" r="4.5" fill="#f08c00"/>
+<text x="381.3" y="482.4" font-size="11.5" fill="#495057" text-anchor="middle">551</text>
+<circle cx="545.2" cy="432.9" r="4.5" fill="#f08c00"/>
+<text x="545.2" y="420.9" font-size="11.5" fill="#495057" text-anchor="middle">690</text>
+<circle cx="664.1" cy="319.7" r="4.5" fill="#f08c00"/>
+<text x="664.1" y="309.7" font-size="11.5" fill="#495057" text-anchor="middle">954</text>
+<circle cx="838.2" cy="336.0" r="4.5" fill="#f08c00"/>
+<text x="832.2" y="326.0" font-size="11.5" fill="#495057" text-anchor="end">916</text>
+<line x1="622.1" y1="104.0" x2="622.1" y2="600.0" stroke="#c92a2a" stroke-width="1.5" stroke-dasharray="5 4"/>
+<text x="617.1" y="118.0" font-size="12" fill="#c92a2a" font-weight="700" text-anchor="end">2026-01-29 市值顶部 11,553 亿</text>
+<line x1="830.4" y1="104.0" x2="830.4" y2="600.0" stroke="#495057" stroke-width="1.5" stroke-dasharray="5 4"/>
+<text x="825.4" y="134.0" font-size="12" fill="#495057" font-weight="700" text-anchor="end">三季报</text>
+<text x="320.4" y="620.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="start">2025</text>
+<text x="604.0" y="620.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="start">2026</text>
+<line x1="80.0" y1="642.0" x2="104.0" y2="642.0" stroke="#0ca678" stroke-width="2"/>
+<circle cx="92.0" cy="642.0" r="3.5" fill="#0ca678"/>
+<text x="112.0" y="646.0" font-size="12" fill="#495057" text-anchor="start">2026E 民生证券</text>
+<line x1="225.2" y1="642.0" x2="249.2" y2="642.0" stroke="#4c6ef5" stroke-width="2"/>
+<circle cx="237.2" cy="642.0" r="3.5" fill="#4c6ef5"/>
+<text x="257.2" y="646.0" font-size="12" fill="#495057" text-anchor="start">2026E 东吴证券</text>
+<line x1="370.4" y1="642.0" x2="394.4" y2="642.0" stroke="#f08c00" stroke-width="2"/>
+<circle cx="382.4" cy="642.0" r="3.5" fill="#f08c00"/>
+<text x="402.4" y="646.0" font-size="12" fill="#495057" text-anchor="start">2027E 东吴证券</text>
+<rect x="30.0" y="672.0" width="840.0" height="74.0" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+<text x="48.0" y="696.0" font-size="12" fill="#495057" text-anchor="start">2026-01-29 市值见顶时，可见的 2026 年预测是 590—663 亿元，对应约 17—20 倍前瞻 PE；三季报后 2026 年预测仍有 747—797 亿元（东吴、华</text>
+<text x="48.0" y="714.0" font-size="12" fill="#495057" text-anchor="start">龙、太平洋、华鑫四家），11-18 的市值只对应约 8.2—8.7 倍。</text>
+<text x="48.0" y="732.0" font-size="12" fill="#495057" text-anchor="start">来源：东方财富研报中心民生证券、东吴证券报告摘要；市值取自东方财富估值分析。2026 年实际值尚未披露。</text>
+</svg>

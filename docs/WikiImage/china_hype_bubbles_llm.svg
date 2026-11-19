@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 566" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect x="0" y="0" width="900" height="566" rx="12" fill="#ffffff"/>
+<text x="30.0" y="34.0" font-size="20" fill="#212529" font-weight="700" text-anchor="start">上市后估值一路下行，一级市场还在加价</text>
+<text x="30.0" y="56.0" font-size="13" fill="#868e96" text-anchor="start">智谱、MiniMax 为周末收盘市值，月之暗面为媒体报道的各轮融资估值（投前投后口径不一，非交易价格）。亿美元，港元按 7.8 折算</text>
+<text x="80.0" y="94.0" font-size="12.5" fill="#3b5bdb" font-weight="700" text-anchor="start">市值 / 估值（亿美元）</text>
+<line x1="80.0" y1="404.0" x2="860.0" y2="404.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="408.0" font-size="11" fill="#868e96" text-anchor="end">0</text>
+<line x1="80.0" y1="344.0" x2="860.0" y2="344.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="348.0" font-size="11" fill="#868e96" text-anchor="end">300</text>
+<line x1="80.0" y1="284.0" x2="860.0" y2="284.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="288.0" font-size="11" fill="#868e96" text-anchor="end">600</text>
+<line x1="80.0" y1="224.0" x2="860.0" y2="224.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="228.0" font-size="11" fill="#868e96" text-anchor="end">900</text>
+<line x1="80.0" y1="164.0" x2="860.0" y2="164.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="168.0" font-size="11" fill="#868e96" text-anchor="end">1,200</text>
+<line x1="80.0" y1="104.0" x2="860.0" y2="104.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="108.0" font-size="11" fill="#868e96" text-anchor="end">1,500</text>
+<line x1="145.0" y1="104.0" x2="145.0" y2="404.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="275.0" y1="104.0" x2="275.0" y2="404.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="405.0" y1="104.0" x2="405.0" y2="404.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="535.0" y1="104.0" x2="535.0" y2="404.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="665.0" y1="104.0" x2="665.0" y2="404.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="795.0" y1="104.0" x2="795.0" y2="404.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<path d="M161.0 389.2 L163.2 386.0 L178.1 375.8 L193.1 382.4 L208.0 378.4 L223.0 381.0 L238.0 348.6 L252.9 321.2 L267.9 338.2 L282.8 343.2 L297.8 343.4 L312.8 332.0 L327.7 327.6 L340.5 315.0 L357.6 297.0 L372.6 302.2 L387.5 297.2 L400.4 304.8 L417.5 298.4 L432.4 285.2 L447.4 257.4 L462.3 221.6 L477.3 255.8 L492.3 278.6 L505.1 164.6 L513.6 128.4 L522.2 170.2 L537.1 199.0 L552.1 216.6 L567.1 271.8 L582.0 256.4 L597.0 286.2 L611.9 255.2 L626.9 252.4 L641.8 269.2 L656.8 273.8 L671.8 275.6 L686.7 309.4 L701.7 306.4 L716.6 324.8 L731.6 325.6 L746.6 323.8 L761.5 339.2 L776.5 341.6 L791.4 343.6 L806.4 350.8 L821.4 353.0 L832.0 358.0" fill="none" stroke="#4c6ef5" stroke-width="2.2" stroke-linejoin="round"/>
+<path d="M163.2 376.6 L178.1 368.8 L193.1 373.8 L208.0 366.0 L223.0 367.0 L238.0 349.4 L252.9 326.0 L267.9 342.6 L282.8 339.2 L297.8 322.8 L308.5 304.4 L312.8 322.8 L327.7 324.4 L340.5 327.6 L357.6 323.8 L372.6 335.0 L387.5 341.4 L400.4 346.6 L417.5 344.2 L432.4 340.2 L447.4 342.2 L462.3 336.4 L477.3 359.6 L492.3 372.2 L505.1 364.0 L522.2 369.6 L537.1 376.2 L552.1 382.4 L567.1 384.6 L582.0 386.4 L597.0 383.4 L611.9 374.8 L626.9 374.6 L641.8 373.0 L656.8 377.0 L671.8 371.4 L686.7 379.6 L701.7 376.6 L716.6 379.2 L731.6 382.0 L746.6 384.8 L761.5 387.6 L776.5 387.0 L791.4 389.4 L806.4 390.0 L821.4 390.2 L832.0 393.0" fill="none" stroke="#0ca678" stroke-width="1.8" stroke-linejoin="round"/>
+<path d="M109.7 395.4 L176.0 384.0 L242.2 368.0 L432.4 364.0 L498.7 341.0 L592.7 334.0 L740.2 304.0" fill="none" stroke="#7048e8" stroke-width="2" stroke-linejoin="round" stroke-dasharray="5 4"/>
+<circle cx="109.7" cy="395.4" r="3" fill="#7048e8"/>
+<circle cx="176.0" cy="384.0" r="3" fill="#7048e8"/>
+<circle cx="242.2" cy="368.0" r="3" fill="#7048e8"/>
+<circle cx="432.4" cy="364.0" r="3" fill="#7048e8"/>
+<circle cx="498.7" cy="341.0" r="3" fill="#7048e8"/>
+<circle cx="592.7" cy="334.0" r="3" fill="#7048e8"/>
+<circle cx="740.2" cy="304.0" r="3" fill="#7048e8"/>
+<circle cx="513.6" cy="128.4" r="5" fill="#4c6ef5"/>
+<text x="523.6" y="134.4" font-size="12.5" fill="#212529" font-weight="700" text-anchor="start">1,378（06-22）</text>
+<circle cx="308.5" cy="304.4" r="5" fill="#0ca678"/>
+<text x="298.5" y="298.4" font-size="12.5" fill="#212529" font-weight="700" text-anchor="end">MiniMax 498（03-18）</text>
+<circle cx="832.0" cy="358.0" r="5" fill="#4c6ef5"/>
+<text x="838.0" y="350.0" font-size="12.5" fill="#212529" font-weight="700" text-anchor="start">230</text>
+<circle cx="832.0" cy="393.0" r="5" fill="#0ca678"/>
+<text x="838.0" y="399.0" font-size="12.5" fill="#212529" font-weight="700" text-anchor="start">55</text>
+<circle cx="740.2" cy="304.0" r="5" fill="#7048e8"/>
+<text x="750.2" y="320.0" font-size="12.5" fill="#212529" font-weight="700" text-anchor="start">约 500（pre-IPO 轮）</text>
+<line x1="252.9" y1="104.0" x2="252.9" y2="404.0" stroke="#e8590c" stroke-width="1.5" stroke-dasharray="5 4"/>
+<text x="257.9" y="118.0" font-size="12" fill="#e8590c" font-weight="700" text-anchor="start">春节后首日 +42.7%</text>
+<line x1="513.6" y1="104.0" x2="513.6" y2="404.0" stroke="#c92a2a" stroke-width="1.5" stroke-dasharray="5 4"/>
+<text x="508.6" y="174.0" font-size="12" fill="#c92a2a" font-weight="700" text-anchor="end">智谱见顶</text>
+<line x1="567.1" y1="104.0" x2="567.1" y2="404.0" stroke="#e8590c" stroke-width="1.5" stroke-dasharray="5 4"/>
+<text x="572.1" y="150.0" font-size="12" fill="#e8590c" font-weight="700" text-anchor="start">Kimi K3 发布</text>
+<line x1="697.4" y1="104.0" x2="697.4" y2="404.0" stroke="#e8590c" stroke-width="1.5" stroke-dasharray="5 4"/>
+<text x="702.4" y="166.0" font-size="12" fill="#e8590c" font-weight="700" text-anchor="start">智谱 714 港元配售</text>
+<text x="149.0" y="424.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="start">1月</text>
+<text x="279.0" y="424.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="start">3月</text>
+<text x="409.0" y="424.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="start">5月</text>
+<text x="539.0" y="424.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="start">7月</text>
+<text x="669.0" y="424.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="start">9月</text>
+<text x="799.0" y="424.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="start">11月</text>
+<line x1="80.0" y1="446.0" x2="104.0" y2="446.0" stroke="#4c6ef5" stroke-width="2"/>
+<circle cx="92.0" cy="446.0" r="3.5" fill="#4c6ef5"/>
+<text x="112.0" y="450.0" font-size="12" fill="#495057" text-anchor="start">智谱 02513.HK</text>
+<line x1="221.4" y1="446.0" x2="245.4" y2="446.0" stroke="#0ca678" stroke-width="2"/>
+<circle cx="233.4" cy="446.0" r="3.5" fill="#0ca678"/>
+<text x="253.4" y="450.0" font-size="12" fill="#495057" text-anchor="start">MiniMax 00100.HK</text>
+<line x1="385.8" y1="446.0" x2="409.8" y2="446.0" stroke="#7048e8" stroke-width="2" stroke-dasharray="5 3"/>
+<circle cx="397.8" cy="446.0" r="3.5" fill="#7048e8"/>
+<text x="417.8" y="450.0" font-size="12" fill="#495057" text-anchor="start">月之暗面融资估值</text>
+<rect x="30.0" y="476.0" width="840.0" height="74.0" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+<text x="48.0" y="500.0" font-size="12" fill="#495057" text-anchor="start">智谱从 06-22 高点到 11-18 跌 83%，同期月之暗面的私募估值从 315 亿美元（6 月 E 轮）升到约 500 亿美元（10 月，彭博报道）。一级市场估值没</text>
+<text x="48.0" y="518.0" font-size="12" fill="#495057" text-anchor="start">有经过二级市场的连续定价。</text>
+<text x="48.0" y="536.0" font-size="12" fill="#495057" text-anchor="start">来源：腾讯证券港股日 K、东方财富 F10 股本变动；月之暗面估值据 TechCrunch、彭博、科创板日报等报道，未经公司确认。</text>
+</svg>

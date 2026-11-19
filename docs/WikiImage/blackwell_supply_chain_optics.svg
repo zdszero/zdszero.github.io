@@ -1,0 +1,127 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 580" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="580" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">一只 1.6T 光模块里有什么</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">8 路 × 200G；电信号进、光信号出。模块厂负责组装，最贵、最紧的芯片来自上游</text>
+
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#868e96"/></marker>
+  </defs>
+
+  <!-- module shell -->
+  <rect x="40" y="80" width="820" height="180" rx="12" fill="#f8f9fa" stroke="#adb5bd" stroke-width="1.5"/>
+  <text x="60" y="100" font-size="11" fill="#868e96">⑤ 模块外壳与 PCB：COB 贴装、光路耦合、老化测试</text>
+  <rect x="40" y="128" width="26" height="92" rx="3" fill="#fff9db" stroke="#f08c00"/>
+  <text x="53" y="245" text-anchor="middle" font-size="10" fill="#e8590c">金手指</text>
+
+  <!-- DSP -->
+  <rect x="88" y="112" width="120" height="124" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="148" y="164" text-anchor="middle" font-size="14" font-weight="700" fill="#3b5bdb">DSP</text>
+  <text x="148" y="183" text-anchor="middle" font-size="11" fill="#868e96">PAM4 调制</text>
+  <text x="148" y="199" text-anchor="middle" font-size="11" fill="#868e96">信号整形 · 重定时</text>
+
+  <!-- TX row -->
+  <rect x="236" y="112" width="96" height="50" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="284" y="134" text-anchor="middle" font-size="12.5" font-weight="700" fill="#3b5bdb">Driver</text>
+  <text x="284" y="151" text-anchor="middle" font-size="10.5" fill="#868e96">驱动激光器</text>
+  <rect x="360" y="112" width="120" height="50" rx="8" fill="#fff5f5" stroke="#fa5252"/>
+  <text x="420" y="134" text-anchor="middle" font-size="12.5" font-weight="700" fill="#c92a2a">激光器</text>
+  <text x="420" y="151" text-anchor="middle" font-size="10.5" fill="#868e96">EML 或 CW 光源</text>
+  <!-- RX row -->
+  <rect x="236" y="186" width="96" height="50" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="284" y="208" text-anchor="middle" font-size="12.5" font-weight="700" fill="#3b5bdb">TIA</text>
+  <text x="284" y="225" text-anchor="middle" font-size="10.5" fill="#868e96">放大光电流</text>
+  <rect x="360" y="186" width="120" height="50" rx="8" fill="#fff5f5" stroke="#fa5252"/>
+  <text x="420" y="208" text-anchor="middle" font-size="12.5" font-weight="700" fill="#c92a2a">光电探测器 PD</text>
+  <text x="420" y="225" text-anchor="middle" font-size="10.5" fill="#868e96">光 → 电</text>
+
+  <!-- silicon photonics (optional) -->
+  <rect x="508" y="112" width="130" height="124" rx="8" fill="#fff9db" stroke="#f08c00" stroke-dasharray="5 3"/>
+  <text x="573" y="160" text-anchor="middle" font-size="12.5" font-weight="700" fill="#e8590c">硅光芯片</text>
+  <text x="573" y="178" text-anchor="middle" font-size="10.5" fill="#868e96">调制器 · 波导</text>
+  <text x="573" y="195" text-anchor="middle" font-size="10.5" fill="#868e96">仅硅光方案需要</text>
+
+  <!-- passives -->
+  <rect x="666" y="112" width="96" height="124" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="714" y="160" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0b7285">透镜 · FAU</text>
+  <text x="714" y="178" text-anchor="middle" font-size="10.5" fill="#868e96">把光耦合</text>
+  <text x="714" y="195" text-anchor="middle" font-size="10.5" fill="#868e96">进光纤</text>
+  <rect x="784" y="112" width="62" height="124" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="815" y="170" text-anchor="middle" font-size="12" font-weight="700" fill="#0b7285">MPO</text>
+  <text x="815" y="187" text-anchor="middle" font-size="10.5" fill="#868e96">接光纤</text>
+
+  <!-- signal arrows -->
+  <path d="M66 174 L86 174" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <path d="M208 137 L234 137" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <path d="M332 137 L358 137" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <path d="M480 137 L506 137" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <path d="M638 137 L664 137" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <path d="M762 137 L782 137" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <path d="M782 211 L764 211" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <path d="M664 211 L640 211" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <path d="M506 211 L482 211" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <path d="M358 211 L334 211" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <path d="M234 211 L210 211" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <text x="450" y="254" text-anchor="middle" font-size="10.5" fill="#868e96">上行：发射（电 → 光）　下行：接收（光 → 电）　EML 方案中激光器自带调制，光直接进透镜</text>
+  <!-- supplier boxes -->
+  <rect x="40" y="284" width="156" height="212" rx="9" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="40" y="284" width="156" height="28" rx="9" fill="#4c6ef5"/>
+  <text x="118" y="303" text-anchor="middle" font-size="12.5" font-weight="700" fill="#ffffff">① 电芯片</text>
+  <text x="52" y="332" font-size="11" fill="#868e96">DSP · Driver · TIA</text>
+  <text x="52" y="352" font-size="11" fill="#495057">美 Marvell · Broadcom</text>
+  <text x="52" y="370" font-size="11" fill="#495057">美 MACOM · Semtech</text>
+  <rect x="52" y="458" width="132" height="26" rx="6" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="118" y="475" text-anchor="middle" font-size="11" font-weight="700" fill="#5f3dc4">供应集中：两三家</text>
+
+  <rect x="206" y="284" width="156" height="212" rx="9" fill="#fff5f5" stroke="#fa5252"/>
+  <rect x="206" y="284" width="156" height="28" rx="9" fill="#fa5252"/>
+  <text x="284" y="303" text-anchor="middle" font-size="12.5" font-weight="700" fill="#ffffff">② 光芯片</text>
+  <text x="218" y="332" font-size="11" fill="#868e96">EML · CW · PD · VCSEL</text>
+  <text x="218" y="352" font-size="11" fill="#495057">美 Lumentum · Coherent</text>
+  <text x="218" y="370" font-size="11" fill="#495057">美 Broadcom</text>
+  <text x="218" y="388" font-size="11" fill="#495057">日 三菱电机 · 住友电工</text>
+  <text x="218" y="406" font-size="11" fill="#495057">中 源杰 · 光迅 · 长光华芯</text>
+  <text x="218" y="424" font-size="11" fill="#495057">台 联亚 · 全新（外延）</text>
+  <text x="218" y="442" font-size="11" fill="#495057">衬底 住友 · AXT · JX</text>
+  <rect x="218" y="458" width="132" height="26" rx="6" fill="#fff5f5" stroke="#c92a2a"/>
+  <text x="284" y="475" text-anchor="middle" font-size="11" font-weight="700" fill="#c92a2a">最紧：200G 激光器</text>
+
+  <rect x="372" y="284" width="156" height="212" rx="9" fill="#fff9db" stroke="#f08c00"/>
+  <rect x="372" y="284" width="156" height="28" rx="9" fill="#f08c00"/>
+  <text x="450" y="303" text-anchor="middle" font-size="12.5" font-weight="700" fill="#ffffff">③ 硅光芯片</text>
+  <text x="384" y="332" font-size="11" fill="#868e96">代工 · 设计</text>
+  <text x="384" y="352" font-size="11" fill="#495057">台 台积电</text>
+  <text x="384" y="370" font-size="11" fill="#495057">以 Tower</text>
+  <text x="384" y="388" font-size="11" fill="#495057">美 GlobalFoundries</text>
+  <text x="384" y="406" font-size="11" fill="#495057">美 Intel</text>
+  <text x="384" y="424" font-size="11" fill="#495057">设计：模块厂 · 芯片厂</text>
+  <rect x="384" y="458" width="132" height="26" rx="6" fill="#fff4e6" stroke="#e8590c"/>
+  <text x="450" y="475" text-anchor="middle" font-size="11" font-weight="700" fill="#e8590c">减少对 EML 依赖</text>
+
+  <rect x="538" y="284" width="156" height="212" rx="9" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="538" y="284" width="156" height="28" rx="9" fill="#0ca678"/>
+  <text x="616" y="303" text-anchor="middle" font-size="12.5" font-weight="700" fill="#ffffff">④ 无源器件</text>
+  <text x="550" y="332" font-size="11" fill="#868e96">透镜 · FAU · MPO · 光纤</text>
+  <text x="550" y="352" font-size="11" fill="#495057">中 天孚 · 太辰光</text>
+  <text x="550" y="370" font-size="11" fill="#495057">中 仕佳 · 腾景 · 光库</text>
+  <text x="550" y="388" font-size="11" fill="#495057">日 藤仓 · 精工技研</text>
+  <text x="550" y="406" font-size="11" fill="#495057">台 上诠 · 光圣</text>
+  <text x="550" y="424" font-size="11" fill="#495057">美 康宁（光纤）</text>
+  <rect x="550" y="458" width="132" height="26" rx="6" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="616" y="475" text-anchor="middle" font-size="11" font-weight="700" fill="#495057">基本不卡</text>
+
+  <rect x="704" y="284" width="156" height="212" rx="9" fill="#f8f9fa" stroke="#868e96"/>
+  <rect x="704" y="284" width="156" height="28" rx="9" fill="#868e96"/>
+  <text x="782" y="303" text-anchor="middle" font-size="12.5" font-weight="700" fill="#ffffff">⑤ 封装测试 · 整模块</text>
+  <text x="716" y="332" font-size="11" fill="#868e96">COB · 耦合 · 老化</text>
+  <text x="716" y="352" font-size="11" fill="#495057">中 中际旭创 · 新易盛</text>
+  <text x="716" y="370" font-size="11" fill="#495057">中 光迅 · 华工 · 剑桥</text>
+  <text x="716" y="388" font-size="11" fill="#495057">泰 Fabrinet（代工）</text>
+  <text x="716" y="406" font-size="11" fill="#495057">美 Coherent</text>
+  <rect x="716" y="458" width="132" height="26" rx="6" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="782" y="475" text-anchor="middle" font-size="11" font-weight="700" fill="#495057">扩产快：几个月</text>
+
+  <!-- note -->
+  <rect x="40" y="512" width="820" height="50" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="56" y="533" font-size="12" fill="#495057">模块厂的出货上限通常由 ② 激光器和 ① DSP 决定，而不是自己的组装线；</text>
+  <text x="56" y="551" font-size="12" fill="#495057">LPO 去掉 DSP，CPO 把光引擎直接封装到交换芯片旁边，两者都会改变价值在这五个环节之间的分配。</text>
+</svg>

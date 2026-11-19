@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 702" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect x="0" y="0" width="900" height="702" rx="12" fill="#ffffff"/>
+<text x="30.0" y="34.0" font-size="20" fill="#212529" font-weight="700" text-anchor="start">第一次高点前后：先为增长付 50 倍，再为监管把 PE 打到 16 倍</text>
+<text x="30.0" y="56.0" font-size="13" fill="#868e96" text-anchor="start">机构：F10 目标价中位数（前 90 天各家最新值）；散户：hk00700 吧当日高点击标题（样本）；预期差为事后检验</text>
+<line x1="132" y1="116" x2="132" y2="480" stroke="#dee2e6" stroke-width="2"/>
+<text x="118.0" y="86.0" font-size="12.5" fill="#212529" font-weight="700" text-anchor="end">时间</text>
+<text x="160.0" y="86.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="start">事件 / 外部条件</text>
+<text x="366.0" y="86.0" font-size="12.5" fill="#3b5bdb" font-weight="700" text-anchor="start">机构研报</text>
+<text x="562.0" y="86.0" font-size="12.5" fill="#5f3dc4" font-weight="700" text-anchor="start">散户与媒体</text>
+<text x="738.0" y="86.0" font-size="12.5" fill="#e8590c" font-weight="700" text-anchor="start">预期差</text>
+<text x="118.0" y="120.0" font-size="12" fill="#212529" font-weight="700" text-anchor="end">2020-03-19</text>
+<text x="118.0" y="136.0" font-size="11" fill="#868e96" text-anchor="end">低点 343.0</text>
+<circle cx="132.0" cy="116.0" r="5" fill="#fa5252"/>
+<rect x="150.0" y="100.0" width="200.0" height="66.0" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+<text x="160.0" y="120.0" font-size="11.5" fill="#495057" text-anchor="start">PE 31.5×；2019 年利润 943 亿元</text>
+<text x="160.0" y="136.0" font-size="11.5" fill="#495057" text-anchor="start">+22%，次日涨 2.7%</text>
+<rect x="356.0" y="100.0" width="190.0" height="66.0" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+<text x="366.0" y="120.0" font-size="11.5" fill="#495057" text-anchor="start">目标价中位数 443（9 家），隐</text>
+<text x="366.0" y="136.0" font-size="11.5" fill="#495057" text-anchor="start">含 PE 40.7×</text>
+<rect x="552.0" y="100.0" width="170.0" height="66.0" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+<text x="562.0" y="120.0" font-size="11.5" fill="#495057" text-anchor="start">“日赚2.63亿！腾讯控股股</text>
+<text x="562.0" y="136.0" font-size="11.5" fill="#495057" text-anchor="start">价却创年内新低”</text>
+<rect x="728.0" y="100.0" width="132.0" height="66.0" rx="8" fill="#fff5f5" stroke="#fa5252"/>
+<text x="738.0" y="120.0" font-size="11.5" fill="#c92a2a" font-weight="700" text-anchor="start">低估：2020 年利润</text>
+<text x="738.0" y="136.0" font-size="11.5" fill="#c92a2a" text-anchor="start">+30%，10 个月后股价</text>
+<text x="738.0" y="152.0" font-size="11.5" fill="#c92a2a" text-anchor="start">涨 1.2 倍</text>
+<text x="118.0" y="196.0" font-size="12" fill="#212529" font-weight="700" text-anchor="end">2021-01-25</text>
+<text x="118.0" y="212.0" font-size="11" fill="#868e96" text-anchor="end">高点 766.5</text>
+<circle cx="132.0" cy="192.0" r="5" fill="#0ca678"/>
+<rect x="150.0" y="176.0" width="200.0" height="66.0" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+<text x="160.0" y="196.0" font-size="11.5" fill="#495057" text-anchor="start">PE 53.5×；单日 +10.9%，市值</text>
+<text x="160.0" y="212.0" font-size="11.5" fill="#495057" text-anchor="start">7.35 万亿港元</text>
+<rect x="356.0" y="176.0" width="190.0" height="66.0" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+<text x="366.0" y="196.0" font-size="11.5" fill="#495057" text-anchor="start">目标价中位数 690，股价已高出</text>
+<text x="366.0" y="212.0" font-size="11.5" fill="#495057" text-anchor="start">11%；03 月仍上调到 785</text>
+<rect x="552.0" y="176.0" width="170.0" height="66.0" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+<text x="562.0" y="196.0" font-size="11.5" fill="#495057" text-anchor="start">“感觉要上十万亿市值啊”；</text>
+<text x="562.0" y="212.0" font-size="11.5" fill="#495057" text-anchor="start">“20天暴涨48%！”</text>
+<rect x="728.0" y="176.0" width="132.0" height="66.0" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+<text x="738.0" y="196.0" font-size="11.5" fill="#0b7285" font-weight="700" text-anchor="start">高估：2021Q4 利润同</text>
+<text x="738.0" y="212.0" font-size="11.5" fill="#0b7285" text-anchor="start">比 −25%，21 个月后</text>
+<text x="738.0" y="228.0" font-size="11.5" fill="#0b7285" text-anchor="start">PE 只剩 16×</text>
+<text x="118.0" y="272.0" font-size="12" fill="#212529" font-weight="700" text-anchor="end">2021-07-27</text>
+<text x="118.0" y="288.0" font-size="11" fill="#868e96" text-anchor="end">两天跌 16%</text>
+<circle cx="132.0" cy="268.0" r="5" fill="#f08c00"/>
+<rect x="150.0" y="252.0" width="200.0" height="50.0" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+<text x="160.0" y="272.0" font-size="11.5" fill="#495057" text-anchor="start">教培新规后港股互联网大跌；</text>
+<text x="160.0" y="288.0" font-size="11.5" fill="#495057" text-anchor="start">08-03 游戏股因央媒文章再跌</text>
+<rect x="356.0" y="252.0" width="190.0" height="50.0" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+<text x="366.0" y="272.0" font-size="11.5" fill="#495057" text-anchor="start">目标价中位数 779 未动，08 月降</text>
+<text x="366.0" y="288.0" font-size="11.5" fill="#495057" text-anchor="start">到 640</text>
+<rect x="552.0" y="252.0" width="170.0" height="50.0" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+<text x="562.0" y="272.0" font-size="11.5" fill="#495057" text-anchor="start">“你又不是教育股”；“下一</text>
+<text x="562.0" y="288.0" font-size="11.5" fill="#495057" text-anchor="start">步很有可能向游戏产业动刀”</text>
+<rect x="728.0" y="252.0" width="132.0" height="50.0" rx="8" fill="#fff4e6" stroke="#f08c00"/>
+<text x="738.0" y="272.0" font-size="11.5" fill="#e8590c" font-weight="700" text-anchor="start">关注点切换：从利润</text>
+<text x="738.0" y="288.0" font-size="11.5" fill="#e8590c" text-anchor="start">增速转向监管风险</text>
+<text x="118.0" y="332.0" font-size="12" fill="#212529" font-weight="700" text-anchor="end">2022-03-15</text>
+<text x="118.0" y="348.0" font-size="11" fill="#868e96" text-anchor="end">−10.2%</text>
+<circle cx="132.0" cy="328.0" r="5" fill="#0ca678"/>
+<rect x="150.0" y="312.0" width="200.0" height="66.0" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+<text x="160.0" y="332.0" font-size="11.5" fill="#495057" text-anchor="start">中概股退市担忧；03-16 国务院会</text>
+<text x="160.0" y="348.0" font-size="11.5" fill="#495057" text-anchor="start">议后单日 +23.2%</text>
+<rect x="356.0" y="312.0" width="190.0" height="66.0" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+<text x="366.0" y="332.0" font-size="11.5" fill="#495057" text-anchor="start">标题称摩根大通降至“减持”、</text>
+<text x="366.0" y="348.0" font-size="11.5" fill="#495057" text-anchor="start">目标 265；中位数 590</text>
+<rect x="552.0" y="312.0" width="170.0" height="66.0" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+<text x="562.0" y="332.0" font-size="11.5" fill="#495057" text-anchor="start">“港股股灾真来了吗？”；次</text>
+<text x="562.0" y="348.0" font-size="11.5" fill="#495057" text-anchor="start">日“别人恐惧我贪婪”</text>
+<rect x="728.0" y="312.0" width="132.0" height="66.0" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+<text x="738.0" y="332.0" font-size="11.5" fill="#0b7285" font-weight="700" text-anchor="start">高估：之后两季利润</text>
+<text x="738.0" y="348.0" font-size="11.5" fill="#0b7285" text-anchor="start">−25%、−23%，10</text>
+<text x="738.0" y="364.0" font-size="11.5" fill="#0b7285" text-anchor="start">月再跌 33%</text>
+<text x="118.0" y="408.0" font-size="12" fill="#212529" font-weight="700" text-anchor="end">2022-10-28</text>
+<text x="118.0" y="424.0" font-size="11" fill="#868e96" text-anchor="end">低点 200.8</text>
+<circle cx="132.0" cy="404.0" r="5" fill="#fa5252"/>
+<rect x="150.0" y="388.0" width="200.0" height="66.0" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+<text x="160.0" y="408.0" font-size="11.5" fill="#495057" text-anchor="start">PE 16.0×；10-24 单日 −11.4%；</text>
+<text x="160.0" y="424.0" font-size="11.5" fill="#495057" text-anchor="start">TTM 利润低于高点时</text>
+<rect x="356.0" y="388.0" width="190.0" height="66.0" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+<text x="366.0" y="408.0" font-size="11.5" fill="#495057" text-anchor="start">目标价中位数 420，隐含 PE</text>
+<text x="366.0" y="424.0" font-size="11.5" fill="#495057" text-anchor="start">33×，股价只有其 48%</text>
+<rect x="552.0" y="388.0" width="170.0" height="66.0" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+<text x="562.0" y="408.0" font-size="11.5" fill="#495057" text-anchor="start">“腾讯没有底，别想抄底了”；</text>
+<text x="562.0" y="424.0" font-size="11.5" fill="#495057" text-anchor="start">“700买的，这辈子还能解套</text>
+<text x="562.0" y="440.0" font-size="11.5" fill="#495057" text-anchor="start">吗”</text>
+<rect x="728.0" y="388.0" width="132.0" height="66.0" rx="8" fill="#fff5f5" stroke="#fa5252"/>
+<text x="738.0" y="408.0" font-size="11.5" fill="#c92a2a" font-weight="700" text-anchor="start">低估：2023 年利润</text>
+<text x="738.0" y="424.0" font-size="11.5" fill="#c92a2a" text-anchor="start">+36%，3 个月后股价</text>
+<text x="738.0" y="440.0" font-size="11.5" fill="#c92a2a" text-anchor="start">翻倍</text>
+<text x="118.0" y="484.0" font-size="12" fill="#212529" font-weight="700" text-anchor="end">2023-01-27</text>
+<text x="118.0" y="500.0" font-size="11" fill="#868e96" text-anchor="end">反弹高点 415</text>
+<circle cx="132.0" cy="480.0" r="5" fill="#f08c00"/>
+<rect x="150.0" y="464.0" width="200.0" height="82.0" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+<text x="160.0" y="484.0" font-size="11.5" fill="#495057" text-anchor="start">PE 31.0×；3 个月 +107%，TTM 利</text>
+<text x="160.0" y="500.0" font-size="11.5" fill="#495057" text-anchor="start">润几乎未变</text>
+<rect x="356.0" y="464.0" width="190.0" height="82.0" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+<text x="366.0" y="484.0" font-size="11.5" fill="#495057" text-anchor="start">目标价中位数 405，股价已高出</text>
+<text x="366.0" y="500.0" font-size="11.5" fill="#495057" text-anchor="start">2%</text>
+<rect x="552.0" y="464.0" width="170.0" height="82.0" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+<text x="562.0" y="484.0" font-size="11.5" fill="#495057" text-anchor="start">“重返800大概率”；“只要</text>
+<text x="562.0" y="500.0" font-size="11.5" fill="#495057" text-anchor="start">大股东一直减持，腾讯永远起</text>
+<text x="562.0" y="516.0" font-size="11.5" fill="#495057" text-anchor="start">不来”</text>
+<rect x="728.0" y="464.0" width="132.0" height="82.0" rx="8" fill="#fff4e6" stroke="#f08c00"/>
+<text x="738.0" y="484.0" font-size="11.5" fill="#e8590c" font-weight="700" text-anchor="start">关注点切换：利润</text>
+<text x="738.0" y="500.0" font-size="11.5" fill="#e8590c" text-anchor="start">+36%，PE 却降到</text>
+<text x="738.0" y="516.0" font-size="11.5" fill="#e8590c" text-anchor="start">16×，股价一年跌</text>
+<text x="738.0" y="532.0" font-size="11.5" fill="#e8590c" text-anchor="start">37%</text>
+<rect x="84.0" y="557.0" width="16.0" height="12.0" rx="2" fill="#fff5f5" stroke="#fa5252"/>
+<text x="112.0" y="568.0" font-size="12" fill="#495057" text-anchor="start">当时低估，后来上修</text>
+<rect x="252.0" y="557.0" width="16.0" height="12.0" rx="2" fill="#e6fcf5" stroke="#0ca678"/>
+<text x="280.0" y="568.0" font-size="12" fill="#495057" text-anchor="start">当时高估，后来下修</text>
+<rect x="420.0" y="557.0" width="16.0" height="12.0" rx="2" fill="#fff4e6" stroke="#f08c00"/>
+<text x="448.0" y="568.0" font-size="12" fill="#495057" text-anchor="start">关注点切换</text>
+<rect x="30.0" y="594.0" width="840.0" height="92.0" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+<text x="48.0" y="618.0" font-size="12" fill="#495057" text-anchor="start">2021-01-25 股价比目标价中位数高 11%，机构两个月后仍把中位数上调到 785；2022-10-28 股价只有中位数的 48%。两个极端都是股价走在目标价</text>
+<text x="48.0" y="636.0" font-size="12" fill="#495057" text-anchor="start">前面，目标价随后跟着修正。</text>
+<text x="48.0" y="654.0" font-size="12" fill="#495057" text-anchor="start">来源：东方财富港股 F10 机构评级、东方财富股吧帖子标题、公司季度业绩公告、腾讯证券港股日 K。“教培新规”“防疫放开”等背景未逐条附原始</text>
+<text x="48.0" y="672.0" font-size="12" fill="#495057" text-anchor="start">政策文件，以帖子标题与公开报道为准。</text>
+</svg>

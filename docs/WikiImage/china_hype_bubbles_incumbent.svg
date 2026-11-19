@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 646" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect x="0" y="0" width="900" height="646" rx="12" fill="#ffffff"/>
+<text x="30.0" y="34.0" font-size="20" fill="#212529" font-weight="700" text-anchor="start">同一个城市视觉市场：老登每年赚一百多亿，网红每年亏几十亿</text>
+<text x="30.0" y="56.0" font-size="13" fill="#868e96" text-anchor="start">年度归母净利润，亿元人民币。海康威视为 A 股年报，商汤为港股年报（IFRS，2021 年及以前含优先股公允价值变动）</text>
+<rect x="372.5" y="126.0" width="97.5" height="402.0" rx="0" fill="#fff5f5" opacity="0.6"/>
+<text x="421.2" y="88.0" font-size="11.5" fill="#c92a2a" font-weight="700" text-anchor="middle">商汤上市、市值见顶</text>
+<text x="80.0" y="116.0" font-size="12.5" fill="#0b7285" font-weight="700" text-anchor="start">海康威视 归母净利润（亿元）</text>
+<line x1="80.0" y1="296.0" x2="860.0" y2="296.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="300.0" font-size="11" fill="#868e96" text-anchor="end">0</text>
+<line x1="80.0" y1="253.5" x2="860.0" y2="253.5" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="257.5" font-size="11" fill="#868e96" text-anchor="end">50</text>
+<line x1="80.0" y1="211.0" x2="860.0" y2="211.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="215.0" font-size="11" fill="#868e96" text-anchor="end">100</text>
+<line x1="80.0" y1="168.5" x2="860.0" y2="168.5" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="172.5" font-size="11" fill="#868e96" text-anchor="end">150</text>
+<line x1="80.0" y1="126.0" x2="860.0" y2="126.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="130.0" font-size="11" fill="#868e96" text-anchor="end">200</text>
+<line x1="80.0" y1="126.0" x2="80.0" y2="296.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="177.5" y1="126.0" x2="177.5" y2="296.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="275.0" y1="126.0" x2="275.0" y2="296.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="372.5" y1="126.0" x2="372.5" y2="296.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="470.0" y1="126.0" x2="470.0" y2="296.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="567.5" y1="126.0" x2="567.5" y2="296.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="665.0" y1="126.0" x2="665.0" y2="296.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="762.5" y1="126.0" x2="762.5" y2="296.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<rect x="101.9" y="199.5" width="53.6" height="96.5" rx="3" fill="#0ca678"/>
+<text x="128.8" y="192.5" font-size="11" fill="#495057" text-anchor="middle">113.5</text>
+<rect x="199.4" y="190.5" width="53.6" height="105.5" rx="3" fill="#0ca678"/>
+<text x="226.2" y="183.5" font-size="11" fill="#495057" text-anchor="middle">124.2</text>
+<rect x="296.9" y="182.2" width="53.6" height="113.8" rx="3" fill="#0ca678"/>
+<text x="323.8" y="175.2" font-size="11" fill="#495057" text-anchor="middle">133.9</text>
+<rect x="394.4" y="153.2" width="53.6" height="142.8" rx="3" fill="#0ca678"/>
+<text x="421.2" y="146.2" font-size="11" fill="#495057" text-anchor="middle">168</text>
+<rect x="491.9" y="186.9" width="53.6" height="109.1" rx="3" fill="#0ca678"/>
+<text x="518.8" y="179.9" font-size="11" fill="#495057" text-anchor="middle">128.4</text>
+<rect x="589.4" y="176.1" width="53.6" height="119.9" rx="3" fill="#0ca678"/>
+<text x="616.2" y="169.1" font-size="11" fill="#495057" text-anchor="middle">141.1</text>
+<rect x="686.9" y="194.2" width="53.6" height="101.8" rx="3" fill="#0ca678"/>
+<text x="713.8" y="187.2" font-size="11" fill="#495057" text-anchor="middle">119.8</text>
+<rect x="784.4" y="175.3" width="53.6" height="120.7" rx="3" fill="#0ca678"/>
+<text x="811.2" y="168.3" font-size="11" fill="#495057" text-anchor="middle">141.9</text>
+<text x="80.0" y="348.0" font-size="12.5" fill="#c92a2a" font-weight="700" text-anchor="start">商汤 归母净利润（亿元）</text>
+<line x1="80.0" y1="528.0" x2="860.0" y2="528.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="532.0" font-size="11" fill="#868e96" text-anchor="end">-200</text>
+<line x1="80.0" y1="485.5" x2="860.0" y2="485.5" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="489.5" font-size="11" fill="#868e96" text-anchor="end">-150</text>
+<line x1="80.0" y1="443.0" x2="860.0" y2="443.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="447.0" font-size="11" fill="#868e96" text-anchor="end">-100</text>
+<line x1="80.0" y1="400.5" x2="860.0" y2="400.5" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="404.5" font-size="11" fill="#868e96" text-anchor="end">-50</text>
+<line x1="80.0" y1="358.0" x2="860.0" y2="358.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="362.0" font-size="11" fill="#868e96" text-anchor="end">0</text>
+<line x1="80.0" y1="358.0" x2="80.0" y2="528.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="177.5" y1="358.0" x2="177.5" y2="528.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="275.0" y1="358.0" x2="275.0" y2="528.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="372.5" y1="358.0" x2="372.5" y2="528.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="470.0" y1="358.0" x2="470.0" y2="528.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="567.5" y1="358.0" x2="567.5" y2="528.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="665.0" y1="358.0" x2="665.0" y2="528.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="762.5" y1="358.0" x2="762.5" y2="528.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<rect x="101.9" y="358.0" width="53.6" height="29.1" rx="3" fill="#fa5252"/>
+<text x="128.8" y="402.1" font-size="11" fill="#495057" text-anchor="middle">-34.3</text>
+<rect x="199.4" y="358.0" width="53.6" height="42.2" rx="3" fill="#fa5252"/>
+<text x="226.2" y="415.2" font-size="11" fill="#495057" text-anchor="middle">-49.6</text>
+<rect x="296.9" y="358.0" width="53.6" height="103.3" rx="3" fill="#fa5252"/>
+<text x="323.8" y="476.3" font-size="11" fill="#495057" text-anchor="middle">-121.6</text>
+<rect x="394.4" y="358.0" width="53.6" height="145.7" rx="3" fill="#fa5252"/>
+<text x="421.2" y="518.7" font-size="11" fill="#495057" text-anchor="middle">-171.4</text>
+<rect x="491.9" y="358.0" width="53.6" height="51.4" rx="3" fill="#fa5252"/>
+<text x="518.8" y="424.4" font-size="11" fill="#495057" text-anchor="middle">-60.5</text>
+<rect x="589.4" y="358.0" width="53.6" height="54.7" rx="3" fill="#fa5252"/>
+<text x="616.2" y="427.7" font-size="11" fill="#495057" text-anchor="middle">-64.4</text>
+<rect x="686.9" y="358.0" width="53.6" height="36.4" rx="3" fill="#fa5252"/>
+<text x="713.8" y="409.4" font-size="11" fill="#495057" text-anchor="middle">-42.8</text>
+<rect x="784.4" y="358.0" width="53.6" height="15.0" rx="3" fill="#fa5252"/>
+<text x="811.2" y="388.0" font-size="11" fill="#495057" text-anchor="middle">-17.7</text>
+<text x="128.8" y="548.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="middle">2018</text>
+<text x="226.2" y="548.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="middle">2019</text>
+<text x="323.8" y="548.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="middle">2020</text>
+<text x="421.2" y="548.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="middle">2021</text>
+<text x="518.8" y="548.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="middle">2022</text>
+<text x="616.2" y="548.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="middle">2023</text>
+<text x="713.8" y="548.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="middle">2024</text>
+<text x="811.2" y="548.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="middle">2025</text>
+<rect x="30.0" y="574.0" width="840.0" height="56.0" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+<text x="48.0" y="598.0" font-size="12" fill="#495057" text-anchor="start">2018—2025 年合计：海康威视赚 1,070.7 亿元，商汤亏 562.2 亿元。2025 年海康收入 925.1 亿元，是商汤（50.2 亿元）的 18 倍。</text>
+<text x="48.0" y="616.0" font-size="12" fill="#495057" text-anchor="start">2022-01-04 商汤市值 2,729 亿港元（约 2,231 亿元），同日海康 4,893 亿元、PE 30.8 倍。来源：东方财富 F10 主要财务指标。</text>
+</svg>

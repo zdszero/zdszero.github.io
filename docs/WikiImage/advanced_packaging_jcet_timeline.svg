@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 690" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect x="0" y="0" width="900" height="690" rx="12" fill="#ffffff"/>
+<text x="30" y="34" font-size="20" fill="#212529" font-weight="700">长电科技：股价与单季利润，2020—2026</text>
+<text x="30" y="56" font-size="13" fill="#868e96">上：月末收盘价（元，不复权）；下：单季归母净利润（亿元）。橙色点为当年收盘最高日；色带为下文复盘的四个阶段</text>
+<rect x="89.1" y="106" width="106.4" height="464" fill="#edf2ff" opacity="0.75"/>
+<text x="142.3" y="118" font-size="11.5" fill="#3b5bdb" font-weight="700" text-anchor="middle">景气周期</text>
+<rect x="416.8" y="106" width="48.6" height="464" fill="#f3f0ff" opacity="0.75"/>
+<text x="441.1" y="118" font-size="11.5" fill="#5f3dc4" font-weight="700" text-anchor="middle">Chiplet</text>
+<rect x="609.6" y="106" width="38.9" height="464" fill="#fff9db" opacity="0.75"/>
+<text x="629.0" y="118" font-size="11.5" fill="#e8590c" font-weight="700" text-anchor="middle">924 行情</text>
+<rect x="792.7" y="106" width="48.6" height="464" fill="#fff5f5" opacity="0.75"/>
+<text x="817.0" y="118" font-size="11.5" fill="#c92a2a" font-weight="700" text-anchor="middle">重估</text>
+<line x1="70" y1="350.0" x2="870" y2="350.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="62" y="354.0" font-size="11" fill="#868e96" text-anchor="end">0</text>
+<line x1="70" y1="292.5" x2="870" y2="292.5" stroke="#e9ecef" stroke-width="1"/>
+<text x="62" y="296.5" font-size="11" fill="#868e96" text-anchor="end">30</text>
+<line x1="70" y1="235.0" x2="870" y2="235.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="62" y="239.0" font-size="11" fill="#868e96" text-anchor="end">60</text>
+<line x1="70" y1="177.5" x2="870" y2="177.5" stroke="#e9ecef" stroke-width="1"/>
+<text x="62" y="181.5" font-size="11" fill="#868e96" text-anchor="end">90</text>
+<line x1="70" y1="120.0" x2="870" y2="120.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="62" y="124.0" font-size="11" fill="#868e96" text-anchor="end">120</text>
+<line x1="70" y1="570.0" x2="870" y2="570.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="62" y="574.0" font-size="11" fill="#868e96" text-anchor="end">0</text>
+<line x1="70" y1="500.0" x2="870" y2="500.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="62" y="504.0" font-size="11" fill="#868e96" text-anchor="end">5</text>
+<line x1="70" y1="430.0" x2="870" y2="430.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="62" y="434.0" font-size="11" fill="#868e96" text-anchor="end">10</text>
+<line x1="70.0" y1="120" x2="70.0" y2="570" stroke="#dee2e6" stroke-width="1" stroke-dasharray="3 3"/>
+<text x="76.0" y="588" font-size="12" fill="#495057" font-weight="600">2020</text>
+<line x1="185.7" y1="120" x2="185.7" y2="570" stroke="#dee2e6" stroke-width="1" stroke-dasharray="3 3"/>
+<text x="191.7" y="588" font-size="12" fill="#495057" font-weight="600">2021</text>
+<line x1="301.3" y1="120" x2="301.3" y2="570" stroke="#dee2e6" stroke-width="1" stroke-dasharray="3 3"/>
+<text x="307.3" y="588" font-size="12" fill="#495057" font-weight="600">2022</text>
+<line x1="417.0" y1="120" x2="417.0" y2="570" stroke="#dee2e6" stroke-width="1" stroke-dasharray="3 3"/>
+<text x="423.0" y="588" font-size="12" fill="#495057" font-weight="600">2023</text>
+<line x1="532.7" y1="120" x2="532.7" y2="570" stroke="#dee2e6" stroke-width="1" stroke-dasharray="3 3"/>
+<text x="538.7" y="588" font-size="12" fill="#495057" font-weight="600">2024</text>
+<line x1="648.3" y1="120" x2="648.3" y2="570" stroke="#dee2e6" stroke-width="1" stroke-dasharray="3 3"/>
+<text x="654.3" y="588" font-size="12" fill="#495057" font-weight="600">2025</text>
+<line x1="764.0" y1="120" x2="764.0" y2="570" stroke="#dee2e6" stroke-width="1" stroke-dasharray="3 3"/>
+<text x="770.0" y="588" font-size="12" fill="#495057" font-weight="600">2026</text>
+<polyline points="74.8,299.7 84.5,299.0 94.1,312.3 103.7,301.7 113.4,294.4 123.0,290.1 132.7,264.7 142.3,269.8 151.9,281.4 161.6,279.0 171.2,265.6 180.8,268.4 190.5,271.9 200.1,274.2 209.8,284.5 219.4,279.5 229.0,283.6 238.7,277.8 248.3,274.9 258.0,284.5 267.6,288.5 277.2,290.8 286.9,286.4 296.5,290.5 306.1,298.5 315.8,296.4 325.4,302.9 335.1,308.6 344.7,303.6 354.3,298.2 364.0,301.7 373.6,302.5 383.3,308.9 392.9,303.8 402.5,302.1 412.2,305.8 421.8,298.9 431.4,296.1 441.1,287.8 450.7,297.2 460.4,290.2 470.0,290.3 479.6,286.8 489.3,287.5 498.9,291.5 508.6,291.0 518.2,291.5 527.8,292.8 537.5,306.9 547.1,299.9 556.7,296.1 566.4,300.6 576.0,300.2 585.7,289.2 595.3,286.0 604.9,287.4 614.6,282.3 624.2,273.5 633.9,275.3 643.5,271.7 653.1,275.6 662.8,278.5 672.4,282.9 682.0,285.9 691.7,288.4 701.3,285.4 711.0,282.8 720.6,273.5 730.2,265.5 739.9,273.3 749.5,281.2 759.2,279.5 768.8,255.2 778.4,257.7 788.1,275.7 797.7,262.7 807.3,192.7 817.0,151.5 826.6,224.1 836.3,204.8 845.9,226.8 855.5,256.1 865.2,248.8" fill="none" stroke="#4c6ef5" stroke-width="2" stroke-linejoin="round"/>
+<rect x="75.5" y="551.2" width="17.9" height="18.8" rx="2" fill="#0ca678"/>
+<rect x="104.4" y="537.5" width="17.9" height="32.5" rx="2" fill="#0ca678"/>
+<rect x="133.3" y="514.3" width="17.9" height="55.7" rx="2" fill="#0ca678"/>
+<rect x="162.2" y="494.4" width="17.9" height="75.6" rx="2" fill="#0ca678"/>
+<rect x="191.2" y="516.0" width="17.9" height="54.0" rx="2" fill="#0ca678"/>
+<rect x="220.1" y="439.0" width="17.9" height="131.0" rx="2" fill="#e8590c"/>
+<rect x="249.0" y="459.0" width="17.9" height="111.0" rx="2" fill="#0ca678"/>
+<rect x="277.9" y="452.0" width="17.9" height="118.0" rx="2" fill="#0ca678"/>
+<rect x="306.8" y="449.5" width="17.9" height="120.5" rx="2" fill="#0ca678"/>
+<rect x="335.7" y="474.5" width="17.9" height="95.5" rx="2" fill="#0ca678"/>
+<rect x="364.7" y="442.7" width="17.9" height="127.3" rx="2" fill="#0ca678"/>
+<rect x="393.6" y="460.9" width="17.9" height="109.1" rx="2" fill="#0ca678"/>
+<rect x="422.5" y="554.6" width="17.9" height="15.4" rx="2" fill="#0ca678"/>
+<rect x="451.4" y="516.0" width="17.9" height="54.0" rx="2" fill="#0ca678"/>
+<rect x="480.3" y="503.1" width="17.9" height="66.9" rx="2" fill="#0ca678"/>
+<rect x="509.2" y="500.4" width="17.9" height="69.6" rx="2" fill="#0ca678"/>
+<rect x="538.1" y="551.1" width="17.9" height="18.9" rx="2" fill="#0ca678"/>
+<rect x="567.1" y="502.2" width="17.9" height="67.8" rx="2" fill="#0ca678"/>
+<rect x="596.0" y="506.0" width="17.9" height="64.0" rx="2" fill="#0ca678"/>
+<rect x="624.9" y="495.4" width="17.9" height="74.6" rx="2" fill="#0ca678"/>
+<rect x="653.8" y="541.6" width="17.9" height="28.4" rx="2" fill="#0ca678"/>
+<rect x="682.7" y="532.6" width="17.9" height="37.4" rx="2" fill="#0ca678"/>
+<rect x="711.6" y="502.4" width="17.9" height="67.6" rx="2" fill="#0ca678"/>
+<rect x="740.6" y="484.5" width="17.9" height="85.5" rx="2" fill="#0ca678"/>
+<rect x="769.5" y="529.4" width="17.9" height="40.6" rx="2" fill="#0ca678"/>
+<rect x="798.4" y="492.4" width="17.9" height="77.6" rx="2" fill="#0ca678"/>
+<rect x="827.3" y="461.8" width="17.9" height="108.2" rx="2" fill="#e8590c"/>
+<circle cx="132.7" cy="252.0" r="4" fill="#e8590c" stroke="#ffffff" stroke-width="1.5"/>
+<text x="132.7" y="242.0" font-size="11.5" fill="#212529" font-weight="700" text-anchor="start">2020-07-14 收盘 51.15</text>
+<circle cx="450.7" cy="277.8" r="4" fill="#e8590c" stroke="#ffffff" stroke-width="1.5"/>
+<text x="450.7" y="267.8" font-size="11.5" fill="#212529" font-weight="700" text-anchor="middle">2023-04-07 收盘 37.67</text>
+<circle cx="633.9" cy="260.8" r="4" fill="#e8590c" stroke="#ffffff" stroke-width="1.5"/>
+<text x="633.9" y="250.8" font-size="11.5" fill="#212529" font-weight="700" text-anchor="end">2024-11-11 收盘 46.55</text>
+<circle cx="826.6" cy="145.6" r="4" fill="#e8590c" stroke="#ffffff" stroke-width="1.5"/>
+<text x="826.6" y="137.6" font-size="11.5" fill="#212529" font-weight="700" text-anchor="end">2026-07-01 收盘 106.64</text>
+<text x="866" y="274.8" font-size="11" fill="#495057" text-anchor="end">11-18 收盘 52.80</text>
+<text x="229.0" y="433.0" font-size="11" fill="#e8590c" font-weight="700" text-anchor="middle">单季峰值 2021Q2 9.36</text>
+<text x="836.3" y="455.8" font-size="11" fill="#e8590c" font-weight="700" text-anchor="end">2026Q3 7.73</text>
+<text x="70" y="416" font-size="12" fill="#495057" font-weight="700">单季归母净利润（亿元）</text>
+<text x="70" y="94" font-size="12" fill="#495057" font-weight="700">月末收盘价（元）</text>
+<rect x="30" y="608" width="840" height="52" rx="8" fill="#f8f9fa" stroke="#e9ecef" stroke-width="1"/>
+<text x="46" y="630" font-size="12" fill="#495057">2026 年收盘最高价是 2020 年高点的两倍多，单季利润却仍低于 2021—2022 年的多数季度：这一轮涨的是估值框架，不是当期盈利。</text>
+<text x="46" y="648" font-size="12" fill="#495057">数据：东方财富日线（不复权）；单季利润由东方财富累计值相减。折线为月末收盘，标注点为日收盘最高值，所以点会高出折线。</text>
+</svg>

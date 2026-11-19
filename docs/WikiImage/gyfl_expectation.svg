@@ -1,0 +1,133 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 758" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect x="0" y="0" width="900" height="758" rx="12" fill="#ffffff"/>
+<text x="30.0" y="34.0" font-size="20" fill="#212529" font-weight="700" text-anchor="start">预期差时间线：工业富联 2022—2026</text>
+<text x="30.0" y="56.0" font-size="13" fill="#868e96" text-anchor="start">每行一个节点：当时发生了什么、机构和散户怎么看、事后看预期差在哪里。PE 为 TTM，倍数 = 当日市值 / 当时的次年预测</text>
+<line x1="132" y1="116" x2="132" y2="588" stroke="#dee2e6" stroke-width="2"/>
+<text x="118.0" y="86.0" font-size="12.5" fill="#212529" font-weight="700" text-anchor="end">时间</text>
+<text x="160.0" y="86.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="start">事件 / 外部条件</text>
+<text x="366.0" y="86.0" font-size="12.5" fill="#3b5bdb" font-weight="700" text-anchor="start">机构研报</text>
+<text x="562.0" y="86.0" font-size="12.5" fill="#5f3dc4" font-weight="700" text-anchor="start">散户与媒体</text>
+<text x="738.0" y="86.0" font-size="12.5" fill="#e8590c" font-weight="700" text-anchor="start">预期差</text>
+<text x="118.0" y="120.0" font-size="12" fill="#212529" font-weight="700" text-anchor="end">2022-10-31</text>
+<text x="118.0" y="136.0" font-size="11" fill="#868e96" text-anchor="end">PE 7.8× 低谷</text>
+<circle cx="132.0" cy="116.0" r="5" fill="#fa5252"/>
+<rect x="150.0" y="100.0" width="200.0" height="66.0" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+<text x="160.0" y="120.0" font-size="11.5" fill="#495057" text-anchor="start">三季报毛利率新低，市值 1,629 亿</text>
+<text x="160.0" y="136.0" font-size="11.5" fill="#495057" text-anchor="start">元</text>
+<rect x="356.0" y="100.0" width="190.0" height="66.0" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+<text x="366.0" y="120.0" font-size="11.5" fill="#495057" text-anchor="start">国金预测 2023 年 246 亿元，按</text>
+<text x="366.0" y="136.0" font-size="11.5" fill="#495057" text-anchor="start">当日市值约 6.6 倍</text>
+<rect x="552.0" y="100.0" width="170.0" height="66.0" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+<text x="562.0" y="120.0" font-size="11.5" fill="#495057" text-anchor="start">“明天清仓了这是什么企业了”；</text>
+<text x="562.0" y="136.0" font-size="11.5" fill="#495057" text-anchor="start">年末户数 17.8 万</text>
+<rect x="728.0" y="100.0" width="132.0" height="66.0" rx="8" fill="#fff5f5" stroke="#fa5252"/>
+<text x="738.0" y="120.0" font-size="11.5" fill="#c92a2a" font-weight="700" text-anchor="start">低估：2025 实际 353</text>
+<text x="738.0" y="136.0" font-size="11.5" fill="#c92a2a" text-anchor="start">亿，比 2023-03 时的</text>
+<text x="738.0" y="152.0" font-size="11.5" fill="#c92a2a" text-anchor="start">2025 年预测高 27%</text>
+<text x="118.0" y="196.0" font-size="12" fill="#212529" font-weight="700" text-anchor="end">2023-07-14</text>
+<text x="118.0" y="212.0" font-size="11" fill="#868e96" text-anchor="end">PE 27.2× 首顶</text>
+<circle cx="132.0" cy="192.0" r="5" fill="#0ca678"/>
+<rect x="150.0" y="176.0" width="200.0" height="66.0" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+<text x="160.0" y="196.0" font-size="11.5" fill="#495057" text-anchor="start">HPC 用于 ChatGPT、英伟达指引超</text>
+<text x="160.0" y="212.0" font-size="11.5" fill="#495057" text-anchor="start">预期后连续涨停</text>
+<rect x="356.0" y="176.0" width="190.0" height="66.0" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+<text x="366.0" y="196.0" font-size="11.5" fill="#495057" text-anchor="start">国金 2024 年预测 248.5 亿元，</text>
+<text x="366.0" y="212.0" font-size="11.5" fill="#495057" text-anchor="start">按市值约 22 倍</text>
+<rect x="552.0" y="176.0" width="170.0" height="66.0" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+<text x="562.0" y="196.0" font-size="11.5" fill="#495057" text-anchor="start">“不到 30 元以上不…”；户</text>
+<text x="562.0" y="212.0" font-size="11.5" fill="#495057" text-anchor="start">数 15.7 万，涨时反降</text>
+<rect x="728.0" y="176.0" width="132.0" height="66.0" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+<text x="738.0" y="196.0" font-size="11.5" fill="#0b7285" font-weight="700" text-anchor="start">高估节奏：2024 实际</text>
+<text x="738.0" y="212.0" font-size="11.5" fill="#0b7285" text-anchor="start">232 亿，低于预测；</text>
+<text x="738.0" y="228.0" font-size="11.5" fill="#0b7285" text-anchor="start">年末 PE 回到 13.8</text>
+<text x="118.0" y="272.0" font-size="12" fill="#212529" font-weight="700" text-anchor="end">2024-07-09</text>
+<text x="118.0" y="288.0" font-size="11" fill="#868e96" text-anchor="end">PE 26.1× 次顶</text>
+<circle cx="132.0" cy="268.0" r="5" fill="#0ca678"/>
+<rect x="150.0" y="252.0" width="200.0" height="66.0" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+<text x="160.0" y="272.0" font-size="11.5" fill="#495057" text-anchor="start">GB200 放量预期，市值 5,762 亿元</text>
+<rect x="356.0" y="252.0" width="190.0" height="66.0" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+<text x="366.0" y="272.0" font-size="11.5" fill="#495057" text-anchor="start">信达 5 月预测 2025 年 313 亿元，</text>
+<text x="366.0" y="288.0" font-size="11.5" fill="#495057" text-anchor="start">按市值约 18 倍</text>
+<rect x="552.0" y="252.0" width="170.0" height="66.0" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+<text x="562.0" y="272.0" font-size="11.5" fill="#495057" text-anchor="start">“稀缺性堪比茅台”；“</text>
+<text x="562.0" y="288.0" font-size="11.5" fill="#495057" text-anchor="start">GB200 放量。”</text>
+<rect x="728.0" y="252.0" width="132.0" height="66.0" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+<text x="738.0" y="272.0" font-size="11.5" fill="#0b7285" font-weight="700" text-anchor="start">高估利润弹性：8-05</text>
+<text x="738.0" y="288.0" font-size="11.5" fill="#0b7285" text-anchor="start">中报日跌 8.6%，11</text>
+<text x="738.0" y="304.0" font-size="11.5" fill="#0b7285" text-anchor="start">月起因毛利稀释下调</text>
+<text x="118.0" y="348.0" font-size="12" fill="#212529" font-weight="700" text-anchor="end">2025-04-08</text>
+<text x="118.0" y="364.0" font-size="11" fill="#868e96" text-anchor="end">PE 13.2×</text>
+<circle cx="132.0" cy="344.0" r="5" fill="#fa5252"/>
+<rect x="150.0" y="328.0" width="200.0" height="66.0" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+<text x="160.0" y="348.0" font-size="11.5" fill="#495057" text-anchor="start">关税冲击，连续两日跌停，市值</text>
+<text x="160.0" y="364.0" font-size="11.5" fill="#495057" text-anchor="start">3,066 亿元</text>
+<rect x="356.0" y="328.0" width="190.0" height="66.0" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+<text x="366.0" y="348.0" font-size="11.5" fill="#495057" text-anchor="start">国金 4-30 预测 2026 年 354 亿</text>
+<text x="366.0" y="364.0" font-size="11.5" fill="#495057" text-anchor="start">元，约 10 倍</text>
+<rect x="552.0" y="328.0" width="170.0" height="66.0" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+<text x="562.0" y="348.0" font-size="11.5" fill="#495057" text-anchor="start">“现在一起挨锤”；户数</text>
+<text x="562.0" y="364.0" font-size="11.5" fill="#495057" text-anchor="start">40.8 万</text>
+<rect x="728.0" y="328.0" width="132.0" height="66.0" rx="8" fill="#fff5f5" stroke="#fa5252"/>
+<text x="738.0" y="348.0" font-size="11.5" fill="#c92a2a" font-weight="700" text-anchor="start">低估：2026 前三季已</text>
+<text x="738.0" y="364.0" font-size="11.5" fill="#c92a2a" text-anchor="start">赚 404 亿，超过当时</text>
+<text x="738.0" y="380.0" font-size="11.5" fill="#c92a2a" text-anchor="start">全年预测</text>
+<text x="118.0" y="424.0" font-size="12" fill="#212529" font-weight="700" text-anchor="end">2025-10-29</text>
+<text x="118.0" y="440.0" font-size="11" fill="#868e96" text-anchor="end">PE 60.3× 最高</text>
+<circle cx="132.0" cy="420.0" r="5" fill="#f08c00"/>
+<rect x="150.0" y="404.0" width="200.0" height="66.0" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+<text x="160.0" y="424.0" font-size="11.5" fill="#495057" text-anchor="start">三季度净利 103.7 亿元，同比</text>
+<text x="160.0" y="440.0" font-size="11.5" fill="#495057" text-anchor="start">+62%</text>
+<rect x="356.0" y="404.0" width="190.0" height="66.0" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+<text x="366.0" y="424.0" font-size="11.5" fill="#495057" text-anchor="start">国金次日预测 2026 年 430 亿元，</text>
+<text x="366.0" y="440.0" font-size="11.5" fill="#495057" text-anchor="start">按 10-30 市值约 36 倍；信达</text>
+<text x="366.0" y="456.0" font-size="11.5" fill="#495057" text-anchor="start">11-02 提到 680 亿</text>
+<rect x="552.0" y="404.0" width="170.0" height="66.0" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+<text x="562.0" y="424.0" font-size="11.5" fill="#495057" text-anchor="start">“估值彻底重构？”；户数</text>
+<text x="562.0" y="440.0" font-size="11.5" fill="#495057" text-anchor="start">47.6 万→58.4 万</text>
+<rect x="728.0" y="404.0" width="132.0" height="66.0" rx="8" fill="#fff4e6" stroke="#f08c00"/>
+<text x="738.0" y="424.0" font-size="11.5" fill="#e8590c" font-weight="700" text-anchor="start">关注点切换：2026 预</text>
+<text x="738.0" y="440.0" font-size="11.5" fill="#e8590c" text-anchor="start">测后来上调四成，市</text>
+<text x="738.0" y="456.0" font-size="11.5" fill="#e8590c" text-anchor="start">值仍跌一半</text>
+<text x="118.0" y="500.0" font-size="12" fill="#212529" font-weight="700" text-anchor="end">2026-06-03</text>
+<text x="118.0" y="516.0" font-size="11" fill="#868e96" text-anchor="end">市值 16,084 亿</text>
+<circle cx="132.0" cy="496.0" r="5" fill="#0ca678"/>
+<rect x="150.0" y="480.0" width="200.0" height="82.0" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+<text x="160.0" y="500.0" font-size="11.5" fill="#495057" text-anchor="start">市值超过贵州茅台，PE 39.6 倍</text>
+<rect x="356.0" y="480.0" width="190.0" height="82.0" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+<text x="366.0" y="500.0" font-size="11.5" fill="#495057" text-anchor="start">国金 2027 年预测 751 亿元，按</text>
+<text x="366.0" y="516.0" font-size="11.5" fill="#495057" text-anchor="start">市值约 21 倍</text>
+<rect x="552.0" y="480.0" width="170.0" height="82.0" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+<text x="562.0" y="500.0" font-size="11.5" fill="#495057" text-anchor="start">“1.6 万亿 vs 中际旭创谁更</text>
+<text x="562.0" y="516.0" font-size="11.5" fill="#495057" text-anchor="start">有含金量？”；户数 82.2 万</text>
+<text x="562.0" y="532.0" font-size="11.5" fill="#495057" text-anchor="start">峰值</text>
+<rect x="728.0" y="480.0" width="132.0" height="82.0" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+<text x="738.0" y="500.0" font-size="11.5" fill="#0b7285" font-weight="700" text-anchor="start">高估：国信 8-17 下</text>
+<text x="738.0" y="516.0" font-size="11.5" fill="#0b7285" text-anchor="start">调 2026—27 年，国</text>
+<text x="738.0" y="532.0" font-size="11.5" fill="#0b7285" text-anchor="start">金 10-31 首次下修</text>
+<text x="738.0" y="548.0" font-size="11.5" fill="#0b7285" text-anchor="start">2027</text>
+<text x="118.0" y="592.0" font-size="12" fill="#212529" font-weight="700" text-anchor="end">2026-11-18</text>
+<text x="118.0" y="608.0" font-size="11" fill="#868e96" text-anchor="end">PE 14.2×</text>
+<circle cx="132.0" cy="588.0" r="5" fill="#f08c00"/>
+<rect x="150.0" y="572.0" width="200.0" height="66.0" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+<text x="160.0" y="592.0" font-size="11.5" fill="#495057" text-anchor="start">337 调查立案、员工持股计划设</text>
+<text x="160.0" y="608.0" font-size="11.5" fill="#495057" text-anchor="start">2027 年 ≥700 亿目标</text>
+<rect x="356.0" y="572.0" width="190.0" height="66.0" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+<text x="366.0" y="592.0" font-size="11.5" fill="#495057" text-anchor="start">国金 2027 年预测 802 亿元，按</text>
+<text x="366.0" y="608.0" font-size="11.5" fill="#495057" text-anchor="start">市值约 9.4 倍</text>
+<rect x="552.0" y="572.0" width="170.0" height="66.0" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+<text x="562.0" y="592.0" font-size="11.5" fill="#495057" text-anchor="start">“明天认输清仓不玩了”；9</text>
+<text x="562.0" y="608.0" font-size="11.5" fill="#495057" text-anchor="start">月末户数 69.8 万</text>
+<rect x="728.0" y="572.0" width="132.0" height="66.0" rx="8" fill="#fff4e6" stroke="#f08c00"/>
+<text x="738.0" y="592.0" font-size="11.5" fill="#e8590c" font-weight="700" text-anchor="start">待验证：价格接近“</text>
+<text x="738.0" y="608.0" font-size="11.5" fill="#e8590c" text-anchor="start">2027 年后不再增长”</text>
+<text x="738.0" y="624.0" font-size="11.5" fill="#e8590c" text-anchor="start">的定价</text>
+<rect x="84.0" y="649.0" width="16.0" height="12.0" rx="2" fill="#fff5f5" stroke="#fa5252"/>
+<text x="112.0" y="660.0" font-size="12" fill="#495057" text-anchor="start">当时低估，后来上修</text>
+<rect x="252.0" y="649.0" width="16.0" height="12.0" rx="2" fill="#e6fcf5" stroke="#0ca678"/>
+<text x="280.0" y="660.0" font-size="12" fill="#495057" text-anchor="start">当时高估，后来下修</text>
+<rect x="420.0" y="649.0" width="16.0" height="12.0" rx="2" fill="#fff4e6" stroke="#f08c00"/>
+<text x="448.0" y="660.0" font-size="12" fill="#495057" text-anchor="start">关注点切换</text>
+<rect x="30.0" y="686.0" width="840.0" height="56.0" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+<text x="48.0" y="710.0" font-size="12" fill="#495057" text-anchor="start">前两次顶部（2023、2024）错在利润兑现太慢；后两次顶部（2025-10、2026-06）之后利润仍高速增长，错的是估值，市场转去交易增速见顶。</text>
+<text x="48.0" y="728.0" font-size="12" fill="#495057" text-anchor="start">来源：东方财富估值分析、研报摘要、F10 股东户数与股吧样本（按点击量取标题，样本，不代表全部投资者），2026-11-18 提取。</text>
+</svg>

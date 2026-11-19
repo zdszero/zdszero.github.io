@@ -139,10 +139,19 @@
 - 个股研究
     - [CATL](./CATL.md)
     - [GYFL](./gyfl.md)
+    - [PCB](./pcb.md)
+    - [胜宏与沪电](./pcb_rubin.md)
+    - [中远海控](./cosco_shipping_cycle.md)
+    - [紫金矿业](./zijin.md)
+    - [中国海油](./cnooc.md)
+    - [腾讯控股](./tencent.md)
     - [先进封装](./advanced_packaging.md)
+    - [Blackwell 产业链](./blackwell_supply_chain.md)
     - [ODM](./2026-ODM.md)
     - [算力租赁](./gpu_rent.md)
+    - [算力租赁股](./gpu_rent_stocks.md)
     - [存储周期](./storage_cicle.md)
+    - [网红公司的泡沫](./china_hype_bubbles.md)
 - 随笔
     - [A 股特性](./stock_feature.md)
     - [感受市场温度](./market_temperature.md)
@@ -150,7 +159,7 @@
     - [谈一谈历史的失真](./wrong_history_record.md)
     - [A 股中的博弈势力](./stock_investor_types.md)
     - [A 股的价值投资](./value_investment.md)
-    - [基础技术分析](./concepts.md)
+    - [财务与技术分析基础](./concepts.md)
 - 历史
     - [自发秩序和复杂性](./spontaneous_order.md)
     - [中国国家机器](./china_system.md)

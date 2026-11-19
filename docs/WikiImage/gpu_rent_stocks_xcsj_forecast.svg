@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 796" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect x="0" y="0" width="900" height="796" rx="12" fill="#ffffff"/>
+<text x="30.0" y="34.0" font-size="20" fill="#212529" font-weight="700" text-anchor="start">协创数据：研报预测追着利润走，股价先于预测见顶</text>
+<text x="30.0" y="56.0" font-size="13" fill="#868e96" text-anchor="start">山西证券历次报告对 2025—2027 年归母净利润的预测（亿元，EPS × 报告时股本，据摘要整理），下方为周末总市值。东方财富研报中心与估值序列</text>
+<text x="80.0" y="94.0" font-size="12.5" fill="#3b5bdb" font-weight="700" text-anchor="start">归母净利润预测（亿元）</text>
+<line x1="80.0" y1="404.0" x2="860.0" y2="404.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="408.0" font-size="11" fill="#868e96" text-anchor="end">0</text>
+<line x1="80.0" y1="304.0" x2="860.0" y2="304.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="308.0" font-size="11" fill="#868e96" text-anchor="end">50</text>
+<line x1="80.0" y1="204.0" x2="860.0" y2="204.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="208.0" font-size="11" fill="#868e96" text-anchor="end">100</text>
+<line x1="80.0" y1="104.0" x2="860.0" y2="104.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="108.0" font-size="11" fill="#868e96" text-anchor="end">150</text>
+<line x1="170.0" y1="104.0" x2="170.0" y2="404.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="350.0" y1="104.0" x2="350.0" y2="404.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="530.0" y1="104.0" x2="530.0" y2="404.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="710.0" y1="104.0" x2="710.0" y2="404.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<path d="M123.3 379.8 L267.2 382.2 L419.0 381.8 L475.3 381.2" fill="none" stroke="#adb5bd" stroke-width="2" stroke-linejoin="round"/>
+<path d="M475.3 381.2 L604.5 380.7" fill="none" stroke="#adb5bd" stroke-width="1.5" stroke-linejoin="round" stroke-dasharray="4 3"/>
+<rect x="598.5" y="374.7" width="12" height="12" fill="#ffffff" stroke="#adb5bd" stroke-width="2"/>
+<text x="604.5" y="398.7" font-size="11.5" fill="#495057" text-anchor="middle">2025 实际 11.6</text>
+<circle cx="123.3" cy="379.8" r="4.5" fill="#adb5bd"/>
+<text x="131.3" y="371.8" font-size="11.5" fill="#495057" text-anchor="start"></text>
+<circle cx="267.2" cy="382.2" r="4.5" fill="#adb5bd"/>
+<text x="275.2" y="374.2" font-size="11.5" fill="#495057" text-anchor="start"></text>
+<circle cx="419.0" cy="381.8" r="4.5" fill="#adb5bd"/>
+<text x="427.0" y="373.8" font-size="11.5" fill="#495057" text-anchor="start"></text>
+<circle cx="475.3" cy="381.2" r="4.5" fill="#adb5bd"/>
+<text x="483.3" y="373.2" font-size="11.5" fill="#495057" text-anchor="start">2025E 11.4</text>
+<path d="M123.3 371.4 L267.2 375.6 L419.0 369.6 L475.3 365.0 L613.3 347.4 L772.1 293.6 L834.3 297.4" fill="none" stroke="#0ca678" stroke-width="2" stroke-linejoin="round"/>
+<circle cx="123.3" cy="371.4" r="4.5" fill="#0ca678"/>
+<text x="131.3" y="363.4" font-size="11.5" fill="#495057" text-anchor="start">2026E 16.3</text>
+<circle cx="267.2" cy="375.6" r="4.5" fill="#0ca678"/>
+<text x="275.2" y="367.6" font-size="11.5" fill="#495057" text-anchor="start"></text>
+<circle cx="419.0" cy="369.6" r="4.5" fill="#0ca678"/>
+<text x="427.0" y="361.6" font-size="11.5" fill="#495057" text-anchor="start"></text>
+<circle cx="475.3" cy="365.0" r="4.5" fill="#0ca678"/>
+<text x="483.3" y="357.0" font-size="11.5" fill="#495057" text-anchor="start"></text>
+<circle cx="613.3" cy="347.4" r="4.5" fill="#0ca678"/>
+<text x="613.3" y="367.4" font-size="11.5" fill="#495057" text-anchor="middle">28.3</text>
+<circle cx="772.1" cy="293.6" r="4.5" fill="#0ca678"/>
+<text x="780.1" y="285.6" font-size="11.5" fill="#495057" text-anchor="start">55.2</text>
+<circle cx="834.3" cy="297.4" r="4.5" fill="#0ca678"/>
+<text x="842.3" y="289.4" font-size="11.5" fill="#495057" text-anchor="start">53.3</text>
+<path d="M267.2 367.4 L419.0 358.0 L475.3 346.0 L613.3 319.4 L772.1 190.4 L834.3 205.4" fill="none" stroke="#4c6ef5" stroke-width="2" stroke-linejoin="round"/>
+<circle cx="267.2" cy="367.4" r="4.5" fill="#4c6ef5"/>
+<text x="275.2" y="359.4" font-size="11.5" fill="#495057" text-anchor="start">2027E 18.3</text>
+<circle cx="419.0" cy="358.0" r="4.5" fill="#4c6ef5"/>
+<text x="427.0" y="350.0" font-size="11.5" fill="#495057" text-anchor="start"></text>
+<circle cx="475.3" cy="346.0" r="4.5" fill="#4c6ef5"/>
+<text x="483.3" y="338.0" font-size="11.5" fill="#495057" text-anchor="start"></text>
+<circle cx="613.3" cy="319.4" r="4.5" fill="#4c6ef5"/>
+<text x="605.3" y="311.4" font-size="11.5" fill="#495057" text-anchor="end">42.3</text>
+<circle cx="772.1" cy="190.4" r="4.5" fill="#4c6ef5"/>
+<text x="780.1" y="182.4" font-size="11.5" fill="#495057" text-anchor="start">106.8</text>
+<circle cx="834.3" cy="205.4" r="4.5" fill="#4c6ef5"/>
+<text x="842.3" y="197.4" font-size="11.5" fill="#495057" text-anchor="start">99.3</text>
+<circle cx="825.4" cy="342.8" r="5" fill="#0ca678"/>
+<text x="833.4" y="364.8" font-size="12.5" fill="#212529" font-weight="700" text-anchor="end">前三季度 30.6</text>
+<text x="833.4" y="380.8" font-size="11" fill="#495057" text-anchor="end">2026 实际</text>
+<text x="80.0" y="456.0" font-size="12.5" fill="#3b5bdb" font-weight="700" text-anchor="start">总市值（亿元）</text>
+<line x1="80.0" y1="616.0" x2="860.0" y2="616.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="620.0" font-size="11" fill="#868e96" text-anchor="end">0</text>
+<line x1="80.0" y1="578.5" x2="860.0" y2="578.5" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="582.5" font-size="11" fill="#868e96" text-anchor="end">500</text>
+<line x1="80.0" y1="541.0" x2="860.0" y2="541.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="545.0" font-size="11" fill="#868e96" text-anchor="end">1,000</text>
+<line x1="80.0" y1="503.5" x2="860.0" y2="503.5" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="507.5" font-size="11" fill="#868e96" text-anchor="end">1,500</text>
+<line x1="80.0" y1="466.0" x2="860.0" y2="466.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="470.0" font-size="11" fill="#868e96" text-anchor="end">2,000</text>
+<line x1="170.0" y1="466.0" x2="170.0" y2="616.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="350.0" y1="466.0" x2="350.0" y2="616.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="530.0" y1="466.0" x2="530.0" y2="616.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="710.0" y1="466.0" x2="710.0" y2="616.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<path d="M89.8 602.8 L96.7 600.9 L103.6 601.5 L110.5 603.1 L117.4 599.2 L124.3 600.7 L131.1 600.3 L138.0 599.2 L144.9 596.9 L151.8 597.0 L158.7 595.7 L165.6 597.5 L172.5 597.3 L179.4 597.6 L186.3 597.0 L193.2 596.3 L196.1 599.2 L207.0 598.7 L213.9 598.7 L220.8 594.3 L227.7 595.4 L234.6 593.2 L241.5 592.1 L248.4 594.2 L255.3 595.0 L261.2 594.7 L269.1 596.9 L276.0 597.7 L282.9 597.3 L287.9 596.8 L296.7 596.4 L303.6 596.4 L310.5 597.6 L317.5 595.7 L324.4 594.0 L331.3 594.7 L338.2 595.8 L345.1 593.8 L352.0 594.5 L358.9 594.9 L365.8 594.9 L372.7 595.1 L379.6 596.2 L386.5 596.0 L393.4 592.8 L400.3 590.5 L407.2 590.0 L414.1 589.0 L421.0 580.1 L427.9 573.6 L434.8 574.1 L438.8 568.8 L448.6 571.8 L455.5 577.5 L462.4 574.3 L469.3 573.8 L476.2 572.0 L483.2 577.3 L490.1 582.2 L497.0 579.6 L503.9 580.1 L510.8 579.1 L517.7 581.2 L524.6 578.1 L529.5 572.2 L538.4 569.1 L545.3 564.6 L552.2 560.6 L559.1 556.8 L566.0 564.1 L572.9 551.7 L586.7 546.7 L593.6 551.9 L600.5 551.7 L607.4 559.1 L614.3 560.8 L621.2 562.0 L628.1 561.9 L635.0 533.7 L641.9 520.0 L647.9 521.6 L655.8 512.6 L662.7 516.4 L669.6 517.1 L676.5 528.0 L683.4 532.1 L690.3 533.9 L696.2 514.1 L704.1 494.0 L711.0 505.7 L717.9 514.0 L724.8 537.9 L731.7 531.4 L738.6 536.8 L745.5 522.9 L752.4 518.4 L759.3 525.2 L766.2 522.8 L773.1 523.2 L780.0 520.2 L786.9 517.7 L792.8 517.4 L798.8 523.8 L807.6 530.6 L814.5 537.4 L821.5 544.5 L828.4 562.4 L835.3 558.9 L842.2 563.4 L847.1 564.8" fill="none" stroke="#4c6ef5" stroke-width="2" stroke-linejoin="round"/>
+<circle cx="704.1" cy="490.4" r="5" fill="#fa5252"/>
+<text x="712.1" y="494.4" font-size="12.5" fill="#212529" font-weight="700" text-anchor="start">1,674 亿</text>
+<line x1="703.1" y1="104.0" x2="703.1" y2="616.0" stroke="#c92a2a" stroke-width="1.5" stroke-dasharray="5 4"/>
+<text x="698.1" y="118.0" font-size="12" fill="#c92a2a" font-weight="700" text-anchor="end">06-25 市值见顶</text>
+<text x="174.0" y="636.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="start">2025-01</text>
+<text x="354.0" y="636.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="start">07</text>
+<text x="534.0" y="636.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="start">2026-01</text>
+<text x="714.0" y="636.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="start">07</text>
+<line x1="80.0" y1="658.0" x2="104.0" y2="658.0" stroke="#adb5bd" stroke-width="2"/>
+<circle cx="92.0" cy="658.0" r="3.5" fill="#adb5bd"/>
+<text x="112.0" y="662.0" font-size="12" fill="#495057" text-anchor="start">2025 年预测</text>
+<line x1="206.5" y1="658.0" x2="230.5" y2="658.0" stroke="#0ca678" stroke-width="2"/>
+<circle cx="218.5" cy="658.0" r="3.5" fill="#0ca678"/>
+<text x="238.5" y="662.0" font-size="12" fill="#495057" text-anchor="start">2026 年预测</text>
+<line x1="333.0" y1="658.0" x2="357.0" y2="658.0" stroke="#4c6ef5" stroke-width="2"/>
+<circle cx="345.0" cy="658.0" r="3.5" fill="#4c6ef5"/>
+<text x="365.0" y="662.0" font-size="12" fill="#495057" text-anchor="start">2027 年预测</text>
+<rect x="463.4" y="651.0" width="16.0" height="12.0" rx="2" fill="#f1f3f5" stroke="#adb5bd"/>
+<text x="491.4" y="662.0" font-size="12" fill="#495057" text-anchor="start">实际值</text>
+<rect x="30.0" y="688.0" width="840.0" height="92.0" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+<text x="48.0" y="712.0" font-size="12" fill="#495057" text-anchor="start">2026 年利润预测从 2025-11 的 19.5 亿元上调到 2026-09 的 55.2 亿元，2027 年预测从 29.0 亿元上调到 106.8 亿元；同期市值在 06-25 见顶，9</text>
+<text x="48.0" y="730.0" font-size="12" fill="#495057" text-anchor="start">月的大幅上调没有带来新高。</text>
+<text x="48.0" y="748.0" font-size="12" fill="#495057" text-anchor="start">净利润 = 摘要中的 EPS × 报告日股本（2025-05 前 2.45 亿股，2025-05 至 2026-04 约 3.46 亿股，此后 4.89 亿股），是换算值；2026 前三季度</text>
+<text x="48.0" y="766.0" font-size="12" fill="#495057" text-anchor="start">实际值不是全年。</text>
+</svg>

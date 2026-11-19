@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 882" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect x="0" y="0" width="900" height="882" rx="12" fill="#ffffff"/>
+<text x="30.0" y="34.0" font-size="20" fill="#212529" font-weight="700" text-anchor="start">利通电子：五个月市值涨到 8.6 倍，三季度单季利润首次环比下降</text>
+<text x="30.0" y="56.0" font-size="13" fill="#868e96" text-anchor="start">利通电子（603629.SH）：周末收盘总市值、PE（TTM）与单季归母净利润。东方财富估值序列与 F10 财务数据，截至 2026-11-18</text>
+<rect x="137.1" y="126.0" width="57.1" height="594.0" rx="0" fill="#f1f3f5" opacity="0.6"/>
+<text x="165.6" y="88.0" font-size="11.5" fill="#495057" font-weight="700" text-anchor="middle">首次炒作</text>
+<rect x="650.7" y="126.0" width="95.1" height="594.0" rx="0" fill="#fff5f5" opacity="0.6"/>
+<text x="698.3" y="88.0" font-size="11.5" fill="#c92a2a" font-weight="700" text-anchor="middle">主升浪</text>
+<text x="80.0" y="116.0" font-size="12.5" fill="#3b5bdb" font-weight="700" text-anchor="start">总市值（亿元）</text>
+<line x1="80.0" y1="316.0" x2="860.0" y2="316.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="320.0" font-size="11" fill="#868e96" text-anchor="end">0</text>
+<line x1="80.0" y1="268.5" x2="860.0" y2="268.5" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="272.5" font-size="11" fill="#868e96" text-anchor="end">200</text>
+<line x1="80.0" y1="221.0" x2="860.0" y2="221.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="225.0" font-size="11" fill="#868e96" text-anchor="end">400</text>
+<line x1="80.0" y1="173.5" x2="860.0" y2="173.5" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="177.5" font-size="11" fill="#868e96" text-anchor="end">600</text>
+<line x1="80.0" y1="126.0" x2="860.0" y2="126.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="130.0" font-size="11" fill="#868e96" text-anchor="end">800</text>
+<line x1="194.1" y1="126.0" x2="194.1" y2="316.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="422.4" y1="126.0" x2="422.4" y2="316.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="650.7" y1="126.0" x2="650.7" y2="316.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<path d="M83.1 301.8 L87.5 300.6 L91.9 303.8 L96.3 304.6 L100.6 303.6 L105.0 302.4 L109.4 302.4 L113.8 302.7 L118.2 302.5 L122.5 301.1 L126.9 302.2 L131.3 301.7 L135.0 301.3 L144.4 299.4 L148.8 300.1 L153.2 295.7 L157.6 296.3 L161.9 294.6 L166.3 293.9 L170.7 297.1 L175.1 297.6 L179.4 298.7 L183.8 299.2 L188.2 298.8 L192.6 296.7 L197.0 298.1 L201.3 300.7 L205.7 300.3 L210.1 301.5 L214.4 304.5 L218.2 305.2 L227.5 301.9 L231.9 301.2 L236.2 301.1 L240.6 299.0 L245.0 297.3 L249.3 299.4 L252.5 300.6 L258.1 300.1 L262.4 301.3 L266.8 300.8 L269.3 300.6 L275.5 301.5 L279.9 301.0 L284.3 301.2 L288.6 302.8 L293.0 304.0 L297.4 303.8 L301.7 304.2 L306.1 304.6 L310.5 305.3 L314.8 305.0 L319.2 305.5 L323.6 305.9 L327.9 305.8 L332.3 306.4 L336.7 306.2 L341.0 306.5 L345.4 306.4 L349.8 306.9 L354.1 307.4 L358.5 307.2 L362.9 305.5 L364.7 304.5 L371.6 306.0 L376.0 305.3 L380.3 305.1 L384.7 305.7 L389.1 304.9 L393.4 303.9 L397.8 305.5 L402.2 305.5 L406.5 304.8 L410.9 304.7 L415.3 303.6 L419.6 303.1 L424.0 303.1 L428.4 302.7 L432.8 302.1 L437.1 302.5 L439.0 303.0 L445.9 301.8 L450.3 301.1 L454.7 298.0 L459.0 300.9 L463.4 299.5 L467.8 294.4 L472.2 297.4 L476.5 298.9 L480.3 299.2 L485.3 301.5 L489.7 302.4 L494.1 302.3 L497.2 301.1 L502.8 301.0 L507.2 300.9 L511.6 301.9 L515.9 302.3 L520.3 301.7 L524.7 302.5 L529.1 303.1 L533.5 302.2 L537.8 301.3 L542.2 301.4 L546.6 300.8 L551.0 301.2 L555.3 301.8 L559.7 301.4 L564.1 301.0 L568.5 300.4 L572.9 300.4 L577.2 301.0 L581.6 300.8 L586.0 301.0 L590.4 300.4 L592.9 300.8 L599.1 300.8 L603.5 302.0 L607.9 301.7 L612.3 299.5 L616.6 297.9 L621.0 299.0 L625.4 300.7 L629.8 299.5 L634.2 299.9 L638.5 298.8 L642.9 299.7 L647.3 299.3 L650.4 299.4 L656.0 297.9 L660.4 297.3 L664.8 295.7 L669.2 292.7 L673.6 287.3 L677.9 280.2 L686.7 279.5 L691.1 281.0 L695.5 277.5 L699.8 277.8 L704.2 275.8 L708.6 279.0 L713.0 270.7 L717.3 250.3 L721.7 247.8 L725.5 226.0 L730.5 211.6 L734.9 210.1 L739.2 194.1 L743.6 166.0 L748.0 203.6 L752.4 221.2 L756.1 206.0 L761.1 199.4 L765.5 212.2 L769.9 214.4 L774.3 236.9 L778.6 221.4 L783.0 232.4 L787.4 205.0 L791.8 196.2 L796.2 206.3 L800.5 211.5 L804.9 221.6 L809.3 224.3 L813.7 217.1 L817.4 223.8 L821.2 232.4 L826.8 233.6 L831.2 243.3 L835.6 243.5 L839.9 259.8 L844.3 261.9 L848.7 261.9 L851.8 262.9" fill="none" stroke="#4c6ef5" stroke-width="1.8" stroke-linejoin="round"/>
+<circle cx="743.6" cy="166.1" r="5" fill="#fa5252"/>
+<text x="751.6" y="170.1" font-size="12.5" fill="#212529" font-weight="700" text-anchor="start">631 亿</text>
+<text x="751.6" y="186.1" font-size="11" fill="#495057" text-anchor="start">2026-05-29</text>
+<circle cx="853.1" cy="263.0" r="5" fill="#4c6ef5"/>
+<text x="845.1" y="289.0" font-size="12.5" fill="#212529" font-weight="700" text-anchor="end">223 亿</text>
+<text x="845.1" y="305.0" font-size="11" fill="#495057" text-anchor="end">11-18</text>
+<text x="80.0" y="368.0" font-size="12.5" fill="#3b5bdb" font-weight="700" text-anchor="start">PE（TTM，倍）</text>
+<line x1="80.0" y1="508.0" x2="860.0" y2="508.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="512.0" font-size="11" fill="#868e96" text-anchor="end">0</text>
+<line x1="80.0" y1="464.7" x2="860.0" y2="464.7" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="468.7" font-size="11" fill="#868e96" text-anchor="end">50</text>
+<line x1="80.0" y1="421.3" x2="860.0" y2="421.3" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="425.3" font-size="11" fill="#868e96" text-anchor="end">100</text>
+<line x1="80.0" y1="378.0" x2="860.0" y2="378.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="382.0" font-size="11" fill="#868e96" text-anchor="end">150</text>
+<line x1="194.1" y1="378.0" x2="194.1" y2="508.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="422.4" y1="378.0" x2="422.4" y2="508.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="650.7" y1="378.0" x2="650.7" y2="508.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<path d="M83.1 426.2 L87.5 419.8 L91.9 437.8 L96.3 442.3 L100.6 436.8 L105.0 430.1 L109.4 430.1 L113.8 431.7 L118.2 428.0 L122.5 419.5 L126.9 425.9 L131.3 423.1 L135.0 420.7 L144.4 409.5 L148.8 413.5 L153.2 387.4" fill="none" stroke="#adb5bd" stroke-width="1.5" stroke-linejoin="round"/>
+<path d="M210.1 385.5 L214.4 410.7 L218.2 416.6 L227.5 389.2 L231.9 382.7 L236.2 382.2" fill="none" stroke="#adb5bd" stroke-width="1.5" stroke-linejoin="round"/>
+<path d="M262.4 383.7 L266.8 413.6 L269.3 412.3 L275.5 417.8 L279.9 415.0 L284.3 415.9 L288.6 425.8 L293.0 433.2 L297.4 432.0 L301.7 434.9 L306.1 437.5 L310.5 441.3 L314.8 439.4 L319.2 442.8 L323.6 445.3 L327.9 444.6 L332.3 448.0 L336.7 447.0 L341.0 448.6 L345.4 444.1 L349.8 447.4 L354.1 450.7 L358.5 449.8 L362.9 438.0 L364.7 431.5 L371.6 441.5 L376.0 437.1 L380.3 435.3 L384.7 447.7 L389.1 443.2 L393.4 437.2 L397.8 446.3 L402.2 446.3 L406.5 442.7 L410.9 441.7 L415.3 435.6 L419.6 432.1 L424.0 432.3 L428.4 430.4 L432.8 426.6 L437.1 429.0 L439.0 431.9 L445.9 424.5 L450.3 420.4 L454.7 402.7 L459.0 419.6 L463.4 411.1 L467.8 381.2 L472.2 399.0 L476.5 408.2 L480.3 409.5 L485.3 423.2 L489.7 428.2 L494.1 427.8" fill="none" stroke="#adb5bd" stroke-width="1.5" stroke-linejoin="round"/>
+<path d="M612.3 475.9 L616.6 472.9 L621.0 475.0 L625.4 478.3 L629.8 475.9 L634.2 476.8 L638.5 474.6 L642.9 476.4 L647.3 475.6 L650.4 475.8 L656.0 472.8 L660.4 471.8 L664.8 468.5 L669.2 462.8 L673.6 452.3 L677.9 438.4 L686.7 437.2 L691.1 440.1 L695.5 433.3 L699.8 433.8 L704.2 429.9 L708.6 436.1 L713.0 420.0 L717.3 380.4" fill="none" stroke="#adb5bd" stroke-width="1.5" stroke-linejoin="round"/>
+<path d="M725.5 446.6 L730.5 436.7 L734.9 435.7 L739.2 424.8 L743.6 405.6 L748.0 431.3 L752.4 443.3 L756.1 432.9 L761.1 428.4 L765.5 437.1 L769.9 438.7 L774.3 454.0 L778.6 443.4 L783.0 450.9 L787.4 432.3 L791.8 426.2 L796.2 433.1 L800.5 436.7 L804.9 471.5 L809.3 472.6 L813.7 469.8 L817.4 472.4 L821.2 475.7 L826.8 476.2 L831.2 479.9 L835.6 480.0 L839.9 486.2 L844.3 489.2 L848.7 489.1 L851.8 489.5" fill="none" stroke="#adb5bd" stroke-width="1.5" stroke-linejoin="round"/>
+<text x="80.0" y="560.0" font-size="12.5" fill="#0b7285" font-weight="700" text-anchor="start">单季归母净利润（亿元）</text>
+<line x1="80.0" y1="720.0" x2="860.0" y2="720.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="724.0" font-size="11" fill="#868e96" text-anchor="end">-2</text>
+<line x1="80.0" y1="682.5" x2="860.0" y2="682.5" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="686.5" font-size="11" fill="#868e96" text-anchor="end">0</text>
+<line x1="80.0" y1="645.0" x2="860.0" y2="645.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="649.0" font-size="11" fill="#868e96" text-anchor="end">2</text>
+<line x1="80.0" y1="607.5" x2="860.0" y2="607.5" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="611.5" font-size="11" fill="#868e96" text-anchor="end">4</text>
+<line x1="80.0" y1="570.0" x2="860.0" y2="570.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="574.0" font-size="11" fill="#868e96" text-anchor="end">6</text>
+<line x1="194.1" y1="570.0" x2="194.1" y2="720.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="422.4" y1="570.0" x2="422.4" y2="720.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="650.7" y1="570.0" x2="650.7" y2="720.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="80.0" y1="682.5" x2="860.0" y2="682.5" stroke="#adb5bd" stroke-width="1"/>
+<rect x="92.8" y="681.9" width="31.4" height="0.6" rx="3" fill="#0ca678"/>
+<rect x="149.9" y="680.6" width="31.4" height="1.9" rx="3" fill="#0ca678"/>
+<rect x="207.0" y="676.3" width="31.4" height="6.2" rx="3" fill="#0ca678"/>
+<rect x="264.1" y="680.8" width="31.4" height="1.7" rx="3" fill="#0ca678"/>
+<rect x="321.1" y="680.4" width="31.4" height="2.1" rx="3" fill="#0ca678"/>
+<rect x="378.2" y="682.5" width="31.4" height="5.2" rx="3" fill="#0ca678"/>
+<rect x="435.3" y="677.1" width="31.4" height="5.4" rx="3" fill="#0ca678"/>
+<text x="451.0" y="670.1" font-size="11" fill="#495057" text-anchor="middle">0.29</text>
+<rect x="492.4" y="678.4" width="31.4" height="4.1" rx="3" fill="#0ca678"/>
+<text x="508.0" y="671.4" font-size="11" fill="#495057" text-anchor="middle">0.22</text>
+<rect x="549.4" y="651.6" width="31.4" height="30.9" rx="3" fill="#0ca678"/>
+<text x="565.1" y="644.6" font-size="11" fill="#495057" text-anchor="middle">1.65</text>
+<rect x="606.5" y="668.1" width="31.4" height="14.4" rx="3" fill="#0ca678"/>
+<text x="622.2" y="661.1" font-size="11" fill="#495057" text-anchor="middle">0.77</text>
+<rect x="663.6" y="631.7" width="31.4" height="50.8" rx="3" fill="#0ca678"/>
+<text x="679.3" y="624.7" font-size="11" fill="#495057" text-anchor="middle">2.71</text>
+<rect x="720.6" y="601.7" width="31.4" height="80.8" rx="3" fill="#0ca678"/>
+<text x="736.3" y="594.7" font-size="11" fill="#495057" text-anchor="middle">4.31</text>
+<rect x="777.7" y="632.2" width="31.4" height="50.2" rx="3" fill="#f08c00"/>
+<text x="793.4" y="625.2" font-size="11" fill="#212529" font-weight="700" text-anchor="middle">2.68</text>
+<text x="198.1" y="740.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="start">2024</text>
+<text x="426.4" y="740.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="start">2025</text>
+<text x="654.7" y="740.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="start">2026</text>
+<line x1="80.0" y1="762.0" x2="104.0" y2="762.0" stroke="#4c6ef5" stroke-width="2"/>
+<circle cx="92.0" cy="762.0" r="3.5" fill="#4c6ef5"/>
+<text x="112.0" y="766.0" font-size="12" fill="#495057" text-anchor="start">总市值</text>
+<line x1="176.0" y1="762.0" x2="200.0" y2="762.0" stroke="#adb5bd" stroke-width="2"/>
+<circle cx="188.0" cy="762.0" r="3.5" fill="#adb5bd"/>
+<text x="208.0" y="766.0" font-size="12" fill="#495057" text-anchor="start">PE（TTM）</text>
+<rect x="297.6" y="755.0" width="16.0" height="12.0" rx="2" fill="#0ca678" stroke="#0ca678"/>
+<text x="325.6" y="766.0" font-size="12" fill="#495057" text-anchor="start">单季归母净利润</text>
+<rect x="30.0" y="792.0" width="840.0" height="74.0" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+<text x="48.0" y="816.0" font-size="12" fill="#495057" text-anchor="start">2026-01-05 市值 73 亿元，05-29 升到 631 亿元。三季度单季利润 2.68 亿元，低于二季度的 4.31 亿元；三季报披露前最后一个交易日（10-30），</text>
+<text x="48.0" y="834.0" font-size="12" fill="#495057" text-anchor="start">市值已跌到 237 亿元。</text>
+<text x="48.0" y="852.0" font-size="12" fill="#495057" text-anchor="start">2023—2025 年 TTM 利润在 0.2—0.6 亿元，PE 动辄上百倍，没有估值意义，图中 PE 面板截去 150 倍以上部分。市值与 PE 为周末值。</text>
+</svg>

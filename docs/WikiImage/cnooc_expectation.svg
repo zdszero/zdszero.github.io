@@ -1,0 +1,147 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 854" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect x="0" y="0" width="900" height="854" rx="12" fill="#ffffff"/>
+<text x="30.0" y="34.0" font-size="20" fill="#212529" font-weight="700" text-anchor="start">中国海油的预期差：研报追着油价修正，股价更早交易油价的下一步</text>
+<text x="30.0" y="56.0" font-size="13" fill="#868e96" text-anchor="start">每行一个节点。机构为当时可见的研报摘要；散户为东方财富 600938 吧当日按点击量排前的帖子（样本，不代表全部投资者）；预期差为事后检验</text>
+<line x1="132" y1="116" x2="132" y2="648" stroke="#dee2e6" stroke-width="2"/>
+<text x="118.0" y="86.0" font-size="12.5" fill="#212529" font-weight="700" text-anchor="end">时间</text>
+<text x="160.0" y="86.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="start">事件 / 外部条件</text>
+<text x="366.0" y="86.0" font-size="12.5" fill="#3b5bdb" font-weight="700" text-anchor="start">机构研报</text>
+<text x="562.0" y="86.0" font-size="12.5" fill="#5f3dc4" font-weight="700" text-anchor="start">散户与媒体</text>
+<text x="738.0" y="86.0" font-size="12.5" fill="#e8590c" font-weight="700" text-anchor="start">预期差</text>
+<text x="118.0" y="120.0" font-size="12" fill="#212529" font-weight="700" text-anchor="end">2022-04-21</text>
+<text x="118.0" y="136.0" font-size="11" fill="#868e96" text-anchor="end">A 股上市 +27.7%</text>
+<circle cx="132.0" cy="116.0" r="5" fill="#fa5252"/>
+<rect x="150.0" y="100.0" width="200.0" height="66.0" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+<text x="160.0" y="120.0" font-size="11.5" fill="#495057" text-anchor="start">发行价 10.80 元，收 13.79 元；</text>
+<text x="160.0" y="136.0" font-size="11.5" fill="#495057" text-anchor="start">布伦特 108</text>
+<rect x="356.0" y="100.0" width="190.0" height="66.0" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+<text x="366.0" y="120.0" font-size="11.5" fill="#495057" text-anchor="start">信达预测 2022 年 1,022 亿元，</text>
+<text x="366.0" y="136.0" font-size="11.5" fill="#495057" text-anchor="start">按布伦特 80 美元测算</text>
+<rect x="552.0" y="100.0" width="170.0" height="66.0" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+<text x="562.0" y="120.0" font-size="11.5" fill="#495057" text-anchor="start">“中海油会破发吗？”</text>
+<rect x="728.0" y="100.0" width="132.0" height="66.0" rx="8" fill="#fff5f5" stroke="#fa5252"/>
+<text x="738.0" y="120.0" font-size="11.5" fill="#c92a2a" font-weight="700" text-anchor="start">低估：2022 实际</text>
+<text x="738.0" y="136.0" font-size="11.5" fill="#c92a2a" text-anchor="start">1,417 亿元，高出</text>
+<text x="738.0" y="152.0" font-size="11.5" fill="#c92a2a" text-anchor="start">39%</text>
+<text x="118.0" y="196.0" font-size="12" fill="#212529" font-weight="700" text-anchor="end">2022-06-14</text>
+<text x="118.0" y="212.0" font-size="11" fill="#868e96" text-anchor="end">A 股高点 20.40</text>
+<circle cx="132.0" cy="192.0" r="5" fill="#0ca678"/>
+<rect x="150.0" y="176.0" width="200.0" height="66.0" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+<text x="160.0" y="196.0" font-size="11.5" fill="#495057" text-anchor="start">布伦特 121；A 股 PE 10.82×，</text>
+<text x="160.0" y="212.0" font-size="11.5" fill="#495057" text-anchor="start">A/H 溢价 112%</text>
+<rect x="356.0" y="176.0" width="190.0" height="66.0" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+<text x="366.0" y="196.0" font-size="11.5" fill="#495057" text-anchor="start">信达 04-29 预测 2022/23 年</text>
+<text x="366.0" y="212.0" font-size="11.5" fill="#495057" text-anchor="start">1,244 / 1,385 亿元</text>
+<rect x="552.0" y="176.0" width="170.0" height="66.0" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+<text x="562.0" y="196.0" font-size="11.5" fill="#495057" text-anchor="start">“将新高不断，逢低买入”；</text>
+<text x="562.0" y="212.0" font-size="11.5" fill="#495057" text-anchor="start">“有点高了”</text>
+<rect x="728.0" y="176.0" width="132.0" height="66.0" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+<text x="738.0" y="196.0" font-size="11.5" fill="#0b7285" font-weight="700" text-anchor="start">高估：A 股此后 4 个</text>
+<text x="738.0" y="212.0" font-size="11.5" fill="#0b7285" text-anchor="start">月跌 28%，2023 实际</text>
+<text x="738.0" y="228.0" font-size="11.5" fill="#0b7285" text-anchor="start">低于预测 11%</text>
+<text x="118.0" y="272.0" font-size="12" fill="#212529" font-weight="700" text-anchor="end">2022-10-31</text>
+<text x="118.0" y="288.0" font-size="11" fill="#868e96" text-anchor="end">H 股 PE 3.23× 最低</text>
+<circle cx="132.0" cy="268.0" r="5" fill="#0ca678"/>
+<rect x="150.0" y="252.0" width="200.0" height="66.0" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+<text x="160.0" y="272.0" font-size="11.5" fill="#495057" text-anchor="start">前三季度利润 1,088 亿元 +106%；</text>
+<text x="160.0" y="288.0" font-size="11.5" fill="#495057" text-anchor="start">布伦特 93</text>
+<rect x="356.0" y="252.0" width="190.0" height="66.0" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+<text x="366.0" y="272.0" font-size="11.5" fill="#495057" text-anchor="start">信达 10-28 预测 2022/23 年</text>
+<text x="366.0" y="288.0" font-size="11.5" fill="#495057" text-anchor="start">1,416 / 1,521 亿元</text>
+<rect x="552.0" y="252.0" width="170.0" height="66.0" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+<text x="562.0" y="272.0" font-size="11.5" fill="#495057" text-anchor="start">“市盈率4.9的股票，你担心</text>
+<text x="562.0" y="288.0" font-size="11.5" fill="#495057" text-anchor="start">什么？”</text>
+<rect x="728.0" y="252.0" width="132.0" height="66.0" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+<text x="738.0" y="272.0" font-size="11.5" fill="#0b7285" font-weight="700" text-anchor="start">高估：2022 几乎准确，</text>
+<text x="738.0" y="288.0" font-size="11.5" fill="#0b7285" text-anchor="start">2023 实际低 19%；</text>
+<text x="738.0" y="304.0" font-size="11.5" fill="#0b7285" text-anchor="start">3× 已计入回落</text>
+<text x="118.0" y="348.0" font-size="12" fill="#212529" font-weight="700" text-anchor="end">2024-06-20</text>
+<text x="118.0" y="364.0" font-size="11" fill="#868e96" text-anchor="end">H 股 23.50 高点</text>
+<circle cx="132.0" cy="344.0" r="5" fill="#0ca678"/>
+<rect x="150.0" y="328.0" width="200.0" height="66.0" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+<text x="160.0" y="348.0" font-size="11.5" fill="#495057" text-anchor="start">布伦特 85；H 股 PE 7.76×，A 股</text>
+<text x="160.0" y="364.0" font-size="11.5" fill="#495057" text-anchor="start">07-02 到 35.14</text>
+<rect x="356.0" y="328.0" width="190.0" height="66.0" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+<text x="366.0" y="348.0" font-size="11.5" fill="#495057" text-anchor="start">信达 04-26 预测 2024/25 年</text>
+<text x="366.0" y="364.0" font-size="11.5" fill="#495057" text-anchor="start">1,650 / 1,783 亿元</text>
+<rect x="552.0" y="328.0" width="170.0" height="66.0" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+<text x="562.0" y="348.0" font-size="11.5" fill="#495057" text-anchor="start">“疯涨，偏爱高股息红利”（</text>
+<text x="562.0" y="364.0" font-size="11.5" fill="#495057" text-anchor="start">07-02）</text>
+<rect x="728.0" y="328.0" width="132.0" height="66.0" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+<text x="738.0" y="348.0" font-size="11.5" fill="#0b7285" font-weight="700" text-anchor="start">高估：2024 实际低</text>
+<text x="738.0" y="364.0" font-size="11.5" fill="#0b7285" text-anchor="start">16%，2025 实际低</text>
+<text x="738.0" y="380.0" font-size="11.5" fill="#0b7285" text-anchor="start">32%</text>
+<text x="118.0" y="424.0" font-size="12" fill="#212529" font-weight="700" text-anchor="end">2025-04-07</text>
+<text x="118.0" y="440.0" font-size="11" fill="#868e96" text-anchor="end">H 股 −15.3%</text>
+<circle cx="132.0" cy="420.0" r="5" fill="#f08c00"/>
+<rect x="150.0" y="404.0" width="200.0" height="66.0" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+<text x="160.0" y="424.0" font-size="11.5" fill="#495057" text-anchor="start">关税冲击后首个交易日；布伦特 64，</text>
+<text x="160.0" y="440.0" font-size="11.5" fill="#495057" text-anchor="start">H 股 PE 4.98×</text>
+<rect x="356.0" y="404.0" width="190.0" height="66.0" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+<text x="366.0" y="424.0" font-size="11.5" fill="#495057" text-anchor="start">国信 03-29 预测 2025 年 1,401</text>
+<text x="366.0" y="440.0" font-size="11.5" fill="#495057" text-anchor="start">亿元</text>
+<rect x="552.0" y="404.0" width="170.0" height="66.0" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+<text x="562.0" y="424.0" font-size="11.5" fill="#495057" text-anchor="start">“为什么大跌？？市盈率这么</text>
+<text x="562.0" y="440.0" font-size="11.5" fill="#495057" text-anchor="start">低，也跌？？”</text>
+<rect x="728.0" y="404.0" width="132.0" height="66.0" rx="8" fill="#fff4e6" stroke="#f08c00"/>
+<text x="738.0" y="424.0" font-size="11.5" fill="#e8590c" font-weight="700" text-anchor="start">关注点切换：利润预</text>
+<text x="738.0" y="440.0" font-size="11.5" fill="#e8590c" text-anchor="start">测高估 13%，H 股到</text>
+<text x="738.0" y="456.0" font-size="11.5" fill="#e8590c" text-anchor="start">年末仍涨 36%</text>
+<text x="118.0" y="500.0" font-size="12" fill="#212529" font-weight="700" text-anchor="end">2026-03-23</text>
+<text x="118.0" y="516.0" font-size="11" fill="#868e96" text-anchor="end">H 股 30.50 高点</text>
+<circle cx="132.0" cy="496.0" r="5" fill="#f08c00"/>
+<rect x="150.0" y="480.0" width="200.0" height="66.0" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+<text x="160.0" y="500.0" font-size="11.5" fill="#495057" text-anchor="start">霍尔木兹航运接近停摆，布伦特从</text>
+<text x="160.0" y="516.0" font-size="11.5" fill="#495057" text-anchor="start">70 涨到 96；H 股 PE 10.36×</text>
+<rect x="356.0" y="480.0" width="190.0" height="66.0" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+<text x="366.0" y="500.0" font-size="11.5" fill="#495057" text-anchor="start">国信 03-27 预测 2026 年 1,563</text>
+<text x="366.0" y="516.0" font-size="11.5" fill="#495057" text-anchor="start">亿元（布伦特 80）</text>
+<rect x="552.0" y="480.0" width="170.0" height="66.0" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+<text x="562.0" y="500.0" font-size="11.5" fill="#495057" text-anchor="start">“国家开始调控价格上涨了…</text>
+<text x="562.0" y="516.0" font-size="11.5" fill="#495057" text-anchor="start">马上就要下跌了”</text>
+<rect x="728.0" y="480.0" width="132.0" height="66.0" rx="8" fill="#fff4e6" stroke="#f08c00"/>
+<text x="738.0" y="500.0" font-size="11.5" fill="#e8590c" font-weight="700" text-anchor="start">关注点切换：预测上</text>
+<text x="738.0" y="516.0" font-size="11.5" fill="#e8590c" text-anchor="start">调 21%，H 股 3 个月</text>
+<text x="738.0" y="532.0" font-size="11.5" fill="#e8590c" text-anchor="start">后跌 33%</text>
+<text x="118.0" y="576.0" font-size="12" fill="#212529" font-weight="700" text-anchor="end">2026-06-30</text>
+<text x="118.0" y="592.0" font-size="11" fill="#868e96" text-anchor="end">H 股 PE 6.73×</text>
+<circle cx="132.0" cy="572.0" r="5" fill="#fa5252"/>
+<rect x="150.0" y="556.0" width="200.0" height="66.0" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+<text x="160.0" y="576.0" font-size="11.5" fill="#495057" text-anchor="start">布伦特从 4 月末 111 跌到 73</text>
+<rect x="356.0" y="556.0" width="190.0" height="66.0" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+<text x="366.0" y="576.0" font-size="11.5" fill="#495057" text-anchor="start">国信 04-29 预测 2026 年 1,651</text>
+<text x="366.0" y="592.0" font-size="11.5" fill="#495057" text-anchor="start">亿元（布伦特 85）</text>
+<rect x="552.0" y="556.0" width="170.0" height="66.0" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+<text x="562.0" y="576.0" font-size="11.5" fill="#495057" text-anchor="start">本次未抓到当日帖子</text>
+<rect x="728.0" y="556.0" width="132.0" height="66.0" rx="8" fill="#fff5f5" stroke="#fa5252"/>
+<text x="738.0" y="576.0" font-size="11.5" fill="#c92a2a" font-weight="700" text-anchor="start">低估：二季度利润</text>
+<text x="738.0" y="592.0" font-size="11.5" fill="#c92a2a" text-anchor="start">467 亿元，创单季新</text>
+<text x="738.0" y="608.0" font-size="11.5" fill="#c92a2a" text-anchor="start">高</text>
+<text x="118.0" y="652.0" font-size="12" fill="#212529" font-weight="700" text-anchor="end">2026-10-23</text>
+<text x="118.0" y="668.0" font-size="11" fill="#868e96" text-anchor="end">布伦特 117</text>
+<circle cx="132.0" cy="648.0" r="5" fill="#f08c00"/>
+<rect x="150.0" y="632.0" width="200.0" height="66.0" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+<text x="160.0" y="652.0" font-size="11.5" fill="#495057" text-anchor="start">H 股 23.12，PE 6.81×，低于战前</text>
+<text x="160.0" y="668.0" font-size="11.5" fill="#495057" text-anchor="start">02-27 的 25.32</text>
+<rect x="356.0" y="632.0" width="190.0" height="66.0" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+<text x="366.0" y="652.0" font-size="11.5" fill="#495057" text-anchor="start">国信预测 2026/27 年 1,651 /</text>
+<text x="366.0" y="668.0" font-size="11.5" fill="#495057" text-anchor="start">1,552 亿元</text>
+<rect x="552.0" y="632.0" width="170.0" height="66.0" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+<text x="562.0" y="652.0" font-size="11.5" fill="#495057" text-anchor="start">“国内资本定价，认为高油价</text>
+<text x="562.0" y="668.0" font-size="11.5" fill="#495057" text-anchor="start">不可持续”</text>
+<rect x="728.0" y="632.0" width="132.0" height="66.0" rx="8" fill="#fff4e6" stroke="#f08c00"/>
+<text x="738.0" y="652.0" font-size="11.5" fill="#e8590c" font-weight="700" text-anchor="start">关注点切换：市场按</text>
+<text x="738.0" y="668.0" font-size="11.5" fill="#e8590c" text-anchor="start">油价回落后的利润定</text>
+<text x="738.0" y="684.0" font-size="11.5" fill="#e8590c" text-anchor="start">价</text>
+<rect x="84.0" y="709.0" width="16.0" height="12.0" rx="2" fill="#fff5f5" stroke="#fa5252"/>
+<text x="112.0" y="720.0" font-size="12" fill="#495057" text-anchor="start">当时低估，后来上修</text>
+<rect x="252.0" y="709.0" width="16.0" height="12.0" rx="2" fill="#e6fcf5" stroke="#0ca678"/>
+<text x="280.0" y="720.0" font-size="12" fill="#495057" text-anchor="start">当时高估，后来下修</text>
+<rect x="420.0" y="709.0" width="16.0" height="12.0" rx="2" fill="#fff4e6" stroke="#f08c00"/>
+<text x="448.0" y="720.0" font-size="12" fill="#495057" text-anchor="start">关注点切换</text>
+<rect x="30.0" y="746.0" width="840.0" height="92.0" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+<text x="48.0" y="770.0" font-size="12" fill="#495057" text-anchor="start">2022—2025 年，研报对利润的预测在油价上涨初期偏低、在油价高位偏高。H 股 2024-06-20 的高点在一季报后预测上调的两个月内，2026-03-23</text>
+<text x="48.0" y="788.0" font-size="12" fill="#495057" text-anchor="start">的高点比年报后的预测上调早 4 天；两个低点（2022-10-31、2025-04-07）都出现在利润仍高、PE 只有 3—5 倍的时候。</text>
+<text x="48.0" y="806.0" font-size="12" fill="#495057" text-anchor="start">来源：东方财富研报中心摘要、东方财富日 K 与估值数据、东方财富股吧帖子标题。2026 年全年利润未披露，2026 年各行的判断只基于前三季度与预</text>
+<text x="48.0" y="824.0" font-size="12" fill="#495057" text-anchor="start">测变化。</text>
+</svg>

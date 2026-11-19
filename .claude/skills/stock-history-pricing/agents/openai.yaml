@@ -1,0 +1,3 @@
+interface:
+  display_name: "股票历史定价分析"
+  short_description: "按时间线复盘历史 PE 与利润、研报与散户观点、事件与预期差，并绘制 Wiki 风格图表"

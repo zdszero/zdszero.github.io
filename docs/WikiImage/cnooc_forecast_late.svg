@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 580" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect x="0" y="0" width="900" height="580" rx="12" fill="#ffffff"/>
+<text x="30.0" y="34.0" font-size="20" fill="#212529" font-weight="700" text-anchor="start">2025 年实际比最后一次预测低 10%，2026 年预测随战争油价上调 22%</text>
+<text x="30.0" y="56.0" font-size="13" fill="#868e96" text-anchor="start">信达证券对 2025、2026 年归母净利润的历次预测（亿元），横轴为发布日；空心方块为实际值。据研报摘要整理</text>
+<line x1="80.0" y1="397.4" x2="860.0" y2="397.4" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="401.4" font-size="11" fill="#868e96" text-anchor="end">1,200</text>
+<line x1="80.0" y1="314.9" x2="860.0" y2="314.9" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="318.9" font-size="11" fill="#868e96" text-anchor="end">1,400</text>
+<line x1="80.0" y1="232.4" x2="860.0" y2="232.4" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="236.4" font-size="11" fill="#868e96" text-anchor="end">1,600</text>
+<line x1="80.0" y1="149.9" x2="860.0" y2="149.9" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="153.9" font-size="11" fill="#868e96" text-anchor="end">1,800</text>
+<line x1="262.6" y1="88.0" x2="262.6" y2="418.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="461.7" y1="88.0" x2="461.7" y2="418.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="660.9" y1="88.0" x2="660.9" y2="418.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<path d="M111.7 309.7 L127.5 298.6 L188.6 303.2 L225.7 301.5 L278.1 318.8 L306.9 271.6 L325.9 156.8 L394.0 197.7 L426.6 219.5 L508.9 329.6 L526.4 329.6 L592.4 335.4 L627.3 335.3" fill="none" stroke="#0ca678" stroke-width="2" stroke-linejoin="round"/>
+<path d="M627.3 335.3 L707.5 388.8" fill="none" stroke="#0ca678" stroke-width="1.5" stroke-linejoin="round" stroke-dasharray="4 3"/>
+<rect x="701.5" y="382.8" width="12" height="12" fill="#ffffff" stroke="#0ca678" stroke-width="2"/>
+<text x="719.5" y="393.8" font-size="11.5" fill="#495057" text-anchor="start">2025 实际 1,221</text>
+<circle cx="111.7" cy="309.7" r="4.5" fill="#0ca678"/>
+<text x="111.7" y="327.7" font-size="11.5" fill="#495057" text-anchor="middle">1,413</text>
+<circle cx="127.5" cy="298.6" r="4.5" fill="#0ca678"/>
+<text x="135.5" y="290.6" font-size="11.5" fill="#495057" text-anchor="start"></text>
+<circle cx="188.6" cy="303.2" r="4.5" fill="#0ca678"/>
+<text x="196.6" y="295.2" font-size="11.5" fill="#495057" text-anchor="start"></text>
+<circle cx="225.7" cy="301.5" r="4.5" fill="#0ca678"/>
+<text x="233.7" y="293.5" font-size="11.5" fill="#495057" text-anchor="start"></text>
+<circle cx="278.1" cy="318.8" r="4.5" fill="#0ca678"/>
+<text x="286.1" y="310.8" font-size="11.5" fill="#495057" text-anchor="start"></text>
+<circle cx="306.9" cy="271.6" r="4.5" fill="#0ca678"/>
+<text x="314.9" y="263.6" font-size="11.5" fill="#495057" text-anchor="start"></text>
+<circle cx="325.9" cy="156.8" r="4.5" fill="#0ca678"/>
+<text x="317.9" y="152.8" font-size="11.5" fill="#495057" text-anchor="end">1,783</text>
+<circle cx="394.0" cy="197.7" r="4.5" fill="#0ca678"/>
+<text x="402.0" y="189.7" font-size="11.5" fill="#495057" text-anchor="start"></text>
+<circle cx="426.6" cy="219.5" r="4.5" fill="#0ca678"/>
+<text x="434.6" y="211.5" font-size="11.5" fill="#495057" text-anchor="start"></text>
+<circle cx="508.9" cy="329.6" r="4.5" fill="#0ca678"/>
+<text x="516.9" y="321.6" font-size="11.5" fill="#495057" text-anchor="start"></text>
+<circle cx="526.4" cy="329.6" r="4.5" fill="#0ca678"/>
+<text x="534.4" y="321.6" font-size="11.5" fill="#495057" text-anchor="start"></text>
+<circle cx="592.4" cy="335.4" r="4.5" fill="#0ca678"/>
+<text x="600.4" y="327.4" font-size="11.5" fill="#495057" text-anchor="start"></text>
+<circle cx="627.3" cy="335.3" r="4.5" fill="#0ca678"/>
+<text x="627.3" y="355.3" font-size="11.5" fill="#495057" text-anchor="middle">1,350</text>
+<path d="M306.9 238.9 L325.9 120.4 L394.0 151.3 L426.6 192.1 L508.9 305.6 L526.4 305.6 L592.4 315.8 L627.3 326.6 L709.7 243.8 L725.5 243.8 L791.0 200.9" fill="none" stroke="#4c6ef5" stroke-width="2" stroke-linejoin="round"/>
+<circle cx="306.9" cy="238.9" r="4.5" fill="#4c6ef5"/>
+<text x="298.9" y="234.9" font-size="11.5" fill="#495057" text-anchor="end">1,584</text>
+<circle cx="325.9" cy="120.4" r="4.5" fill="#4c6ef5"/>
+<text x="317.9" y="114.4" font-size="11.5" fill="#495057" text-anchor="end">1,871</text>
+<circle cx="394.0" cy="151.3" r="4.5" fill="#4c6ef5"/>
+<text x="402.0" y="143.3" font-size="11.5" fill="#495057" text-anchor="start"></text>
+<circle cx="426.6" cy="192.1" r="4.5" fill="#4c6ef5"/>
+<text x="434.6" y="184.1" font-size="11.5" fill="#495057" text-anchor="start"></text>
+<circle cx="508.9" cy="305.6" r="4.5" fill="#4c6ef5"/>
+<text x="516.9" y="297.6" font-size="11.5" fill="#495057" text-anchor="start"></text>
+<circle cx="526.4" cy="305.6" r="4.5" fill="#4c6ef5"/>
+<text x="534.4" y="297.6" font-size="11.5" fill="#495057" text-anchor="start"></text>
+<circle cx="592.4" cy="315.8" r="4.5" fill="#4c6ef5"/>
+<text x="600.4" y="307.8" font-size="11.5" fill="#495057" text-anchor="start"></text>
+<circle cx="627.3" cy="326.6" r="4.5" fill="#4c6ef5"/>
+<text x="627.3" y="314.6" font-size="11.5" fill="#495057" text-anchor="middle">1,372</text>
+<circle cx="709.7" cy="243.8" r="4.5" fill="#4c6ef5"/>
+<text x="701.7" y="237.8" font-size="11.5" fill="#495057" text-anchor="end">1,572</text>
+<circle cx="725.5" cy="243.8" r="4.5" fill="#4c6ef5"/>
+<text x="733.5" y="235.8" font-size="11.5" fill="#495057" text-anchor="start"></text>
+<circle cx="791.0" cy="200.9" r="4.5" fill="#4c6ef5"/>
+<text x="791.0" y="190.9" font-size="11.5" fill="#495057" text-anchor="middle">1,676</text>
+<line x1="355.9" y1="88.0" x2="355.9" y2="418.0" stroke="#e8590c" stroke-width="1.5" stroke-dasharray="5 4"/>
+<text x="350.9" y="102.0" font-size="12" fill="#e8590c" font-weight="700" text-anchor="end">2024-06-20 H 股高点</text>
+<line x1="514.4" y1="88.0" x2="514.4" y2="418.0" stroke="#495057" stroke-width="1.5" stroke-dasharray="5 4"/>
+<text x="519.4" y="118.0" font-size="12" fill="#495057" font-weight="700" text-anchor="start">2025-04-07 H 股 −15.3%</text>
+<line x1="705.3" y1="88.0" x2="705.3" y2="418.0" stroke="#e8590c" stroke-width="1.5" stroke-dasharray="5 4"/>
+<text x="700.3" y="102.0" font-size="12" fill="#e8590c" font-weight="700" text-anchor="end">2026-03-23 H 股高点</text>
+<text x="266.6" y="438.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="start">2024</text>
+<text x="465.7" y="438.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="start">2025</text>
+<text x="664.9" y="438.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="start">2026</text>
+<line x1="80.0" y1="460.0" x2="104.0" y2="460.0" stroke="#0ca678" stroke-width="2"/>
+<circle cx="92.0" cy="460.0" r="3.5" fill="#0ca678"/>
+<text x="112.0" y="464.0" font-size="12" fill="#495057" text-anchor="start">预测 2025 年利润</text>
+<line x1="234.1" y1="460.0" x2="258.1" y2="460.0" stroke="#4c6ef5" stroke-width="2"/>
+<circle cx="246.1" cy="460.0" r="3.5" fill="#4c6ef5"/>
+<text x="266.1" y="464.0" font-size="12" fill="#495057" text-anchor="start">预测 2026 年利润</text>
+<rect x="394.15999999999997" y="454" width="12" height="12" fill="#ffffff" stroke="#adb5bd" stroke-width="2"/>
+<text x="420.2" y="464.0" font-size="12" fill="#495057" text-anchor="start">后来披露的实际值</text>
+<rect x="30.0" y="490.0" width="840.0" height="74.0" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+<text x="48.0" y="514.0" font-size="12" fill="#495057" text-anchor="start">2024-04-26 对 2025、2026 年的预测分别为 1,783 和 1,871 亿元，是这两条线的最高点；油价回落后逐次下调，2025 年实际 1,221 亿元，比</text>
+<text x="48.0" y="532.0" font-size="12" fill="#495057" text-anchor="start">2025-10-31 的最后一次预测低 9.6%。2026 年预测在霍尔木兹受阻后从 1,372 亿元上调到 1,676 亿元，前三季度实际 1,191 亿元。</text>
+<text x="48.0" y="550.0" font-size="12" fill="#495057" text-anchor="start">来源：东方财富研报中心信达证券报告摘要；2025 年实际值画在年报披露后估值分母更新的日期。</text>
+</svg>

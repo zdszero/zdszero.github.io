@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 580" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect x="0" y="0" width="900" height="580" rx="12" fill="#ffffff"/>
+<text x="30.0" y="34.0" font-size="20" fill="#212529" font-weight="700" text-anchor="start">研报预测跟着金属价格走：民生证券对 2022、2023、2025 年利润的预测</text>
+<text x="30.0" y="56.0" font-size="13" fill="#868e96" text-anchor="start">每个点是一次报告对目标年度归母净利润的预测（亿元），横轴为发布日；空心方块为后来披露的实际值。据东方财富研报中心摘要整理</text>
+<line x1="80.0" y1="376.8" x2="860.0" y2="376.8" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="380.8" font-size="11" fill="#868e96" text-anchor="end">200</text>
+<line x1="80.0" y1="294.2" x2="860.0" y2="294.2" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="298.2" font-size="11" fill="#868e96" text-anchor="end">300</text>
+<line x1="80.0" y1="211.8" x2="860.0" y2="211.8" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="215.8" font-size="11" fill="#868e96" text-anchor="end">400</text>
+<line x1="80.0" y1="129.2" x2="860.0" y2="129.2" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="133.2" font-size="11" fill="#868e96" text-anchor="end">500</text>
+<line x1="80.0" y1="88.0" x2="80.0" y2="418.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="253.3" y1="88.0" x2="253.3" y2="418.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="426.7" y1="88.0" x2="426.7" y2="418.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="600.0" y1="88.0" x2="600.0" y2="418.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="773.3" y1="88.0" x2="773.3" y2="418.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<path d="M82.1 328.9 L128.2 315.7 L170.9 342.9 L220.8 366.9 L267.3 376.8" fill="none" stroke="#adb5bd" stroke-width="2" stroke-linejoin="round"/>
+<path d="M267.3 376.8 L293.0 376.4" fill="none" stroke="#adb5bd" stroke-width="1.5" stroke-linejoin="round" stroke-dasharray="4 3"/>
+<rect x="287.0" y="370.4" width="12" height="12" fill="#ffffff" stroke="#adb5bd" stroke-width="2"/>
+<text x="293.0" y="398.4" font-size="11.5" fill="#495057" text-anchor="middle">2022 实际 200</text>
+<circle cx="82.1" cy="328.9" r="4.5" fill="#adb5bd"/>
+<text x="82.1" y="342.9" font-size="11.5" fill="#495057" text-anchor="middle">258</text>
+<circle cx="128.2" cy="315.7" r="4.5" fill="#adb5bd"/>
+<text x="128.2" y="305.7" font-size="11.5" fill="#495057" text-anchor="middle">274</text>
+<circle cx="170.9" cy="342.9" r="4.5" fill="#adb5bd"/>
+<text x="170.9" y="358.9" font-size="11.5" fill="#495057" text-anchor="middle">241</text>
+<circle cx="220.8" cy="366.9" r="4.5" fill="#adb5bd"/>
+<text x="220.8" y="382.9" font-size="11.5" fill="#495057" text-anchor="middle">212</text>
+<circle cx="267.3" cy="376.8" r="4.5" fill="#adb5bd"/>
+<text x="267.3" y="366.8" font-size="11.5" fill="#495057" text-anchor="middle">200</text>
+<path d="M82.1 316.5 L128.2 281.1 L219.4 309.9 L220.8 342.9 L343.8 360.2" fill="none" stroke="#0ca678" stroke-width="2" stroke-linejoin="round"/>
+<path d="M343.8 360.2 L465.7 367.5" fill="none" stroke="#0ca678" stroke-width="1.5" stroke-linejoin="round" stroke-dasharray="4 3"/>
+<rect x="459.7" y="361.5" width="12" height="12" fill="#ffffff" stroke="#0ca678" stroke-width="2"/>
+<text x="465.7" y="385.5" font-size="11.5" fill="#495057" text-anchor="middle">2023 实际 211</text>
+<circle cx="82.1" cy="316.5" r="4.5" fill="#0ca678"/>
+<text x="74.1" y="310.5" font-size="11.5" fill="#495057" text-anchor="end">273</text>
+<circle cx="128.2" cy="281.1" r="4.5" fill="#0ca678"/>
+<text x="128.2" y="271.1" font-size="11.5" fill="#495057" text-anchor="middle">316</text>
+<circle cx="219.4" cy="309.9" r="4.5" fill="#0ca678"/>
+<text x="219.4" y="299.9" font-size="11.5" fill="#495057" text-anchor="middle">281</text>
+<circle cx="220.8" cy="342.9" r="4.5" fill="#0ca678"/>
+<text x="228.8" y="356.9" font-size="11.5" fill="#495057" text-anchor="start">241</text>
+<circle cx="343.8" cy="360.2" r="4.5" fill="#0ca678"/>
+<text x="343.8" y="350.2" font-size="11.5" fill="#495057" text-anchor="middle">220</text>
+<path d="M294.9 234.8 L397.0 294.2 L466.7 287.6 L566.1 211.8 L610.2 229.1 L715.2 171.3 L738.9 113.6" fill="none" stroke="#4c6ef5" stroke-width="2" stroke-linejoin="round"/>
+<path d="M738.9 113.6 L811.1 114.6" fill="none" stroke="#4c6ef5" stroke-width="1.5" stroke-linejoin="round" stroke-dasharray="4 3"/>
+<rect x="805.1" y="108.6" width="12" height="12" fill="#ffffff" stroke="#4c6ef5" stroke-width="2"/>
+<text x="811.1" y="100.6" font-size="11.5" fill="#495057" text-anchor="middle">2025 实际 518</text>
+<circle cx="294.9" cy="234.8" r="4.5" fill="#4c6ef5"/>
+<text x="294.9" y="224.8" font-size="11.5" fill="#495057" text-anchor="middle">372</text>
+<circle cx="397.0" cy="294.2" r="4.5" fill="#4c6ef5"/>
+<text x="397.0" y="312.2" font-size="11.5" fill="#495057" text-anchor="middle">300</text>
+<circle cx="466.7" cy="287.6" r="4.5" fill="#4c6ef5"/>
+<text x="466.7" y="305.6" font-size="11.5" fill="#495057" text-anchor="middle">308</text>
+<circle cx="566.1" cy="211.8" r="4.5" fill="#4c6ef5"/>
+<text x="566.1" y="201.8" font-size="11.5" fill="#495057" text-anchor="middle">400</text>
+<circle cx="610.2" cy="229.1" r="4.5" fill="#4c6ef5"/>
+<text x="610.2" y="247.1" font-size="11.5" fill="#495057" text-anchor="middle">379</text>
+<circle cx="715.2" cy="171.3" r="4.5" fill="#4c6ef5"/>
+<text x="707.2" y="165.3" font-size="11.5" fill="#495057" text-anchor="end">449</text>
+<circle cx="738.9" cy="113.6" r="4.5" fill="#4c6ef5"/>
+<text x="730.9" y="107.6" font-size="11.5" fill="#495057" text-anchor="end">519</text>
+<line x1="115.4" y1="88.0" x2="115.4" y2="418.0" stroke="#e8590c" stroke-width="1.5" stroke-dasharray="5 4"/>
+<text x="120.4" y="102.0" font-size="12" fill="#e8590c" font-weight="700" text-anchor="start">2022-03-16 美联储首次加息</text>
+<line x1="208.5" y1="88.0" x2="208.5" y2="418.0" stroke="#495057" stroke-width="1.5" stroke-dasharray="5 4"/>
+<text x="213.5" y="118.0" font-size="12" fill="#495057" font-weight="700" text-anchor="start">2022-09-28 PE 9.10×</text>
+<line x1="645.8" y1="88.0" x2="645.8" y2="418.0" stroke="#e8590c" stroke-width="1.5" stroke-dasharray="5 4"/>
+<text x="640.8" y="102.0" font-size="12" fill="#e8590c" font-weight="700" text-anchor="end">2025-04-07 跌停 −9.94%</text>
+<text x="84.0" y="438.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="start">2022</text>
+<text x="257.3" y="438.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="start">2023</text>
+<text x="430.7" y="438.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="start">2024</text>
+<text x="604.0" y="438.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="start">2025</text>
+<text x="777.3" y="438.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="start">2026</text>
+<line x1="80.0" y1="460.0" x2="104.0" y2="460.0" stroke="#adb5bd" stroke-width="2"/>
+<circle cx="92.0" cy="460.0" r="3.5" fill="#adb5bd"/>
+<text x="112.0" y="464.0" font-size="12" fill="#495057" text-anchor="start">预测 2022 年利润</text>
+<line x1="234.1" y1="460.0" x2="258.1" y2="460.0" stroke="#0ca678" stroke-width="2"/>
+<circle cx="246.1" cy="460.0" r="3.5" fill="#0ca678"/>
+<text x="266.1" y="464.0" font-size="12" fill="#495057" text-anchor="start">预测 2023 年利润</text>
+<line x1="388.2" y1="460.0" x2="412.2" y2="460.0" stroke="#4c6ef5" stroke-width="2"/>
+<circle cx="400.2" cy="460.0" r="3.5" fill="#4c6ef5"/>
+<text x="420.2" y="464.0" font-size="12" fill="#495057" text-anchor="start">预测 2025 年利润</text>
+<rect x="548.24" y="454" width="12" height="12" fill="#ffffff" stroke="#adb5bd" stroke-width="2"/>
+<text x="574.2" y="464.0" font-size="12" fill="#495057" text-anchor="start">后来披露的实际值</text>
+<rect x="30.0" y="490.0" width="840.0" height="74.0" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+<text x="48.0" y="514.0" font-size="12" fill="#495057" text-anchor="start">2022—2023 年预测随铜价、锂价回落逐次下调，2023 年预测从 316 亿元降到 220 亿元，实际 211 亿元；2025 年预测在 2023-10 低到 300 亿元，金</text>
+<text x="48.0" y="532.0" font-size="12" fill="#495057" text-anchor="start">价上涨后一路上调到 519 亿元，实际 517.8 亿元。最后一次预测都接近实际，研报更多是在跟随商品价格修正。</text>
+<text x="48.0" y="550.0" font-size="12" fill="#495057" text-anchor="start">来源：东方财富研报中心民生证券报告摘要；实际值取自公司年报（F10），画在年报披露日。</text>
+</svg>

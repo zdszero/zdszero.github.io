@@ -1,0 +1,150 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 590" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="590" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">Blackwell 链条的地区分工</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">按公司总部所在地归类；每格只列代表公司，不代表份额排序</text>
+  <rect x="30" y="74" width="830" height="26" rx="5" fill="#f1f3f5"/>
+  <text x="40" y="92" font-size="12" font-weight="700" fill="#495057">环节</text>
+  <text x="300" y="92" text-anchor="middle" font-size="12.5" font-weight="700" fill="#212529">中国大陆</text>
+  <text x="424" y="92" text-anchor="middle" font-size="12.5" font-weight="700" fill="#212529">台湾</text>
+  <text x="548" y="92" text-anchor="middle" font-size="12.5" font-weight="700" fill="#212529">韩国</text>
+  <text x="672" y="92" text-anchor="middle" font-size="12.5" font-weight="700" fill="#212529">日本</text>
+  <text x="796" y="92" text-anchor="middle" font-size="12.5" font-weight="700" fill="#212529">美国／其他</text>
+  <text x="40" y="126" font-size="12" fill="#495057">材料：ABF 膜 · 玻纤布 · 铜箔</text>
+  <rect x="240" y="108" width="120" height="28" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="300" y="126" text-anchor="middle" font-size="10.5" fill="#3b5bdb">宏和 · 德福</text>
+  <rect x="364" y="108" width="120" height="28" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="424" y="126" text-anchor="middle" font-size="10.5" fill="#3b5bdb">台玻 · 金居</text>
+  <rect x="488" y="108" width="120" height="28" rx="6" fill="#f8f9fa"/>
+  <text x="548" y="126" text-anchor="middle" font-size="10.5" fill="#ced4da">—</text>
+  <rect x="612" y="108" width="120" height="28" rx="6" fill="#4c6ef5"/>
+  <text x="672" y="126" text-anchor="middle" font-size="10.5" font-weight="700" fill="#ffffff">味之素 · 日东纺 · 三井</text>
+  <rect x="736" y="108" width="120" height="28" rx="6" fill="#f8f9fa"/>
+  <text x="796" y="126" text-anchor="middle" font-size="10.5" fill="#ced4da">—</text>
+  <text x="40" y="158" font-size="12" fill="#495057">设备 · EDA</text>
+  <rect x="240" y="140" width="120" height="28" rx="6" fill="#f8f9fa" stroke="#adb5bd" stroke-dasharray="4 3"/>
+  <text x="300" y="158" text-anchor="middle" font-size="10.5" fill="#868e96">北方华创 · 中微</text>
+  <rect x="364" y="140" width="120" height="28" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="424" y="158" text-anchor="middle" font-size="10.5" fill="#3b5bdb">弘塑 · 万润 · 鸿劲</text>
+  <rect x="488" y="140" width="120" height="28" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="548" y="158" text-anchor="middle" font-size="10.5" fill="#3b5bdb">韩美 · SEMES</text>
+  <rect x="612" y="140" width="120" height="28" rx="6" fill="#4c6ef5"/>
+  <text x="672" y="158" text-anchor="middle" font-size="10.5" font-weight="700" fill="#ffffff">东京电子 · 爱德万</text>
+  <rect x="736" y="140" width="120" height="28" rx="6" fill="#4c6ef5"/>
+  <text x="796" y="158" text-anchor="middle" font-size="10.5" font-weight="700" fill="#ffffff">应材 · Synopsys</text>
+  <text x="40" y="190" font-size="12" fill="#495057">芯片设计</text>
+  <rect x="240" y="172" width="120" height="28" rx="6" fill="#f8f9fa"/>
+  <text x="300" y="190" text-anchor="middle" font-size="10.5" fill="#ced4da">—</text>
+  <rect x="364" y="172" width="120" height="28" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="424" y="190" text-anchor="middle" font-size="10.5" fill="#3b5bdb">联发科</text>
+  <rect x="488" y="172" width="120" height="28" rx="6" fill="#f8f9fa"/>
+  <text x="548" y="190" text-anchor="middle" font-size="10.5" fill="#ced4da">—</text>
+  <rect x="612" y="172" width="120" height="28" rx="6" fill="#f8f9fa"/>
+  <text x="672" y="190" text-anchor="middle" font-size="10.5" fill="#ced4da">—</text>
+  <rect x="736" y="172" width="120" height="28" rx="6" fill="#4c6ef5"/>
+  <text x="796" y="190" text-anchor="middle" font-size="10.5" font-weight="700" fill="#ffffff">NVIDIA · 博通 · Marvell</text>
+  <text x="40" y="222" font-size="12" fill="#495057">晶圆制造</text>
+  <rect x="240" y="204" width="120" height="28" rx="6" fill="#f8f9fa"/>
+  <text x="300" y="222" text-anchor="middle" font-size="10.5" fill="#ced4da">—</text>
+  <rect x="364" y="204" width="120" height="28" rx="6" fill="#4c6ef5"/>
+  <text x="424" y="222" text-anchor="middle" font-size="10.5" font-weight="700" fill="#ffffff">台积电</text>
+  <rect x="488" y="204" width="120" height="28" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="548" y="222" text-anchor="middle" font-size="10.5" fill="#3b5bdb">三星电子</text>
+  <rect x="612" y="204" width="120" height="28" rx="6" fill="#f8f9fa"/>
+  <text x="672" y="222" text-anchor="middle" font-size="10.5" fill="#ced4da">—</text>
+  <rect x="736" y="204" width="120" height="28" rx="6" fill="#f8f9fa"/>
+  <text x="796" y="222" text-anchor="middle" font-size="10.5" fill="#ced4da">—</text>
+  <text x="40" y="254" font-size="12" fill="#495057">CoWoS 封装 · 测试</text>
+  <rect x="240" y="236" width="120" height="28" rx="6" fill="#f8f9fa" stroke="#adb5bd" stroke-dasharray="4 3"/>
+  <text x="300" y="254" text-anchor="middle" font-size="10.5" fill="#868e96">长电 · 通富</text>
+  <rect x="364" y="236" width="120" height="28" rx="6" fill="#4c6ef5"/>
+  <text x="424" y="254" text-anchor="middle" font-size="10.5" font-weight="700" fill="#ffffff">台积电 · 日月光 · 京元电</text>
+  <rect x="488" y="236" width="120" height="28" rx="6" fill="#f8f9fa"/>
+  <text x="548" y="254" text-anchor="middle" font-size="10.5" fill="#ced4da">—</text>
+  <rect x="612" y="236" width="120" height="28" rx="6" fill="#f8f9fa"/>
+  <text x="672" y="254" text-anchor="middle" font-size="10.5" fill="#ced4da">—</text>
+  <rect x="736" y="236" width="120" height="28" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="796" y="254" text-anchor="middle" font-size="10.5" fill="#3b5bdb">Amkor</text>
+  <text x="40" y="286" font-size="12" fill="#495057">HBM · 存储</text>
+  <rect x="240" y="268" width="120" height="28" rx="6" fill="#f8f9fa" stroke="#adb5bd" stroke-dasharray="4 3"/>
+  <text x="300" y="286" text-anchor="middle" font-size="10.5" fill="#868e96">长鑫 · 长江存储</text>
+  <rect x="364" y="268" width="120" height="28" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="424" y="286" text-anchor="middle" font-size="10.5" fill="#3b5bdb">南亚科 · 群联</text>
+  <rect x="488" y="268" width="120" height="28" rx="6" fill="#4c6ef5"/>
+  <text x="548" y="286" text-anchor="middle" font-size="10.5" font-weight="700" fill="#ffffff">SK 海力士 · 三星</text>
+  <rect x="612" y="268" width="120" height="28" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="672" y="286" text-anchor="middle" font-size="10.5" fill="#3b5bdb">铠侠</text>
+  <rect x="736" y="268" width="120" height="28" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="796" y="286" text-anchor="middle" font-size="10.5" fill="#3b5bdb">美光</text>
+  <text x="40" y="318" font-size="12" fill="#495057">ABF 载板</text>
+  <rect x="240" y="300" width="120" height="28" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="300" y="318" text-anchor="middle" font-size="10.5" fill="#3b5bdb">深南（起步）</text>
+  <rect x="364" y="300" width="120" height="28" rx="6" fill="#4c6ef5"/>
+  <text x="424" y="318" text-anchor="middle" font-size="10.5" font-weight="700" fill="#ffffff">欣兴 · 南电 · 景硕</text>
+  <rect x="488" y="300" width="120" height="28" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="548" y="318" text-anchor="middle" font-size="10.5" fill="#3b5bdb">三星电机</text>
+  <rect x="612" y="300" width="120" height="28" rx="6" fill="#4c6ef5"/>
+  <text x="672" y="318" text-anchor="middle" font-size="10.5" font-weight="700" fill="#ffffff">揖斐电</text>
+  <rect x="736" y="300" width="120" height="28" rx="6" fill="#f8f9fa"/>
+  <text x="796" y="318" text-anchor="middle" font-size="10.5" fill="#ced4da">—</text>
+  <text x="40" y="350" font-size="12" fill="#495057">系统 PCB · 高速 CCL</text>
+  <rect x="240" y="332" width="120" height="28" rx="6" fill="#4c6ef5"/>
+  <text x="300" y="350" text-anchor="middle" font-size="10.5" font-weight="700" fill="#ffffff">胜宏 · 沪电 · 生益</text>
+  <rect x="364" y="332" width="120" height="28" rx="6" fill="#4c6ef5"/>
+  <text x="424" y="350" text-anchor="middle" font-size="10.5" font-weight="700" fill="#ffffff">金像电 · 台光电</text>
+  <rect x="488" y="332" width="120" height="28" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="548" y="350" text-anchor="middle" font-size="10.5" fill="#3b5bdb">ISU Petasys</text>
+  <rect x="612" y="332" width="120" height="28" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="672" y="350" text-anchor="middle" font-size="10.5" fill="#3b5bdb">松下 · 名幸</text>
+  <rect x="736" y="332" width="120" height="28" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="796" y="350" text-anchor="middle" font-size="10.5" fill="#3b5bdb">TTM</text>
+  <text x="40" y="382" font-size="12" fill="#495057">光模块 · 光芯片 · 器件</text>
+  <rect x="240" y="364" width="120" height="28" rx="6" fill="#4c6ef5"/>
+  <text x="300" y="382" text-anchor="middle" font-size="10.5" font-weight="700" fill="#ffffff">旭创 · 新易盛 · 天孚</text>
+  <rect x="364" y="364" width="120" height="28" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="424" y="382" text-anchor="middle" font-size="10.5" fill="#3b5bdb">联亚 · 上诠</text>
+  <rect x="488" y="364" width="120" height="28" rx="6" fill="#f8f9fa"/>
+  <text x="548" y="382" text-anchor="middle" font-size="10.5" fill="#ced4da">—</text>
+  <rect x="612" y="364" width="120" height="28" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="672" y="382" text-anchor="middle" font-size="10.5" fill="#3b5bdb">三菱电机 · 住友</text>
+  <rect x="736" y="364" width="120" height="28" rx="6" fill="#4c6ef5"/>
+  <text x="796" y="382" text-anchor="middle" font-size="10.5" font-weight="700" fill="#ffffff">Lumentum · Coherent</text>
+  <text x="40" y="414" font-size="12" fill="#495057">连接器 · 铜缆</text>
+  <rect x="240" y="396" width="120" height="28" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="300" y="414" text-anchor="middle" font-size="10.5" fill="#3b5bdb">立讯 · 沃尔核材</text>
+  <rect x="364" y="396" width="120" height="28" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="424" y="414" text-anchor="middle" font-size="10.5" fill="#3b5bdb">贸联 · 嘉泽</text>
+  <rect x="488" y="396" width="120" height="28" rx="6" fill="#f8f9fa"/>
+  <text x="548" y="414" text-anchor="middle" font-size="10.5" fill="#ced4da">—</text>
+  <rect x="612" y="396" width="120" height="28" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="672" y="414" text-anchor="middle" font-size="10.5" fill="#3b5bdb">广濑 · JAE</text>
+  <rect x="736" y="396" width="120" height="28" rx="6" fill="#4c6ef5"/>
+  <text x="796" y="414" text-anchor="middle" font-size="10.5" font-weight="700" fill="#ffffff">安费诺 · TE</text>
+  <text x="40" y="446" font-size="12" fill="#495057">电源 · 散热 · 被动件</text>
+  <rect x="240" y="428" width="120" height="28" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="300" y="446" text-anchor="middle" font-size="10.5" fill="#3b5bdb">英维克 · 麦格米特</text>
+  <rect x="364" y="428" width="120" height="28" rx="6" fill="#4c6ef5"/>
+  <text x="424" y="446" text-anchor="middle" font-size="10.5" font-weight="700" fill="#ffffff">台达 · 奇鋐 · 双鸿</text>
+  <rect x="488" y="428" width="120" height="28" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="548" y="446" text-anchor="middle" font-size="10.5" fill="#3b5bdb">三星电机</text>
+  <rect x="612" y="428" width="120" height="28" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="672" y="446" text-anchor="middle" font-size="10.5" fill="#3b5bdb">村田 · 尼得科</text>
+  <rect x="736" y="428" width="120" height="28" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="796" y="446" text-anchor="middle" font-size="10.5" fill="#3b5bdb">Vertiv · MPS</text>
+  <text x="40" y="478" font-size="12" fill="#495057">整柜 ODM</text>
+  <rect x="240" y="460" width="120" height="28" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="300" y="478" text-anchor="middle" font-size="10.5" fill="#3b5bdb">工业富联 *</text>
+  <rect x="364" y="460" width="120" height="28" rx="6" fill="#4c6ef5"/>
+  <text x="424" y="478" text-anchor="middle" font-size="10.5" font-weight="700" fill="#ffffff">鸿海 · 广达 · 纬创</text>
+  <rect x="488" y="460" width="120" height="28" rx="6" fill="#f8f9fa"/>
+  <text x="548" y="478" text-anchor="middle" font-size="10.5" fill="#ced4da">—</text>
+  <rect x="612" y="460" width="120" height="28" rx="6" fill="#f8f9fa"/>
+  <text x="672" y="478" text-anchor="middle" font-size="10.5" fill="#ced4da">—</text>
+  <rect x="736" y="460" width="120" height="28" rx="6" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="796" y="478" text-anchor="middle" font-size="10.5" fill="#3b5bdb">Supermicro · Dell</text>
+  <rect x="30" y="502" width="830" height="82" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <rect x="48" y="516" width="22" height="12" rx="3" fill="#4c6ef5"/><text x="76" y="526" font-size="11.5" fill="#495057">主导或主供</text>
+  <rect x="160" y="516" width="22" height="12" rx="3" fill="#edf2ff" stroke="#4c6ef5"/><text x="188" y="526" font-size="11.5" fill="#495057">重要参与</text>
+  <rect x="260" y="516" width="22" height="12" rx="3" fill="#f8f9fa" stroke="#adb5bd" stroke-dasharray="4 3"/><text x="288" y="526" font-size="11.5" fill="#495057">主要服务国产算力链，不在 Blackwell 主链</text>
+  <text x="48" y="550" font-size="12" fill="#495057">美国定义规格并握有少数高壁垒芯片；台湾是物理制造中枢；韩国集中在存储；日本卡在材料与设备；</text>
+  <text x="48" y="570" font-size="12" fill="#495057">中国大陆集中在光模块、PCB、连接器与部分电源散热。* 工业富联为台湾鸿海的 A 股子公司。</text>
+</svg>

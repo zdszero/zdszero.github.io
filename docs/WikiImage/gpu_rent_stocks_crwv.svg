@@ -1,0 +1,148 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 982" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect x="0" y="0" width="900" height="982" rx="12" fill="#ffffff"/>
+<text x="30.0" y="34.0" font-size="20" fill="#212529" font-weight="700" text-anchor="start">CoreWeave：合同余额涨到 9 倍，股价回到 IPO 价附近</text>
+<text x="30.0" y="56.0" font-size="13" fill="#868e96" text-anchor="start">CRWV 日收盘价（美元，不复权）、季末剩余履约义务 RPO 与单季净利润（十亿美元）。Nasdaq 行情，SEC 10-Q/10-K XBRL，截至 2026-11-18</text>
+<text x="80.0" y="94.0" font-size="12.5" fill="#3b5bdb" font-weight="700" text-anchor="start">股价（美元）</text>
+<line x1="80.0" y1="284.0" x2="860.0" y2="284.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="288.0" font-size="11" fill="#868e96" text-anchor="end">0</text>
+<line x1="80.0" y1="239.0" x2="860.0" y2="239.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="243.0" font-size="11" fill="#868e96" text-anchor="end">50</text>
+<line x1="80.0" y1="194.0" x2="860.0" y2="194.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="198.0" font-size="11" fill="#868e96" text-anchor="end">100</text>
+<line x1="80.0" y1="149.0" x2="860.0" y2="149.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="153.0" font-size="11" fill="#868e96" text-anchor="end">150</text>
+<line x1="80.0" y1="104.0" x2="860.0" y2="104.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="108.0" font-size="11" fill="#868e96" text-anchor="end">200</text>
+<line x1="80.0" y1="104.0" x2="80.0" y2="284.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="181.7" y1="104.0" x2="181.7" y2="284.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="283.5" y1="104.0" x2="283.5" y2="284.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="385.2" y1="104.0" x2="385.2" y2="284.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="487.0" y1="104.0" x2="487.0" y2="284.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="588.7" y1="104.0" x2="588.7" y2="284.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="690.4" y1="104.0" x2="690.4" y2="284.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="792.2" y1="104.0" x2="792.2" y2="284.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="80.0" y1="248.0" x2="860.0" y2="248.0" stroke="#adb5bd" stroke-width="1.5" stroke-dasharray="6 4"/>
+<text x="94.0" y="242.0" font-size="11" fill="#495057" text-anchor="start">IPO 价 40</text>
+<path d="M176.4 248.0 L179.8 250.6 L180.9 236.7 L182.0 228.8 L183.1 235.6 L184.2 241.0 L187.6 239.1 L188.7 244.8 L189.8 240.1 L190.9 246.0 L192.1 244.6 L195.4 244.8 L196.5 247.3 L197.6 247.3 L198.7 248.8 L203.2 252.1 L204.3 249.3 L205.4 246.5 L206.5 246.4 L207.7 246.6 L211.0 246.2 L212.1 245.5 L213.2 246.8 L214.4 244.1 L215.5 237.6 L218.8 238.1 L219.9 235.1 L221.0 235.8 L222.2 234.5 L223.3 237.8 L226.6 231.4 L227.7 227.1 L228.8 223.3 L230.0 224.8 L231.1 211.7 L234.4 206.1 L235.5 202.8 L236.7 187.3 L237.8 193.9 L238.9 191.5 L243.3 172.4 L244.5 179.5 L245.6 189.0 L246.7 183.8 L250.0 175.8 L251.1 148.6 L252.3 137.2 L253.4 162.5 L254.5 157.9 L257.8 138.1 L258.9 144.6 L260.1 149.3 L261.2 149.9 L262.3 151.5 L265.6 141.3 L266.8 129.3 L267.9 131.0 L270.1 118.8 L273.4 127.7 L274.6 128.6 L275.7 140.4 L276.8 141.7 L277.9 140.0 L281.2 137.2 L282.4 143.7 L283.5 147.4 L284.6 135.3 L289.1 140.3 L290.2 147.7 L291.3 146.3 L292.4 159.5 L293.5 170.7 L296.9 164.9 L298.0 157.5 L299.1 155.3 L300.2 165.0 L301.3 173.3 L304.7 171.6 L305.8 167.2 L306.9 170.6 L308.0 176.0 L309.1 179.9 L312.5 184.7 L313.6 186.1 L314.7 191.4 L315.8 181.3 L316.9 190.3 L320.3 188.6 L321.4 183.3 L322.5 184.8 L323.6 175.0 L324.7 167.4 L328.1 158.2 L329.2 150.1 L330.3 178.0 L331.4 194.4 L332.5 194.0 L335.9 196.9 L337.0 200.4 L338.1 201.6 L339.2 202.3 L340.3 199.4 L343.7 200.9 L344.8 201.7 L345.9 196.8 L347.0 191.5 L348.1 191.3 L352.6 200.0 L353.7 203.1 L354.8 205.3 L355.9 203.8 L359.3 199.8 L360.4 193.8 L361.5 178.6 L362.6 182.6 L363.8 183.2 L367.1 175.6 L368.2 177.1 L369.3 175.2 L370.4 174.7 L371.6 171.6 L374.9 164.1 L376.0 166.2 L377.1 163.9 L378.2 170.0 L379.4 175.7 L382.7 173.7 L383.8 160.8 L384.9 160.7 L386.1 159.8 L387.2 162.7 L390.5 163.5 L391.6 168.1 L392.7 158.0 L393.9 155.2 L395.0 159.4 L398.3 156.5 L399.4 163.3 L400.5 158.7 L401.7 156.4 L402.8 160.8 L406.1 169.6 L407.2 171.4 L408.4 174.6 L409.5 173.0 L410.6 164.7 L413.9 161.5 L415.0 162.7 L416.2 158.1 L417.3 166.0 L418.4 163.7 L421.7 170.3 L422.8 179.8 L424.0 181.0 L425.1 187.8 L426.2 190.4 L429.5 189.0 L430.7 204.4 L431.8 207.1 L432.9 213.5 L434.0 214.4 L437.3 216.2 L438.5 216.6 L439.6 216.6 L440.7 221.7 L441.8 219.5 L445.1 217.8 L446.3 219.8 L447.4 217.1 L449.6 218.2 L453.0 214.6 L454.1 215.6 L455.2 212.6 L456.3 206.8 L457.4 204.5 L460.8 206.4 L461.9 202.4 L463.0 204.7 L464.1 205.4 L465.2 213.3 L468.6 218.9 L469.7 221.4 L470.8 225.9 L471.9 223.1 L473.0 209.3 L476.4 207.7 L477.5 211.8 L478.6 213.0 L480.8 215.2 L484.2 216.6 L485.3 217.5 L486.4 219.6 L488.6 212.6 L492.0 214.8 L493.1 213.9 L494.2 214.5 L495.3 214.6 L496.4 211.9 L499.8 203.1 L500.9 205.3 L502.0 203.2 L503.1 198.5 L504.2 192.9 L508.7 198.3 L509.8 199.4 L510.9 201.4 L512.0 200.3 L515.4 195.5 L516.5 186.0 L517.6 188.6 L518.7 194.4 L519.8 200.1 L523.2 204.0 L524.3 202.9 L525.4 209.8 L526.5 216.8 L527.7 203.0 L531.0 196.9 L532.1 198.4 L533.2 198.4 L534.3 197.9 L535.5 197.6 L539.9 202.1 L541.0 198.1 L542.1 196.6 L543.3 203.7 L546.6 202.2 L547.7 194.6 L548.8 195.8 L550.0 196.1 L551.1 212.4 L554.4 213.8 L555.5 217.6 L556.6 212.4 L557.8 216.7 L558.9 218.3 L562.2 217.0 L563.3 216.6 L564.4 210.2 L565.6 212.1 L566.7 211.0 L570.0 206.7 L571.1 210.1 L572.3 209.5 L573.4 211.4 L574.5 210.7 L577.8 210.2 L578.9 209.3 L580.1 205.2 L581.2 211.6 L582.3 216.7 L585.6 221.8 L586.7 214.3 L587.9 213.4 L589.0 210.0 L593.4 211.2 L594.5 207.3 L595.7 204.0 L596.8 201.2 L597.9 192.2 L601.2 184.8 L602.4 178.5 L603.5 177.2 L604.6 176.4 L605.7 178.8 L609.0 178.3 L610.2 180.4 L611.3 173.7 L612.4 178.3 L613.5 184.9 L616.8 183.1 L618.0 189.0 L619.1 181.2 L620.2 183.6 L621.3 176.9 L624.7 171.1 L625.8 168.9 L626.9 159.8 L628.0 168.0 L629.1 181.3 L632.5 180.8 L633.6 187.0 L634.7 183.8 L635.8 181.2 L636.9 187.4 L640.3 190.6 L641.4 194.2 L642.5 192.8 L643.6 187.2 L644.7 189.1 L649.2 188.7 L650.3 190.2 L651.4 187.8 L652.5 185.4 L655.9 171.7 L657.0 176.7 L658.1 184.2 L659.2 186.8 L660.3 193.6 L663.7 191.9 L664.8 195.4 L665.9 198.0 L667.0 197.8 L668.1 193.5 L671.5 188.0 L672.6 178.7 L673.7 180.3 L674.8 177.8 L679.3 183.8 L680.4 188.9 L681.5 193.2 L682.6 195.1 L683.7 197.1 L687.1 198.0 L688.2 194.4 L689.3 206.9 L690.4 210.4 L694.9 206.2 L696.0 208.8 L697.1 203.0 L698.2 203.3 L699.4 204.0 L702.7 209.0 L703.8 212.1 L704.9 214.6 L706.0 218.4 L707.2 218.1 L710.5 218.2 L711.6 212.4 L712.7 209.6 L713.8 211.0 L715.0 219.3 L718.3 220.3 L719.4 223.4 L720.5 229.3 L721.7 217.5 L722.8 219.4 L726.1 206.8 L727.2 201.3 L728.3 203.1 L729.5 207.2 L730.6 202.4 L733.9 204.6 L735.0 202.7 L736.1 187.0 L737.3 188.3 L738.4 189.3 L741.7 188.6 L742.8 200.1 L744.0 202.2 L745.1 203.2 L746.2 204.9 L749.5 206.4 L750.6 204.8 L751.8 204.8 L752.9 205.9 L754.0 208.2 L757.3 207.6 L758.4 210.3 L759.6 211.2 L760.7 207.9 L761.8 203.6 L766.3 194.2 L767.4 198.6 L768.5 203.8 L769.6 203.9 L772.9 209.3 L774.1 211.2 L775.2 209.0 L776.3 212.1 L777.4 210.8 L780.7 207.1 L781.9 205.9 L783.0 205.8 L784.1 202.9 L785.2 205.2 L788.6 207.4 L789.7 206.7 L790.8 205.6 L791.9 204.3 L793.0 203.3 L796.4 205.3 L797.5 201.5 L798.6 204.4 L799.7 210.6 L800.8 210.1 L804.2 211.8 L805.3 214.0 L806.4 224.8 L807.5 221.3 L808.6 228.7 L812.0 229.0 L813.1 228.1 L814.2 228.4 L815.3 234.0 L816.4 235.2 L819.8 234.3 L820.9 230.4 L822.0 226.5 L823.1 229.3 L824.2 234.6 L827.6 238.9 L828.7 235.6 L829.8 240.4 L830.9 244.7 L832.0 242.2 L835.4 239.9 L836.5 240.1 L837.6 229.3 L838.7 233.1 L839.8 236.2 L843.2 239.1 L844.3 239.1 L845.4 241.0" fill="none" stroke="#4c6ef5" stroke-width="1.8" stroke-linejoin="round"/>
+<circle cx="270.1" cy="118.8" r="5" fill="#fa5252"/>
+<text x="278.1" y="122.8" font-size="12.5" fill="#212529" font-weight="700" text-anchor="start">183.58</text>
+<text x="278.1" y="138.8" font-size="11" fill="#495057" text-anchor="start">2025-06-20</text>
+<circle cx="626.9" cy="159.8" r="5" fill="#fa5252"/>
+<text x="634.9" y="153.8" font-size="12.5" fill="#212529" font-weight="700" text-anchor="start">137.98</text>
+<text x="634.9" y="169.8" font-size="11" fill="#495057" text-anchor="start">2026-05-06</text>
+<circle cx="845.4" cy="241.0" r="5" fill="#4c6ef5"/>
+<text x="837.4" y="265.0" font-size="12.5" fill="#212529" font-weight="700" text-anchor="end">47.83</text>
+<text x="837.4" y="281.0" font-size="11" fill="#495057" text-anchor="end">11-18</text>
+<text x="80.0" y="336.0" font-size="12.5" fill="#0b7285" font-weight="700" text-anchor="start">季末 RPO（十亿美元）</text>
+<line x1="80.0" y1="476.0" x2="860.0" y2="476.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="480.0" font-size="11" fill="#868e96" text-anchor="end">0</text>
+<line x1="80.0" y1="432.7" x2="860.0" y2="432.7" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="436.7" font-size="11" fill="#868e96" text-anchor="end">50</text>
+<line x1="80.0" y1="389.3" x2="860.0" y2="389.3" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="393.3" font-size="11" fill="#868e96" text-anchor="end">100</text>
+<line x1="80.0" y1="346.0" x2="860.0" y2="346.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="350.0" font-size="11" fill="#868e96" text-anchor="end">150</text>
+<line x1="80.0" y1="346.0" x2="80.0" y2="476.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="181.7" y1="346.0" x2="181.7" y2="476.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="283.5" y1="346.0" x2="283.5" y2="476.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="385.2" y1="346.0" x2="385.2" y2="476.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="487.0" y1="346.0" x2="487.0" y2="476.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="588.7" y1="346.0" x2="588.7" y2="476.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="690.4" y1="346.0" x2="690.4" y2="476.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="792.2" y1="346.0" x2="792.2" y2="476.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<rect x="102.9" y="463.3" width="56.0" height="12.7" rx="3" fill="#0ca678"/>
+<text x="130.9" y="456.3" font-size="11" fill="#495057" text-anchor="middle">14.7</text>
+<rect x="204.6" y="449.9" width="56.0" height="26.1" rx="3" fill="#0ca678"/>
+<text x="232.6" y="442.9" font-size="11" fill="#495057" text-anchor="middle">30.1</text>
+<rect x="306.4" y="432.7" width="56.0" height="43.3" rx="3" fill="#0ca678"/>
+<text x="334.3" y="425.7" font-size="11" fill="#495057" text-anchor="middle">50</text>
+<rect x="408.1" y="423.4" width="56.0" height="52.6" rx="3" fill="#0ca678"/>
+<text x="436.1" y="416.4" font-size="11" fill="#495057" text-anchor="middle">60.7</text>
+<rect x="509.8" y="390.4" width="56.0" height="85.6" rx="3" fill="#0ca678"/>
+<text x="537.8" y="383.4" font-size="11" fill="#495057" text-anchor="middle">98.8</text>
+<rect x="611.6" y="386.1" width="56.0" height="89.9" rx="3" fill="#0ca678"/>
+<text x="639.6" y="379.1" font-size="11" fill="#495057" text-anchor="middle">103.7</text>
+<rect x="713.3" y="361.3" width="56.0" height="114.7" rx="3" fill="#0ca678"/>
+<text x="741.3" y="354.3" font-size="11" fill="#495057" text-anchor="middle">132.3</text>
+<text x="80.0" y="528.0" font-size="12.5" fill="#0b7285" font-weight="700" text-anchor="start">单季收入（十亿美元）</text>
+<line x1="80.0" y1="648.0" x2="860.0" y2="648.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="652.0" font-size="11" fill="#868e96" text-anchor="end">0</text>
+<line x1="80.0" y1="620.5" x2="860.0" y2="620.5" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="624.5" font-size="11" fill="#868e96" text-anchor="end">1</text>
+<line x1="80.0" y1="593.0" x2="860.0" y2="593.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="597.0" font-size="11" fill="#868e96" text-anchor="end">2</text>
+<line x1="80.0" y1="565.5" x2="860.0" y2="565.5" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="569.5" font-size="11" fill="#868e96" text-anchor="end">3</text>
+<line x1="80.0" y1="538.0" x2="860.0" y2="538.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="542.0" font-size="11" fill="#868e96" text-anchor="end">4</text>
+<line x1="80.0" y1="538.0" x2="80.0" y2="648.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="181.7" y1="538.0" x2="181.7" y2="648.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="283.5" y1="538.0" x2="283.5" y2="648.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="385.2" y1="538.0" x2="385.2" y2="648.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="487.0" y1="538.0" x2="487.0" y2="648.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="588.7" y1="538.0" x2="588.7" y2="648.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="690.4" y1="538.0" x2="690.4" y2="648.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="792.2" y1="538.0" x2="792.2" y2="648.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<rect x="102.9" y="621.0" width="56.0" height="27.0" rx="3" fill="#0ca678"/>
+<text x="130.9" y="614.0" font-size="11" fill="#495057" text-anchor="middle">0.98</text>
+<rect x="204.6" y="614.7" width="56.0" height="33.3" rx="3" fill="#0ca678"/>
+<text x="232.6" y="607.7" font-size="11" fill="#495057" text-anchor="middle">1.21</text>
+<rect x="306.4" y="610.3" width="56.0" height="37.7" rx="3" fill="#0ca678"/>
+<text x="334.3" y="603.3" font-size="11" fill="#495057" text-anchor="middle">1.37</text>
+<rect x="408.1" y="604.8" width="56.0" height="43.2" rx="3" fill="#0ca678"/>
+<text x="436.1" y="597.8" font-size="11" fill="#495057" text-anchor="middle">1.57</text>
+<rect x="509.8" y="590.8" width="56.0" height="57.2" rx="3" fill="#0ca678"/>
+<text x="537.8" y="583.8" font-size="11" fill="#495057" text-anchor="middle">2.08</text>
+<rect x="611.6" y="577.0" width="56.0" height="71.0" rx="3" fill="#0ca678"/>
+<text x="639.6" y="570.0" font-size="11" fill="#495057" text-anchor="middle">2.58</text>
+<rect x="713.3" y="547.4" width="56.0" height="100.6" rx="3" fill="#0ca678"/>
+<text x="741.3" y="540.4" font-size="11" fill="#495057" text-anchor="middle">3.66</text>
+<text x="80.0" y="700.0" font-size="12.5" fill="#c92a2a" font-weight="700" text-anchor="start">单季净利润（十亿美元）</text>
+<line x1="80.0" y1="820.0" x2="860.0" y2="820.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="824.0" font-size="11" fill="#868e96" text-anchor="end">-1</text>
+<line x1="80.0" y1="765.0" x2="860.0" y2="765.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="769.0" font-size="11" fill="#868e96" text-anchor="end">-0.5</text>
+<line x1="80.0" y1="710.0" x2="860.0" y2="710.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="714.0" font-size="11" fill="#868e96" text-anchor="end">0</text>
+<line x1="80.0" y1="710.0" x2="80.0" y2="820.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="181.7" y1="710.0" x2="181.7" y2="820.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="283.5" y1="710.0" x2="283.5" y2="820.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="385.2" y1="710.0" x2="385.2" y2="820.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="487.0" y1="710.0" x2="487.0" y2="820.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="588.7" y1="710.0" x2="588.7" y2="820.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="690.4" y1="710.0" x2="690.4" y2="820.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="792.2" y1="710.0" x2="792.2" y2="820.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<rect x="102.9" y="710.0" width="56.0" height="35.2" rx="3" fill="#fa5252"/>
+<text x="130.9" y="760.2" font-size="11" fill="#495057" text-anchor="middle">-0.32</text>
+<rect x="204.6" y="710.0" width="56.0" height="31.9" rx="3" fill="#fa5252"/>
+<text x="232.6" y="756.9" font-size="11" fill="#495057" text-anchor="middle">-0.29</text>
+<rect x="306.4" y="710.0" width="56.0" height="12.1" rx="3" fill="#fa5252"/>
+<text x="334.3" y="737.1" font-size="11" fill="#495057" text-anchor="middle">-0.11</text>
+<rect x="408.1" y="710.0" width="56.0" height="49.5" rx="3" fill="#fa5252"/>
+<text x="436.1" y="774.5" font-size="11" fill="#495057" text-anchor="middle">-0.45</text>
+<rect x="509.8" y="710.0" width="56.0" height="81.4" rx="3" fill="#fa5252"/>
+<text x="537.8" y="806.4" font-size="11" fill="#495057" text-anchor="middle">-0.74</text>
+<rect x="611.6" y="710.0" width="56.0" height="69.3" rx="3" fill="#fa5252"/>
+<text x="639.6" y="794.3" font-size="11" fill="#495057" text-anchor="middle">-0.63</text>
+<rect x="713.3" y="710.0" width="56.0" height="78.1" rx="3" fill="#fa5252"/>
+<text x="741.3" y="803.1" font-size="11" fill="#495057" text-anchor="middle">-0.71</text>
+<text x="84.0" y="840.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="start">2025-01</text>
+<text x="185.7" y="840.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="start">04</text>
+<text x="287.5" y="840.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="start">07</text>
+<text x="389.2" y="840.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="start">10</text>
+<text x="491.0" y="840.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="start">2026-01</text>
+<text x="592.7" y="840.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="start">04</text>
+<text x="694.4" y="840.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="start">07</text>
+<text x="796.2" y="840.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="start">10</text>
+<line x1="80.0" y1="862.0" x2="104.0" y2="862.0" stroke="#4c6ef5" stroke-width="2"/>
+<circle cx="92.0" cy="862.0" r="3.5" fill="#4c6ef5"/>
+<text x="112.0" y="866.0" font-size="12" fill="#495057" text-anchor="start">股价</text>
+<rect x="168.0" y="855.0" width="16.0" height="12.0" rx="2" fill="#0ca678" stroke="#0ca678"/>
+<text x="196.0" y="866.0" font-size="12" fill="#495057" text-anchor="start">RPO / 收入</text>
+<rect x="286.1" y="855.0" width="16.0" height="12.0" rx="2" fill="#fa5252" stroke="#fa5252"/>
+<text x="314.1" y="866.0" font-size="12" fill="#495057" text-anchor="start">净亏损</text>
+<rect x="30.0" y="892.0" width="840.0" height="74.0" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+<text x="48.0" y="916.0" font-size="12" fill="#495057" text-anchor="start">2025Q1 到 2026Q3，RPO 从 147 亿美元升到 1,323 亿美元，单季收入从 9.8 亿美元升到 36.6 亿美元，单季净亏损从 3.2 亿美元扩大到 7.1 亿美元。</text>
+<text x="48.0" y="934.0" font-size="12" fill="#495057" text-anchor="start">股价 2025-06-20 见顶，2026-05-06 次高，11-18 收 47.83 美元。</text>
+<text x="48.0" y="952.0" font-size="12" fill="#495057" text-anchor="start">RPO 取 10-Q/10-K 中 RevenueRemainingPerformanceObligation，可能与公司新闻稿中的 backlog 口径不同。单季值由累计值相减。</text>
+</svg>

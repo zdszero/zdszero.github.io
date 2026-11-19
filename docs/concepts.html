@@ -21,7 +21,7 @@
 
   <meta name="generator" content="pandoc" />
       <title>
-    技术分析基础
+    财务与技术分析基础
   </title>
     <link rel="stylesheet" href="./WikiTheme/theme/bootstrap.css"  />
         <script defer=""
@@ -52,7 +52,7 @@
     <div class="navbar navbar-static-top">
     <div class="navbar-inner">
       <div class="container">
-        <span class="doc-title">技术分析基础</span>
+        <span class="doc-title">财务与技术分析基础</span>
         <ul class="nav pull-right doc-info">
           <p class="navbar-text">
                                                       </p>
@@ -63,6 +63,9 @@
     <div class="wiki-layout">
     <nav class="wiki-sidebar" id="wiki-sidebar" hidden></nav>
     <main class="wiki-main">
+            <p>本页前半部分是基本面指标，回答公司赚钱的能力、质量和价格；从
+            VOL
+            开始是技术指标，回答交易行为和价格趋势。文中的数字示例都是为说明计算而虚构的，不对应具体公司。</p>
             <h3 id="pe">PE</h3>
             <p>PE（TTM）不是通常所说的静态 PE，而是滚动市盈率。
             两者都使用已经实现的历史利润，但计算的时间范围不同。</p>
@@ -97,12 +100,522 @@
             </tr>
             </tbody>
             </table>
+            <p>实战要点：</p>
+            <ul>
+            <li>股价可以拆成 <span class="math inline">P = EPS \times
+            PE</span>。股价上涨要么来自每股利润增长，要么来自估值扩张，复盘时先分清是哪一项。</li>
+            <li>PE
+            用的是归母净利润。卖资产、公允价值变动等一次性收益会压低
+            PE，让公司看起来便宜，这时改用扣非净利润重算（见下文扣非净利润一节）。</li>
+            <li>强周期股的 PE 往往要反着看：利润在顶峰时 PE
+            最低，利润在谷底时 PE 很高甚至为负。这类公司改看
+            PB、EV/EBITDA 或周期平均利润（正常化盈利）。</li>
+            <li>利润为负或接近零时，PE 没有意义，不要拿来比较。</li>
+            </ul>
+            <h3 id="peg">PEG</h3>
+            <p>PEG 把估值和增速放在一起看：</p>
+            <p><span class="math display">
+            PEG=\frac{PE}{\text{净利润年增速}\times 100} </span></p>
+            <p>例如 PE 为 30 倍、预期利润年均增长 30%，PEG = 30 / 30 =
+            1。</p>
+            <p>彼得·林奇常把 PEG ≈ 1
+            当作合理估值的参考，但这只是经验值：</p>
+            <ul>
+            <li>增速必须是可持续的多年增速。用一年的高增速（尤其是低基数上的反弹）算出的
+            PEG 会严重偏低。</li>
+            <li>增速通常来自预测，PEG 的可靠性取决于预测的可靠性。</li>
+            <li>不适用于周期股（增速大起大落），也不适用于低增长的高分红公司（PEG
+            天然偏高，但股东回报主要来自分红）。</li>
+            </ul>
+            <h3 id="pbps-与-evebitda">PB、PS 与 EV/EBITDA</h3>
+            <p>PE 失真时，常用三个替代指标：</p>
+            <table>
+            <colgroup>
+            <col style="width: 13%" />
+            <col style="width: 20%" />
+            <col style="width: 26%" />
+            <col style="width: 38%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>指标</th>
+            <th>计算方式</th>
+            <th>适用场景</th>
+            <th>主要缺陷</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>PB（市净率）</td>
+            <td>总市值 ÷ 归母净资产</td>
+            <td>银行、保险、券商、强周期股</td>
+            <td>商誉、无形资产和资产减值会让净资产失真</td>
+            </tr>
+            <tr>
+            <td>PS（市销率）</td>
+            <td>总市值 ÷ 营业收入</td>
+            <td>亏损或利润率尚未稳定的成长公司</td>
+            <td>忽略利润率，不同商业模式之间不可比</td>
+            </tr>
+            <tr>
+            <td>EV/EBITDA</td>
+            <td>企业价值 ÷ 息税折旧摊销前利润</td>
+            <td>重资产、负债结构差异大的公司</td>
+            <td>EBITDA 不扣资本开支，会高估重资产公司的现金回报</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>三者和 PE
+            之间有简单的换算关系（分子用同一时点的市值，分母取同一期间）：</p>
+            <p><span class="math display"> PB = PE \times ROE \qquad PS
+            = PE \times \text{净利率} </span></p>
+            <p>所以 PB 高可能只是因为 ROE 高，PS
+            低可能只是因为净利率低。只看一个倍数判断贵贱，容易得出错误结论。</p>
+            <p>企业价值 EV
+            站在全体资本提供者（股东和债权人）的角度：</p>
+            <p><span class="math display"> EV = \text{总市值} +
+            \text{有息负债} + \text{少数股东权益} - \text{现金及等价物}
+            </span></p>
+            <p>EBITDA = EBIT + 折旧 + 摊销，EBIT
+            是息税前利润。分子分母的口径要对应：EV
+            属于全体资本提供者，对应扣利息之前的
+            EBITDA；市值只属于股东，对应扣利息之后的净利润。少数股东权益要加进
+            EV，因为合并报表的 EBITDA 包含了子公司的全部利润。 ###
+            ROE</p>
+            <p>ROE（Return on
+            Equity，净资产收益率）衡量股东投入的每一元净资产，一年能赚多少利润：</p>
+            <p><span class="math display">
+            ROE=\frac{\text{归母净利润}}{\text{平均归母净资产}}
+            </span></p>
+            <p>分母取期初和期末的平均值。A
+            股年报披露的“加权平均净资产收益率”还会按增发、分红发生的时间加权。季度
+            ROE 不能直接和年度 ROE 比较，要年化或改用 TTM 利润。</p>
+            <p><strong>1. 杜邦分解</strong></p>
+            <p><span class="math display">
+            ROE=\underbrace{\frac{\text{净利润}}{\text{营收}}}_{\text{净利率}}\times\underbrace{\frac{\text{营收}}{\text{总资产}}}_{\text{总资产周转率}}\times\underbrace{\frac{\text{总资产}}{\text{净资产}}}_{\text{权益乘数}}
+            </span></p>
+            <p>ROE 的来源可能完全不同（数字为示意）：</p>
+            <table>
+            <thead>
+            <tr>
+            <th>类型</th>
+            <th>净利率</th>
+            <th>总资产周转率</th>
+            <th>权益乘数</th>
+            <th>ROE</th>
+            <th>典型行业</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>高利润率</td>
+            <td>40%</td>
+            <td>0.4</td>
+            <td>1.25</td>
+            <td>20%</td>
+            <td>高端白酒、软件</td>
+            </tr>
+            <tr>
+            <td>高周转</td>
+            <td>4%</td>
+            <td>2.5</td>
+            <td>2.0</td>
+            <td>20%</td>
+            <td>零售、物流</td>
+            </tr>
+            <tr>
+            <td>高杠杆</td>
+            <td>35%</td>
+            <td>0.03</td>
+            <td>12</td>
+            <td>12.6%</td>
+            <td>银行</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>三种来源的风险不同：利润率依赖定价权，周转依赖运营效率，杠杆放大收益的同时也放大亏损。看到
+            ROE 上升时，先拆开看是哪一项在变。</p>
+            <p><strong>2. ROE 与长期回报</strong></p>
+            <p>公司把利润留存下来再投资，在不借新债、不增发的前提下，能支撑的增速是：</p>
+            <p><span class="math display"> g = ROE \times
+            (1-\text{分红率}) </span></p>
+            <p>这叫可持续增长率。例如 ROE 为 20%、分红率为 50%
+            的公司，净资产和利润大约能以 10% 的速度增长。</p>
+            <p>常听到“长期持有的回报趋近
+            ROE”，这句话有前提。股东的长期回报 = 净资产增速 + 股息率 +
+            估值变化，买入价格决定了你实际拿到的收益率：</p>
+            <p><span class="math display"> \frac{E}{P}=\frac{ROE}{PB}
+            </span></p>
+            <p>以 5 倍 PB 买入 ROE 为 20% 的公司，盈利收益率只有
+            4%。只有 ROE 长期稳定、留存利润能按同样的 ROE
+            再投资、并且估值不收缩时，回报才会接近 ROE。</p>
+            <p><strong>3. 常见陷阱</strong></p>
+            <ul>
+            <li>回购和高分红会减少净资产，把 ROE
+            抬高，这不代表经营变好。</li>
+            <li>净资产接近零或为负时（长期大额回购、累计亏损），ROE
+            会变得极大或失去意义。</li>
+            <li>一次性收益会抬高当年
+            ROE，用扣非净利润计算更能反映主业。</li>
+            <li>大额资产减值会同时压低当年利润和净资产，减值之后几年的
+            ROE 会显得更好看。 ### ROIC</li>
+            </ul>
+            <p>ROIC（Return on Invested
+            Capital，投入资本回报率）衡量经营业务占用的全部资本的回报，不论这些资本来自股东还是债权人：</p>
+            <p><span class="math display">
+            ROIC=\frac{NOPAT}{\text{投入资本}},\qquad NOPAT =
+            EBIT\times(1-\text{税率}) </span></p>
+            <p>NOPAT
+            是税后经营利润。投入资本有两种算法，结果应大致相等：</p>
+            <ul>
+            <li>融资角度：有息负债 + 股东权益（含少数股东权益） −
+            超额现金</li>
+            <li>经营角度：净营运资本 + 固定资产 + 无形资产 +
+            商誉等经营性长期资产</li>
+            </ul>
+            <p><strong>1. 和 ROE 的区别</strong></p>
+            <p>ROE 受资本结构影响，同一门生意多借债，ROE 就会升高。ROIC
+            把债务和股权放在一起算，只反映生意本身的回报。</p>
+            <table>
+            <colgroup>
+            <col style="width: 36%" />
+            <col style="width: 7%" />
+            <col style="width: 9%" />
+            <col style="width: 46%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>情况</th>
+            <th>ROE</th>
+            <th>ROIC</th>
+            <th>说明</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>高杠杆</td>
+            <td>高</td>
+            <td>一般</td>
+            <td>ROE 的高来自借债，不来自生意</td>
+            </tr>
+            <tr>
+            <td>账上大量闲置现金</td>
+            <td>偏低</td>
+            <td>高</td>
+            <td>现金拖累了 ROE，主业其实很赚钱</td>
+            </tr>
+            <tr>
+            <td>占用上下游资金（负营运资本）</td>
+            <td>高</td>
+            <td>很高</td>
+            <td>投入资本小，供应商和客户在替公司出钱</td>
+            </tr>
+            </tbody>
+            </table>
+            <p><strong>2. ROIC 与
+            WACC：增长什么时候创造价值</strong></p>
+            <p>WACC
+            是加权平均资本成本，即股东和债权人要求的综合回报率，是一个取决于利率和风险的假设值。只有
+            ROIC 高于
+            WACC，增长才创造价值。McKinsey《价值评估》中的价值驱动公式把这一点写得很清楚：</p>
+            <p><span class="math display">
+            \text{价值}=\frac{NOPAT\times\left(1-\dfrac{g}{ROIC}\right)}{WACC-g}
+            </span></p>
+            <p>其中 NOPAT 取下一年的值，<span
+            class="math inline">g/ROIC</span> 是再投资率，即为了实现增速
+            g 需要把多少比例的利润再投入，剩下的才是自由现金流。假设
+            NOPAT = 100、WACC = 8%、永续增速 g = 5%：</p>
+            <table>
+            <thead>
+            <tr>
+            <th>ROIC</th>
+            <th>再投资率</th>
+            <th>自由现金流</th>
+            <th>价值</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>20%</td>
+            <td>25%</td>
+            <td>75</td>
+            <td>2500</td>
+            </tr>
+            <tr>
+            <td>8%</td>
+            <td>62.5%</td>
+            <td>37.5</td>
+            <td>1250</td>
+            </tr>
+            <tr>
+            <td>5%</td>
+            <td>100%</td>
+            <td>0</td>
+            <td>0</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>不增长时的价值是 100 / 8% = 1250。ROIC 等于 WACC
+            时，增长没有增加任何价值；ROIC 低于 WACC
+            时，增长反而在毁掉价值。这就是同样的增速下，高 ROIC
+            公司值更高估值的原因。</p>
+            <p><strong>3. 实战注意</strong></p>
+            <ul>
+            <li>不同数据库的 ROIC
+            口径差别很大（是否扣除现金、是否含商誉、用期初还是平均资本），横向比较要用同一来源，最好自己按同一口径算。</li>
+            <li>并购形成大额商誉时，含商誉的 ROIC
+            反映这笔收购是否划算，不含商誉的 ROIC
+            反映被收购业务本身的质量。</li>
+            <li>趋势比单年数值重要。ROIC
+            长期稳定在高位，通常意味着有竞争壁垒；扩产期 ROIC
+            下降，要看新产能投产后能否回升。 ### 扣非净利润</li>
+            </ul>
+            <p>扣非净利润是扣除非经常性损益之后的归母净利润，是 A
+            股特有的披露口径。非经常性损益的常见项目有：与正常经营无关的政府补助、资产处置损益、金融资产的公允价值变动和处置收益、单独减值测试的应收款项减值准备转回。</p>
+            <ul>
+            <li>先算非经常性损益占归母净利润的比例。比例高或者每年波动大时，用扣非净利润重算
+            PE 和 ROE。</li>
+            <li>扣非也会误伤：投资控股类公司的投资收益就是主业，某些行业的补贴长期稳定存在。</li>
+            <li>商誉、存货等资产减值通常不算非经常性损益，会同时拉低扣非净利润。判断主业时，要单独看减值的规模和是否会反复发生。</li>
+            </ul>
+            <h3 id="现金流与盈利质量">现金流与盈利质量</h3>
+            <p>利润按权责发生制计算，现金流是实际收付的钱。两者长期背离，往往说明利润质量有问题。</p>
+            <p><span class="math display">
+            \text{净现比}=\frac{\text{经营活动现金流量净额}}{\text{净利润}}
+            </span></p>
+            <p><span class="math display">
+            FCF=\text{经营活动现金流量净额}-\text{资本开支} </span></p>
+            <p>资本开支通常取现金流量表中的“购建固定资产、无形资产和其他长期资产支付的现金”。</p>
+            <ul>
+            <li>净现比长期大于 1
+            比较健康，因为折旧摊销计入了成本却不需要付现金。连续多年小于
+            1 时，先查应收账款和存货是否在膨胀。</li>
+            <li>FCF 为负不一定是坏事。扩产期资本开支大，只要新投资的
+            ROIC 高，负 FCF
+            就是在为未来增长付钱。要区分维持性资本开支（不花就会萎缩）和扩张性资本开支。</li>
+            <li>FCF 收益率 = FCF ÷
+            总市值，可以理解为买下整家公司后每年能拿回多少现金，适合和国债收益率、股息率对照。</li>
+            <li>美股科技公司大量使用股权激励（SBC）。SBC
+            是费用但不付现金，会被加回经营现金流，比较时用 FCF − SBC
+            更保守。</li>
+            <li>银行、保险等金融企业的经营现金流包含存贷款、保费等资金往来，不适用这套分析。</li>
+            </ul>
+            <h3 id="现金转换周期">现金转换周期</h3>
+            <p><span class="math display">
+            \begin{aligned}
+            \text{应收周转天数 DSO} &amp;=
+            \frac{\text{应收}}{\text{营收}}\times 365\\
+            \text{存货周转天数 DIO} &amp;=
+            \frac{\text{存货}}{\text{营业成本}}\times 365\\
+            \text{应付周转天数 DPO} &amp;=
+            \frac{\text{应付}}{\text{营业成本}}\times 365\\
+            \text{现金转换周期 CCC} &amp;= DSO + DIO - DPO
+            \end{aligned}
+            </span></p>
+            <p>CCC 是公司从付钱给供应商到从客户收回钱之间隔了多少天。CCC
+            越短，增长需要垫付的营运资本越少。CCC
+            为负，说明供应商和客户在替公司提供资金，规模越大，账上沉淀的现金越多，强势的龙头制造企业和预收款模式的消费品公司常见这种情况。</p>
+            <p>A 股实战注意：</p>
+            <ul>
+            <li>应收要合并看：应收账款 + 应收票据 + 应收款项融资 +
+            合同资产。只看应收账款会漏掉票据，也会漏掉已确认收入但尚未结算的部分。</li>
+            <li>应付同理：应付账款 +
+            应付票据。合同负债是客户预付的钱，不计入
+            DPO，但它的增长通常说明下游需求旺盛。</li>
+            <li>警示信号：应收增速持续高于营收增速，说明可能在放宽信用换增长；存货大增而毛利率下降，说明产品可能卖不动或要降价。</li>
+            <li>分子用期初和期末的平均值更准确。用季度数据时，365 要换成
+            91，或先把营收和成本年化。 ### 负债与偿债能力</li>
+            </ul>
+            <table>
+            <colgroup>
+            <col style="width: 18%" />
+            <col style="width: 35%" />
+            <col style="width: 46%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>指标</th>
+            <th>计算方式</th>
+            <th>看什么</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>资产负债率</td>
+            <td>总负债 ÷ 总资产</td>
+            <td>总体杠杆，但包含应付账款、合同负债等无息负债</td>
+            </tr>
+            <tr>
+            <td>有息负债率</td>
+            <td>有息负债 ÷ 总资产</td>
+            <td>真正需要付息还本的债务</td>
+            </tr>
+            <tr>
+            <td>净负债 / EBITDA</td>
+            <td>（有息负债 − 现金）÷ EBITDA</td>
+            <td>用经营利润还清净债务需要几年</td>
+            </tr>
+            <tr>
+            <td>利息保障倍数</td>
+            <td>EBIT ÷ 利息费用</td>
+            <td>利润能覆盖几倍利息</td>
+            </tr>
+            <tr>
+            <td>流动比率 / 速动比率</td>
+            <td>流动资产（速动比率扣除存货）÷ 流动负债</td>
+            <td>短期偿债能力</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>有息负债一般包括短期借款、长期借款、应付债券、一年内到期的非流动负债和租赁负债。</p>
+            <ul>
+            <li>资产负债率高不一定危险。占用上下游资金的公司，负债大多是应付账款和合同负债，这反而体现了议价能力。看有息负债更准确。</li>
+            <li>按常见经验，净负债 / EBITDA 超过 3 到 4
+            倍属于高杠杆，周期下行时风险大。</li>
+            <li>A
+            股要警惕“存贷双高”：账上现金很多，有息负债也很多，利息收入却很低。这可能意味着现金受限甚至不真实。</li>
+            </ul>
+            <h3 id="股息率与股东回报">股息率与股东回报</h3>
+            <p><span class="math display"> \text{股息率}=\frac{\text{近
+            12 个月每股分红}}{\text{股价}},\qquad
+            \text{分红率}=\frac{\text{分红总额}}{\text{归母净利润}}
+            </span></p>
+            <p>股东回报除了分红还有回购：</p>
+            <p><span class="math display">
+            \text{股东收益率}=\text{股息率}+\frac{\text{回购金额}-\text{新股发行金额}}{\text{总市值}}
+            </span></p>
+            <ul>
+            <li>回购后注销才会真正减少股本、提高每股收益。用于员工持股计划的回购股份，最终会重新流通。</li>
+            <li>分红率和 ROE 一起决定增长，留存部分按 ROE 再投资（见 ROE
+            一节的可持续增长率）。成长期公司低分红是合理的；成熟期公司
+            ROE 已经下降却不提高分红，说明资本配置有问题。</li>
+            <li>高股息率可能是价值陷阱：股价因利润下滑而下跌，抬高了按历史分红算出的股息率。要看利润和现金流能否持续覆盖分红。
+            ### ARR 与订阅业务指标</li>
+            </ul>
+            <p>订阅制公司（SaaS、云服务）前期获客成本高，利润常为负，PE
+            不适用。市场主要看收入的规模、持续性和扩张效率，估值常用 EV
+            / ARR 或 EV /
+            下一年收入，倍数高低主要由增速和留存率决定。</p>
+            <p><strong>1. ARR</strong></p>
+            <p>ARR（Annual Recurring
+            Revenue，年度经常性收入）是某一时点上所有有效订阅合同折算成一年的收入：</p>
+            <p><span class="math display"> ARR = \text{期末 MRR} \times
+            12 </span></p>
+            <p>MRR 是月度经常性收入。ARR 和财报收入的区别：</p>
+            <ul>
+            <li>ARR 是时点值（存量），收入是期间值（流量）。ARR
+            的增长领先于收入，因为新签合同要在之后几个季度里逐步确认收入。</li>
+            <li>ARR
+            不是会计准则指标，各公司定义不同。是否包含按用量计费、一次性服务费，多年合同怎样折算，都要看公司自己的口径。</li>
+            <li>AI 公司常说的 run-rate
+            revenue（年化收入）通常是最近一个月的收入乘以
+            12。它包含按调用量计费的部分，没有合同锁定，波动比订阅 ARR
+            大得多，不能和传统 SaaS 的 ARR 直接比较。</li>
+            </ul>
+            <p><strong>2. 留存率</strong></p>
+            <p><span class="math display"> NRR=\frac{\text{期初
+            ARR}+\text{扩容}-\text{降级}-\text{流失}}{\text{期初 ARR}}
+            </span></p>
+            <p><span class="math display"> GRR=\frac{\text{期初
+            ARR}-\text{降级}-\text{流失}}{\text{期初 ARR}} </span></p>
+            <p>两者都只统计 12 个月前就已存在的老客户，不含新客户。</p>
+            <ul>
+            <li>NRR（净收入留存率，也叫 NDR）大于
+            100%，表示即使一个新客户都不签，老客户贡献的收入也在增长。</li>
+            <li>GRR（总收入留存率）不会超过 100%，反映产品黏性。NRR 高而
+            GRR 低，说明少数大客户的扩容掩盖了大量客户流失。</li>
+            </ul>
+            <p><strong>3. 增长效率</strong></p>
+            <ul>
+            <li>Rule of 40：收入增速 + 利润率（常用 FCF 利润率）≥
+            40%，被视为增长与盈利平衡得较好。例如收入增长 30%、FCF
+            利润率 10%，合计正好 40。</li>
+            <li>CAC
+            回收期：获取客户花掉的销售和营销费用，需要多少个月的毛利才能收回。</li>
+            </ul>
+            <p><span class="math display"> \text{CAC
+            回收期（月）}=\frac{\text{销售和营销费用}}{\text{新增
+            ARR}\times\text{毛利率}}\times 12 </span></p>
+            <p>例如一年的销售和营销费用为 120，同期新增 ARR 为
+            100，毛利率 80%，回收期为 120 ÷ (100 × 80%) × 12 = 18
+            个月。</p>
+            <ul>
+            <li>RPO（剩余履约义务）是已签合同中尚未确认为收入的金额，cRPO
+            是其中未来 12
+            个月内将确认的部分。对云计算和算力租赁公司，RPO（积压订单）是比
+            ARR 更前瞻的指标，但要同时看客户集中度和合同的可取消条款。
+            ### 指标的选择与组合</li>
+            </ul>
+            <p>不同类型的公司，定价看的变量不同：</p>
+            <table>
+            <colgroup>
+            <col style="width: 32%" />
+            <col style="width: 32%" />
+            <col style="width: 35%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>公司类型</th>
+            <th>主要估值指标</th>
+            <th>重点经营指标</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>消费、成熟制造</td>
+            <td>PE、FCF 收益率、股息率</td>
+            <td>ROE、毛利率、净现比</td>
+            </tr>
+            <tr>
+            <td>银行</td>
+            <td>PB、股息率</td>
+            <td>ROE、不良率、拨备覆盖率、净息差</td>
+            </tr>
+            <tr>
+            <td>保险</td>
+            <td>PEV（市值 ÷ 内含价值）、PB</td>
+            <td>新业务价值、投资收益率</td>
+            </tr>
+            <tr>
+            <td>强周期（有色、化工、航运）</td>
+            <td>PB、EV/EBITDA、正常化盈利</td>
+            <td>产品价格、库存、产能投放</td>
+            </tr>
+            <tr>
+            <td>重资产运营（电力、通信运营商、算力租赁）</td>
+            <td>EV/EBITDA</td>
+            <td>ROIC、净负债 / EBITDA、利用率</td>
+            </tr>
+            <tr>
+            <td>订阅软件、云服务</td>
+            <td>EV/ARR、EV/收入</td>
+            <td>NRR、Rule of 40、RPO</td>
+            </tr>
+            <tr>
+            <td>未盈利的高成长（创新药、早期科技）</td>
+            <td>PS、管线或分部估值</td>
+            <td>现金消耗速度、现金能支撑的月数</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>一个指标只回答一个问题。分析一家公司时，可以按这个顺序检查：</p>
+            <ol type="1">
+            <li>赚不赚钱：ROE、ROIC
+            的水平和趋势，用杜邦分解看来源。</li>
+            <li>赚的是不是真钱：扣非净利润、净现比、FCF、应收和存货的变化。</li>
+            <li>会不会出事：有息负债、净负债 /
+            EBITDA、有没有存贷双高。</li>
+            <li>给股东多少：分红率、股东收益率。</li>
+            <li>价格贵不贵：选和行业匹配的估值指标，用 <span
+            class="math inline">P = EPS \times PE</span>
+            拆开看价格变化来自利润还是估值。</li>
+            </ol>
             <h3 id="vol">VOL</h3>
             <p>VOL（Volume，成交量）是股票技术分析中最基础、也最值得理解的指标之一。</p>
             <p><span class="math display"> 成交额=\sum_i
             成交价格_i\times 成交股数_i </span></p>
             <p><span class="math display">
-            换手率=\frac{当日成交股数}{流通股数}\times100\\% </span></p>
+            换手率=\frac{当日成交股数}{流通股数}\times100\% </span></p>
             <figure>
             <img src="./WikiImage/image_2026-10-10-14-58-51.png"
             alt="四种经典量价关系" />
@@ -251,6 +764,15 @@
         <aside class="wiki-toc">
       <ul>
       <li><a href="#pe" id="toc-pe">PE</a></li>
+      <li><a href="#peg" id="toc-peg">PEG</a></li>
+      <li><a href="#pbps-与-evebitda" id="toc-pbps-与-evebitda">PB、PS
+      与 EV/EBITDA</a></li>
+      <li><a href="#现金流与盈利质量"
+      id="toc-现金流与盈利质量">现金流与盈利质量</a></li>
+      <li><a href="#现金转换周期"
+      id="toc-现金转换周期">现金转换周期</a></li>
+      <li><a href="#股息率与股东回报"
+      id="toc-股息率与股东回报">股息率与股东回报</a></li>
       <li><a href="#vol" id="toc-vol">VOL</a></li>
       <li><a href="#ma" id="toc-ma">MA</a></li>
       <li><a href="#ema" id="toc-ema">EMA</a></li>

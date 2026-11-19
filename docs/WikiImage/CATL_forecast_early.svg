@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 570" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect x="0" y="0" width="900" height="570" rx="12" fill="#ffffff"/>
+<text x="30.0" y="34.0" font-size="20" fill="#212529" font-weight="700" text-anchor="start">研报先低估利润，股价却在 2021 年末见顶：东吴证券 2021—2023 年预测</text>
+<text x="30.0" y="56.0" font-size="13" fill="#868e96" text-anchor="start">每个点是一次报告给出的归母净利润预测（亿元），横轴为报告发布日；空心方块为后来披露的实际值</text>
+<line x1="80.0" y1="408.0" x2="860.0" y2="408.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="412.0" font-size="11" fill="#868e96" text-anchor="end">0</text>
+<line x1="80.0" y1="301.3" x2="860.0" y2="301.3" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="305.3" font-size="11" fill="#868e96" text-anchor="end">200</text>
+<line x1="80.0" y1="194.7" x2="860.0" y2="194.7" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="198.7" font-size="11" fill="#868e96" text-anchor="end">400</text>
+<line x1="80.0" y1="88.0" x2="860.0" y2="88.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="92.0" font-size="11" fill="#868e96" text-anchor="end">600</text>
+<line x1="134.4" y1="88.0" x2="134.4" y2="408.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="352.1" y1="88.0" x2="352.1" y2="408.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="569.8" y1="88.0" x2="569.8" y2="408.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="787.4" y1="88.0" x2="787.4" y2="408.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<path d="M96.1 367.5 L205.1 352.1 L313.6 344.0 L368.5 326.9" fill="none" stroke="#4c6ef5" stroke-width="2" stroke-linejoin="round"/>
+<path d="M368.5 326.9 L418.6 323.0" fill="none" stroke="#4c6ef5" stroke-width="1.5" stroke-linejoin="round" stroke-dasharray="4 3"/>
+<rect x="412.6" y="317.0" width="12" height="12" fill="#ffffff" stroke="#4c6ef5" stroke-width="2"/>
+<text x="426.6" y="339.0" font-size="11.5" fill="#495057" text-anchor="start">2021 实际 159</text>
+<circle cx="96.1" cy="367.5" r="4.5" fill="#4c6ef5"/>
+<text x="104.1" y="359.5" font-size="11.5" fill="#495057" text-anchor="start">76</text>
+<circle cx="205.1" cy="352.1" r="4.5" fill="#4c6ef5"/>
+<text x="213.1" y="344.1" font-size="11.5" fill="#495057" text-anchor="start">105</text>
+<circle cx="313.6" cy="344.0" r="4.5" fill="#4c6ef5"/>
+<text x="313.6" y="360.0" font-size="11.5" fill="#495057" text-anchor="middle">120</text>
+<circle cx="368.5" cy="326.9" r="4.5" fill="#4c6ef5"/>
+<text x="362.5" y="342.9" font-size="11.5" fill="#495057" text-anchor="end">152</text>
+<path d="M96.1 353.1 L230.7 307.4 L313.6 280.0 L368.5 246.9 L425.7 278.4 L521.2 246.9" fill="none" stroke="#0ca678" stroke-width="2" stroke-linejoin="round"/>
+<path d="M521.2 246.9 L610.6 244.1" fill="none" stroke="#0ca678" stroke-width="1.5" stroke-linejoin="round" stroke-dasharray="4 3"/>
+<rect x="604.6" y="238.1" width="12" height="12" fill="#ffffff" stroke="#0ca678" stroke-width="2"/>
+<text x="618.6" y="260.1" font-size="11.5" fill="#495057" text-anchor="start">2022 实际 307</text>
+<circle cx="96.1" cy="353.1" r="4.5" fill="#0ca678"/>
+<text x="96.1" y="343.1" font-size="11.5" fill="#495057" text-anchor="middle">103</text>
+<circle cx="230.7" cy="307.4" r="4.5" fill="#0ca678"/>
+<text x="238.7" y="299.4" font-size="11.5" fill="#495057" text-anchor="start">189</text>
+<circle cx="313.6" cy="280.0" r="4.5" fill="#0ca678"/>
+<text x="305.6" y="274.0" font-size="11.5" fill="#495057" text-anchor="end">240</text>
+<circle cx="368.5" cy="246.9" r="4.5" fill="#0ca678"/>
+<text x="362.5" y="238.9" font-size="11.5" fill="#495057" text-anchor="end">302</text>
+<circle cx="425.7" cy="278.4" r="4.5" fill="#0ca678"/>
+<text x="425.7" y="294.4" font-size="11.5" fill="#495057" text-anchor="middle">243</text>
+<circle cx="521.2" cy="246.9" r="4.5" fill="#0ca678"/>
+<text x="529.2" y="238.9" font-size="11.5" fill="#495057" text-anchor="start">302</text>
+<path d="M205.1 284.8 L313.6 220.8 L368.5 161.1 L425.7 194.1 L521.2 150.4 L610.6 160.5 L744.2 177.6" fill="none" stroke="#f08c00" stroke-width="2" stroke-linejoin="round"/>
+<path d="M744.2 177.6 L832.3 172.7" fill="none" stroke="#f08c00" stroke-width="1.5" stroke-linejoin="round" stroke-dasharray="4 3"/>
+<rect x="826.3" y="166.7" width="12" height="12" fill="#ffffff" stroke="#f08c00" stroke-width="2"/>
+<text x="832.3" y="160.7" font-size="11.5" fill="#495057" text-anchor="middle">2023 实际 441</text>
+<circle cx="205.1" cy="284.8" r="4.5" fill="#f08c00"/>
+<text x="213.1" y="276.8" font-size="11.5" fill="#495057" text-anchor="start">231</text>
+<circle cx="313.6" cy="220.8" r="4.5" fill="#f08c00"/>
+<text x="305.6" y="214.8" font-size="11.5" fill="#495057" text-anchor="end">351</text>
+<circle cx="368.5" cy="161.1" r="4.5" fill="#f08c00"/>
+<text x="368.5" y="151.1" font-size="11.5" fill="#495057" text-anchor="middle">463</text>
+<circle cx="425.7" cy="194.1" r="4.5" fill="#f08c00"/>
+<text x="425.7" y="210.1" font-size="11.5" fill="#495057" text-anchor="middle">401</text>
+<circle cx="521.2" cy="150.4" r="4.5" fill="#f08c00"/>
+<text x="521.2" y="140.4" font-size="11.5" fill="#495057" text-anchor="middle">483</text>
+<circle cx="610.6" cy="160.5" r="4.5" fill="#f08c00"/>
+<text x="618.6" y="152.5" font-size="11.5" fill="#495057" text-anchor="start">464</text>
+<circle cx="744.2" cy="177.6" r="4.5" fill="#f08c00"/>
+<text x="744.2" y="193.6" font-size="11.5" fill="#495057" text-anchor="middle">432</text>
+<line x1="334.5" y1="88.0" x2="334.5" y2="408.0" stroke="#c92a2a" stroke-width="1.5" stroke-dasharray="5 4"/>
+<text x="329.5" y="102.0" font-size="12" fill="#c92a2a" font-weight="700" text-anchor="end">2021-12-02 市值顶部</text>
+<text x="138.4" y="428.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="start">2021</text>
+<text x="356.1" y="428.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="start">2022</text>
+<text x="573.8" y="428.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="start">2023</text>
+<text x="791.4" y="428.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="start">2024</text>
+<line x1="80.0" y1="450.0" x2="104.0" y2="450.0" stroke="#4c6ef5" stroke-width="2"/>
+<circle cx="92.0" cy="450.0" r="3.5" fill="#4c6ef5"/>
+<text x="112.0" y="454.0" font-size="12" fill="#495057" text-anchor="start">预测 2021 年</text>
+<line x1="210.1" y1="450.0" x2="234.1" y2="450.0" stroke="#0ca678" stroke-width="2"/>
+<circle cx="222.1" cy="450.0" r="3.5" fill="#0ca678"/>
+<text x="242.1" y="454.0" font-size="12" fill="#495057" text-anchor="start">预测 2022 年</text>
+<line x1="340.2" y1="450.0" x2="364.2" y2="450.0" stroke="#f08c00" stroke-width="2"/>
+<circle cx="352.2" cy="450.0" r="3.5" fill="#f08c00"/>
+<text x="372.2" y="454.0" font-size="12" fill="#495057" text-anchor="start">预测 2023 年</text>
+<rect x="476.23999999999995" y="444" width="12" height="12" fill="#ffffff" stroke="#adb5bd" stroke-width="2"/>
+<text x="502.2" y="454.0" font-size="12" fill="#495057" text-anchor="start">后来披露的实际值</text>
+<rect x="30.0" y="480.0" width="840.0" height="74.0" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+<text x="48.0" y="504.0" font-size="12" fill="#495057" text-anchor="start">2022 年利润的首次预测为 103 亿元，实际 307 亿元；但在 2021-12-02 市值顶部，按当时 2022 年预测 240 亿元算 PE 约 67 倍，按后来实际利润算</text>
+<text x="48.0" y="522.0" font-size="12" fill="#495057" text-anchor="start">仍约 52 倍。</text>
+<text x="48.0" y="540.0" font-size="12" fill="#495057" text-anchor="start">来源：东方财富研报中心东吴证券报告摘要，2026-11-18 提取，只取部分报告点。单家机构，不代表一致预期。</text>
+</svg>

@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 584" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect x="0" y="0" width="900" height="584" rx="12" fill="#ffffff"/>
+<text x="30.0" y="34.0" font-size="20" fill="#212529" font-weight="700" text-anchor="start">网红股见顶之后：商汤、云从一年跌掉约七成，智谱和 MiniMax 更快</text>
+<text x="30.0" y="56.0" font-size="13" fill="#868e96" text-anchor="start">横轴为距市值高点的月数，纵轴为市值占高点的百分比（总股本 × 不复权收盘价）。停牌期断开</text>
+<text x="80.0" y="94.0" font-size="12.5" fill="#3b5bdb" font-weight="700" text-anchor="start">市值 / 高点市值（%）</text>
+<line x1="80.0" y1="404.0" x2="860.0" y2="404.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="408.0" font-size="11" fill="#868e96" text-anchor="end">0%</text>
+<line x1="80.0" y1="344.0" x2="860.0" y2="344.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="348.0" font-size="11" fill="#868e96" text-anchor="end">20%</text>
+<line x1="80.0" y1="284.0" x2="860.0" y2="284.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="288.0" font-size="11" fill="#868e96" text-anchor="end">40%</text>
+<line x1="80.0" y1="224.0" x2="860.0" y2="224.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="228.0" font-size="11" fill="#868e96" text-anchor="end">60%</text>
+<line x1="80.0" y1="164.0" x2="860.0" y2="164.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="168.0" font-size="11" fill="#868e96" text-anchor="end">80%</text>
+<line x1="80.0" y1="104.0" x2="860.0" y2="104.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="108.0" font-size="11" fill="#868e96" text-anchor="end">100%</text>
+<line x1="80.0" y1="104.0" x2="80.0" y2="404.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="150.9" y1="104.0" x2="150.9" y2="404.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="221.8" y1="104.0" x2="221.8" y2="404.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="363.6" y1="104.0" x2="363.6" y2="404.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="505.5" y1="104.0" x2="505.5" y2="404.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="647.3" y1="104.0" x2="647.3" y2="404.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="789.1" y1="104.0" x2="789.1" y2="404.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<path d="M80.0 104.0 L91.8 143.9 L103.6 172.7 L115.5 218.6 L127.3 266.9 L139.1 238.1 L150.9 219.5 L162.7 190.1" fill="none" stroke="#adb5bd" stroke-width="2" stroke-linejoin="round"/>
+<path d="M233.6 231.2 L245.5 213.8 L257.3 225.8 L269.1 232.7 L280.9 230.6 L292.7 254.6 L304.5 264.5" fill="none" stroke="#adb5bd" stroke-width="2" stroke-linejoin="round"/>
+<path d="M328.2 264.2 L340.0 280.4 L351.8 283.1" fill="none" stroke="#adb5bd" stroke-width="2" stroke-linejoin="round"/>
+<path d="M470.0 371.3 L481.8 355.7 L493.6 369.8 L505.5 369.5 L517.3 375.2 L529.1 376.4 L540.9 386.9 L552.7 374.6 L564.5 377.9 L576.4 374.9 L588.2 381.2 L600.0 382.4 L611.8 383.3 L623.6 379.1 L635.5 383.6 L647.3 390.8" fill="none" stroke="#adb5bd" stroke-width="2" stroke-linejoin="round"/>
+<path d="M103.6 273.2 L115.5 315.8 L127.3 256.7 L139.1 190.7" fill="none" stroke="#adb5bd" stroke-width="2" stroke-linejoin="round" stroke-dasharray="5 4"/>
+<path d="M198.2 221.6 L210.0 259.4 L221.8 255.5 L233.6 251.0 L245.5 271.4 L257.3 264.5 L269.1 267.2 L280.9 277.1 L292.7 276.2 L304.5 302.9 L316.4 312.8 L328.2 310.4 L340.0 327.5 L351.8 339.2 L363.6 342.2 L375.5 343.1" fill="none" stroke="#adb5bd" stroke-width="2" stroke-linejoin="round" stroke-dasharray="5 4"/>
+<path d="M434.5 344.0 L446.4 332.0 L458.2 342.8 L470.0 325.1 L481.8 336.5 L493.6 343.4 L505.5 357.2 L517.3 368.0 L529.1 373.4 L540.9 371.6 L552.7 375.8 L564.5 377.0 L576.4 377.6 L588.2 379.7 L600.0 383.9 L611.8 369.8 L623.6 375.5 L635.5 382.4 L647.3 387.5 L659.1 386.0 L670.9 391.7 L682.7 389.9 L694.5 391.7 L706.4 394.1 L718.2 395.3 L730.0 394.4 L741.8 395.6 L753.6 395.9 L765.5 397.1 L777.3 398.6 L789.1 397.7 L848.2 403.1" fill="none" stroke="#adb5bd" stroke-width="2" stroke-linejoin="round" stroke-dasharray="5 4"/>
+<path d="M80.0 104.0 L91.8 152.9 L103.6 151.4 L115.5 174.5 L127.3 224.3 L139.1 187.7 L150.9 310.4 L162.7 323.0 L174.5 320.9 L186.4 344.6 L198.2 355.1 L210.0 329.9 L221.8 319.4 L233.6 300.2 L245.5 305.0 L257.3 284.0 L269.1 308.3 L280.9 323.0 L292.7 330.8 L304.5 339.2 L316.4 342.2 L328.2 355.4 L340.0 351.8 L351.8 353.9 L363.6 363.5 L375.5 375.2 L387.3 371.3 L399.1 379.1 L410.9 345.2 L422.7 353.0 L434.5 341.9 L446.4 359.3 L458.2 361.1 L470.0 322.1 L481.8 344.9 L493.6 346.4 L505.5 350.0 L517.3 333.5 L529.1 337.4 L540.9 341.0 L552.7 341.0 L564.5 348.8 L576.4 342.5 L588.2 335.9 L600.0 322.4 L611.8 281.9 L623.6 308.0 L635.5 313.1 L647.3 305.3 L659.1 298.7 L670.9 303.2 L682.7 321.8 L694.5 310.4 L706.4 327.5 L718.2 340.1 L730.0 332.9 L741.8 336.8 L753.6 348.5 L765.5 352.4 L770.2 355.1" fill="none" stroke="#4c6ef5" stroke-width="2.2" stroke-linejoin="round"/>
+<path d="M80.0 104.0 L91.8 212.0 L103.6 253.7 L115.5 268.4 L127.3 284.9 L139.1 297.8 L150.9 299.0 L162.7 298.4 L174.5 276.2 L186.4 293.0 L198.2 319.4 L210.0 299.3 L221.8 314.0 L233.6 315.5 L245.5 328.4 L257.3 323.6 L269.1 332.0 L280.9 349.7 L292.7 321.5 L304.5 315.5 L316.4 298.4 L328.2 323.6 L340.0 305.0 L351.8 267.5 L363.6 318.2 L375.5 304.4 L387.3 307.7 L399.1 310.4 L410.9 286.1 L422.7 289.1 L434.5 280.4 L446.4 296.6 L458.2 302.3 L470.0 297.2 L481.8 298.7 L493.6 298.7 L505.5 316.4 L517.3 299.3 L529.1 314.0 L540.9 323.3 L552.7 323.6 L564.5 331.1 L576.4 334.7 L588.2 333.5 L592.9 338.0" fill="none" stroke="#0ca678" stroke-width="2" stroke-linejoin="round"/>
+<path d="M80.0 104.0 L91.8 195.8 L103.6 210.2 L115.5 283.4 L127.3 345.8 L139.1 317.9 L150.9 321.5 L162.7 354.5 L174.5 371.0 L174.5 371.0" fill="none" stroke="#f08c00" stroke-width="2" stroke-linejoin="round"/>
+<path d="M80.0 104.0 L91.8 251.3 L103.6 257.3 L115.5 302.9 L127.3 341.3 L137.9 353.9" fill="none" stroke="#fa5252" stroke-width="2.2" stroke-linejoin="round"/>
+<circle cx="816.3" cy="402.5" r="5" fill="#adb5bd"/>
+<text x="812.3" y="392.5" font-size="12.5" fill="#212529" font-weight="700" text-anchor="end">乐视退市 0.5%</text>
+<circle cx="770.2" cy="355.1" r="5" fill="#4c6ef5"/>
+<text x="766.2" y="345.1" font-size="12.5" fill="#212529" font-weight="700" text-anchor="end">商汤 16%</text>
+<circle cx="592.9" cy="338.0" r="5" fill="#0ca678"/>
+<text x="596.9" y="330.0" font-size="12.5" fill="#212529" font-weight="700" text-anchor="start">云从 22%</text>
+<circle cx="137.9" cy="353.9" r="5" fill="#fa5252"/>
+<text x="131.9" y="389.9" font-size="12.5" fill="#212529" font-weight="700" text-anchor="start">智谱 17%（5 个月）</text>
+<circle cx="174.5" cy="371.0" r="5" fill="#f08c00"/>
+<text x="182.5" y="375.0" font-size="12.5" fill="#212529" font-weight="700" text-anchor="start">MiniMax 11%（8 个月）</text>
+<text x="84.0" y="424.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="start">高点</text>
+<text x="154.9" y="424.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="start">6 个月</text>
+<text x="225.8" y="424.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="start">1 年</text>
+<text x="367.6" y="424.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="start">2 年</text>
+<text x="509.5" y="424.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="start">3 年</text>
+<text x="651.3" y="424.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="start">4 年</text>
+<text x="793.1" y="424.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="start">5 年</text>
+<line x1="80.0" y1="446.0" x2="104.0" y2="446.0" stroke="#adb5bd" stroke-width="2"/>
+<circle cx="92.0" cy="446.0" r="3.5" fill="#adb5bd"/>
+<text x="112.0" y="450.0" font-size="12" fill="#495057" text-anchor="start">乐视网 2015-05</text>
+<line x1="226.6" y1="446.0" x2="250.6" y2="446.0" stroke="#adb5bd" stroke-width="2" stroke-dasharray="5 3"/>
+<circle cx="238.6" cy="446.0" r="3.5" fill="#adb5bd"/>
+<text x="258.6" y="450.0" font-size="12" fill="#495057" text-anchor="start">暴风 2015-06</text>
+<line x1="361.3" y1="446.0" x2="385.3" y2="446.0" stroke="#4c6ef5" stroke-width="2"/>
+<circle cx="373.3" cy="446.0" r="3.5" fill="#4c6ef5"/>
+<text x="393.3" y="450.0" font-size="12" fill="#495057" text-anchor="start">商汤 2022-01</text>
+<line x1="495.9" y1="446.0" x2="519.9" y2="446.0" stroke="#0ca678" stroke-width="2"/>
+<circle cx="507.9" cy="446.0" r="3.5" fill="#0ca678"/>
+<text x="527.9" y="450.0" font-size="12" fill="#495057" text-anchor="start">云从 2023-04</text>
+<line x1="630.6" y1="446.0" x2="654.6" y2="446.0" stroke="#f08c00" stroke-width="2"/>
+<circle cx="642.6" cy="446.0" r="3.5" fill="#f08c00"/>
+<text x="662.6" y="450.0" font-size="12" fill="#495057" text-anchor="start">MiniMax 2026-03</text>
+<line x1="788.2" y1="446.0" x2="812.2" y2="446.0" stroke="#fa5252" stroke-width="2"/>
+<circle cx="800.2" cy="446.0" r="3.5" fill="#fa5252"/>
+<text x="820.2" y="450.0" font-size="12" fill="#495057" text-anchor="start">智谱 2026-06</text>
+<rect x="30.0" y="476.0" width="840.0" height="92.0" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+<text x="48.0" y="500.0" font-size="12" fill="#495057" text-anchor="start">高点市值：乐视网 1,527 亿元、暴风 369 亿元、商汤 2,729 亿港元、云从 437 亿元、MiniMax 3,883 亿港元、智谱 10,745 亿港元。商汤 2024—</text>
+<text x="48.0" y="518.0" font-size="12" fill="#495057" text-anchor="start">2026 年多次配售，股本增加 27%，所以市值比例高于股价比例。</text>
+<text x="48.0" y="536.0" font-size="12" fill="#495057" text-anchor="start">智谱 5 个月跌到高点的 17%，商汤用了 24 个月跌到 14%（月末最低 8%，第 27 个月）。乐视网 2019-05 起暂停上市，2020-07 退市时只剩 0.5%；暴</text>
+<text x="48.0" y="554.0" font-size="12" fill="#495057" text-anchor="start">风 2020-11 退市时 0.3%。来源：腾讯证券日 K、东方财富 F10 股本与估值数据。</text>
+</svg>

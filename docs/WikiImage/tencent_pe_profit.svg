@@ -1,0 +1,127 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 748" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect x="0" y="0" width="900" height="748" rx="12" fill="#ffffff"/>
+<text x="30.0" y="34.0" font-size="20" fill="#212529" font-weight="700" text-anchor="start">利润五年翻倍多，PE 从 40 倍降到 11 倍：腾讯控股 2018—2026</text>
+<text x="30.0" y="56.0" font-size="13" fill="#868e96" text-anchor="start">上：日度 PE（TTM，Non-IFRS 归母净利润口径，自算）的全年平均与年末值；下：Non-IFRS 归母净利润（亿元），2026 为前三季度</text>
+<rect x="80.0" y="126.0" width="260.0" height="442.0" rx="0" fill="#f1f3f5" opacity="0.6"/>
+<text x="210.0" y="88.0" font-size="11.5" fill="#495057" font-weight="700" text-anchor="middle">增长股 36—44×</text>
+<rect x="340.0" y="126.0" width="173.3" height="442.0" rx="0" fill="#fff5f5" opacity="0.6"/>
+<text x="426.7" y="88.0" font-size="11.5" fill="#c92a2a" font-weight="700" text-anchor="middle">利润停滞 + 监管</text>
+<rect x="513.3" y="126.0" width="86.7" height="442.0" rx="0" fill="#e6fcf5" opacity="0.6"/>
+<text x="556.7" y="88.0" font-size="11.5" fill="#0b7285" font-weight="700" text-anchor="middle">利润先回</text>
+<rect x="600.0" y="126.0" width="173.3" height="442.0" rx="0" fill="#edf2ff" opacity="0.6"/>
+<text x="686.7" y="88.0" font-size="11.5" fill="#3b5bdb" font-weight="700" text-anchor="middle">回购 + AI</text>
+<rect x="773.3" y="126.0" width="86.7" height="442.0" rx="0" fill="#fff4e6" opacity="0.6"/>
+<text x="816.7" y="88.0" font-size="11.5" fill="#e8590c" font-weight="700" text-anchor="middle">AI 开支</text>
+<text x="80.0" y="116.0" font-size="12.5" fill="#3b5bdb" font-weight="700" text-anchor="start">PE（TTM，倍）</text>
+<line x1="80.0" y1="336.0" x2="860.0" y2="336.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="340.0" font-size="11" fill="#868e96" text-anchor="end">0</text>
+<line x1="80.0" y1="294.0" x2="860.0" y2="294.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="298.0" font-size="11" fill="#868e96" text-anchor="end">10</text>
+<line x1="80.0" y1="252.0" x2="860.0" y2="252.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="256.0" font-size="11" fill="#868e96" text-anchor="end">20</text>
+<line x1="80.0" y1="210.0" x2="860.0" y2="210.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="214.0" font-size="11" fill="#868e96" text-anchor="end">30</text>
+<line x1="80.0" y1="168.0" x2="860.0" y2="168.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="172.0" font-size="11" fill="#868e96" text-anchor="end">40</text>
+<line x1="80.0" y1="126.0" x2="860.0" y2="126.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="130.0" font-size="11" fill="#868e96" text-anchor="end">50</text>
+<line x1="80.0" y1="126.0" x2="80.0" y2="336.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="166.7" y1="126.0" x2="166.7" y2="336.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="253.3" y1="126.0" x2="253.3" y2="336.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="340.0" y1="126.0" x2="340.0" y2="336.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="426.7" y1="126.0" x2="426.7" y2="336.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="513.3" y1="126.0" x2="513.3" y2="336.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="600.0" y1="126.0" x2="600.0" y2="336.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="686.7" y1="126.0" x2="686.7" y2="336.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="773.3" y1="126.0" x2="773.3" y2="336.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="860.0" y1="126.0" x2="860.0" y2="336.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<path d="M123.3 149.9 L210.0 184.5 L296.7 167.0 L383.3 186.2 L470.0 236.7 L556.7 237.1 L643.3 262.5 L730.0 253.6 L816.7 275.0" fill="none" stroke="#4c6ef5" stroke-width="2" stroke-linejoin="round"/>
+<circle cx="123.3" cy="149.9" r="3" fill="#4c6ef5"/>
+<circle cx="210.0" cy="184.5" r="3" fill="#4c6ef5"/>
+<circle cx="296.7" cy="167.0" r="3" fill="#4c6ef5"/>
+<circle cx="383.3" cy="186.2" r="3" fill="#4c6ef5"/>
+<circle cx="470.0" cy="236.7" r="3" fill="#4c6ef5"/>
+<circle cx="556.7" cy="237.1" r="3" fill="#4c6ef5"/>
+<circle cx="643.3" cy="262.5" r="3" fill="#4c6ef5"/>
+<circle cx="730.0" cy="253.6" r="3" fill="#4c6ef5"/>
+<circle cx="816.7" cy="275.0" r="3" fill="#4c6ef5"/>
+<path d="M123.3 189.7 L210.0 183.6 L296.7 169.7 L383.3 221.9 L470.0 227.8 L556.7 262.8 L643.3 264.8 L730.0 253.2 L816.7 291.1" fill="none" stroke="#adb5bd" stroke-width="2" stroke-linejoin="round" stroke-dasharray="5 4"/>
+<circle cx="123.3" cy="189.7" r="3" fill="#adb5bd"/>
+<circle cx="210.0" cy="183.6" r="3" fill="#adb5bd"/>
+<circle cx="296.7" cy="169.7" r="3" fill="#adb5bd"/>
+<circle cx="383.3" cy="221.9" r="3" fill="#adb5bd"/>
+<circle cx="470.0" cy="227.8" r="3" fill="#adb5bd"/>
+<circle cx="556.7" cy="262.8" r="3" fill="#adb5bd"/>
+<circle cx="643.3" cy="264.8" r="3" fill="#adb5bd"/>
+<circle cx="730.0" cy="253.2" r="3" fill="#adb5bd"/>
+<circle cx="816.7" cy="291.1" r="3" fill="#adb5bd"/>
+<circle cx="123.3" cy="149.9" r="5" fill="#4c6ef5"/>
+<text x="123.3" y="137.9" font-size="12.5" fill="#212529" font-weight="700" text-anchor="middle">44.30×</text>
+<circle cx="296.7" cy="167.0" r="5" fill="#4c6ef5"/>
+<text x="296.7" y="155.0" font-size="12.5" fill="#212529" font-weight="700" text-anchor="middle">40.23×</text>
+<circle cx="643.3" cy="262.5" r="5" fill="#4c6ef5"/>
+<text x="643.3" y="250.5" font-size="12.5" fill="#212529" font-weight="700" text-anchor="middle">17.51×</text>
+<circle cx="816.7" cy="291.1" r="5" fill="#adb5bd"/>
+<text x="816.7" y="311.1" font-size="12.5" fill="#212529" font-weight="700" text-anchor="middle">11-18 10.68×</text>
+<text x="80.0" y="388.0" font-size="12.5" fill="#0b7285" font-weight="700" text-anchor="start">Non-IFRS 归母净利润（亿元）</text>
+<line x1="80.0" y1="568.0" x2="860.0" y2="568.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="572.0" font-size="11" fill="#868e96" text-anchor="end">0</text>
+<line x1="80.0" y1="511.3" x2="860.0" y2="511.3" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="515.3" font-size="11" fill="#868e96" text-anchor="end">1,000</text>
+<line x1="80.0" y1="454.7" x2="860.0" y2="454.7" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="458.7" font-size="11" fill="#868e96" text-anchor="end">2,000</text>
+<line x1="80.0" y1="398.0" x2="860.0" y2="398.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="402.0" font-size="11" fill="#868e96" text-anchor="end">3,000</text>
+<line x1="80.0" y1="398.0" x2="80.0" y2="568.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="166.7" y1="398.0" x2="166.7" y2="568.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="253.3" y1="398.0" x2="253.3" y2="568.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="340.0" y1="398.0" x2="340.0" y2="568.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="426.7" y1="398.0" x2="426.7" y2="568.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="513.3" y1="398.0" x2="513.3" y2="568.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="600.0" y1="398.0" x2="600.0" y2="568.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="686.7" y1="398.0" x2="686.7" y2="568.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="773.3" y1="398.0" x2="773.3" y2="568.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="860.0" y1="398.0" x2="860.0" y2="568.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<rect x="99.5" y="524.1" width="47.7" height="43.9" rx="3" fill="#0ca678"/>
+<text x="123.3" y="517.1" font-size="11" fill="#495057" text-anchor="middle">774.7</text>
+<rect x="186.2" y="514.5" width="47.7" height="53.5" rx="3" fill="#0ca678"/>
+<text x="210.0" y="507.5" font-size="11" fill="#495057" text-anchor="middle">943.5</text>
+<rect x="272.8" y="498.4" width="47.7" height="69.6" rx="3" fill="#0ca678"/>
+<text x="296.7" y="491.4" font-size="11" fill="#495057" text-anchor="middle">1,227</text>
+<rect x="359.5" y="497.9" width="47.7" height="70.1" rx="3" fill="#0ca678"/>
+<text x="383.3" y="490.9" font-size="11" fill="#495057" text-anchor="middle">1,238</text>
+<rect x="446.2" y="502.5" width="47.7" height="65.5" rx="3" fill="#0ca678"/>
+<text x="470.0" y="495.5" font-size="11" fill="#495057" text-anchor="middle">1,156</text>
+<rect x="532.8" y="478.6" width="47.7" height="89.4" rx="3" fill="#0ca678"/>
+<text x="556.7" y="471.6" font-size="11" fill="#495057" text-anchor="middle">1,577</text>
+<rect x="619.5" y="441.8" width="47.7" height="126.2" rx="3" fill="#0ca678"/>
+<text x="643.3" y="434.8" font-size="11" fill="#495057" text-anchor="middle">2,227</text>
+<rect x="706.2" y="420.9" width="47.7" height="147.1" rx="3" fill="#0ca678"/>
+<text x="730.0" y="413.9" font-size="11" fill="#495057" text-anchor="middle">2,596</text>
+<rect x="792.8" y="453.1" width="47.7" height="114.9" rx="3" fill="#f08c00"/>
+<text x="816.7" y="446.1" font-size="11" fill="#212529" font-weight="700" text-anchor="middle">2,028</text>
+<text x="123.3" y="588.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="middle">2018</text>
+<text x="210.0" y="588.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="middle">2019</text>
+<text x="296.7" y="588.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="middle">2020</text>
+<text x="383.3" y="588.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="middle">2021</text>
+<text x="470.0" y="588.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="middle">2022</text>
+<text x="556.7" y="588.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="middle">2023</text>
+<text x="643.3" y="588.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="middle">2024</text>
+<text x="730.0" y="588.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="middle">2025</text>
+<text x="816.7" y="588.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="middle">2026 YTD</text>
+<line x1="80.0" y1="610.0" x2="104.0" y2="610.0" stroke="#4c6ef5" stroke-width="2"/>
+<circle cx="92.0" cy="610.0" r="3.5" fill="#4c6ef5"/>
+<text x="112.0" y="614.0" font-size="12" fill="#495057" text-anchor="start">平均 PE</text>
+<line x1="181.0" y1="610.0" x2="205.0" y2="610.0" stroke="#adb5bd" stroke-width="2" stroke-dasharray="5 3"/>
+<circle cx="193.0" cy="610.0" r="3.5" fill="#adb5bd"/>
+<text x="213.0" y="614.0" font-size="12" fill="#495057" text-anchor="start">年末 PE</text>
+<rect x="286.1" y="603.0" width="16.0" height="12.0" rx="2" fill="#0ca678" stroke="#0ca678"/>
+<text x="314.1" y="614.0" font-size="12" fill="#495057" text-anchor="start">Non-IFRS 归母净利润</text>
+<rect x="463.4" y="603.0" width="16.0" height="12.0" rx="2" fill="#f08c00" stroke="#f08c00"/>
+<text x="491.4" y="614.0" font-size="12" fill="#495057" text-anchor="start">2026 前三季度</text>
+<rect x="30.0" y="640.0" width="840.0" height="92.0" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+<text x="48.0" y="664.0" font-size="12" fill="#495057" text-anchor="start">2020 到 2025 年 Non-IFRS 利润从 1,227 亿元增至 2,596 亿元，平均 PE 从 40.23 倍降到 19.61 倍；2026-11-18 只有 10.68 倍。2021—2022 年</text>
+<text x="48.0" y="682.0" font-size="12" fill="#495057" text-anchor="start">利润停在 1,156—1,238 亿元，PE 在这两年里减半。</text>
+<text x="48.0" y="700.0" font-size="12" fill="#495057" text-anchor="start">来源：PE = 港股收盘价 × 港元兑人民币中间价 × 总股本 / 当时已披露的最近四季度 Non-IFRS 归母净利润（本文自算，业绩公告次一交易日更新分</text>
+<text x="48.0" y="718.0" font-size="12" fill="#495057" text-anchor="start">母）；利润取公司季度业绩公告。</text>
+</svg>

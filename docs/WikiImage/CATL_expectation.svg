@@ -1,0 +1,148 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 854" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect x="0" y="0" width="900" height="854" rx="12" fill="#ffffff"/>
+<text x="30.0" y="34.0" font-size="20" fill="#212529" font-weight="700" text-anchor="start">预期差时间线：宁德时代 2021—2026</text>
+<text x="30.0" y="56.0" font-size="13" fill="#868e96" text-anchor="start">每行一个节点：当时发生了什么、机构与散户怎么看、事后看预期差在哪。利润单位亿元，PE 为东方财富 TTM</text>
+<line x1="132" y1="116" x2="132" y2="648" stroke="#dee2e6" stroke-width="2"/>
+<text x="118.0" y="86.0" font-size="12.5" fill="#212529" font-weight="700" text-anchor="end">时间</text>
+<text x="160.0" y="86.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="start">事件 / 外部条件</text>
+<text x="366.0" y="86.0" font-size="12.5" fill="#3b5bdb" font-weight="700" text-anchor="start">机构研报</text>
+<text x="562.0" y="86.0" font-size="12.5" fill="#5f3dc4" font-weight="700" text-anchor="start">散户与媒体</text>
+<text x="738.0" y="86.0" font-size="12.5" fill="#e8590c" font-weight="700" text-anchor="start">预期差</text>
+<text x="118.0" y="120.0" font-size="12" fill="#212529" font-weight="700" text-anchor="end">2021-01-07</text>
+<text x="118.0" y="136.0" font-size="11" fill="#868e96" text-anchor="end">PE 峰值</text>
+<circle cx="132.0" cy="116.0" r="5" fill="#fa5252"/>
+<rect x="150.0" y="100.0" width="200.0" height="66.0" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+<text x="160.0" y="120.0" font-size="11.5" fill="#495057" text-anchor="start">PE 216 倍，市值 9,626 亿元，TTM</text>
+<text x="160.0" y="136.0" font-size="11.5" fill="#495057" text-anchor="start">利润约 45 亿元</text>
+<rect x="356.0" y="100.0" width="190.0" height="66.0" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+<text x="366.0" y="120.0" font-size="11.5" fill="#495057" text-anchor="start">东吴 2020-12-30 预测 2021 年</text>
+<text x="366.0" y="136.0" font-size="11.5" fill="#495057" text-anchor="start">97 亿元，目标价 395 元</text>
+<rect x="552.0" y="100.0" width="170.0" height="66.0" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+<text x="562.0" y="120.0" font-size="11.5" fill="#495057" text-anchor="start">“市值快破万亿，净利润才</text>
+<text x="562.0" y="136.0" font-size="11.5" fill="#495057" text-anchor="start">33 亿”；也有人看 1000 元</text>
+<rect x="728.0" y="100.0" width="132.0" height="66.0" rx="8" fill="#fff5f5" stroke="#fa5252"/>
+<text x="738.0" y="120.0" font-size="11.5" fill="#c92a2a" font-weight="700" text-anchor="start">低估当年：2021 实际</text>
+<text x="738.0" y="136.0" font-size="11.5" fill="#c92a2a" text-anchor="start">159 亿元，为预测的</text>
+<text x="738.0" y="152.0" font-size="11.5" fill="#c92a2a" text-anchor="start">1.6 倍</text>
+<text x="118.0" y="196.0" font-size="12" fill="#212529" font-weight="700" text-anchor="end">2021-12-02</text>
+<text x="118.0" y="212.0" font-size="11" fill="#868e96" text-anchor="end">市值顶点</text>
+<circle cx="132.0" cy="192.0" r="5" fill="#f08c00"/>
+<rect x="150.0" y="176.0" width="200.0" height="66.0" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+<text x="160.0" y="196.0" font-size="11.5" fill="#495057" text-anchor="start">市值 16,036 亿元，PE 161 倍</text>
+<rect x="356.0" y="176.0" width="190.0" height="66.0" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+<text x="366.0" y="196.0" font-size="11.5" fill="#495057" text-anchor="start">东吴 2022 年预测 240 亿元，隐</text>
+<text x="366.0" y="212.0" font-size="11.5" fill="#495057" text-anchor="start">含 67 倍，目标价 825 元</text>
+<rect x="552.0" y="176.0" width="170.0" height="66.0" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+<text x="562.0" y="196.0" font-size="11.5" fill="#495057" text-anchor="start">北向加仓、基金抱团；股东户</text>
+<text x="562.0" y="212.0" font-size="11.5" fill="#495057" text-anchor="start">数仅约 14 万</text>
+<rect x="728.0" y="176.0" width="132.0" height="66.0" rx="8" fill="#fff4e6" stroke="#f08c00"/>
+<text x="738.0" y="196.0" font-size="11.5" fill="#e8590c" font-weight="700" text-anchor="start">关注点切换：2022 利</text>
+<text x="738.0" y="212.0" font-size="11.5" fill="#e8590c" text-anchor="start">润超预测 28%，年末</text>
+<text x="738.0" y="228.0" font-size="11.5" fill="#e8590c" text-anchor="start">PE 却只剩 37 倍</text>
+<text x="118.0" y="272.0" font-size="12" fill="#212529" font-weight="700" text-anchor="end">2022-05-05</text>
+<text x="118.0" y="288.0" font-size="11" fill="#868e96" text-anchor="end">Q1 下滑</text>
+<circle cx="132.0" cy="268.0" r="5" fill="#fa5252"/>
+<rect x="150.0" y="252.0" width="200.0" height="66.0" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+<text x="160.0" y="272.0" font-size="11.5" fill="#495057" text-anchor="start">一季度利润同比 −23.6%，股价当</text>
+<text x="160.0" y="288.0" font-size="11.5" fill="#495057" text-anchor="start">日 −8.15%</text>
+<rect x="356.0" y="252.0" width="190.0" height="66.0" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+<text x="366.0" y="272.0" font-size="11.5" fill="#495057" text-anchor="start">东吴把 2022 年预测从 286 亿元</text>
+<text x="366.0" y="288.0" font-size="11.5" fill="#495057" text-anchor="start">下调到 243 亿元</text>
+<rect x="552.0" y="252.0" width="170.0" height="66.0" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+<text x="562.0" y="272.0" font-size="11.5" fill="#495057" text-anchor="start">“北向净卖出宁德 37 亿”“</text>
+<text x="562.0" y="288.0" font-size="11.5" fill="#495057" text-anchor="start">资金蜂拥逃出”</text>
+<rect x="728.0" y="252.0" width="132.0" height="66.0" rx="8" fill="#fff5f5" stroke="#fa5252"/>
+<text x="738.0" y="272.0" font-size="11.5" fill="#c92a2a" font-weight="700" text-anchor="start">低估全年：2022 实际</text>
+<text x="738.0" y="288.0" font-size="11.5" fill="#c92a2a" text-anchor="start">307 亿元，比下调后</text>
+<text x="738.0" y="304.0" font-size="11.5" fill="#c92a2a" text-anchor="start">高 26%</text>
+<text x="118.0" y="348.0" font-size="12" fill="#212529" font-weight="700" text-anchor="end">2023-10-20</text>
+<text x="118.0" y="364.0" font-size="11" fill="#868e96" text-anchor="end">竞争担忧</text>
+<circle cx="132.0" cy="344.0" r="5" fill="#adb5bd"/>
+<rect x="150.0" y="328.0" width="200.0" height="66.0" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+<text x="160.0" y="348.0" font-size="11.5" fill="#495057" text-anchor="start">三季报后股价 181 元，PE 约 18 倍</text>
+<rect x="356.0" y="328.0" width="190.0" height="66.0" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+<text x="366.0" y="348.0" font-size="11.5" fill="#495057" text-anchor="start">多家以“竞争加剧”下调，东吴</text>
+<text x="366.0" y="364.0" font-size="11.5" fill="#495057" text-anchor="start">2024 年预测 632→524 亿元</text>
+<rect x="552.0" y="328.0" width="170.0" height="66.0" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+<text x="562.0" y="348.0" font-size="11.5" fill="#495057" text-anchor="start">越跌越买：股东户数 9 月末</text>
+<text x="562.0" y="364.0" font-size="11.5" fill="#495057" text-anchor="start">23.3 万，年末 26.1 万</text>
+<rect x="728.0" y="328.0" width="132.0" height="66.0" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+<text x="738.0" y="348.0" font-size="11.5" fill="#495057" font-weight="700" text-anchor="start">利润基本符合：2024</text>
+<text x="738.0" y="364.0" font-size="11.5" fill="#495057" text-anchor="start">实际 507 亿元，跌的</text>
+<text x="738.0" y="380.0" font-size="11.5" fill="#495057" text-anchor="start">是倍数</text>
+<text x="118.0" y="424.0" font-size="12" fill="#212529" font-weight="700" text-anchor="end">2024-01-30</text>
+<text x="118.0" y="440.0" font-size="11" fill="#868e96" text-anchor="end">估值底部</text>
+<circle cx="132.0" cy="420.0" r="5" fill="#fa5252"/>
+<rect x="150.0" y="404.0" width="200.0" height="66.0" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+<text x="160.0" y="424.0" font-size="11.5" fill="#495057" text-anchor="start">PE 13.98 倍，市值 6,192 亿元</text>
+<rect x="356.0" y="404.0" width="190.0" height="66.0" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+<text x="366.0" y="424.0" font-size="11.5" fill="#495057" text-anchor="start">东吴预测 2024 年仅增 5% 至 463</text>
+<text x="366.0" y="440.0" font-size="11.5" fill="#495057" text-anchor="start">亿元，给 20 倍</text>
+<rect x="552.0" y="404.0" width="170.0" height="66.0" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+<text x="562.0" y="424.0" font-size="11.5" fill="#495057" text-anchor="start">“16 的 PE 但跌跌不休”“</text>
+<text x="562.0" y="440.0" font-size="11.5" fill="#495057" text-anchor="start">百分百跌回 100—120”</text>
+<rect x="728.0" y="404.0" width="132.0" height="66.0" rx="8" fill="#fff5f5" stroke="#fa5252"/>
+<text x="738.0" y="424.0" font-size="11.5" fill="#c92a2a" font-weight="700" text-anchor="start">低估两年：2024 实际</text>
+<text x="738.0" y="440.0" font-size="11.5" fill="#c92a2a" text-anchor="start">507，2025 实际 722</text>
+<text x="738.0" y="456.0" font-size="11.5" fill="#c92a2a" text-anchor="start">比预测高 28%</text>
+<text x="118.0" y="500.0" font-size="12" fill="#212529" font-weight="700" text-anchor="end">2025-10-09</text>
+<text x="118.0" y="516.0" font-size="11" fill="#868e96" text-anchor="end">再评价</text>
+<circle cx="132.0" cy="496.0" r="5" fill="#adb5bd"/>
+<rect x="150.0" y="480.0" width="200.0" height="66.0" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+<text x="160.0" y="500.0" font-size="11.5" fill="#495057" text-anchor="start">PE 32 倍，市值 18,703 亿元</text>
+<rect x="356.0" y="480.0" width="190.0" height="66.0" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+<text x="366.0" y="500.0" font-size="11.5" fill="#495057" text-anchor="start">东吴随后预测 2025 年 690 亿元、</text>
+<text x="366.0" y="516.0" font-size="11.5" fill="#495057" text-anchor="start">2026 年 862 亿元</text>
+<rect x="552.0" y="480.0" width="170.0" height="66.0" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+<text x="562.0" y="500.0" font-size="11.5" fill="#495057" text-anchor="start">“年底必上 600”与“宇宙顶”</text>
+<text x="562.0" y="516.0" font-size="11.5" fill="#495057" text-anchor="start">并存</text>
+<rect x="728.0" y="480.0" width="132.0" height="66.0" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+<text x="738.0" y="500.0" font-size="11.5" fill="#495057" font-weight="700" text-anchor="start">基本符合：2025 实际</text>
+<text x="738.0" y="516.0" font-size="11.5" fill="#495057" text-anchor="start">722 亿元，高于预测</text>
+<text x="738.0" y="532.0" font-size="11.5" fill="#495057" text-anchor="start">5%</text>
+<text x="118.0" y="576.0" font-size="12" fill="#212529" font-weight="700" text-anchor="end">2026-05-06</text>
+<text x="118.0" y="592.0" font-size="11" fill="#868e96" text-anchor="end">市值新高</text>
+<circle cx="132.0" cy="572.0" r="5" fill="#0ca678"/>
+<rect x="150.0" y="556.0" width="200.0" height="66.0" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+<text x="160.0" y="576.0" font-size="11.5" fill="#495057" text-anchor="start">市值 21,282 亿元，PE 27 倍；超</text>
+<text x="160.0" y="592.0" font-size="11.5" fill="#495057" text-anchor="start">越工行居 A 股第二</text>
+<rect x="356.0" y="556.0" width="190.0" height="66.0" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+<text x="366.0" y="576.0" font-size="11.5" fill="#495057" text-anchor="start">东吴 2026 年预测 962、2027 年</text>
+<text x="366.0" y="592.0" font-size="11.5" fill="#495057" text-anchor="start">1,215 亿元，隐含 22 / 17.5 倍</text>
+<rect x="552.0" y="556.0" width="170.0" height="66.0" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+<text x="562.0" y="576.0" font-size="11.5" fill="#495057" text-anchor="start">“2 万亿新里程碑”；股东户</text>
+<text x="562.0" y="592.0" font-size="11.5" fill="#495057" text-anchor="start">数 6 月末 27.0 万</text>
+<rect x="728.0" y="556.0" width="132.0" height="66.0" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+<text x="738.0" y="576.0" font-size="11.5" fill="#0b7285" font-weight="700" text-anchor="start">高估：三季报后 2026</text>
+<text x="738.0" y="592.0" font-size="11.5" fill="#0b7285" text-anchor="start">年预测降到 841—931</text>
+<text x="738.0" y="608.0" font-size="11.5" fill="#0b7285" text-anchor="start">亿元</text>
+<text x="118.0" y="652.0" font-size="12" fill="#212529" font-weight="700" text-anchor="end">2026-10-21</text>
+<text x="118.0" y="668.0" font-size="11" fill="#868e96" text-anchor="end">Q3 不及预期</text>
+<circle cx="132.0" cy="648.0" r="5" fill="#f08c00"/>
+<rect x="150.0" y="632.0" width="200.0" height="66.0" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+<text x="160.0" y="652.0" font-size="11.5" fill="#495057" text-anchor="start">Q3 利润 212 亿元，环比下降；当</text>
+<text x="160.0" y="668.0" font-size="11.5" fill="#495057" text-anchor="start">日 −12%，PE 12 倍</text>
+<rect x="356.0" y="632.0" width="190.0" height="66.0" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+<text x="366.0" y="652.0" font-size="11.5" fill="#495057" text-anchor="start">以消费税、出口退税为由下调，</text>
+<text x="366.0" y="668.0" font-size="11.5" fill="#495057" text-anchor="start">东吴 2027 年预测降到 998 亿元</text>
+<rect x="552.0" y="632.0" width="170.0" height="66.0" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+<text x="562.0" y="652.0" font-size="11.5" fill="#495057" text-anchor="start">“前瞻 PE 跌至个位数”；9</text>
+<text x="562.0" y="668.0" font-size="11.5" fill="#495057" text-anchor="start">月末户数 34.5 万</text>
+<rect x="728.0" y="632.0" width="132.0" height="66.0" rx="8" fill="#fff4e6" stroke="#f08c00"/>
+<text x="738.0" y="652.0" font-size="11.5" fill="#e8590c" font-weight="700" text-anchor="start">关注点切换：从放量</text>
+<text x="738.0" y="668.0" font-size="11.5" fill="#e8590c" text-anchor="start">转向单位利润与政策，</text>
+<text x="738.0" y="684.0" font-size="11.5" fill="#e8590c" text-anchor="start">待验证</text>
+<rect x="84.0" y="709.0" width="16.0" height="12.0" rx="2" fill="#fff5f5" stroke="#fa5252"/>
+<text x="112.0" y="720.0" font-size="12" fill="#495057" text-anchor="start">当时低估，后来上修</text>
+<rect x="252.0" y="709.0" width="16.0" height="12.0" rx="2" fill="#e6fcf5" stroke="#0ca678"/>
+<text x="280.0" y="720.0" font-size="12" fill="#495057" text-anchor="start">当时高估，后来下修</text>
+<rect x="420.0" y="709.0" width="16.0" height="12.0" rx="2" fill="#fff4e6" stroke="#f08c00"/>
+<text x="448.0" y="720.0" font-size="12" fill="#495057" text-anchor="start">关注点切换</text>
+<rect x="540.0" y="709.0" width="16.0" height="12.0" rx="2" fill="#f1f3f5" stroke="#adb5bd"/>
+<text x="568.0" y="720.0" font-size="12" fill="#495057" text-anchor="start">基本符合</text>
+<rect x="30.0" y="746.0" width="840.0" height="92.0" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+<text x="48.0" y="770.0" font-size="12" fill="#495057" text-anchor="start">两次估值顶点（2021-12、2026-05）时利润预测都不算离谱，事后看先错的是倍数；两次底部（2022-05、2024-01）时机构对后一两年利润的预测</text>
+<text x="48.0" y="788.0" font-size="12" fill="#495057" text-anchor="start">偏低。</text>
+<text x="48.0" y="806.0" font-size="12" fill="#495057" text-anchor="start">来源：东方财富研报中心报告摘要（东吴证券为主）、RPT_VALUEANALYSIS_DET 日度估值、F10 股东户数、股吧按点击量抽样（样本，不代表全部投</text>
+<text x="48.0" y="824.0" font-size="12" fill="#495057" text-anchor="start">资者），2026-11-18 提取。2026 年全年利润尚未披露。</text>
+</svg>

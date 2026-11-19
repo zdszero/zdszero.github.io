@@ -1,0 +1,188 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 716" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect x="0" y="0" width="900" height="716" rx="12" fill="#ffffff"/>
+<text x="30.0" y="34.0" font-size="20" fill="#212529" font-weight="700" text-anchor="start">股价两次追上机构目标价，然后掉到目标价的一半附近</text>
+<text x="30.0" y="56.0" font-size="13" fill="#868e96" text-anchor="start">月末值。目标价为月末前 90 天内各机构最新目标价的中位数（每家只取最新一次，少于 3 家不画）；目标价隐含 PE = 当日 PE × 目标价 / 股价</text>
+<text x="80.0" y="94.0" font-size="12.5" fill="#3b5bdb" font-weight="700" text-anchor="start">股价与目标价中位数（港元）</text>
+<line x1="80.0" y1="304.0" x2="860.0" y2="304.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="308.0" font-size="11" fill="#868e96" text-anchor="end">100</text>
+<line x1="80.0" y1="254.0" x2="860.0" y2="254.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="258.0" font-size="11" fill="#868e96" text-anchor="end">300</text>
+<line x1="80.0" y1="204.0" x2="860.0" y2="204.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="208.0" font-size="11" fill="#868e96" text-anchor="end">500</text>
+<line x1="80.0" y1="154.0" x2="860.0" y2="154.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="158.0" font-size="11" fill="#868e96" text-anchor="end">700</text>
+<line x1="80.0" y1="104.0" x2="860.0" y2="104.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="108.0" font-size="11" fill="#868e96" text-anchor="end">900</text>
+<line x1="80.0" y1="104.0" x2="80.0" y2="304.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="177.5" y1="104.0" x2="177.5" y2="304.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="275.0" y1="104.0" x2="275.0" y2="304.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="372.5" y1="104.0" x2="372.5" y2="304.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="470.0" y1="104.0" x2="470.0" y2="304.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="567.5" y1="104.0" x2="567.5" y2="304.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="665.0" y1="104.0" x2="665.0" y2="304.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="762.5" y1="104.0" x2="762.5" y2="304.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="860.0" y1="104.0" x2="860.0" y2="304.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<path d="M80.4 252.3 L82.3 247.1 L84.1 246.2 L86.0 245.7 L87.9 243.0 L91.1 241.0 L93.0 244.1 L94.8 243.1 L96.7 242.3 L98.6 240.3 L100.4 236.8 L102.3 240.6 L104.2 237.8 L106.3 233.1 L108.2 230.6 L110.6 233.3 L112.7 232.1 L114.6 233.5 L117.3 243.5 L119.1 248.1 L121.0 245.6 L123.1 242.8 L125.0 245.5 L126.9 241.7 L129.0 238.9 L130.9 239.8 L132.8 238.2 L134.6 237.6 L136.5 236.9 L138.4 244.3 L140.2 244.0 L142.1 245.8 L144.0 249.2 L145.8 243.7 L147.7 242.5 L149.6 243.2 L151.5 246.9 L153.6 247.7 L155.7 247.8 L157.6 246.2 L159.5 249.8 L161.3 248.6 L163.2 247.2 L165.1 249.0 L166.9 245.6 L168.8 246.1 L170.7 245.1 L172.6 238.8 L174.4 235.2 L177.4 235.1 L179.5 233.5 L181.4 229.3 L183.2 231.2 L185.6 235.8 L187.5 228.4 L189.4 225.2 L191.2 228.8 L193.1 232.5 L194.9 230.1 L196.8 237.8 L198.7 239.1 L200.5 233.4 L202.4 234.9 L205.3 230.2 L207.2 228.8 L209.1 224.7 L211.5 227.2 L213.3 221.3 L215.2 220.7 L217.1 226.9 L218.9 220.2 L220.8 218.4 L222.7 214.5 L224.8 207.8 L227.4 199.0 L229.3 193.8 L231.2 198.4 L233.0 199.0 L234.9 194.2 L236.8 203.5 L238.6 202.9 L240.5 192.0 L242.4 196.4 L244.2 201.2 L246.1 196.6 L248.0 199.9 L249.8 202.5 L252.2 195.2 L254.4 191.0 L256.2 188.1 L258.4 181.2 L260.2 175.4 L262.1 178.5 L263.9 182.0 L265.8 183.2 L267.7 181.9 L269.5 182.0 L271.4 184.0 L274.1 199.2 L276.2 183.1 L278.1 181.5 L279.9 165.2 L281.5 137.4 L281.8 149.4 L283.7 147.9 L285.6 143.9 L288.0 142.1 L289.8 156.1 L291.7 156.5 L293.6 158.9 L295.4 168.9 L297.3 177.5 L299.2 165.5 L302.4 177.0 L304.2 173.4 L306.1 172.8 L308.0 173.5 L309.9 182.9 L311.7 177.1 L313.9 174.5 L315.7 171.9 L317.6 178.2 L319.7 179.2 L321.6 183.2 L323.8 185.4 L325.6 194.4 L327.5 188.0 L329.4 196.2 L331.2 209.2 L333.1 215.6 L335.0 211.4 L336.8 222.7 L338.7 212.4 L340.6 207.0 L342.4 206.5 L344.3 213.6 L347.0 212.8 L349.1 216.5 L351.0 208.2 L353.4 202.6 L355.3 206.9 L357.1 208.8 L359.0 209.6 L360.9 204.8 L362.8 209.6 L364.6 210.6 L366.5 210.8 L368.4 215.8 L370.2 213.6 L372.4 214.8 L374.2 218.2 L376.1 210.7 L378.0 210.3 L379.8 214.0 L383.1 208.3 L384.9 209.9 L386.8 217.8 L388.7 223.2 L390.5 232.8 L392.4 237.2 L394.3 231.8 L396.1 233.8 L398.3 235.4 L400.1 235.4 L403.1 247.2 L405.2 234.0 L407.4 241.4 L409.2 237.6 L411.1 245.5 L413.0 238.9 L415.1 230.3 L417.0 237.1 L418.8 235.2 L420.7 240.4 L422.9 240.8 L424.7 247.8 L426.6 246.0 L428.5 252.3 L430.3 252.1 L432.2 252.9 L434.1 250.2 L435.9 247.9 L437.8 246.8 L439.7 252.2 L442.4 256.8 L444.2 258.2 L446.1 263.1 L448.2 265.4 L450.1 265.4 L452.0 277.4 L452.8 278.8 L453.8 272.1 L455.7 267.6 L457.6 257.0 L459.4 259.6 L461.3 257.6 L463.2 251.0 L465.1 249.4 L466.9 251.7 L469.3 245.2 L471.5 241.7 L473.3 236.2 L475.2 231.1 L478.4 232.8 L480.3 233.4 L482.2 234.8 L484.0 240.0 L485.9 236.8 L487.8 241.6 L489.6 242.8 L491.5 242.2 L493.4 232.8 L495.5 232.7 L498.4 236.2 L500.3 242.8 L502.5 242.6 L504.3 246.9 L506.2 242.8 L508.1 245.1 L510.2 251.3 L512.1 245.1 L513.9 242.6 L515.8 243.9 L517.9 245.6 L519.8 247.3 L521.7 241.6 L523.6 245.8 L525.4 243.1 L527.3 243.5 L529.2 244.1 L531.0 245.8 L532.9 247.7 L534.8 247.8 L536.6 248.6 L538.5 249.1 L540.4 253.2 L542.3 254.7 L544.4 252.7 L546.3 252.3 L548.1 256.8 L550.8 255.2 L552.7 250.8 L554.5 251.5 L556.4 247.3 L558.3 248.3 L560.2 249.8 L562.0 252.2 L563.9 251.1 L566.3 257.8 L568.4 254.3 L570.3 257.1 L572.2 259.6 L573.2 263.4 L574.0 256.3 L575.9 261.1 L577.8 257.2 L580.7 257.8 L582.6 257.2 L584.4 259.9 L586.3 259.4 L588.1 256.6 L590.0 256.9 L592.4 251.9 L594.5 250.2 L596.4 252.9 L598.3 244.2 L600.4 237.9 L602.3 236.2 L604.9 230.2 L606.8 234.7 L608.7 235.2 L610.8 235.6 L612.7 234.8 L614.5 233.5 L616.6 234.2 L618.5 234.6 L620.4 236.1 L622.2 238.2 L624.1 238.4 L626.0 238.2 L627.8 235.6 L629.7 236.1 L631.6 235.4 L633.4 235.8 L635.6 235.8 L637.7 231.8 L639.6 219.6 L642.2 209.4 L644.4 224.8 L646.2 223.6 L648.1 224.4 L649.9 222.1 L651.8 228.1 L653.7 227.4 L655.5 230.6 L657.4 227.9 L659.3 226.2 L661.1 228.3 L663.0 224.0 L665.7 225.4 L667.5 236.6 L669.4 234.1 L671.3 231.3 L674.5 224.6 L676.4 217.9 L678.2 204.6 L680.1 203.6 L682.0 202.6 L683.8 201.0 L685.7 194.0 L687.6 202.4 L689.4 203.0 L691.6 217.8 L693.4 214.5 L696.4 209.4 L698.8 206.6 L700.7 198.8 L702.5 198.9 L704.4 202.5 L706.3 201.0 L708.1 199.5 L710.0 202.0 L711.9 200.9 L714.0 203.8 L715.9 204.8 L717.8 199.8 L719.6 189.8 L721.5 191.5 L723.4 187.2 L725.2 181.5 L727.1 180.8 L729.0 180.5 L730.8 180.9 L732.7 171.6 L734.6 168.5 L736.5 166.5 L738.6 160.6 L739.4 159.6 L741.3 169.2 L743.1 172.1 L745.0 165.0 L747.1 171.8 L749.0 166.5 L750.9 173.1 L752.8 172.8 L754.6 174.8 L756.5 178.4 L758.4 179.9 L760.2 178.5 L762.9 173.2 L764.8 176.2 L766.6 174.6 L768.5 180.2 L770.4 177.5 L772.2 192.1 L774.1 196.0 L777.3 198.4 L779.2 202.5 L781.1 191.0 L782.9 191.4 L784.8 202.6 L786.7 204.8 L789.9 206.5 L791.7 198.4 L793.6 209.3 L795.8 210.9 L797.6 214.7 L799.5 214.0 L801.6 220.4 L803.5 212.4 L805.4 212.6 L807.2 217.7 L809.4 223.7 L811.5 221.2 L813.4 213.9 L815.3 213.6 L817.1 220.3 L819.0 210.2 L820.9 209.3 L822.7 219.0 L824.6 214.8 L826.5 215.2 L828.3 218.3 L830.2 221.9 L832.1 224.2 L834.0 219.8 L836.6 223.2 L838.5 222.6 L840.6 226.4 L842.5 232.7 L844.4 229.7 L846.2 224.6 L848.1 235.0 L848.4 235.8" fill="none" stroke="#4c6ef5" stroke-width="2" stroke-linejoin="round"/>
+<path d="M88.1 235.2 L95.6 233.5 L103.4 226.0 L111.9 224.0 L120.2 222.8 L127.7 222.8 L136.5 222.8 L144.5 227.2 L152.8 227.2 L161.1 224.0 L168.8 229.0 L177.4 226.5 L185.6 226.5 L193.1 219.0 L201.6 218.8 L209.3 219.0 L217.3 211.0 L225.9 204.0 L234.1 204.0 L242.4 174.0 L250.4 173.8 L258.4 173.8 L266.6 157.0 L274.9 157.0 L282.6 156.5 L290.1 127.2 L298.9 133.0 L306.9 133.0 L315.2 134.2 L323.2 134.2 L331.2 134.2 L339.8 169.0 L347.8 169.0 L355.5 169.0 L364.1 172.8 L372.4 176.5 L380.6 182.0 L388.1 181.5 L396.4 197.0 L404.2 202.8 L412.7 216.5 L420.7 216.5 L428.5 216.5 L437.3 222.8 L445.3 223.8 L453.6 225.5 L461.6 228.5 L469.6 227.8 L478.1 227.8 L485.6 216.5 L493.9 215.2 L501.4 215.2 L510.2 215.5 L518.2 215.5 L526.5 217.2 L534.8 221.2 L542.5 221.2 L551.1 221.2 L559.1 220.5 L566.8 220.5 L575.6 221.0 L583.4 221.5 L590.8 221.5 L599.6 223.2 L607.9 209.0 L615.3 209.0 L624.1 209.0 L632.1 209.0 L640.4 209.0 L648.6 207.0 L656.3 199.2 L664.9 199.2 L672.3 200.8 L680.6 200.5 L688.9 174.2 L696.9 174.0 L704.9 174.0 L713.2 174.2 L721.5 174.2 L729.2 156.0 L737.8 154.2 L746.1 154.0 L753.6 132.0 L762.4 132.0 L770.4 132.0 L777.9 131.2 L786.4 145.2 L794.4 148.2 L802.2 150.2 L810.7 150.2 L819.0 152.0 L827.3 157.0 L835.3 154.8 L843.3 159.5 L848.4 162.0" fill="none" stroke="#adb5bd" stroke-width="2" stroke-linejoin="round" stroke-dasharray="5 4"/>
+<circle cx="88.1" cy="235.2" r="3" fill="#adb5bd"/>
+<circle cx="95.6" cy="233.5" r="3" fill="#adb5bd"/>
+<circle cx="103.4" cy="226.0" r="3" fill="#adb5bd"/>
+<circle cx="111.9" cy="224.0" r="3" fill="#adb5bd"/>
+<circle cx="120.2" cy="222.8" r="3" fill="#adb5bd"/>
+<circle cx="127.7" cy="222.8" r="3" fill="#adb5bd"/>
+<circle cx="136.5" cy="222.8" r="3" fill="#adb5bd"/>
+<circle cx="144.5" cy="227.2" r="3" fill="#adb5bd"/>
+<circle cx="152.8" cy="227.2" r="3" fill="#adb5bd"/>
+<circle cx="161.1" cy="224.0" r="3" fill="#adb5bd"/>
+<circle cx="168.8" cy="229.0" r="3" fill="#adb5bd"/>
+<circle cx="177.4" cy="226.5" r="3" fill="#adb5bd"/>
+<circle cx="185.6" cy="226.5" r="3" fill="#adb5bd"/>
+<circle cx="193.1" cy="219.0" r="3" fill="#adb5bd"/>
+<circle cx="201.6" cy="218.8" r="3" fill="#adb5bd"/>
+<circle cx="209.3" cy="219.0" r="3" fill="#adb5bd"/>
+<circle cx="217.3" cy="211.0" r="3" fill="#adb5bd"/>
+<circle cx="225.9" cy="204.0" r="3" fill="#adb5bd"/>
+<circle cx="234.1" cy="204.0" r="3" fill="#adb5bd"/>
+<circle cx="242.4" cy="174.0" r="3" fill="#adb5bd"/>
+<circle cx="250.4" cy="173.8" r="3" fill="#adb5bd"/>
+<circle cx="258.4" cy="173.8" r="3" fill="#adb5bd"/>
+<circle cx="266.6" cy="157.0" r="3" fill="#adb5bd"/>
+<circle cx="274.9" cy="157.0" r="3" fill="#adb5bd"/>
+<circle cx="282.6" cy="156.5" r="3" fill="#adb5bd"/>
+<circle cx="290.1" cy="127.2" r="3" fill="#adb5bd"/>
+<circle cx="298.9" cy="133.0" r="3" fill="#adb5bd"/>
+<circle cx="306.9" cy="133.0" r="3" fill="#adb5bd"/>
+<circle cx="315.2" cy="134.2" r="3" fill="#adb5bd"/>
+<circle cx="323.2" cy="134.2" r="3" fill="#adb5bd"/>
+<circle cx="331.2" cy="134.2" r="3" fill="#adb5bd"/>
+<circle cx="339.8" cy="169.0" r="3" fill="#adb5bd"/>
+<circle cx="347.8" cy="169.0" r="3" fill="#adb5bd"/>
+<circle cx="355.5" cy="169.0" r="3" fill="#adb5bd"/>
+<circle cx="364.1" cy="172.8" r="3" fill="#adb5bd"/>
+<circle cx="372.4" cy="176.5" r="3" fill="#adb5bd"/>
+<circle cx="380.6" cy="182.0" r="3" fill="#adb5bd"/>
+<circle cx="388.1" cy="181.5" r="3" fill="#adb5bd"/>
+<circle cx="396.4" cy="197.0" r="3" fill="#adb5bd"/>
+<circle cx="404.2" cy="202.8" r="3" fill="#adb5bd"/>
+<circle cx="412.7" cy="216.5" r="3" fill="#adb5bd"/>
+<circle cx="420.7" cy="216.5" r="3" fill="#adb5bd"/>
+<circle cx="428.5" cy="216.5" r="3" fill="#adb5bd"/>
+<circle cx="437.3" cy="222.8" r="3" fill="#adb5bd"/>
+<circle cx="445.3" cy="223.8" r="3" fill="#adb5bd"/>
+<circle cx="453.6" cy="225.5" r="3" fill="#adb5bd"/>
+<circle cx="461.6" cy="228.5" r="3" fill="#adb5bd"/>
+<circle cx="469.6" cy="227.8" r="3" fill="#adb5bd"/>
+<circle cx="478.1" cy="227.8" r="3" fill="#adb5bd"/>
+<circle cx="485.6" cy="216.5" r="3" fill="#adb5bd"/>
+<circle cx="493.9" cy="215.2" r="3" fill="#adb5bd"/>
+<circle cx="501.4" cy="215.2" r="3" fill="#adb5bd"/>
+<circle cx="510.2" cy="215.5" r="3" fill="#adb5bd"/>
+<circle cx="518.2" cy="215.5" r="3" fill="#adb5bd"/>
+<circle cx="526.5" cy="217.2" r="3" fill="#adb5bd"/>
+<circle cx="534.8" cy="221.2" r="3" fill="#adb5bd"/>
+<circle cx="542.5" cy="221.2" r="3" fill="#adb5bd"/>
+<circle cx="551.1" cy="221.2" r="3" fill="#adb5bd"/>
+<circle cx="559.1" cy="220.5" r="3" fill="#adb5bd"/>
+<circle cx="566.8" cy="220.5" r="3" fill="#adb5bd"/>
+<circle cx="575.6" cy="221.0" r="3" fill="#adb5bd"/>
+<circle cx="583.4" cy="221.5" r="3" fill="#adb5bd"/>
+<circle cx="590.8" cy="221.5" r="3" fill="#adb5bd"/>
+<circle cx="599.6" cy="223.2" r="3" fill="#adb5bd"/>
+<circle cx="607.9" cy="209.0" r="3" fill="#adb5bd"/>
+<circle cx="615.3" cy="209.0" r="3" fill="#adb5bd"/>
+<circle cx="624.1" cy="209.0" r="3" fill="#adb5bd"/>
+<circle cx="632.1" cy="209.0" r="3" fill="#adb5bd"/>
+<circle cx="640.4" cy="209.0" r="3" fill="#adb5bd"/>
+<circle cx="648.6" cy="207.0" r="3" fill="#adb5bd"/>
+<circle cx="656.3" cy="199.2" r="3" fill="#adb5bd"/>
+<circle cx="664.9" cy="199.2" r="3" fill="#adb5bd"/>
+<circle cx="672.3" cy="200.8" r="3" fill="#adb5bd"/>
+<circle cx="680.6" cy="200.5" r="3" fill="#adb5bd"/>
+<circle cx="688.9" cy="174.2" r="3" fill="#adb5bd"/>
+<circle cx="696.9" cy="174.0" r="3" fill="#adb5bd"/>
+<circle cx="704.9" cy="174.0" r="3" fill="#adb5bd"/>
+<circle cx="713.2" cy="174.2" r="3" fill="#adb5bd"/>
+<circle cx="721.5" cy="174.2" r="3" fill="#adb5bd"/>
+<circle cx="729.2" cy="156.0" r="3" fill="#adb5bd"/>
+<circle cx="737.8" cy="154.2" r="3" fill="#adb5bd"/>
+<circle cx="746.1" cy="154.0" r="3" fill="#adb5bd"/>
+<circle cx="753.6" cy="132.0" r="3" fill="#adb5bd"/>
+<circle cx="762.4" cy="132.0" r="3" fill="#adb5bd"/>
+<circle cx="770.4" cy="132.0" r="3" fill="#adb5bd"/>
+<circle cx="777.9" cy="131.2" r="3" fill="#adb5bd"/>
+<circle cx="786.4" cy="145.2" r="3" fill="#adb5bd"/>
+<circle cx="794.4" cy="148.2" r="3" fill="#adb5bd"/>
+<circle cx="802.2" cy="150.2" r="3" fill="#adb5bd"/>
+<circle cx="810.7" cy="150.2" r="3" fill="#adb5bd"/>
+<circle cx="819.0" cy="152.0" r="3" fill="#adb5bd"/>
+<circle cx="827.3" cy="157.0" r="3" fill="#adb5bd"/>
+<circle cx="835.3" cy="154.8" r="3" fill="#adb5bd"/>
+<circle cx="843.3" cy="159.5" r="3" fill="#adb5bd"/>
+<circle cx="848.4" cy="162.0" r="3" fill="#adb5bd"/>
+<circle cx="281.5" cy="137.4" r="5" fill="#4c6ef5"/>
+<text x="273.5" y="135.4" font-size="12.5" fill="#212529" font-weight="700" text-anchor="end">766.5</text>
+<circle cx="452.8" cy="278.8" r="5" fill="#4c6ef5"/>
+<text x="452.8" y="296.8" font-size="12.5" fill="#212529" font-weight="700" text-anchor="middle">200.8</text>
+<circle cx="453.6" cy="225.4" r="5" fill="#adb5bd"/>
+<text x="463.6" y="217.4" font-size="12.5" fill="#212529" font-weight="700" text-anchor="start">目标 415</text>
+<circle cx="739.4" cy="159.6" r="5" fill="#4c6ef5"/>
+<text x="749.4" y="173.6" font-size="12.5" fill="#212529" font-weight="700" text-anchor="start">677.5</text>
+<circle cx="848.4" cy="235.8" r="5" fill="#4c6ef5"/>
+<text x="844.4" y="255.8" font-size="12.5" fill="#212529" font-weight="700" text-anchor="end">372.8</text>
+<circle cx="848.4" cy="162.0" r="5" fill="#adb5bd"/>
+<text x="844.4" y="152.0" font-size="12.5" fill="#212529" font-weight="700" text-anchor="end">目标 668</text>
+<text x="80.0" y="356.0" font-size="12.5" fill="#3b5bdb" font-weight="700" text-anchor="start">实际 PE 与目标价隐含 PE（TTM，倍，月末）</text>
+<line x1="80.0" y1="536.0" x2="860.0" y2="536.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="540.0" font-size="11" fill="#868e96" text-anchor="end">0</text>
+<line x1="80.0" y1="479.3" x2="860.0" y2="479.3" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="483.3" font-size="11" fill="#868e96" text-anchor="end">20</text>
+<line x1="80.0" y1="422.7" x2="860.0" y2="422.7" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="426.7" font-size="11" fill="#868e96" text-anchor="end">40</text>
+<line x1="80.0" y1="366.0" x2="860.0" y2="366.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="370.0" font-size="11" fill="#868e96" text-anchor="end">60</text>
+<line x1="80.0" y1="366.0" x2="80.0" y2="536.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="177.5" y1="366.0" x2="177.5" y2="536.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="275.0" y1="366.0" x2="275.0" y2="536.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="372.5" y1="366.0" x2="372.5" y2="536.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="470.0" y1="366.0" x2="470.0" y2="536.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="567.5" y1="366.0" x2="567.5" y2="536.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="665.0" y1="366.0" x2="665.0" y2="536.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="762.5" y1="366.0" x2="762.5" y2="536.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="860.0" y1="366.0" x2="860.0" y2="536.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<path d="M88.1 429.9 L95.6 433.3 L103.4 428.2 L111.9 420.1 L120.2 439.5 L127.7 431.5 L136.5 426.5 L144.5 441.3 L152.8 439.9 L161.1 442.9 L168.8 445.0 L177.4 433.2 L185.6 435.0 L193.1 430.0 L201.6 436.4 L209.3 426.9 L217.3 434.3 L225.9 413.3 L234.1 406.0 L242.4 417.0 L250.4 422.1 L258.4 406.1 L266.6 423.2 L274.9 423.8 L282.6 401.6 L290.1 405.3 L298.9 421.8 L306.9 421.1 L315.2 428.8 L323.2 433.4 L331.2 451.9 L339.8 454.1 L347.8 457.2 L355.5 455.0 L364.1 458.6 L372.4 459.0 L380.6 456.4 L388.1 465.8 L396.4 469.2 L404.2 466.0 L412.7 463.9 L420.7 464.9 L428.5 474.1 L437.3 465.1 L445.3 476.6 L453.6 489.7 L461.6 471.4 L469.6 463.0 L478.1 455.4 L485.6 461.5 L493.9 456.8 L501.4 464.8 L510.2 473.8 L518.2 468.4 L526.5 464.5 L534.8 475.0 L542.5 478.6 L551.1 481.9 L559.1 480.6 L566.8 486.6 L575.6 490.6 L583.4 489.5 L590.8 489.2 L599.6 482.6 L607.9 486.3 L615.3 484.6 L624.1 486.2 L632.1 488.7 L640.4 481.6 L648.6 486.1 L656.3 490.0 L664.9 487.9 L672.3 490.0 L680.6 481.3 L688.9 482.3 L696.9 484.2 L704.9 485.1 L713.2 485.0 L721.5 480.4 L729.2 477.0 L737.8 470.5 L746.1 473.9 L753.6 478.4 L762.4 480.1 L770.4 480.1 L777.9 488.7 L786.4 493.4 L794.4 495.2 L802.2 499.9 L810.7 499.9 L819.0 496.2 L827.3 498.8 L835.3 500.9 L843.3 504.9 L848.4 505.7" fill="none" stroke="#4c6ef5" stroke-width="2" stroke-linejoin="round"/>
+<path d="M88.1 421.0 L95.6 419.3 L103.4 413.0 L111.9 410.5 L120.2 410.2 L127.7 410.2 L136.5 409.6 L144.5 417.3 L152.8 417.6 L161.1 414.2 L168.8 426.4 L177.4 423.8 L185.6 424.9 L193.1 415.3 L201.6 420.4 L209.3 421.0 L217.3 419.0 L225.9 413.0 L234.1 414.2 L242.4 396.9 L250.4 397.7 L258.4 399.4 L266.6 398.0 L274.9 399.1 L282.6 400.0 L290.1 376.8 L298.9 389.2 L306.9 391.2 L315.2 401.1 L323.2 399.1 L331.2 399.1 L339.8 426.9 L347.8 426.6 L355.5 428.3 L364.1 430.6 L372.4 433.1 L380.6 437.1 L388.1 437.7 L396.4 441.9 L404.2 442.2 L412.7 446.5 L420.7 445.6 L428.5 445.3 L437.3 443.9 L445.3 442.2 L453.6 442.8 L461.6 445.6 L469.6 447.3 L478.1 450.4 L485.6 438.5 L493.9 442.5 L501.4 441.9 L510.2 445.1 L518.2 443.4 L526.5 445.9 L534.8 455.2 L542.5 455.2 L551.1 455.2 L559.1 462.6 L566.8 462.9 L575.6 463.5 L583.4 464.0 L590.8 469.7 L599.6 471.1 L607.9 469.7 L615.3 469.7 L624.1 470.0 L632.1 476.5 L640.4 477.4 L648.6 475.6 L656.3 476.2 L664.9 476.2 L672.3 477.4 L680.6 477.4 L688.9 469.1 L696.9 468.6 L704.9 472.5 L713.2 473.4 L721.5 473.4 L729.2 467.4 L737.8 466.9 L746.1 466.9 L753.6 461.8 L762.4 462.6 L770.4 463.5 L777.9 463.8 L786.4 471.4 L794.4 473.1 L802.2 475.6 L810.7 475.9 L819.0 476.8 L827.3 479.3 L835.3 479.3 L843.3 481.0 L848.4 481.9" fill="none" stroke="#adb5bd" stroke-width="2" stroke-linejoin="round" stroke-dasharray="5 4"/>
+<circle cx="453.6" cy="489.7" r="5" fill="#4c6ef5"/>
+<text x="463.6" y="503.7" font-size="12.5" fill="#212529" font-weight="700" text-anchor="start">16.3×</text>
+<circle cx="453.6" cy="442.8" r="5" fill="#adb5bd"/>
+<text x="463.6" y="434.8" font-size="12.5" fill="#212529" font-weight="700" text-anchor="start">32.9×</text>
+<circle cx="848.4" cy="505.7" r="5" fill="#4c6ef5"/>
+<text x="844.4" y="523.7" font-size="12.5" fill="#212529" font-weight="700" text-anchor="end">10.7×</text>
+<circle cx="848.4" cy="481.9" r="5" fill="#adb5bd"/>
+<text x="844.4" y="471.9" font-size="12.5" fill="#212529" font-weight="700" text-anchor="end">19.1×</text>
+<line x1="281.5" y1="104.0" x2="281.5" y2="536.0" stroke="#e8590c" stroke-width="1.5" stroke-dasharray="5 4"/>
+<text x="276.5" y="118.0" font-size="12" fill="#e8590c" font-weight="700" text-anchor="end">2021-01-25 高点</text>
+<line x1="452.8" y1="104.0" x2="452.8" y2="536.0" stroke="#495057" stroke-width="1.5" stroke-dasharray="5 4"/>
+<text x="447.8" y="134.0" font-size="12" fill="#495057" font-weight="700" text-anchor="end">2022-10-28 低点</text>
+<line x1="739.4" y1="104.0" x2="739.4" y2="536.0" stroke="#e8590c" stroke-width="1.5" stroke-dasharray="5 4"/>
+<text x="734.4" y="118.0" font-size="12" fill="#e8590c" font-weight="700" text-anchor="end">2025-10-06 高点</text>
+<text x="84.0" y="556.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="start">2019</text>
+<text x="181.5" y="556.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="start">2020</text>
+<text x="279.0" y="556.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="start">2021</text>
+<text x="376.5" y="556.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="start">2022</text>
+<text x="474.0" y="556.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="start">2023</text>
+<text x="571.5" y="556.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="start">2024</text>
+<text x="669.0" y="556.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="start">2025</text>
+<text x="766.5" y="556.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="start">2026</text>
+<text x="864.0" y="556.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="start">2027</text>
+<line x1="80.0" y1="578.0" x2="104.0" y2="578.0" stroke="#4c6ef5" stroke-width="2"/>
+<circle cx="92.0" cy="578.0" r="3.5" fill="#4c6ef5"/>
+<text x="112.0" y="582.0" font-size="12" fill="#495057" text-anchor="start">收盘价 / 实际 PE</text>
+<line x1="231.0" y1="578.0" x2="255.0" y2="578.0" stroke="#adb5bd" stroke-width="2" stroke-dasharray="5 3"/>
+<circle cx="243.0" cy="578.0" r="3.5" fill="#adb5bd"/>
+<text x="263.0" y="582.0" font-size="12" fill="#495057" text-anchor="start">目标价中位数 / 隐含 PE</text>
+<rect x="30.0" y="608.0" width="840.0" height="92.0" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+<text x="48.0" y="632.0" font-size="12" fill="#495057" text-anchor="start">两次高点所在月份，股价都到了目标价中位数附近（2021-01 末 681.5 对 690，2025-09 末 663.0 对 699），此后机构继续上调目标价：2021-03 到</text>
+<text x="48.0" y="650.0" font-size="12" fill="#495057" text-anchor="start">785，2025-11 到 788。两次下跌中目标价下调慢于股价，低点时目标价约为股价的 2 倍（2022-10 末）和 1.8 倍（2026-11-18）。</text>
+<text x="48.0" y="668.0" font-size="12" fill="#495057" text-anchor="start">来源：东方财富港股 F10 机构评级（RPT_HK_ORGRATING、RPT_HKF10_INFO_ORGRATING），按机构与发布日去重；评级几乎全为“买入”，只看目</text>
+<text x="48.0" y="686.0" font-size="12" fill="#495057" text-anchor="start">标价。股价为腾讯证券港股日 K（不复权）。</text>
+</svg>

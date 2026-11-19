@@ -1,0 +1,2546 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    算力租赁股：CoreWeave、协创数据与利通电子的历史定价
+  </title>
+    <link rel="stylesheet" href="./WikiTheme/theme/bootstrap.css"  />
+          <!-- wiki three-column layout styles/behavior, kept external so the ~5KB
+       block isn't duplicated into every generated page -->
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/wiki-layout.css" />
+  <script defer src="./WikiTheme/wiki-layout.js"></script>
+</head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">算力租赁股：CoreWeave、协创数据与利通电子的历史定价</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="wiki-layout">
+    <nav class="wiki-sidebar" id="wiki-sidebar" hidden></nav>
+    <main class="wiki-main">
+            <p><strong>2026
+            年，三只算力租赁股都经历了同一个过程：利润或订单还在加速，股价却先见顶，随后跌掉六到七成。协创数据前三季度利润已是
+            2025 全年的 2.6 倍，PE 从 2 月的 111 倍降到 11 月的 19
+            倍；利通电子从 2026 年初的 73 亿元市值涨到 631 亿元，又跌回
+            223 亿元；CoreWeave 的剩余履约义务（RPO）一年半里涨到 9
+            倍，股价却回到 IPO
+            价附近。市场在上半年为“算力稀缺能持续多久”付钱，下半年转而追问“这门生意靠借来的钱撑起，回报能否覆盖资金成本与折旧”。</strong></p>
+            <p>本文是 <a href="./gpu_rent.html">算力租赁</a>
+            一文的个股补充：那篇讨论这门生意的结构性机会，这篇只看市场在不同阶段怎样给它定价。</p>
+            <h3 id="数据边界">数据边界</h3>
+            <ul>
+            <li><strong>研究对象</strong>：协创数据（300857.SZ，深交所创业板）、利通电子（603629.SH，上交所主板）、CoreWeave（CRWV，纳斯达克
+            A 类普通股）。Nebius（NBIS）与 IREN 只作对照。</li>
+            <li><strong>研究期间</strong>：两只 A 股取 2023-07
+            至今。两家公司都在 2023
+            年下半年出现第一轮大幅重估，更早的年份只列年度表作背景。CoreWeave
+            于 2025-03-28 上市，期间从上市起算。</li>
+            <li><strong>信息截止日</strong>：2026-11-18 收盘，资料提取日
+            2026-11-19。</li>
+            <li><strong>A 股估值</strong>：东方财富估值分析（<a
+            href="https://data.eastmoney.com/gzfx/detail/300857.html">协创</a>、<a
+            href="https://data.eastmoney.com/gzfx/detail/603629.html">利通</a>）的日度
+            PE（TTM）与总市值。抽查确认分母随财报披露日切换，不存在用事后利润回填的问题。年度平均
+            PE 为有效交易日 PE 的算术平均，所有 PE
+            均为正值，没有剔除样本。</li>
+            <li><strong>A 股财务</strong>：东方财富 F10 主要财务指标（<a
+            href="https://emweb.securities.eastmoney.com/PC_HSF10/NewFinanceAnalysis/Index?type=web&amp;code=SZ300857">协创</a>、<a
+            href="https://emweb.securities.eastmoney.com/PC_HSF10/NewFinanceAnalysis/Index?type=web&amp;code=SH603629">利通</a>），单季值由累计值相减得到。股东户数取自
+            F10 股东研究。</li>
+            <li><strong>股本变动</strong>：两家公司 2025—2026
+            年都实施过资本公积转增，不复权股价跨期不可比，本文一律用<strong>总市值</strong>比较。协创总股本在
+            2025-05-12 从 2.45 亿股增至 3.43 亿股，2026-04-22 从 3.46
+            亿股增至 4.85 亿股；利通在 2026-07-07 从 2.62 亿股增至 3.67
+            亿股。比例约为每 10 股转增 4
+            股，具体方案未逐一核对公告。</li>
+            <li><strong>CoreWeave</strong>：日收盘价取自 <a
+            href="https://www.nasdaq.com/market-activity/stocks/crwv/historical">Nasdaq
+            历史行情</a>，不复权，公司未分红。财务取自 SEC 10-Q/10-K 的
+            XBRL 数据，股本取各期 10-Q 封面披露的 A、B
+            类合计数。CoreWeave 一直亏损，PE
+            无意义，本文改用市销率（PS）和企业价值 / 收入（EV/S）。</li>
+            <li><strong>研报</strong>：东方财富研报中心的报告摘要，只引用摘要可见的字段，均为“据摘要整理”。没有取得
+            Wind、Choice 等一致预期，单家机构的轨迹不代表市场共识。</li>
+            <li><strong>未能核验</strong>：利通电子 2018 年 IPO
+            以后没有券商覆盖，缺研报轨迹；美股一致预期只取得 Internet
+            Archive 存档的 StockAnalysis、MarketBeat 页面快照，2025-06
+            以前缺失，各家网站口径不同；美股新闻多数只核对了标题、媒体和日期；股吧、媒体样本的覆盖范围见各节说明。</li>
+            </ul>
+            <h3
+            id="协创数据利润追上了估值">协创数据：利润追上了估值</h3>
+            <h4 id="年度-pe-与利润">年度 PE 与利润</h4>
+            <table>
+            <colgroup>
+            <col style="width: 14%" />
+            <col style="width: 19%" />
+            <col style="width: 14%" />
+            <col style="width: 14%" />
+            <col style="width: 19%" />
+            <col style="width: 19%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>年份</th>
+            <th style="text-align: right;">平均 PE（TTM）</th>
+            <th>最低 PE / 日期</th>
+            <th>最高 PE / 日期</th>
+            <th style="text-align: right;">年末 PE</th>
+            <th style="text-align: right;">年末总市值（亿元）</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>2020（07-27 上市起，108 个交易日）</td>
+            <td style="text-align: right;">59.3</td>
+            <td>22.2 / 07-27</td>
+            <td>76.6 / 08-13</td>
+            <td style="text-align: right;">50.8</td>
+            <td style="text-align: right;">61</td>
+            </tr>
+            <tr>
+            <td>2021</td>
+            <td style="text-align: right;">52.7</td>
+            <td>39.4 / 10-29</td>
+            <td>74.1 / 07-15</td>
+            <td style="text-align: right;">47.8</td>
+            <td style="text-align: right;">60</td>
+            </tr>
+            <tr>
+            <td>2022</td>
+            <td style="text-align: right;">34.3</td>
+            <td>25.0 / 10-10</td>
+            <td>58.7 / 02-07</td>
+            <td style="text-align: right;">28.7</td>
+            <td style="text-align: right;">40</td>
+            </tr>
+            <tr>
+            <td>2023</td>
+            <td style="text-align: right;">41.6</td>
+            <td>28.9 / 01-11</td>
+            <td>68.5 / 12-06</td>
+            <td style="text-align: right;">61.3</td>
+            <td style="text-align: right;">129</td>
+            </tr>
+            <tr>
+            <td>2024</td>
+            <td style="text-align: right;">39.9</td>
+            <td>20.6 / 09-19</td>
+            <td>74.8 / 03-18</td>
+            <td style="text-align: right;">40.4</td>
+            <td style="text-align: right;">262</td>
+            </tr>
+            <tr>
+            <td>2025</td>
+            <td style="text-align: right;">48.1</td>
+            <td>32.2 / 04-08</td>
+            <td>82.2 / 09-30</td>
+            <td style="text-align: right;">70.1</td>
+            <td style="text-align: right;">584</td>
+            </tr>
+            <tr>
+            <td>2026 YTD（至 11-18，211 个交易日）</td>
+            <td style="text-align: right;">67.3</td>
+            <td>16.4 / 11-17</td>
+            <td>110.9 / 02-27</td>
+            <td style="text-align: right;">19.3</td>
+            <td style="text-align: right;">683</td>
+            </tr>
+            </tbody>
+            </table>
+            <table>
+            <colgroup>
+            <col style="width: 13%" />
+            <col style="width: 18%" />
+            <col style="width: 18%" />
+            <col style="width: 18%" />
+            <col style="width: 18%" />
+            <col style="width: 13%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>年份</th>
+            <th style="text-align: right;">归母净利润（亿元）</th>
+            <th style="text-align: right;">同比</th>
+            <th style="text-align: right;">营业收入（亿元）</th>
+            <th style="text-align: right;">毛利率</th>
+            <th>关键业务变化</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>2020</td>
+            <td style="text-align: right;">1.00</td>
+            <td style="text-align: right;">+5.2%</td>
+            <td style="text-align: right;">22.49</td>
+            <td style="text-align: right;">11.5%</td>
+            <td>物联网智能终端与存储产品为主</td>
+            </tr>
+            <tr>
+            <td>2021</td>
+            <td style="text-align: right;">1.26</td>
+            <td style="text-align: right;">+26.0%</td>
+            <td style="text-align: right;">29.60</td>
+            <td style="text-align: right;">11.6%</td>
+            <td>同上</td>
+            </tr>
+            <tr>
+            <td>2022</td>
+            <td style="text-align: right;">1.31</td>
+            <td style="text-align: right;">+3.7%</td>
+            <td style="text-align: right;">31.48</td>
+            <td style="text-align: right;">11.2%</td>
+            <td>同上</td>
+            </tr>
+            <tr>
+            <td>2023</td>
+            <td style="text-align: right;">2.87</td>
+            <td style="text-align: right;">+119.5%</td>
+            <td style="text-align: right;">46.58</td>
+            <td style="text-align: right;">13.6%</td>
+            <td>服务器再制造起量</td>
+            </tr>
+            <tr>
+            <td>2024</td>
+            <td style="text-align: right;">6.92</td>
+            <td style="text-align: right;">+140.8%</td>
+            <td style="text-align: right;">74.10</td>
+            <td style="text-align: right;">17.4%</td>
+            <td>服务器业务与算力服务扩张</td>
+            </tr>
+            <tr>
+            <td>2025</td>
+            <td style="text-align: right;">11.64</td>
+            <td style="text-align: right;">+68.3%</td>
+            <td style="text-align: right;">122.36</td>
+            <td style="text-align: right;">19.2%</td>
+            <td>算力租赁收入大幅增长</td>
+            </tr>
+            <tr>
+            <td>2026 前三季度</td>
+            <td style="text-align: right;">30.62</td>
+            <td style="text-align: right;">+338.8%</td>
+            <td style="text-align: right;">196.10</td>
+            <td style="text-align: right;">27.7%</td>
+            <td>单季利润 7.50 → 10.88 → 12.24 亿元</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>2026 年前三季度扣非归母净利润 30.68
+            亿元，与归母利润基本一致，利润增长不是来自一次性损益。毛利率从
+            2023 年的 13.6% 升到
+            27.7%，这与高毛利的算力服务占比上升一致。代价是杠杆：资产负债率从
+            2025 年末的 81.5% 升到三季度末的 85.8%，加权 ROE 达到
+            52.4%。业务变化一列根据券商报告标题与财报科目归纳，未逐项核对年报分部数据。</p>
+            <h4
+            id="节点表股价先动还是利润先动">节点表：股价先动还是利润先动</h4>
+            <figure>
+            <img src="./WikiImage/gpu_rent_stocks_xcsj.svg"
+            alt="协创数据：单季利润连升七个季度，市值在 6 月见顶" />
+            <figcaption
+            aria-hidden="true">协创数据：单季利润连升七个季度，市值在 6
+            月见顶</figcaption>
+            </figure>
+            <table style="width:100%;">
+            <colgroup>
+            <col style="width: 16%" />
+            <col style="width: 22%" />
+            <col style="width: 22%" />
+            <col style="width: 22%" />
+            <col style="width: 16%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>日期</th>
+            <th style="text-align: right;">总市值（亿元）</th>
+            <th style="text-align: right;">当时 TTM 利润（亿元）</th>
+            <th style="text-align: right;">PE（TTM）</th>
+            <th>说明</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>2023-10-31</td>
+            <td style="text-align: right;">67</td>
+            <td style="text-align: right;">2.11</td>
+            <td style="text-align: right;">31.9</td>
+            <td>第一轮重估前</td>
+            </tr>
+            <tr>
+            <td>2023-12-06</td>
+            <td style="text-align: right;">145</td>
+            <td style="text-align: right;">2.11</td>
+            <td style="text-align: right;">68.5</td>
+            <td>五周市值 ×2.15，分母未变，全部来自 PE</td>
+            </tr>
+            <tr>
+            <td>2024-02-05</td>
+            <td style="text-align: right;">84</td>
+            <td style="text-align: right;">2.11</td>
+            <td style="text-align: right;">39.7</td>
+            <td>回吐大半</td>
+            </tr>
+            <tr>
+            <td>2024-12-23</td>
+            <td style="text-align: right;">271</td>
+            <td style="text-align: right;">6.48</td>
+            <td style="text-align: right;">41.8</td>
+            <td>利润追上来，PE 回到 40 倍附近</td>
+            </tr>
+            <tr>
+            <td>2025-04-08</td>
+            <td style="text-align: right;">223</td>
+            <td style="text-align: right;">6.92</td>
+            <td style="text-align: right;">32.2</td>
+            <td>2025 年最低 PE</td>
+            </tr>
+            <tr>
+            <td>2025-08-29</td>
+            <td style="text-align: right;">347</td>
+            <td style="text-align: right;">7.66</td>
+            <td style="text-align: right;">45.3</td>
+            <td>中报后</td>
+            </tr>
+            <tr>
+            <td>2025-09-30</td>
+            <td style="text-align: right;">630</td>
+            <td style="text-align: right;">7.66</td>
+            <td style="text-align: right;">82.2</td>
+            <td>一个月市值 ×1.82，全部来自 PE</td>
+            </tr>
+            <tr>
+            <td>2025-11-21</td>
+            <td style="text-align: right;">450</td>
+            <td style="text-align: right;">8.33</td>
+            <td style="text-align: right;">54.0</td>
+            <td>当日 −9.4%</td>
+            </tr>
+            <tr>
+            <td>2026-02-27</td>
+            <td style="text-align: right;">923</td>
+            <td style="text-align: right;">8.33</td>
+            <td style="text-align: right;">110.9</td>
+            <td>全期最高 PE</td>
+            </tr>
+            <tr>
+            <td>2026-03-17</td>
+            <td style="text-align: right;">803</td>
+            <td style="text-align: right;">11.64</td>
+            <td style="text-align: right;">69.0</td>
+            <td>年报披露，分母切换</td>
+            </tr>
+            <tr>
+            <td>2026-03-31</td>
+            <td style="text-align: right;">724</td>
+            <td style="text-align: right;">11.64</td>
+            <td style="text-align: right;">62.2</td>
+            <td>03-20 单日 −14.9%</td>
+            </tr>
+            <tr>
+            <td>2026-06-25</td>
+            <td style="text-align: right;">1,674</td>
+            <td style="text-align: right;">17.46</td>
+            <td style="text-align: right;">95.9</td>
+            <td>全期最高市值</td>
+            </tr>
+            <tr>
+            <td>2026-07-31</td>
+            <td style="text-align: right;">1,056</td>
+            <td style="text-align: right;">17.46</td>
+            <td style="text-align: right;">60.5</td>
+            <td>07-02、07-17、07-28 单日跌 9%—12%</td>
+            </tr>
+            <tr>
+            <td>2026-08-28</td>
+            <td style="text-align: right;">1,242</td>
+            <td style="text-align: right;">25.71</td>
+            <td style="text-align: right;">48.3</td>
+            <td>中报披露</td>
+            </tr>
+            <tr>
+            <td>2026-10-27</td>
+            <td style="text-align: right;">835</td>
+            <td style="text-align: right;">35.29</td>
+            <td style="text-align: right;">23.7</td>
+            <td>三季报披露日 −10.2%</td>
+            </tr>
+            <tr>
+            <td>2026-11-17</td>
+            <td style="text-align: right;">578</td>
+            <td style="text-align: right;">35.29</td>
+            <td style="text-align: right;">16.4</td>
+            <td>全期最低 PE</td>
+            </tr>
+            <tr>
+            <td>2026-11-18</td>
+            <td style="text-align: right;">683</td>
+            <td style="text-align: right;">35.29</td>
+            <td style="text-align: right;">19.3</td>
+            <td>当日 +18.0%</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>从节点表能直接读出两点。第一，<strong>每一轮上涨都先由 PE
+            完成</strong>：2023 年 12 月、2025 年 9 月、2026 年 2
+            月三次市值跳升时，TTM
+            利润都还没变，利润要等一到两个季度才追上来。第二，<strong>2026
+            年下半年是反过来的</strong>：利润每季都在超预期，市值却从高点跌掉六成，PE
+            被压缩了八成。</p>
+            <h4 id="涨跌分解">涨跌分解</h4>
+            <p>用总市值 = TTM 归母净利润 × PE
+            分解（总市值不受转增影响；2026 年限制性股票激励约占股本
+            1%，忽略不计）：</p>
+            <table style="width:100%;">
+            <colgroup>
+            <col style="width: 16%" />
+            <col style="width: 22%" />
+            <col style="width: 22%" />
+            <col style="width: 22%" />
+            <col style="width: 16%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>区间</th>
+            <th style="text-align: right;">总市值</th>
+            <th style="text-align: right;">TTM 利润</th>
+            <th style="text-align: right;">PE</th>
+            <th>读法</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>2025-12-31 → 2026-06-25</td>
+            <td style="text-align: right;">×2.87（584 → 1,674）</td>
+            <td style="text-align: right;">×2.10（8.33 → 17.46）</td>
+            <td style="text-align: right;">×1.37（70.1 → 95.9）</td>
+            <td>利润与估值同时扩张</td>
+            </tr>
+            <tr>
+            <td>2026-06-25 → 2026-11-18</td>
+            <td style="text-align: right;">×0.41（1,674 → 683）</td>
+            <td style="text-align: right;">×2.02（17.46 → 35.29）</td>
+            <td style="text-align: right;">×0.20（95.9 → 19.3）</td>
+            <td>利润翻倍，估值缩到五分之一</td>
+            </tr>
+            <tr>
+            <td>2025-12-31 → 2026-11-18</td>
+            <td style="text-align: right;">×1.17</td>
+            <td style="text-align: right;">×4.24</td>
+            <td style="text-align: right;">×0.28</td>
+            <td>全年看，利润增长几乎全被估值压缩抵消</td>
+            </tr>
+            </tbody>
+            </table>
+            <h4 id="研报预测怎样被修正">研报预测怎样被修正</h4>
+            <p>东方财富研报中心能读到 2024—2026 年协创数据的研报 19
+            篇，覆盖最连续的是山西证券与太平洋证券，下面以这两家为主线。山西只给
+            EPS，按报告日的总股本换算成利润：2025-05 转增前 2.45
+            亿股，2025-05 至 2026-04 约 3.46 亿股，之后 4.89
+            亿股。换算值只看量级。</p>
+            <figure>
+            <img
+            src="./WikiImage/gpu_rent_stocks_xcsj_forecast.svg"
+            alt="协创数据：研报预测追着利润走，股价先于预测见顶" />
+            <figcaption
+            aria-hidden="true">协创数据：研报预测追着利润走，股价先于预测见顶</figcaption>
+            </figure>
+            <table>
+            <colgroup>
+            <col style="width: 13%" />
+            <col style="width: 13%" />
+            <col style="width: 18%" />
+            <col style="width: 18%" />
+            <col style="width: 18%" />
+            <col style="width: 18%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>报告日</th>
+            <th>机构</th>
+            <th style="text-align: right;">当时总市值（亿元）</th>
+            <th style="text-align: right;">2025 年预测</th>
+            <th style="text-align: right;">2026 年预测</th>
+            <th style="text-align: right;">2027 年预测</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>2024-04-29</td>
+            <td>太平洋</td>
+            <td style="text-align: right;">153</td>
+            <td style="text-align: right;">9.88</td>
+            <td style="text-align: right;">11.91</td>
+            <td style="text-align: right;">—</td>
+            </tr>
+            <tr>
+            <td>2024-11-01</td>
+            <td>太平洋</td>
+            <td style="text-align: right;">173</td>
+            <td style="text-align: right;">11.16</td>
+            <td style="text-align: right;">13.72</td>
+            <td style="text-align: right;">—</td>
+            </tr>
+            <tr>
+            <td>2024-11-14</td>
+            <td>山西，首次覆盖</td>
+            <td style="text-align: right;">210</td>
+            <td style="text-align: right;">EPS 4.95，约 12.1</td>
+            <td style="text-align: right;">EPS 6.66，约 16.3</td>
+            <td style="text-align: right;">—</td>
+            </tr>
+            <tr>
+            <td>2025-04-08/09</td>
+            <td>太平洋 / 山西</td>
+            <td style="text-align: right;">223 / 225</td>
+            <td style="text-align: right;">10.87 / 约 10.9</td>
+            <td style="text-align: right;">15.53 / 约 14.2</td>
+            <td style="text-align: right;">20.57 / 约 18.3</td>
+            </tr>
+            <tr>
+            <td>2025-09-05/10</td>
+            <td>太平洋 / 山西</td>
+            <td style="text-align: right;">360 / 443</td>
+            <td style="text-align: right;">10.87 / 约 11.1</td>
+            <td style="text-align: right;">15.78 / 约 17.2</td>
+            <td style="text-align: right;">20.82 / 约 23.0</td>
+            </tr>
+            <tr>
+            <td>2025-11-06</td>
+            <td>太平洋 / 山西</td>
+            <td style="text-align: right;">592</td>
+            <td style="text-align: right;">11.19 / 约 11.4</td>
+            <td style="text-align: right;">17.56 / 约 19.5</td>
+            <td style="text-align: right;">24.84 / 约 29.0</td>
+            </tr>
+            <tr>
+            <td>2026-02-05</td>
+            <td>华鑫，首次覆盖</td>
+            <td style="text-align: right;">713</td>
+            <td style="text-align: right;">EPS 3.41，约 11.8</td>
+            <td style="text-align: right;">EPS 5.48，约 19.0</td>
+            <td style="text-align: right;">EPS 7.56，约 26.2</td>
+            </tr>
+            <tr>
+            <td>2026-03-26</td>
+            <td>太平洋 / 山西</td>
+            <td style="text-align: right;">745</td>
+            <td style="text-align: right;">实际 11.64</td>
+            <td style="text-align: right;">20.84 / 约 28.3</td>
+            <td style="text-align: right;">29.75 / 约 42.3</td>
+            </tr>
+            <tr>
+            <td>2026-09-03</td>
+            <td>山西</td>
+            <td style="text-align: right;">1,282（09-02）</td>
+            <td style="text-align: right;">—</td>
+            <td style="text-align: right;">约 55.2</td>
+            <td style="text-align: right;">约 106.8</td>
+            </tr>
+            <tr>
+            <td>2026-11-05</td>
+            <td>山西</td>
+            <td style="text-align: right;">803</td>
+            <td style="text-align: right;">—</td>
+            <td style="text-align: right;">约 53.3</td>
+            <td style="text-align: right;">约 99.3</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>单位为亿元归母净利润。“当时总市值”取报告发布日收盘的东方财富总市值，山西
+            2026-09-03 报告引用的是 09-02
+            收盘价，按该日取值。来源为东方财富研报中心的报告摘要：<a
+            href="https://data.eastmoney.com/report/info/AP202404291631568376.html">太平洋
+            2024-04-29</a>、<a
+            href="https://data.eastmoney.com/report/info/AP202411011640662720.html">太平洋
+            2024-11-01</a>、<a
+            href="https://data.eastmoney.com/report/info/AP202411141640883397.html">山西
+            2024-11-14</a>、<a
+            href="https://data.eastmoney.com/report/info/AP202504081653354570.html">太平洋
+            2025-04-08</a>、<a
+            href="https://data.eastmoney.com/report/info/AP202504091653770958.html">山西
+            2025-04-09</a>、<a
+            href="https://data.eastmoney.com/report/info/AP202509051739088825.html">太平洋
+            2025-09-05</a>、<a
+            href="https://data.eastmoney.com/report/info/AP202509101741015795.html">山西
+            2025-09-10</a>、2025-11-06 两篇（<a
+            href="https://data.eastmoney.com/report/info/AP202511061776058410.html">1</a>、<a
+            href="https://data.eastmoney.com/report/info/AP202511061776216223.html">2</a>）、<a
+            href="https://data.eastmoney.com/report/info/AP202602051819786071.html">华鑫
+            2026-02-05</a>、<a
+            href="https://data.eastmoney.com/report/info/AP202603261820758346.html">太平洋
+            2026-03-26</a>、<a
+            href="https://data.eastmoney.com/report/info/AP202603261820772931.html">山西
+            2026-03-26</a>、<a
+            href="https://data.eastmoney.com/report/info/AP202609031828945699.html">山西
+            2026-09-03</a>、<a
+            href="https://data.eastmoney.com/report/info/AP202611051831450711.html">山西
+            2026-11-05</a>。另有东吴 2024-08-30 预测 2024—2026 年 7.89 /
+            10.88 / 14.36 亿元，中航 2025-11-07 预测 2025—2027 年 11.35
+            / 16.47 / 21.20 亿元，方向与上表一致。</p>
+            <p>研报的轨迹有两段，方向相反。</p>
+            <ol type="1">
+            <li><strong>2024-11 到
+            2025-11：预测几乎不动，股价先走。</strong> 一年里，山西对
+            2026 年的预测只从 16.3 亿元升到 19.5 亿元，太平洋从 13.72
+            亿元升到 17.56 亿元。同期市值从 210 亿元涨到 592
+            亿元，按当时对 2026 年的预测算，隐含 PE 从约 13 倍升到约 30
+            倍。市场已经在为预测之外的东西付钱。2025
+            年的预测则相当准确：发布时 10.9—12.1 亿元，实际 11.64
+            亿元。</li>
+            <li><strong>2026-03 到
+            2026-09：预测追着单季利润大幅上调。</strong> 2026
+            年一季度单季利润 7.50 亿元，已是 2025 全年的 64%。山西对
+            2026 年的预测从 3 月的约 28 亿元提到 9 月的约 55 亿元，对
+            2027 年从约 42 亿元提到约 107 亿元。市值在 06-25 见顶，9
+            月的大幅上调没有带来新高。</li>
+            </ol>
+            <p>用当时的市值和当时的预测算<strong>预测隐含
+            PE</strong>，对比实际 TTM PE：</p>
+            <table>
+            <colgroup>
+            <col style="width: 15%" />
+            <col style="width: 21%" />
+            <col style="width: 21%" />
+            <col style="width: 21%" />
+            <col style="width: 21%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>日期</th>
+            <th style="text-align: right;">总市值（亿元）</th>
+            <th style="text-align: right;">实际 TTM PE</th>
+            <th style="text-align: right;">按当时 2026 年预测</th>
+            <th style="text-align: right;">按当时 2027 年预测</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>2025-11-06</td>
+            <td style="text-align: right;">592</td>
+            <td style="text-align: right;">71.1</td>
+            <td style="text-align: right;">30（山西 19.5）</td>
+            <td style="text-align: right;">20（山西 29.0）</td>
+            </tr>
+            <tr>
+            <td>2026-03-26</td>
+            <td style="text-align: right;">745</td>
+            <td style="text-align: right;">64.0</td>
+            <td style="text-align: right;">26（山西 28.3）/ 36（太平洋
+            20.84）</td>
+            <td style="text-align: right;">18 / 25</td>
+            </tr>
+            <tr>
+            <td>2026-06-25（市值峰值）</td>
+            <td style="text-align: right;">1,674</td>
+            <td style="text-align: right;">95.9</td>
+            <td style="text-align: right;">59（山西 3 月的 28.3）</td>
+            <td style="text-align: right;">40（山西 3 月的 42.3）</td>
+            </tr>
+            <tr>
+            <td>2026-09-02</td>
+            <td style="text-align: right;">1,282</td>
+            <td style="text-align: right;">49.9</td>
+            <td style="text-align: right;">23（山西 55.2）</td>
+            <td style="text-align: right;">12（山西 106.8）</td>
+            </tr>
+            <tr>
+            <td>2026-11-18</td>
+            <td style="text-align: right;">683</td>
+            <td style="text-align: right;">19.3</td>
+            <td style="text-align: right;">13（山西 11 月的 53.3）</td>
+            <td style="text-align: right;">6.9（山西 99.3）</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>6 月峰值时，市值相对研报最新的 2026 年预测约 59 倍，比 3
+            月高出一倍多，说明股价跑到了研报前面。到 11 月，按山西对
+            2027 年的预测只有约 7
+            倍。这时的分歧已经不在“明年能赚多少”，而在于“这些利润能维持几年、要背多少负债”，下文再讨论。2026
+            年全年实际利润要到 2027 年 3—4 月才披露；前三季度已有 30.62
+            亿元，超过 3 月时两家机构对全年的预测。</p>
+            <h4 id="股东户数">股东户数</h4>
+            <table>
+            <colgroup>
+            <col style="width: 20%" />
+            <col style="width: 26%" />
+            <col style="width: 26%" />
+            <col style="width: 26%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>截止日</th>
+            <th style="text-align: right;">股东户数</th>
+            <th style="text-align: right;">环比</th>
+            <th
+            style="text-align: right;">截止日或之前最后一个交易日的总市值（亿元）</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>2023-09-30</td>
+            <td style="text-align: right;">21,255</td>
+            <td style="text-align: right;">—</td>
+            <td style="text-align: right;">63</td>
+            </tr>
+            <tr>
+            <td>2023-12-31</td>
+            <td style="text-align: right;">19,634</td>
+            <td style="text-align: right;">−7.6%</td>
+            <td style="text-align: right;">129</td>
+            </tr>
+            <tr>
+            <td>2024-03-31</td>
+            <td style="text-align: right;">20,041</td>
+            <td style="text-align: right;">+2.1%</td>
+            <td style="text-align: right;">149</td>
+            </tr>
+            <tr>
+            <td>2024-06-30</td>
+            <td style="text-align: right;">18,495</td>
+            <td style="text-align: right;">−7.7%</td>
+            <td style="text-align: right;">140</td>
+            </tr>
+            <tr>
+            <td>2024-09-30</td>
+            <td style="text-align: right;">25,242</td>
+            <td style="text-align: right;">+36.5%</td>
+            <td style="text-align: right;">169</td>
+            </tr>
+            <tr>
+            <td>2024-12-31</td>
+            <td style="text-align: right;">24,540</td>
+            <td style="text-align: right;">−2.8%</td>
+            <td style="text-align: right;">262</td>
+            </tr>
+            <tr>
+            <td>2025-03-31</td>
+            <td style="text-align: right;">30,875</td>
+            <td style="text-align: right;">+25.8%</td>
+            <td style="text-align: right;">286</td>
+            </tr>
+            <tr>
+            <td>2025-06-30</td>
+            <td style="text-align: right;">29,344</td>
+            <td style="text-align: right;">−5.0%</td>
+            <td style="text-align: right;">295</td>
+            </tr>
+            <tr>
+            <td>2025-09-30</td>
+            <td style="text-align: right;">34,988</td>
+            <td style="text-align: right;">+19.2%</td>
+            <td style="text-align: right;">630</td>
+            </tr>
+            <tr>
+            <td>2025-12-31</td>
+            <td style="text-align: right;">38,112</td>
+            <td style="text-align: right;">+8.9%</td>
+            <td style="text-align: right;">584</td>
+            </tr>
+            <tr>
+            <td>2026-02-28</td>
+            <td style="text-align: right;">31,965</td>
+            <td style="text-align: right;">−16.1%</td>
+            <td style="text-align: right;">923（02-27）</td>
+            </tr>
+            <tr>
+            <td>2026-03-31</td>
+            <td style="text-align: right;">36,816</td>
+            <td style="text-align: right;">+15.2%</td>
+            <td style="text-align: right;">724</td>
+            </tr>
+            <tr>
+            <td>2026-06-30</td>
+            <td style="text-align: right;"><strong>82,493</strong></td>
+            <td style="text-align: right;">+124.1%</td>
+            <td style="text-align: right;">1,663</td>
+            </tr>
+            <tr>
+            <td>2026-09-30</td>
+            <td style="text-align: right;">77,050</td>
+            <td style="text-align: right;">−6.6%</td>
+            <td style="text-align: right;">1,229</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>来源：<a
+            href="https://emweb.securities.eastmoney.com/PC_HSF10/ShareholderResearch/Index?type=web&amp;code=SZ300857">东方财富
+            F10 股东研究</a>，2026-11-19 提取。2026
+            年二季度股东户数翻倍，正好覆盖市值从 724 亿元到 1,674
+            亿元的主升段；PE 最高的 2026-02-27 前后，户数反而比年末少了
+            16%。第一段估值扩张主要由机构与存量资金完成，散户大规模进场发生在后段。</p>
+            <h3
+            id="利通电子估值先行四倍利润后到">利通电子：估值先行四倍，利润后到</h3>
+            <h4 id="年度-pe-与利润-1">年度 PE 与利润</h4>
+            <table>
+            <colgroup>
+            <col style="width: 14%" />
+            <col style="width: 19%" />
+            <col style="width: 14%" />
+            <col style="width: 14%" />
+            <col style="width: 19%" />
+            <col style="width: 19%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>年份</th>
+            <th style="text-align: right;">平均 PE（TTM）</th>
+            <th>最低 PE / 日期</th>
+            <th>最高 PE / 日期</th>
+            <th style="text-align: right;">年末 PE</th>
+            <th style="text-align: right;">年末总市值（亿元）</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>2020</td>
+            <td style="text-align: right;">50.9</td>
+            <td>29.4 / 03-23</td>
+            <td>81.9 / 12-11</td>
+            <td style="text-align: right;">72.5</td>
+            <td style="text-align: right;">34</td>
+            </tr>
+            <tr>
+            <td>2021</td>
+            <td style="text-align: right;">51.0</td>
+            <td>35.1 / 10-28</td>
+            <td>78.5 / 03-19</td>
+            <td style="text-align: right;">48.3</td>
+            <td style="text-align: right;">22</td>
+            </tr>
+            <tr>
+            <td>2022</td>
+            <td style="text-align: right;">50.8</td>
+            <td>35.3 / 05-06</td>
+            <td>71.4 / 01-17</td>
+            <td style="text-align: right;">40.5</td>
+            <td style="text-align: right;">32</td>
+            </tr>
+            <tr>
+            <td>2023</td>
+            <td style="text-align: right;">91.6</td>
+            <td>39.0 / 03-30</td>
+            <td>232.9 / 11-14</td>
+            <td style="text-align: right;">188.4</td>
+            <td style="text-align: right;">81</td>
+            </tr>
+            <tr>
+            <td>2024</td>
+            <td style="text-align: right;">100.6</td>
+            <td>65.5 / 09-18</td>
+            <td>186.6 / 01-03</td>
+            <td style="text-align: right;">83.1</td>
+            <td style="text-align: right;">52</td>
+            </tr>
+            <tr>
+            <td>2025</td>
+            <td style="text-align: right;">171.4</td>
+            <td>34.3 / 11-21</td>
+            <td>317.4 / 08-28</td>
+            <td style="text-align: right;">37.2</td>
+            <td style="text-align: right;">70</td>
+            </tr>
+            <tr>
+            <td>2026 YTD（至 11-18）</td>
+            <td style="text-align: right;">70.1</td>
+            <td>19.4 / 11-17</td>
+            <td>162.6 / 04-23</td>
+            <td style="text-align: right;">21.3</td>
+            <td style="text-align: right;">223</td>
+            </tr>
+            </tbody>
+            </table>
+            <table>
+            <colgroup>
+            <col style="width: 13%" />
+            <col style="width: 17%" />
+            <col style="width: 17%" />
+            <col style="width: 17%" />
+            <col style="width: 17%" />
+            <col style="width: 17%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>年份</th>
+            <th style="text-align: right;">归母净利润（亿元）</th>
+            <th style="text-align: right;">同比</th>
+            <th style="text-align: right;">扣非净利润（亿元）</th>
+            <th style="text-align: right;">营业收入（亿元）</th>
+            <th style="text-align: right;">毛利率</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>2020</td>
+            <td style="text-align: right;">0.46</td>
+            <td style="text-align: right;">−26.9%</td>
+            <td style="text-align: right;">0.41</td>
+            <td style="text-align: right;">16.48</td>
+            <td style="text-align: right;">15.7%</td>
+            </tr>
+            <tr>
+            <td>2021</td>
+            <td style="text-align: right;">0.58</td>
+            <td style="text-align: right;">+24.5%</td>
+            <td style="text-align: right;">0.33</td>
+            <td style="text-align: right;">18.04</td>
+            <td style="text-align: right;">15.9%</td>
+            </tr>
+            <tr>
+            <td>2022</td>
+            <td style="text-align: right;">0.66</td>
+            <td style="text-align: right;">+14.2%</td>
+            <td style="text-align: right;">0.35</td>
+            <td style="text-align: right;">20.25</td>
+            <td style="text-align: right;">16.3%</td>
+            </tr>
+            <tr>
+            <td>2023</td>
+            <td style="text-align: right;">0.40</td>
+            <td style="text-align: right;">−39.0%</td>
+            <td style="text-align: right;">0.20</td>
+            <td style="text-align: right;">18.93</td>
+            <td style="text-align: right;">15.8%</td>
+            </tr>
+            <tr>
+            <td>2024</td>
+            <td style="text-align: right;">0.25</td>
+            <td style="text-align: right;">−38.8%</td>
+            <td style="text-align: right;">0.06</td>
+            <td style="text-align: right;">22.48</td>
+            <td style="text-align: right;">18.4%</td>
+            </tr>
+            <tr>
+            <td>2025</td>
+            <td style="text-align: right;">2.93</td>
+            <td style="text-align: right;">+1,088.6%</td>
+            <td style="text-align: right;">2.36</td>
+            <td style="text-align: right;">33.07</td>
+            <td style="text-align: right;">24.8%</td>
+            </tr>
+            <tr>
+            <td>2026 前三季度</td>
+            <td style="text-align: right;">9.71</td>
+            <td style="text-align: right;">+349.4%</td>
+            <td style="text-align: right;">9.16</td>
+            <td style="text-align: right;">32.28</td>
+            <td style="text-align: right;">46.7%</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>单季归母净利润（亿元，括号内为扣非）：</p>
+            <table>
+            <thead>
+            <tr>
+            <th>年份</th>
+            <th style="text-align: right;">Q1</th>
+            <th style="text-align: right;">Q2</th>
+            <th style="text-align: right;">Q3</th>
+            <th style="text-align: right;">Q4</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>2025</td>
+            <td style="text-align: right;">0.29</td>
+            <td style="text-align: right;">0.22</td>
+            <td style="text-align: right;">1.65（0.92）</td>
+            <td style="text-align: right;">0.77（0.92）</td>
+            </tr>
+            <tr>
+            <td>2026</td>
+            <td style="text-align: right;">2.71（2.78）</td>
+            <td style="text-align: right;">4.31（3.37）</td>
+            <td style="text-align: right;">2.68（3.02）</td>
+            <td style="text-align: right;">—</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>利通原本是液晶电视金属结构件和精密冲压件厂商，2014—2024
+            年利润始终在 0.25—0.92 亿元之间。2025
+            年三季度起，算力服务收入开始体现：2026 年前三季度营收只增长
+            31%，毛利率却从 2025 年的 24.8% 升到
+            46.7%，利润增长几乎全部来自业务结构变化。2026
+            年三季度单季利润 2.68
+            亿元，是转型以来<strong>第一次环比下降</strong>；二季度 4.31
+            亿元中约 0.94 亿元是非经常性损益。资产负债率
+            67.2%。“转型”的业务口径来自财报毛利率与利润结构，未取得算力业务的分部披露。</p>
+            <h4 id="节点表">节点表</h4>
+            <figure>
+            <img src="./WikiImage/gpu_rent_stocks_ltdz.svg"
+            alt="利通电子：五个月市值涨到 8.6 倍，三季度单季利润首次环比下降" />
+            <figcaption aria-hidden="true">利通电子：五个月市值涨到 8.6
+            倍，三季度单季利润首次环比下降</figcaption>
+            </figure>
+            <table style="width:100%;">
+            <colgroup>
+            <col style="width: 16%" />
+            <col style="width: 22%" />
+            <col style="width: 22%" />
+            <col style="width: 22%" />
+            <col style="width: 16%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>日期</th>
+            <th style="text-align: right;">总市值（亿元）</th>
+            <th style="text-align: right;">当时 TTM 利润（亿元）</th>
+            <th style="text-align: right;">PE（TTM）</th>
+            <th>说明</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>2023-03-30</td>
+            <td style="text-align: right;">30</td>
+            <td style="text-align: right;">0.78</td>
+            <td style="text-align: right;">39.0</td>
+            <td>第一轮炒作前</td>
+            </tr>
+            <tr>
+            <td>2023-11-14</td>
+            <td style="text-align: right;">101</td>
+            <td style="text-align: right;">0.43</td>
+            <td style="text-align: right;">232.9</td>
+            <td>利润在降，市值 ×3.4</td>
+            </tr>
+            <tr>
+            <td>2024-09-18</td>
+            <td style="text-align: right;">36</td>
+            <td style="text-align: right;">0.55</td>
+            <td style="text-align: right;">65.5</td>
+            <td>回到起点</td>
+            </tr>
+            <tr>
+            <td>2025-10-31</td>
+            <td style="text-align: right;">70</td>
+            <td style="text-align: right;">1.88</td>
+            <td style="text-align: right;">37.0</td>
+            <td>三季报首次体现算力利润</td>
+            </tr>
+            <tr>
+            <td>2026-01-05</td>
+            <td style="text-align: right;">73</td>
+            <td style="text-align: right;">1.88</td>
+            <td style="text-align: right;">38.6</td>
+            <td>2026 年市值最低点</td>
+            </tr>
+            <tr>
+            <td>2026-04-23</td>
+            <td style="text-align: right;">306</td>
+            <td style="text-align: right;">1.88</td>
+            <td style="text-align: right;">162.6</td>
+            <td>分母未变，市值 ×4.2 全部来自 PE</td>
+            </tr>
+            <tr>
+            <td>2026-04-28</td>
+            <td style="text-align: right;">313</td>
+            <td style="text-align: right;">5.34</td>
+            <td style="text-align: right;">58.6</td>
+            <td>年报与一季报同日披露</td>
+            </tr>
+            <tr>
+            <td>2026-05-29</td>
+            <td style="text-align: right;">631</td>
+            <td style="text-align: right;">5.34</td>
+            <td style="text-align: right;">118.2</td>
+            <td>全期最高市值，一个月再 ×2.0</td>
+            </tr>
+            <tr>
+            <td>2026-06-18</td>
+            <td style="text-align: right;">463</td>
+            <td style="text-align: right;">5.34</td>
+            <td style="text-align: right;">86.7</td>
+            <td>6 月上旬五个交易日跌停，随后反弹</td>
+            </tr>
+            <tr>
+            <td>2026-07-31</td>
+            <td style="text-align: right;">352</td>
+            <td style="text-align: right;">5.34</td>
+            <td style="text-align: right;">65.9</td>
+            <td>7 月有七个交易日市值跌约 10%（跌停）</td>
+            </tr>
+            <tr>
+            <td>2026-08-31</td>
+            <td style="text-align: right;">448</td>
+            <td style="text-align: right;">9.44</td>
+            <td style="text-align: right;">47.5</td>
+            <td>中报披露后首个交易日</td>
+            </tr>
+            <tr>
+            <td>2026-10-30</td>
+            <td style="text-align: right;">237</td>
+            <td style="text-align: right;">9.44</td>
+            <td style="text-align: right;">25.1</td>
+            <td>三季报披露前最后一个交易日</td>
+            </tr>
+            <tr>
+            <td>2026-11-17</td>
+            <td style="text-align: right;">203</td>
+            <td style="text-align: right;">10.47</td>
+            <td style="text-align: right;">19.4</td>
+            <td>全期最低 PE</td>
+            </tr>
+            <tr>
+            <td>2026-11-18</td>
+            <td style="text-align: right;">223</td>
+            <td style="text-align: right;">10.47</td>
+            <td style="text-align: right;">21.3</td>
+            <td></td>
+            </tr>
+            </tbody>
+            </table>
+            <p>分解 2026 年的两段：</p>
+            <table style="width:100%;">
+            <colgroup>
+            <col style="width: 16%" />
+            <col style="width: 22%" />
+            <col style="width: 22%" />
+            <col style="width: 22%" />
+            <col style="width: 16%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>区间</th>
+            <th style="text-align: right;">总市值</th>
+            <th style="text-align: right;">TTM 利润</th>
+            <th style="text-align: right;">PE</th>
+            <th>读法</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>2026-01-05 → 05-29</td>
+            <td style="text-align: right;">×8.6（73 → 631）</td>
+            <td style="text-align: right;">×2.84（1.88 → 5.34）</td>
+            <td style="text-align: right;">×3.06（38.6 → 118.2）</td>
+            <td>估值与利润共同推动，PE 贡献更大</td>
+            </tr>
+            <tr>
+            <td>2026-05-29 → 11-18</td>
+            <td style="text-align: right;">×0.35（631 → 223）</td>
+            <td style="text-align: right;">×1.96（5.34 → 10.47）</td>
+            <td style="text-align: right;">×0.18（118.2 → 21.3）</td>
+            <td>利润翻倍，估值缩到不足两成</td>
+            </tr>
+            </tbody>
+            </table>
+            <h4 id="没有研报的定价谁在买">没有研报的定价：谁在买</h4>
+            <p>东方财富研报中心 2023—2026 年没有利通电子的个股报告，只有
+            2018 年 IPO
+            时的两篇。这只股票的定价没有机构盈利预测作锚，下面只能用公司公告、股东户数和龙虎榜还原当时的预期。</p>
+            <p>公司公告给出的业务信息很有限：</p>
+            <ul>
+            <li><strong>入局方式</strong>：2023-06 以 4.5
+            亿元增资取得上海世纪利通 90%
+            股权，业务是“购买服务器相关设备后出租”。公告自己写明与原有业务“不存在协同效应”“行业技术壁垒不高”，同日收到上交所监管工作函。</li>
+            <li><strong>规模与客户</strong>：公司在互动平台称 2025
+            年算力业务收入约 12.0 亿元、净利润约 3.38
+            亿元，直接运营算力约 38,000P；客户名称从未披露，2026-06
+            公司称客户集中度较高、自有设备已全部出租。2026
+            年一季度末合同负债 21.72 亿元，同比增长约 61 倍。</li>
+            <li><strong>融资</strong>：2026-04 把一批已出租设备以 4.20
+            亿元售后回租；2026-08 公告定增不超过 50 亿元，其中 40
+            亿元用于 GPU 服务器，可行性报告称“算力长期租赁服务已排至
+            2030 年以后，现有算力利用率接近 100%”。2026
+            年一季度末资产负债率 75.1%。</li>
+            </ul>
+            <p>来源：<a
+            href="https://data.eastmoney.com/notices/detail/603629/AN202306161591030296.html">2023-06-17
+            增资协议公告</a>、<a
+            href="https://data.eastmoney.com/notices/detail/603629/AN202604271821636411.html">2026-04-28
+            售后回租公告</a>、<a
+            href="https://data.eastmoney.com/notices/detail/603629/AN202608191828163169.html">2026-08-20
+            定增预案</a>；互动平台口径据<a
+            href="https://finance.sina.com.cn/jjxw/2026-05-06/doc-inhwycsi5785627.shtml">财闻
+            2026-05-06</a>与<a
+            href="https://finance.sina.com.cn/jjxw/2026-06-23/doc-iniekzkp6417431.shtml">2026-06-23
+            报道</a>。</p>
+            <table>
+            <colgroup>
+            <col style="width: 20%" />
+            <col style="width: 26%" />
+            <col style="width: 26%" />
+            <col style="width: 26%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>截止日</th>
+            <th style="text-align: right;">股东户数</th>
+            <th style="text-align: right;">环比</th>
+            <th
+            style="text-align: right;">截止日或之前最后一个交易日的总市值（亿元）</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>2025-12-31</td>
+            <td style="text-align: right;">33,129</td>
+            <td style="text-align: right;">—</td>
+            <td style="text-align: right;">70</td>
+            </tr>
+            <tr>
+            <td>2026-01-09</td>
+            <td style="text-align: right;">32,948</td>
+            <td style="text-align: right;">−0.5%</td>
+            <td style="text-align: right;">76</td>
+            </tr>
+            <tr>
+            <td>2026-03-31</td>
+            <td style="text-align: right;">50,812</td>
+            <td style="text-align: right;">+54.2%</td>
+            <td style="text-align: right;">169</td>
+            </tr>
+            <tr>
+            <td>2026-04-30</td>
+            <td style="text-align: right;">83,490</td>
+            <td style="text-align: right;">+64.3%</td>
+            <td style="text-align: right;">379</td>
+            </tr>
+            <tr>
+            <td>2026-05-29</td>
+            <td style="text-align: right;"><strong>139,090</strong></td>
+            <td style="text-align: right;">+66.6%</td>
+            <td style="text-align: right;">631</td>
+            </tr>
+            <tr>
+            <td>2026-06-10</td>
+            <td style="text-align: right;">134,400</td>
+            <td style="text-align: right;">−3.4%</td>
+            <td style="text-align: right;">379</td>
+            </tr>
+            <tr>
+            <td>2026-06-18</td>
+            <td style="text-align: right;">159,600</td>
+            <td style="text-align: right;">+18.8%</td>
+            <td style="text-align: right;">463</td>
+            </tr>
+            <tr>
+            <td>2026-06-30</td>
+            <td style="text-align: right;">150,070</td>
+            <td style="text-align: right;">−6.0%</td>
+            <td style="text-align: right;">469</td>
+            </tr>
+            <tr>
+            <td>2026-09-30</td>
+            <td style="text-align: right;">175,689</td>
+            <td style="text-align: right;">+17.1%</td>
+            <td style="text-align: right;">352</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>来源：<a
+            href="https://emweb.securities.eastmoney.com/PC_HSF10/ShareholderResearch/Index?type=web&amp;code=SH603629">东方财富
+            F10 股东研究</a>。股东户数在五个月里增加到 4.2
+            倍，和市值同步；但市值从高点跌掉 44% 之后，9 月末的户数比 5
+            月末还多 26%。下跌段里散户仍在净进场。</p>
+            <p>05-29 触发严重异常波动时，交易所公布了 04-14 至 05-29 共
+            30 个交易日的龙虎榜累计数据：自然人买入 1,149 亿元、卖出
+            1,109 亿元，净买约 40 亿元；机构买入 368 亿元、卖出 407
+            亿元，净卖约 39
+            亿元；沪股通基本持平。金额单位按“亿元”理解是根据数据量级推断的。同期的公司方面，实控人邵培生、邵秋萍在
+            2—3 月分别减持套现约 1.49 亿元和 2.21 亿元，董高 05-26
+            减持完毕。同一份异常波动公告提示静态市盈率 58.2 倍、市净率
+            28.1 倍，30 个交易日平均换手率约 14%。来源：<a
+            href="https://data.eastmoney.com/notices/detail/603629/AN202605291823031880.html">异常波动公告</a>、<a
+            href="https://data.eastmoney.com/stock/lhb/603629.html">东方财富龙虎榜</a>、减持据<a
+            href="https://finance.sina.com.cn/stock/aigc/zjchg/2026-02-27/doc-inhphqny6489263.shtml">新浪
+            2026-02-27</a>与<a
+            href="https://finance.sina.com.cn/roll/2026-03-03/doc-inhpsttp0811251.shtml">2026-03-03</a>。</p>
+            <p><strong>媒体与自媒体标题样本</strong>（新浪个股资讯列表中按日期抽取，样本，不代表全部投资者）：</p>
+            <ul>
+            <li>上涨段：“订单狂飙6000%，利通电子，一战成名！”（05-25）</li>
+            <li>见顶后：“8倍算力大牛股，一字跌停！8万股民受波及”（06-01）；“悔！满仓利通电子
+            6天吃4跌停……6月已亏11万”（06-08，自媒体）；“8倍牛股利通电子8天跌超200亿，全是‘小作文’的祸吗？”（06-14）</li>
+            <li>反弹段：“利通电子4天3板”（08-05）；“封单超43万手，‘算力味精’涨停”（11-18，中证）</li>
+            </ul>
+            <p>股吧帖子没有取到：东方财富股吧对脚本请求返回身份核实页面。</p>
+            <h3
+            id="coreweave订单涨了九倍估值倍数缩到十二分之一">CoreWeave：订单涨了九倍，估值倍数缩到十二分之一</h3>
+            <h4 id="收入亏损与合同余额">收入、亏损与合同余额</h4>
+            <p>CoreWeave 没有一个季度实现 GAAP 净盈利，PE
+            无法使用。下表列出季度经营数据，估值改用 PS 与
+            EV/EBITDA。</p>
+            <table style="width:100%;">
+            <colgroup>
+            <col style="width: 10%" />
+            <col style="width: 13%" />
+            <col style="width: 13%" />
+            <col style="width: 13%" />
+            <col style="width: 13%" />
+            <col style="width: 13%" />
+            <col style="width: 13%" />
+            <col style="width: 10%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>季度</th>
+            <th style="text-align: right;">收入</th>
+            <th style="text-align: right;">经营利润</th>
+            <th style="text-align: right;">利息费用（净）</th>
+            <th style="text-align: right;">净利润</th>
+            <th style="text-align: right;">调整后 EBITDA</th>
+            <th style="text-align: right;">期末 RPO</th>
+            <th>期末在运电力</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>2025Q1</td>
+            <td style="text-align: right;">0.98</td>
+            <td style="text-align: right;">−0.03</td>
+            <td style="text-align: right;">0.26</td>
+            <td style="text-align: right;">−0.32</td>
+            <td style="text-align: right;">0.61</td>
+            <td style="text-align: right;">14.7</td>
+            <td>—</td>
+            </tr>
+            <tr>
+            <td>2025Q2</td>
+            <td style="text-align: right;">1.21</td>
+            <td style="text-align: right;">0.02</td>
+            <td style="text-align: right;">0.27</td>
+            <td style="text-align: right;">−0.29</td>
+            <td style="text-align: right;">0.75</td>
+            <td style="text-align: right;">30.1</td>
+            <td>—</td>
+            </tr>
+            <tr>
+            <td>2025Q3</td>
+            <td style="text-align: right;">1.36</td>
+            <td style="text-align: right;">0.05</td>
+            <td style="text-align: right;">0.31</td>
+            <td style="text-align: right;">−0.11</td>
+            <td style="text-align: right;">0.84</td>
+            <td style="text-align: right;">50.0</td>
+            <td>约 590 MW</td>
+            </tr>
+            <tr>
+            <td>2025Q4</td>
+            <td style="text-align: right;">1.57</td>
+            <td style="text-align: right;">−0.09</td>
+            <td style="text-align: right;">0.39</td>
+            <td style="text-align: right;">−0.45</td>
+            <td style="text-align: right;">0.90</td>
+            <td style="text-align: right;">60.7</td>
+            <td>超过 850 MW</td>
+            </tr>
+            <tr>
+            <td>2026Q1</td>
+            <td style="text-align: right;">2.08</td>
+            <td style="text-align: right;">−0.14</td>
+            <td style="text-align: right;">0.54</td>
+            <td style="text-align: right;">−0.74</td>
+            <td style="text-align: right;">1.16</td>
+            <td style="text-align: right;">98.8</td>
+            <td>超过 1 GW</td>
+            </tr>
+            <tr>
+            <td>2026Q2</td>
+            <td style="text-align: right;">2.58</td>
+            <td style="text-align: right;">−0.05</td>
+            <td style="text-align: right;">0.64</td>
+            <td style="text-align: right;">−0.63</td>
+            <td style="text-align: right;">1.51</td>
+            <td style="text-align: right;">103.7</td>
+            <td>1.5 GW</td>
+            </tr>
+            <tr>
+            <td>2026Q3</td>
+            <td style="text-align: right;">3.66</td>
+            <td style="text-align: right;">0.21</td>
+            <td style="text-align: right;">0.85</td>
+            <td style="text-align: right;">−0.71</td>
+            <td style="text-align: right;">2.26</td>
+            <td style="text-align: right;">132.3</td>
+            <td>超过 1.7 GW</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>单位为十亿美元。RPO 取 10-Q/10-K 中的
+            RevenueRemainingPerformanceObligation；公司新闻稿另报“收入积压”（backlog），口径略宽，2026Q3
+            为约 1,325 亿美元。全年数据：2024 年收入 19.15
+            亿美元、净亏损 8.63 亿美元；2025 年收入 51.31 亿美元、净亏损
+            11.67 亿美元。来源：各季度业绩新闻稿（8-K 附件，<a
+            href="https://www.sec.gov/Archives/edgar/data/1769628/000176962825000059/coreweave3q25earningspress.htm">2025Q3</a>、<a
+            href="https://www.sec.gov/Archives/edgar/data/1769628/000176962826000094/coreweave4q25earningspress.htm">2025Q4</a>、<a
+            href="https://www.sec.gov/Archives/edgar/data/1769628/000176962826000220/coreweave1q26earningspress.htm">2026Q1</a>、<a
+            href="https://www.sec.gov/Archives/edgar/data/1769628/000176962826000362/coreweave2q26earningspress.htm">2026Q2</a>、<a
+            href="https://www.sec.gov/Archives/edgar/data/1769628/000176962826000461/coreweave3q26earningspress.htm">2026Q3</a>）与
+            <a
+            href="https://data.sec.gov/api/xbrl/companyfacts/CIK0001769628.json">SEC
+            XBRL 数据</a>。</p>
+            <p>收入一年多翻了近四倍，亏损却在扩大。原因在利息和折旧：2026
+            年三季度单季利息费用 8.46 亿美元，是经营利润 2.07
+            亿美元的四倍；前三季度折旧摊销 44.3 亿美元。2026
+            年前三季度资本开支 235.6 亿美元，经营现金流 56.4
+            亿美元，缺口靠借债填补。截至 2026-09-30，债务本金 475.1
+            亿美元，其中 2027 年到期 109.7 亿美元。</p>
+            <p>融资成本可以直接从公告里读出：2025 年发行的无担保票据利率
+            9.0%，2026 年 4 月 9.75%，6 月美元票据 9.625%、欧元票据
+            8.5%；以客户合同作抵押的延迟提款贷款（DDTL）利率更低，DDTL
+            4.0 获得投资级评级。可转债票息低（2025-12 为 1.75%，2026-09
+            为 2.875%），代价是未来的股本稀释。</p>
+            <h4 id="股价与估值">股价与估值</h4>
+            <figure>
+            <img src="./WikiImage/gpu_rent_stocks_crwv.svg"
+            alt="CoreWeave：合同余额涨到 9 倍，股价回到 IPO 价附近" />
+            <figcaption aria-hidden="true">CoreWeave：合同余额涨到 9
+            倍，股价回到 IPO 价附近</figcaption>
+            </figure>
+            <table>
+            <colgroup>
+            <col style="width: 11%" />
+            <col style="width: 15%" />
+            <col style="width: 15%" />
+            <col style="width: 15%" />
+            <col style="width: 15%" />
+            <col style="width: 15%" />
+            <col style="width: 11%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>日期</th>
+            <th style="text-align: right;">收盘价（美元）</th>
+            <th style="text-align: right;">总股本（百万股）</th>
+            <th style="text-align: right;">市值（十亿美元）</th>
+            <th style="text-align: right;">当时已披露的 TTM 收入</th>
+            <th style="text-align: right;">PS（TTM）</th>
+            <th>说明</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>2025-03-28</td>
+            <td style="text-align: right;">40</td>
+            <td style="text-align: right;">约 480</td>
+            <td style="text-align: right;">约 19</td>
+            <td style="text-align: right;">1.92（2024 年）</td>
+            <td style="text-align: right;">约 10</td>
+            <td>IPO 发行价</td>
+            </tr>
+            <tr>
+            <td>2025-06-20</td>
+            <td style="text-align: right;">183.58</td>
+            <td style="text-align: right;">约 485</td>
+            <td style="text-align: right;">约 89</td>
+            <td style="text-align: right;">2.71</td>
+            <td style="text-align: right;">约 33</td>
+            <td>全期最高收盘价</td>
+            </tr>
+            <tr>
+            <td>2025-12-31</td>
+            <td style="text-align: right;">71.61</td>
+            <td style="text-align: right;">约 510</td>
+            <td style="text-align: right;">约 37</td>
+            <td style="text-align: right;">4.31</td>
+            <td style="text-align: right;">约 8.5</td>
+            <td></td>
+            </tr>
+            <tr>
+            <td>2026-05-06</td>
+            <td style="text-align: right;">137.98</td>
+            <td style="text-align: right;">545.6</td>
+            <td style="text-align: right;">75.3</td>
+            <td style="text-align: right;">5.13</td>
+            <td style="text-align: right;">14.7</td>
+            <td>2026 年最高收盘价，一季报前一天</td>
+            </tr>
+            <tr>
+            <td>2026-11-18</td>
+            <td style="text-align: right;">47.83</td>
+            <td style="text-align: right;">556.1</td>
+            <td style="text-align: right;">26.6</td>
+            <td style="text-align: right;">9.89</td>
+            <td style="text-align: right;">2.7</td>
+            <td></td>
+            </tr>
+            </tbody>
+            </table>
+            <p>总股本取最近一期 10-Q/10-K 封面披露的 A、B
+            类合计：2025-05-07 为 4.80 亿股，2025-08-05 为 4.89
+            亿股，2025 年 11 月为 4.98 亿股，2026-01-31 为 5.26
+            亿股，2026 年 5 月为 5.46 亿股，2026-10-30 为 5.56
+            亿股；“约”表示在两次披露之间插值。不含期权、RSU
+            与可转债的潜在稀释。TTM 收入只用当日已披露的季度。</p>
+            <p>2026-11-18 的企业价值约为 26.6 + 47.5（债务本金）−
+            4.1（现金）≈ 700 亿美元。EV / TTM 收入约 7.1 倍；EV / TTM
+            调整后 EBITDA（58.2 亿美元）约 12 倍，按三季度年化（90.2
+            亿美元）约 7.8 倍。调整后 EBITDA
+            是公司口径，不扣除利息和折旧，而这两项正是 CoreWeave
+            的主要成本。</p>
+            <p>用总市值 = TTM 收入 × PS 分解：</p>
+            <table style="width:100%;">
+            <colgroup>
+            <col style="width: 16%" />
+            <col style="width: 22%" />
+            <col style="width: 22%" />
+            <col style="width: 22%" />
+            <col style="width: 16%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>区间</th>
+            <th style="text-align: right;">市值</th>
+            <th style="text-align: right;">TTM 收入</th>
+            <th style="text-align: right;">PS</th>
+            <th>读法</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>2025-06-20 → 2026-11-18</td>
+            <td style="text-align: right;">×0.30</td>
+            <td style="text-align: right;">×3.65</td>
+            <td style="text-align: right;">×0.08</td>
+            <td>收入增长被倍数压缩完全抵消</td>
+            </tr>
+            <tr>
+            <td>2026-05-06 → 2026-11-18</td>
+            <td style="text-align: right;">×0.35</td>
+            <td style="text-align: right;">×1.93</td>
+            <td style="text-align: right;">×0.18</td>
+            <td>与协创、利通同期的分解几乎相同</td>
+            </tr>
+            </tbody>
+            </table>
+            <h4 id="美国同类公司">美国同类公司</h4>
+            <table>
+            <thead>
+            <tr>
+            <th>公司</th>
+            <th>2026 年高点 / 日期</th>
+            <th style="text-align: right;">2026-11-18 收盘</th>
+            <th style="text-align: right;">自高点</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>CoreWeave（CRWV）</td>
+            <td>137.98 / 05-06</td>
+            <td style="text-align: right;">47.83</td>
+            <td style="text-align: right;">−65%</td>
+            </tr>
+            <tr>
+            <td>Nebius（NBIS）</td>
+            <td>286.69 / 06-18</td>
+            <td style="text-align: right;">106.96</td>
+            <td style="text-align: right;">−63%</td>
+            </tr>
+            <tr>
+            <td>IREN</td>
+            <td>67.84 / 05-27</td>
+            <td style="text-align: right;">15.24</td>
+            <td style="text-align: right;">−78%</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>单位为美元，日收盘价，来源 Nasdaq。Nebius 的季度数据来自
+            6-K 附件：2025 年收入 5.30 亿美元；2026 年三季度单季收入
+            9.81 亿美元，调整后 EBITDA 4.66 亿美元，持续经营净亏损 0.38
+            亿美元，单季资本开支约 73 亿美元，经营现金流 −2.73
+            亿美元。2025Q2、2026Q1
+            的净利润为正，来自一次性收益，调整后仍为亏损。三季报同时把
+            70—90 亿美元 ARR 目标推迟到约 2027 年 2 月，并预计 2027
+            年四季度才实现税前盈亏平衡、2027 年资本开支 400—450
+            亿美元。期末股本从 2025Q1 的 2.38 亿股增至 2026Q3 的 2.93
+            亿股，一年半稀释约 23%。来源：<a
+            href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&amp;CIK=0001513845&amp;type=6-K">Nebius
+            SEC 文件</a>。IREN 未取得季度财务，只比较股价。</p>
+            <h4 id="事件与股价反应">事件与股价反应</h4>
+            <p>下表只列有 SEC
+            公告可核对的事件，股价反应为公告后第一个交易日的收盘涨跌。原因无法从公告核实的大跌日单独列出，不做归因。</p>
+            <table style="width:100%;">
+            <colgroup>
+            <col style="width: 21%" />
+            <col style="width: 21%" />
+            <col style="width: 28%" />
+            <col style="width: 28%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>日期</th>
+            <th>事件（据 8-K / 10-Q）</th>
+            <th style="text-align: right;">次一交易日 CRWV</th>
+            <th style="text-align: right;">同日 NBIS</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>2025-03-28</td>
+            <td>以 40 美元上市</td>
+            <td style="text-align: right;">—</td>
+            <td style="text-align: right;">—</td>
+            </tr>
+            <tr>
+            <td>2025-09-09</td>
+            <td>与 NVIDIA 签订初始价值 63 亿美元的订单：NVIDIA
+            承接未售出的剩余算力</td>
+            <td style="text-align: right;">+16.9%（09-10）</td>
+            <td
+            style="text-align: right;">+49.4%（09-09，原因未核实）</td>
+            </tr>
+            <tr>
+            <td>2025-09-23/25</td>
+            <td>OpenAI 追加最多约 65 亿美元订单；Meta 签订最多约 142
+            亿美元订单</td>
+            <td style="text-align: right;">+11.7%（09-30）</td>
+            <td style="text-align: right;">—</td>
+            </tr>
+            <tr>
+            <td>2025-10-31</td>
+            <td>收购 Core Scientific 的全股票交易被对方股东否决</td>
+            <td style="text-align: right;">+2.0%（当日）</td>
+            <td style="text-align: right;">—</td>
+            </tr>
+            <tr>
+            <td>2025-11-10</td>
+            <td>2025Q3 业绩：收入 13.65 亿美元，净亏损 1.10 亿美元，积压
+            556 亿美元</td>
+            <td style="text-align: right;">−16.3%</td>
+            <td style="text-align: right;">—</td>
+            </tr>
+            <tr>
+            <td>2026-01-26</td>
+            <td>NVIDIA 以每股 87.20 美元认购 20 亿美元 A 类股</td>
+            <td style="text-align: right;">+5.7%，次日 +10.7%</td>
+            <td style="text-align: right;">—</td>
+            </tr>
+            <tr>
+            <td>2026-02-26</td>
+            <td>2025Q4 业绩：单季净亏损 4.52 亿美元，利息费用 3.88
+            亿美元</td>
+            <td style="text-align: right;">−18.5%（02-27）</td>
+            <td style="text-align: right;">−13.1%</td>
+            </tr>
+            <tr>
+            <td>2026-03-31</td>
+            <td>85 亿美元 DDTL 4.0 完成，获投资级评级</td>
+            <td style="text-align: right;">+12.0%</td>
+            <td style="text-align: right;">—</td>
+            </tr>
+            <tr>
+            <td>2026-04-09/15</td>
+            <td>Meta 新增约 210 亿美元合同（至 2032 年）；Jane Street
+            承诺约 60 亿美元</td>
+            <td style="text-align: right;">+10.9%（04-10）</td>
+            <td style="text-align: right;">—</td>
+            </tr>
+            <tr>
+            <td>2026-05-07</td>
+            <td>2026Q1 业绩：收入 20.78 亿美元，净亏损 7.40 亿美元，积压
+            994 亿美元</td>
+            <td style="text-align: right;">−11.4%（05-08）</td>
+            <td style="text-align: right;">—</td>
+            </tr>
+            <tr>
+            <td>2026-06-11/18</td>
+            <td>发行 12.5 亿美元 9.625% 与 20 亿欧元 8.5% 优先票据，2032
+            年到期</td>
+            <td style="text-align: right;">+5.0%</td>
+            <td style="text-align: right;">—</td>
+            </tr>
+            <tr>
+            <td>2026-08-11</td>
+            <td>2026Q2 业绩：积压约 1,040 亿美元，另称三季度初新增超过
+            250 亿美元承诺</td>
+            <td style="text-align: right;">+19.3%（08-12）</td>
+            <td style="text-align: right;">+34.1%</td>
+            </tr>
+            <tr>
+            <td>2026-09-17/18</td>
+            <td>发行 37 亿美元 2.875% 可转债，2033 年到期</td>
+            <td style="text-align: right;">−4.2% / +1.9%</td>
+            <td style="text-align: right;">—</td>
+            </tr>
+            <tr>
+            <td>2026-11-10</td>
+            <td>2026Q3 业绩：上调全年收入指引到 130—133 亿美元，资本开支
+            370—390 亿美元，预计四季度利息 10.5—11.5 亿美元</td>
+            <td style="text-align: right;">+24.7%（11-11，收
+            60.77），11-16 回到 49.88</td>
+            <td style="text-align: right;">−16.8%（11-12）</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>原因未核实的同步大跌：2025-08-13（−20.8%）、2026-07-01（CRWV
+            −13.9%、NBIS −17.0%）、2026-10-14（CRWV −15.5%、NBIS
+            −10.1%、IREN −12.2%）、2026-10-16（三家均跌约 12%）。2026 年
+            7 月，纽约州州长发布行政令，暂停 50MW
+            以上新建或扩建数据中心的州环境许可最长一年（据 2026Q3 10-Q
+            风险因素，未核对具体日期）。</p>
+            <p>两个特征值得记下：</p>
+            <ol type="1">
+            <li><strong>合同公告推高股价，财报压低股价。</strong>
+            2025-09、2026-04
+            的大单都带来两位数上涨；2025Q3、2025Q4、2026Q1
+            三份财报后都是两位数下跌。只有 2026Q2、2026Q3
+            两次财报后上涨，而且 Q3
+            的涨幅三天内全部回吐。市场对“收入积压”愿意付钱，对“利息与折旧吃掉利润”不愿意。</li>
+            <li><strong>融资成本是定价的一部分。</strong> 2026 年 4 月和
+            6 月发行的无担保票据利率在
+            8.5%—9.75%。新增产能里靠无担保债务支撑的部分，要先覆盖接近两位数的资金成本才轮到股东。</li>
+            </ol>
+            <h3 id="两只-a-股事件怎样改变预期">两只 A
+            股：事件怎样改变预期</h3>
+            <p>下面两张表的涨跌幅为前复权口径（转增除权日按复权后计算），来自东方财富日
+            K 线；公告链接格式为
+            <code>data.eastmoney.com/notices/detail/&lt;代码&gt;/&lt;公告编号&gt;.html</code>。“当时的解读”一栏只写当时的公告、报道或交易数据，事后检验放到下一节。</p>
+            <h4 id="协创数据">协创数据</h4>
+            <table>
+            <colgroup>
+            <col style="width: 23%" />
+            <col style="width: 23%" />
+            <col style="width: 30%" />
+            <col style="width: 23%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>日期</th>
+            <th>事件</th>
+            <th style="text-align: right;">股价反应</th>
+            <th>当时的解读</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>2025-03-08 至 2026-02-13</td>
+            <td>六次公告采购服务器，上限合计 322
+            亿元（30、40、12、40、90、110
+            亿元），交易对方均豁免披露</td>
+            <td
+            style="text-align: right;">+3.3%、+11.9%、—、−1.4%、+1.9%、−0.1%</td>
+            <td>前两次被当作扩产信号；后几次反应变小。110
+            亿元那次在公告前一天已涨 15.7%</td>
+            </tr>
+            <tr>
+            <td>2026-03-20</td>
+            <td>市场流传服务器采购合规问题的“小作文”，公司称与海外厂商非法交易无关</td>
+            <td style="text-align: right;">−14.9%</td>
+            <td>第一次出现“货从哪来”的疑问</td>
+            </tr>
+            <tr>
+            <td>2026-04-10 / 04-13</td>
+            <td>澄清与超微电脑无业务关系；一季度预告利润 6.5—8.5
+            亿元，增长 284%—402%</td>
+            <td style="text-align: right;">−9.9%；随后三天
+            +20.0%、+12.5%、+13.7%</td>
+            <td>新浪标题“GPU
+            租金大幅上涨，高端算力持续紧缺”。公司异常波动公告提示“热点概念型炒作”</td>
+            </tr>
+            <tr>
+            <td>2026-04-17</td>
+            <td>股东 PCL 以 172.16 元询价转让 3%，套现 25.0 亿元</td>
+            <td style="text-align: right;">—</td>
+            <td>老股东在主升段前段减持</td>
+            </tr>
+            <tr>
+            <td>2026-06-17 至 06-25</td>
+            <td>三天涨 12.4%、14.1%、11.0%，06-25 市值见顶 1,674
+            亿元</td>
+            <td style="text-align: right;">—</td>
+            <td>未找到对应的公司公告或报道</td>
+            </tr>
+            <tr>
+            <td>2026-06-27</td>
+            <td>定增预案，募资不超过 80 亿元，其中 46.86 亿元买 GPU
+            服务器</td>
+            <td style="text-align: right;">—</td>
+            <td>从“订单驱动”转向“融资驱动”</td>
+            </tr>
+            <tr>
+            <td>2026-07-31</td>
+            <td>发改委称“十五五”算力网将新增直接投资 4 万亿元</td>
+            <td style="text-align: right;">+15.1%</td>
+            <td>政策托底</td>
+            </tr>
+            <tr>
+            <td>2026-10-08</td>
+            <td>财联社：“算力大单上演‘纸面狂欢’！多数合同‘爽约’”</td>
+            <td style="text-align: right;">—</td>
+            <td>媒体开始质疑大单兑现</td>
+            </tr>
+            <tr>
+            <td>2026-10-19</td>
+            <td>与未披露客户签订不超过 374.9 亿元、60
+            个月的算力云服务协议；验收不通过客户可终止</td>
+            <td style="text-align: right;">次日 −7.1%，10-22 −8.4%</td>
+            <td>大单不再推高股价；蓝鲸标题“高杠杆扩张藏兑现风险”</td>
+            </tr>
+            <tr>
+            <td>2026-10-26</td>
+            <td>三季报：单季利润 12.24 亿元，前三季度财务费用同比
+            +479%</td>
+            <td style="text-align: right;">次日 −10.2%</td>
+            <td>每经：“股价较年内高点近乎腰斩”</td>
+            </tr>
+            <tr>
+            <td>2026-11-02</td>
+            <td>控股股东计划 6 个月内增持 5—10 亿元；11-03 有 152
+            家机构调研</td>
+            <td style="text-align: right;">11-04 +13.5%</td>
+            <td>—</td>
+            </tr>
+            <tr>
+            <td>2026-11-16</td>
+            <td>美国 BIS 新规：中资母公司通过海外数据中心使用超过 12M
+            TPP 的算力需许可证，存量服务商 90 天过渡期</td>
+            <td style="text-align: right;">−12.6%，创业板指同日
+            −4.4%</td>
+            <td>担心海外算力和设备来源受限</td>
+            </tr>
+            <tr>
+            <td>2026-11-18</td>
+            <td>公告 374.9
+            亿元协议已生效、全部用境内合规服务器履约；同日英伟达电话会称
+            Hopper 续租价最高翻倍</td>
+            <td style="text-align: right;">+18.0%；龙虎榜上榜席位净卖出
+            2.67 亿元</td>
+            <td>板块集体涨停，但上榜资金借涨停离场</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>来源：服务器采购公告（<a
+            href="https://data.eastmoney.com/notices/detail/300857/AN202503071644159181.html">2025-03-08</a>、<a
+            href="https://data.eastmoney.com/notices/detail/300857/AN202505271680111763.html">2025-05-28</a>、<a
+            href="https://data.eastmoney.com/notices/detail/300857/AN202512161801755803.html">2025-12-17</a>、<a
+            href="https://data.eastmoney.com/notices/detail/300857/AN202602121819904152.html">2026-02-13</a>）、<a
+            href="https://finance.sina.com.cn/jjxw/2026-03-20/doc-inhrrkwy0793092.shtml">财闻
+            2026-03-20</a>、<a
+            href="https://data.eastmoney.com/notices/detail/300857/AN202604131821160157.html">2026-04-13
+            一季度预告</a>、<a
+            href="https://finance.sina.com.cn/roll/2026-04-14/doc-inhunavw4810728.shtml">新浪
+            2026-04-14</a>、<a
+            href="https://data.eastmoney.com/notices/detail/300857/AN202604241821559018.html">询价转让结果</a>、<a
+            href="https://data.eastmoney.com/notices/detail/300857/AN202606261824946909.html">定增预案</a>、<a
+            href="https://finance.sina.com.cn/jjxw/2026-07-31/doc-iniksnxm4531739.shtml">证券日报
+            2026-07-31</a>、<a
+            href="http://finance.eastmoney.com/a/202610083889582118.html">财联社
+            2026-10-08</a>、<a
+            href="https://data.eastmoney.com/notices/detail/300857/AN202610191830687130.html">374.9
+            亿元协议</a>、<a
+            href="http://finance.eastmoney.com/a/202610203901710788.html">蓝鲸
+            2026-10-20</a>、<a
+            href="http://finance.eastmoney.com/a/202610263908643254.html">财联社
+            2026-10-26</a>、<a
+            href="http://finance.eastmoney.com/a/202610263908608416.html">每经
+            2026-10-26</a>、<a
+            href="https://data.eastmoney.com/notices/detail/300857/AN202611021831331541.html">增持计划</a>、<a
+            href="http://finance.eastmoney.com/a/202611183933790424.html">南都
+            2026-11-18</a>、<a
+            href="https://data.eastmoney.com/notices/detail/300857/AN202611181831815441.html">合同进展公告</a>、<a
+            href="http://finance.eastmoney.com/a/202611183934115732.html">东方财富
+            2026-11-18 板块复盘</a>、<a
+            href="http://finance.eastmoney.com/a/202611183934071028.html">第一财经
+            2026-11-18 龙虎榜</a>。</p>
+            <p>杠杆数字同样来自公告：2026-09 新增综合授信不超过 400
+            亿元，对外担保余额 187.53 亿元，为经审计净资产的
+            427%；2026-11-05 又与两家租赁公司签 57.2
+            亿元服务器直租。来源：<a
+            href="https://cj.sina.cn/articles/view/7317133861/1b4229a2502001hxmy">新浪
+            2026-09-17</a>、<a
+            href="http://finance.eastmoney.com/a/202611053923495458.html">财联社
+            2026-11-05</a>。</p>
+            <h4 id="利通电子">利通电子</h4>
+            <table>
+            <colgroup>
+            <col style="width: 23%" />
+            <col style="width: 23%" />
+            <col style="width: 30%" />
+            <col style="width: 23%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>日期</th>
+            <th>事件</th>
+            <th style="text-align: right;">股价反应</th>
+            <th>当时的解读</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>2026-01-26</td>
+            <td>2025 年业绩预告：利润增长 997%—1,241%</td>
+            <td style="text-align: right;">01-27 +6.3%，01-30 涨停</td>
+            <td>屠文斌家族 1 月进场，三人合计 4.96%，成本约 30
+            元（据华夏时报）</td>
+            </tr>
+            <tr>
+            <td>2026-02-27 至 03-03</td>
+            <td>实控人邵培生、邵秋萍合计减持套现约 3.7 亿元；02-27 “中国
+            AI 调用量首超美国”</td>
+            <td style="text-align: right;">02-27 涨停</td>
+            <td>边涨边减持</td>
+            </tr>
+            <tr>
+            <td>2026-03-20</td>
+            <td>传闻“走私英伟达服务器售卖给利通”，公司称不属实</td>
+            <td style="text-align: right;">跌停</td>
+            <td>与协创同日下跌</td>
+            </tr>
+            <tr>
+            <td>2026-04-14 至 04-17</td>
+            <td>“3 月日均词元调用量突破 140 万亿”</td>
+            <td style="text-align: right;">四连板</td>
+            <td>题材是需求爆发</td>
+            </tr>
+            <tr>
+            <td>2026-04-28</td>
+            <td>年报与一季报同日披露，2026Q1 利润 2.71
+            亿元（+821%），推出 10 转 4</td>
+            <td style="text-align: right;">三连板，05-06 再涨停</td>
+            <td>04-29
+            公司提示“若未来芯片断供将对业务产生重要不利影响”</td>
+            </tr>
+            <tr>
+            <td>2026-05-29</td>
+            <td>严重异常波动公告，静态 PE 58.2 倍，PB 28.1 倍</td>
+            <td style="text-align: right;">+9.4%，全期最高市值</td>
+            <td>30 日龙虎榜自然人净买约 40 亿元，机构净卖约 39 亿元</td>
+            </tr>
+            <tr>
+            <td>2026-06-01 至 06-10</td>
+            <td>5-31 BIS 新规收紧中资实体经海外子公司采购高端芯片；06-02
+            业绩说明会只答“合法合规采购”</td>
+            <td style="text-align: right;">五个跌停</td>
+            <td>“8 倍算力大牛股，一字跌停！8 万股民受波及”</td>
+            </tr>
+            <tr>
+            <td>2026-06-26</td>
+            <td>财闻：“算力租金雪崩、机柜大面积空置”，国内 H100 月租从
+            1.3 万元降到 6,000 元</td>
+            <td style="text-align: right;">跌停</td>
+            <td>第一次有媒体质疑租金本身</td>
+            </tr>
+            <tr>
+            <td>2026-07-14</td>
+            <td>半年度预告利润 6.5—7.5 亿元，增长 1,172%—1,368%</td>
+            <td style="text-align: right;">7 月仍有七个跌停</td>
+            <td>07-22 财联社：“算力业务客户相对集中”</td>
+            </tr>
+            <tr>
+            <td>2026-07-31 至 08-06</td>
+            <td>发改委“4 万亿”表态</td>
+            <td style="text-align: right;">07-31 一字涨停；08-06
+            龙虎榜净买 11.08 亿元，沪股通买入 12.73 亿元</td>
+            <td>外资席位在反弹中买入</td>
+            </tr>
+            <tr>
+            <td>2026-08-20</td>
+            <td>定增不超过 50 亿元，称“算力长期租赁服务已排至 2030
+            年以后”</td>
+            <td style="text-align: right;">连续三日跌 3%—4%</td>
+            <td>融资需求压过订单表述</td>
+            </tr>
+            <tr>
+            <td>2026-10-30</td>
+            <td>三季报：单季利润 2.68 亿元，第一次环比下降</td>
+            <td style="text-align: right;">10-29 −8%，11-03 −9.1%</td>
+            <td>—</td>
+            </tr>
+            <tr>
+            <td>2026-11-16 / 11-18</td>
+            <td>BIS 远程算力许可新规；11-18
+            公司称算力资源来自合法渠道</td>
+            <td style="text-align: right;">−9.9%；涨停，中证称“封单超 43
+            万手”</td>
+            <td>和协创同步</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>来源：<a
+            href="https://finance.sina.com.cn/jjxw/2026-01-26/doc-inhirqax9022644.shtml">新浪
+            2026-01-26</a>、<a
+            href="https://finance.sina.com.cn/roll/2026-06-13/doc-inichssf2545817.shtml">华夏时报转载
+            2026-06-13</a>、<a
+            href="https://finance.sina.com.cn/jjxw/2026-02-27/doc-inhpfnzn6765327.shtml">财闻
+            2026-02-27</a>、<a
+            href="https://finance.sina.com.cn/jjxw/2026-03-20/doc-inhrrrex6813080.shtml">证券时报
+            2026-03-20</a>、<a
+            href="https://finance.sina.com.cn/jjxw/2026-04-17/doc-inhuuptn1054041.shtml">新浪
+            2026-04-17</a>、<a
+            href="https://finance.sina.com.cn/stock/hkstock/ggscyd/2026-04-30/doc-inhwfpqm0447987.shtml">2026-04-30
+            芯片断供提示</a>、<a
+            href="https://finance.sina.com.cn/jjxw/2026-06-01/doc-inhzwyqr2383172.shtml">新浪
+            2026-06-01</a>、<a
+            href="https://cj.sina.cn/articles/view/2853016445/aa0d937d020014yws">业绩说明会报道</a>、<a
+            href="https://finance.sina.com.cn/jjxw/2026-06-26/doc-inietnfw1924787.shtml">财闻
+            2026-06-26</a>、<a
+            href="http://finance.eastmoney.com/a/202607143805628646.html">证券时报网
+            2026-07-14</a>、<a
+            href="http://finance.eastmoney.com/a/202607223817378868.html">财联社
+            2026-07-22</a>、<a
+            href="https://data.eastmoney.com/notices/detail/603629/AN202608191828163169.html">定增预案</a>、<a
+            href="http://finance.eastmoney.com/a/202611183933840892.html">第一财经
+            2026-11-18</a>、<a
+            href="http://finance.eastmoney.com/a/202611183933939546.html">中证
+            2026-11-18</a>。06-26
+            那篇报道的租金数字是媒体转述，未找到一手报价。</p>
+            <h4 id="中美的大跌并不同步">中美的大跌并不同步</h4>
+            <table>
+            <colgroup>
+            <col style="width: 11%" />
+            <col style="width: 15%" />
+            <col style="width: 15%" />
+            <col style="width: 15%" />
+            <col style="width: 15%" />
+            <col style="width: 15%" />
+            <col style="width: 11%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>日期</th>
+            <th style="text-align: right;">CRWV</th>
+            <th style="text-align: right;">NBIS</th>
+            <th style="text-align: right;">IREN</th>
+            <th style="text-align: right;">协创</th>
+            <th style="text-align: right;">利通</th>
+            <th>可核实的原因</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>2026-02-27</td>
+            <td style="text-align: right;">−18.5%</td>
+            <td style="text-align: right;">−13.1%</td>
+            <td style="text-align: right;">−7.4%</td>
+            <td style="text-align: right;">+7.2%</td>
+            <td style="text-align: right;">+10.0%</td>
+            <td>CoreWeave 四季报</td>
+            </tr>
+            <tr>
+            <td>2026-03-20</td>
+            <td style="text-align: right;">+1.0%</td>
+            <td style="text-align: right;">—</td>
+            <td style="text-align: right;">—</td>
+            <td style="text-align: right;">−14.9%</td>
+            <td style="text-align: right;">−10.0%</td>
+            <td>A 股采购合规传闻</td>
+            </tr>
+            <tr>
+            <td>2026-07-02</td>
+            <td style="text-align: right;">−4.6%</td>
+            <td style="text-align: right;">−5.9%</td>
+            <td style="text-align: right;">−10.4%</td>
+            <td style="text-align: right;">−11.4%</td>
+            <td style="text-align: right;">−10.0%</td>
+            <td>未找到</td>
+            </tr>
+            <tr>
+            <td>2026-07-28</td>
+            <td style="text-align: right;">−4.9%</td>
+            <td style="text-align: right;">−9.7%</td>
+            <td style="text-align: right;">−6.5%</td>
+            <td style="text-align: right;">−12.3%</td>
+            <td style="text-align: right;">−10.0%</td>
+            <td>未找到</td>
+            </tr>
+            <tr>
+            <td>2026-10-14</td>
+            <td style="text-align: right;">−15.5%</td>
+            <td style="text-align: right;">−10.1%</td>
+            <td style="text-align: right;">−12.2%</td>
+            <td style="text-align: right;">−3.6%</td>
+            <td style="text-align: right;">−2.0%</td>
+            <td>未找到</td>
+            </tr>
+            <tr>
+            <td>2026-11-16</td>
+            <td style="text-align: right;">−6.1%</td>
+            <td style="text-align: right;">−7.6%</td>
+            <td style="text-align: right;">−9.8%</td>
+            <td style="text-align: right;">−12.6%</td>
+            <td style="text-align: right;">−9.9%</td>
+            <td>BIS 远程算力新规</td>
+            </tr>
+            <tr>
+            <td>2026-11-18</td>
+            <td style="text-align: right;">−4.1%</td>
+            <td style="text-align: right;">+0.9%</td>
+            <td style="text-align: right;">−3.6%</td>
+            <td style="text-align: right;">+18.0%</td>
+            <td style="text-align: right;">+10.0%</td>
+            <td>A 股合同进展与英伟达电话会</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>A
+            股两家的大跌多数来自本土的供给与合规传闻和美国出口管制，美股三家的大跌多数来自财报里的亏损与利息。两边同时见顶回落（CRWV
+            05-06、利通 05-29、协创
+            06-25），但单日冲击很少同步。这说明市场在两边担心的是不同的东西：A
+            股担心“卡能不能继续拿到”，美股担心“借钱买卡能不能赚回来”。</p>
+            <h4
+            id="机构与散户各自在为什么付钱">机构与散户各自在为什么付钱</h4>
+            <p><strong>协创数据的研报</strong>（据摘要整理）一直是“买入”，论据几乎没变：2024
+            年是“存储顺周期、服务器再制造带来的业绩弹性”；2026-02
+            华鑫首次覆盖写“随着 AI 算力通胀趋势的延续”；2026-03 到
+            2026-11
+            的三篇山西证券报告用的是同一句“考虑到公司在手订单充沛及毛利率持续改善”。11
+            月的市值比 9 月低约 37%，这句理由和“买入-A”评级都没变，只把
+            2026 年 EPS 从 11.28 元下调到 10.89
+            元。研报在跟踪利润，不讨论负债和设备来源。</p>
+            <p><strong>协创数据的媒体样本</strong>（样本，不代表全部投资者）：</p>
+            <ul>
+            <li>主升段：“GPU租金大幅上涨 高端算力持续紧缺
+            龙头业绩大增引爆算力概念集体走强
+            协创数据20%涨停”（新浪，04-14）。</li>
+            <li>见顶后：“利通电子、协创数据加码算力租赁业绩暴涨，跨界玩家为何难入局？”（21
+            世纪，06-29）；“算力大单上演‘纸面狂欢’！”（财联社，10-08）；“总资产翻近2倍
+            回撤48%”（读创，10-27）。</li>
+            <li>11-18
+            反弹后有自媒体写“板块里少数真在赚钱的公司，374.9亿大单是里程碑”。</li>
+            </ul>
+            <p>来源：<a
+            href="http://finance.eastmoney.com/a/202606293786893744.html">21
+            世纪</a>、<a
+            href="http://finance.eastmoney.com/a/202610273909459111.html">读创</a>、<a
+            href="https://k.sina.cn/article_7879996580_1d5af34a402001xqno.html">新浪自媒体</a>，其余见上表。新浪个股资讯列表只能回溯到
+            2026-07，东方财富资讯只返回最近约两个月，上半年的样本因此偏少；股吧没有取到。</p>
+            <p>两边的分歧可以各用一句话概括：</p>
+            <ul>
+            <li><strong>机构</strong>：利润每个季度都在超预期，按明年的预测只有十几倍
+            PE，便宜。</li>
+            <li><strong>散户与媒体</strong>：前半段相信“算力紧缺、租金上涨”，后半段转向“合同能不能兑现、卡从哪里来、负债能不能撑住”。</li>
+            </ul>
+            <p>谁对谁错下一节检验。利通没有研报，市场里只剩散户和游资一方的声音；协创有研报作锚，回撤（−59%）却和利通（−65%）差不多，说明这一轮下跌不是因为缺少盈利预测。</p>
+            <h3 id="预期差">预期差</h3>
+            <p>预期差 = 当时的主流预期 −
+            后来的事实。下表左边三列只用当时可见的信息，右边两列是到
+            2026-11-18 为止的事后检验。“未定”表示事实还没出来。</p>
+            <figure>
+            <img src="./WikiImage/gpu_rent_stocks_expectation.svg"
+            alt="算力租赁股：利润在上修，市场定价的变量换了" />
+            <figcaption
+            aria-hidden="true">算力租赁股：利润在上修，市场定价的变量换了</figcaption>
+            </figure>
+            <table>
+            <colgroup>
+            <col style="width: 20%" />
+            <col style="width: 20%" />
+            <col style="width: 20%" />
+            <col style="width: 20%" />
+            <col style="width: 20%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>节点</th>
+            <th>当时的主流预期</th>
+            <th>当时的定价</th>
+            <th>后来的事实</th>
+            <th>方向</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>协创 2025-11-06</td>
+            <td>研报预计 2026 年利润 17.6—19.5 亿元</td>
+            <td>592 亿元，按预测约 30 倍</td>
+            <td>2026 年前三季度已有 30.62 亿元，山西把全年上调到约 53
+            亿元</td>
+            <td><strong>低估</strong>：前三季度已是全年预测的 1.6—1.7
+            倍</td>
+            </tr>
+            <tr>
+            <td>协创 2026-02-27</td>
+            <td>研报预计 2026 年约 19 亿元（华鑫）</td>
+            <td>923 亿元，TTM PE 110.9 倍</td>
+            <td>市场的利润判断对了：TTM 利润到 11 月是 35.29 亿元。但
+            11-18 市值只有 683 亿元</td>
+            <td><strong>低估</strong>，股价却没有因此更高</td>
+            </tr>
+            <tr>
+            <td>协创 2026-06-25</td>
+            <td>3 月研报预计 2026 年约 28 亿元，市场按 59 倍付钱</td>
+            <td>1,674 亿元，全期最高</td>
+            <td>9 月研报上调到约 55 亿元，股价没有新高；PE 压缩到 19
+            倍</td>
+            <td><strong>关注点切换</strong>：从“赚多少”转到“能赚几年、靠多少负债”</td>
+            </tr>
+            <tr>
+            <td>利通 2026-04-23</td>
+            <td>无研报；市场用 1.88 亿元的 TTM 利润给出 162.6 倍 PE</td>
+            <td>306 亿元</td>
+            <td>TTM 利润到 11 月是 10.47 亿元，为当时的 5.6 倍</td>
+            <td><strong>低估</strong>：市场赌对了利润的方向和量级</td>
+            </tr>
+            <tr>
+            <td>利通 2026-05-29</td>
+            <td>散户净买约 40 亿元，机构净卖约 39 亿元</td>
+            <td>631 亿元，静态 PE 58 倍</td>
+            <td>用事后的 10.47 亿元利润算仍约 60
+            倍；三季度利润环比下降</td>
+            <td><strong>高估</strong>：利润涨了，但没涨到撑住这个价</td>
+            </tr>
+            <tr>
+            <td>利通 2026-06-26</td>
+            <td>媒体称 H100 租金腰斩、机柜空置</td>
+            <td>跌停</td>
+            <td>三季度扣非利润 3.02 亿元，低于二季度 3.37 亿元；11
+            月英伟达称 Hopper 续租价上涨</td>
+            <td><strong>基本符合</strong>于“增速放缓”，<strong>未定</strong>于“租金雪崩”</td>
+            </tr>
+            <tr>
+            <td>协创 2026-10-19</td>
+            <td>财联社质疑大单“爽约”，蓝鲸称“兑现风险”</td>
+            <td>次日 −7.1%</td>
+            <td>11-18
+            公告协议已生效、订单已下给供应商；收入尚未确认</td>
+            <td><strong>未定</strong></td>
+            </tr>
+            </tbody>
+            </table>
+            <p>CoreWeave 的分析师一致预期取自 Internet Archive
+            存档的页面快照（据快照整理，各网站覆盖家数不同）：</p>
+            <table style="width:100%;">
+            <colgroup>
+            <col style="width: 10%" />
+            <col style="width: 10%" />
+            <col style="width: 10%" />
+            <col style="width: 13%" />
+            <col style="width: 13%" />
+            <col style="width: 13%" />
+            <col style="width: 13%" />
+            <col style="width: 13%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>快照日</th>
+            <th>来源</th>
+            <th>覆盖家数 / 评级</th>
+            <th style="text-align: right;">平均目标价（美元）</th>
+            <th style="text-align: right;">2026 年收入预测</th>
+            <th style="text-align: right;">2027 年收入预测</th>
+            <th style="text-align: right;">2027 年 EPS 预测</th>
+            <th style="text-align: right;">收盘价（美元）</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>2025-09-13</td>
+            <td>StockAnalysis</td>
+            <td>17 / 买入</td>
+            <td style="text-align: right;">109.18</td>
+            <td style="text-align: right;">121.5 亿美元</td>
+            <td style="text-align: right;">—</td>
+            <td style="text-align: right;">—</td>
+            <td style="text-align: right;">111.96（09-12）</td>
+            </tr>
+            <tr>
+            <td>2026-06-09</td>
+            <td>StockAnalysis</td>
+            <td>25 / 买入</td>
+            <td style="text-align: right;">132.68</td>
+            <td style="text-align: right;">126.7 亿美元</td>
+            <td style="text-align: right;">249.2 亿美元</td>
+            <td style="text-align: right;">−0.81</td>
+            <td style="text-align: right;">98.45</td>
+            </tr>
+            <tr>
+            <td>2026-10-03</td>
+            <td>StockAnalysis</td>
+            <td>41 / 买入</td>
+            <td style="text-align: right;">141.58</td>
+            <td style="text-align: right;">128.7 亿美元</td>
+            <td style="text-align: right;">262.6 亿美元</td>
+            <td style="text-align: right;">−1.81</td>
+            <td style="text-align: right;">89.62（10-02）</td>
+            </tr>
+            <tr>
+            <td>2026-11-17（现页面）</td>
+            <td>StockAnalysis</td>
+            <td>41 / 买入</td>
+            <td style="text-align: right;">115.34</td>
+            <td style="text-align: right;">131.1 亿美元</td>
+            <td style="text-align: right;">271.0 亿美元</td>
+            <td style="text-align: right;">−1.77</td>
+            <td style="text-align: right;">49.88（11-16）</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>快照：<a
+            href="https://web.archive.org/web/20250602135344/https://www.marketbeat.com/stocks/NASDAQ/CRWV/forecast/">MarketBeat
+            2025-06-02</a>、<a
+            href="https://web.archive.org/web/20250913124211/https://stockanalysis.com/stocks/crwv/forecast/">2025-09-13</a>、<a
+            href="https://web.archive.org/web/20260609130652/https://stockanalysis.com/stocks/crwv/forecast/">2026-06-09</a>、<a
+            href="https://web.archive.org/web/20261003034913/https://stockanalysis.com/stocks/crwv/forecast/">2026-10-03</a>、<a
+            href="https://stockanalysis.com/stocks/crwv/forecast/">当前页面</a>。股价为快照日或前一交易日的
+            Nasdaq 收盘价。</p>
+            <p>这张表和协创的研报轨迹是同一个形状：2026
+            年下半年，收入预测从 249 亿美元上调到 271 亿美元，平均目标价
+            10 月还在上调，股价却从 98 美元跌到 50
+            美元以下。唯一往坏方向走的是 2027 年 EPS，从 −0.81 美元降到
+            −1.77 美元，也就是利息和折旧。10-20 CNBC 报道 HSBC
+            维持“减持”、目标价 39 美元，理由是 2026—2030 年预计 ROIC
+            8.9%，低于借款成本；同日 LSEG 统计 45 位分析师中 32
+            位仍为“买入”（<a
+            href="https://www.cnbc.com/2026/10/20/coreweave-hsbc-debt-risks.html">CNBC</a>）。</p>
+            <p>下表的“当时的主流预期”用上述快照、公司指引和股价反应：</p>
+            <table>
+            <colgroup>
+            <col style="width: 20%" />
+            <col style="width: 20%" />
+            <col style="width: 20%" />
+            <col style="width: 20%" />
+            <col style="width: 20%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>节点</th>
+            <th>当时的预期或指引</th>
+            <th>当时的定价</th>
+            <th>后来的事实</th>
+            <th>方向</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>2025-03-28 IPO</td>
+            <td>招股书披露 2024 年收入 19.15 亿美元、净亏损 8.63
+            亿美元</td>
+            <td>40 美元，PS 约 10</td>
+            <td>TTM 收入到 98.9 亿美元，是 IPO 时的 5 倍多；RPO 从
+            2025-03-31 的 147 亿美元涨到 1,323 亿美元</td>
+            <td><strong>低估</strong>：业务规模被严重低估</td>
+            </tr>
+            <tr>
+            <td>2025-06-20</td>
+            <td>MarketBeat 06-02 快照：20 位分析师平均目标价 60.94
+            美元，评级“持有”；市场按 TTM 收入 33 倍付钱</td>
+            <td>183.58 美元，市值约 890 亿美元</td>
+            <td>收入后来涨到 3.65 倍，市值只剩 30%</td>
+            <td><strong>高估</strong>：倍数里预支了多年增长</td>
+            </tr>
+            <tr>
+            <td>2025-11-10</td>
+            <td>三季报后股价 −16.3%，市场担心亏损与利息</td>
+            <td>88.39 美元（11-11）</td>
+            <td>单季净亏损从 1.1 亿美元扩大到 7.1 亿美元，利息从 3.1
+            亿美元升到 8.5 亿美元</td>
+            <td><strong>基本符合</strong>：担心的事发生了</td>
+            </tr>
+            <tr>
+            <td>2026-05-06</td>
+            <td>Meta、Jane Street 新增约 270 亿美元合同，DDTL
+            获投资级</td>
+            <td>137.98 美元，PS 14.7</td>
+            <td>当时最近一期 RPO 607 亿美元，后来涨到 1,323
+            亿美元；股价跌 65%</td>
+            <td><strong>关注点切换</strong>：从“合同多大”转到“融资成本与折旧”</td>
+            </tr>
+            <tr>
+            <td>2026-11-10</td>
+            <td>上调全年收入指引到 130—133 亿美元</td>
+            <td>三天内涨幅全部回吐</td>
+            <td>指引能否兑现要看 2027 年 2 月的年报</td>
+            <td><strong>未定</strong></td>
+            </tr>
+            </tbody>
+            </table>
+            <p><strong>当时合理、后来错了的判断</strong>：协创研报
+            2024—2025
+            年把利润预测压得很保守，按当时的订单可见度这是谨慎的，结果低估了一倍多；2026-06
+            媒体称“H100 租金雪崩”，按当时的报价也说得通，但 11
+            月英伟达称 Hopper
+            续租价上涨。<strong>当时被嘲笑、后来对了的判断</strong>：利通
+            4 月按 1.88 亿元利润给 160 倍
+            PE，事后看利润确实涨了五倍多。<strong>押对了利润、仍然亏钱</strong>：在协创
+            6 月、利通 5 月、CoreWeave 5
+            月的高点买入，后来的利润或合同都超过了当时的预期，股价仍跌了六成以上。</p>
+            <h3 id="定价阶段">定价阶段</h3>
+            <table>
+            <colgroup>
+            <col style="width: 20%" />
+            <col style="width: 20%" />
+            <col style="width: 20%" />
+            <col style="width: 20%" />
+            <col style="width: 20%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>阶段</th>
+            <th>利润在变什么</th>
+            <th>估值在变什么</th>
+            <th>市场在为哪种未来付钱</th>
+            <th>结束这一阶段的事件</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>一、题材期（2023-06 至 2024）</td>
+            <td>利通利润在降，协创利润刚起步</td>
+            <td>利通 PE 冲到 233 倍；协创 PE 五周翻倍</td>
+            <td>“能不能沾上算力”</td>
+            <td>没有利润跟上，2024 年利通市值回到起点</td>
+            </tr>
+            <tr>
+            <td>二、订单期（2024-12 至 2026-02）</td>
+            <td>协创利润每年增长七成到一倍半，研报预测几乎不动</td>
+            <td>协创 PE 从 32 倍升到 111 倍；CoreWeave IPO 后 PS 冲到 33
+            倍再回落</td>
+            <td>服务器采购公告与合同金额</td>
+            <td>CoreWeave 2025-06 先见顶；A 股在 2026-03
+            的合规传闻后中断</td>
+            </tr>
+            <tr>
+            <td>三、兑现期（2026-03 至 2026-06）</td>
+            <td>一季度利润：协创预告增长 284%—402%，利通增长 821%；GPU
+            租金上涨</td>
+            <td>A 股 PE 再扩张：利通到 118 倍，协创到 96
+            倍；股东户数翻倍</td>
+            <td>“算力紧缺会持续，利润还会再翻倍”</td>
+            <td>5-31 美国 BIS 新规、6 月“租金雪崩”报道、6-27
+            起的大额定增</td>
+            </tr>
+            <tr>
+            <td>四、压缩期（2026-06 至今）</td>
+            <td>利润继续增长：协创 TTM 翻倍，利通 TTM 近翻倍，CoreWeave
+            收入接近翻倍</td>
+            <td>PE 压到约 20 倍，CoreWeave PS 压到 2.7 倍</td>
+            <td>利润能维持几年、负债和稀释要吃掉多少、设备来源是否可控</td>
+            <td>尚未结束；11-16 的 BIS 新规与 11-18
+            的板块涨停说明分歧还很大</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>第四阶段是这轮复盘的核心。三家公司的利润或收入都在增长，市值却按同一个比例下跌（区间分解里市值都是
+            ×0.35—0.41），说明市场下调的不是哪一家公司的预测，而是给整个“借钱买
+            GPU 再出租”模式的倍数。</p>
+            <h3 id="当前价格隐含了什么">当前价格隐含了什么</h3>
+            <p>以下用 2026-11-18
+            收盘数据推算，只用于说明“什么条件下给什么定价”，不构成买卖建议。</p>
+            <p><strong>协创数据（683 亿元）</strong>：按三季度单季利润
+            12.24 亿元年化约 49 亿元，对应约 14 倍 PE。股权激励的 2027
+            年目标值是净利润比 2025 年增长 340%，即约 51
+            亿元，市值约为它的 13 倍；山西证券对 2027 年的预测约 99
+            亿元，市值只有它的约 7
+            倍。当前价格接近于假设“利润停在三季度的水平”，没有为研报预测的再翻倍付钱。如果
+            374.9 亿元协议按 60 个月平均确认，每年约 75
+            亿元含税收入，约为 2025 年智算收入 27.61 亿元的 2.7
+            倍；但这需要再买一大批服务器，资金来自 80 亿元定增、400
+            亿元授信和融资租赁，资产负债率已是 85.8%。</p>
+            <p><strong>利通电子（223
+            亿元）</strong>：三季度单季利润年化约 10.7 亿元，扣非年化约
+            12.1 亿元，对应 18—21 倍
+            PE。这已经是三家里“假设最少”的定价：只要利润不下滑就站得住，但三季度正是第一次环比下滑。50
+            亿元定增约为当前市值的 22%，按现价发行会摊薄约五分之一。</p>
+            <p><strong>CoreWeave（市值 266 亿美元，EV 约 700
+            亿美元）</strong>：按全年收入指引 130—133 亿美元，EV / 2026
+            年收入约 5.3 倍；隐含的四季度收入约 46.8—49.8
+            亿美元，四季度利息指引 10.5—11.5 亿美元，约占收入的
+            21%—25%。2026 年前三季度的结构是：调整后 EBITDA 率约
+            59%（49.3 / 83.2），折旧摊销约占收入的 53%（44.3 /
+            83.2），利息约占 24%（20.3 / 83.2），合计已经超过
+            EBITDA，所以 GAAP 亏损。股价要回升，需要至少一项改善：DDTL
+            等低息合同融资替换高息票据、新集群上线后折旧占比下降，或者续租价格高于原先的折旧假设（公司按
+            6 年折旧技术设备）。</p>
+            <h3 id="跟踪指标">跟踪指标</h3>
+            <table>
+            <colgroup>
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>指标</th>
+            <th>验证哪个假设</th>
+            <th>数据来源</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>H100、H200、B200、B300 的租赁与续租价格</td>
+            <td>租金能否覆盖折旧；“租金雪崩”还是“续租涨价”</td>
+            <td>英伟达与 CoreWeave
+            电话会、云厂商报价、第三方租赁价格指数</td>
+            </tr>
+            <tr>
+            <td>美国 BIS 规则的许可证发放情况（90 天过渡期截至 2027 年 2
+            月中旬）</td>
+            <td>A 股公司的海外算力和设备来源</td>
+            <td>BIS 公告、公司互动平台</td>
+            </tr>
+            <tr>
+            <td>协创 374.9 亿元协议的验收与收入确认</td>
+            <td>大单能否兑现</td>
+            <td>季报中智算收入与合同负债</td>
+            </tr>
+            <tr>
+            <td>协创担保余额 / 净资产、财务费用；利通资产负债率</td>
+            <td>杠杆能否撑住扩张</td>
+            <td>季报、担保公告</td>
+            </tr>
+            <tr>
+            <td>协创、利通单季扣非利润环比</td>
+            <td>利润是否已到平台期</td>
+            <td>季报</td>
+            </tr>
+            <tr>
+            <td>CoreWeave 利息费用、资本开支、2027 年到期的 109.7
+            亿美元债务</td>
+            <td>融资成本和再融资能力</td>
+            <td>10-Q、8-K</td>
+            </tr>
+            <tr>
+            <td>CoreWeave RPO 转为收入的速度、前两大客户占比</td>
+            <td>合同质量与集中度</td>
+            <td>10-Q 收入确认与客户集中度披露</td>
+            </tr>
+            <tr>
+            <td>定增发行价格与可转债转股</td>
+            <td>股东稀释</td>
+            <td>交易所与 SEC 公告</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>BIS 过渡期的结束日按 11-16 加 90
+            天推算，具体以规则生效日为准。</p>
+          </main>
+        <aside class="wiki-toc">
+      <ul>
+      <li><a href="#数据边界" id="toc-数据边界">数据边界</a></li>
+      <li><a href="#协创数据利润追上了估值"
+      id="toc-协创数据利润追上了估值">协创数据：利润追上了估值</a></li>
+      <li><a href="#利通电子估值先行四倍利润后到"
+      id="toc-利通电子估值先行四倍利润后到">利通电子：估值先行四倍，利润后到</a></li>
+      <li><a href="#coreweave订单涨了九倍估值倍数缩到十二分之一"
+      id="toc-coreweave订单涨了九倍估值倍数缩到十二分之一">CoreWeave：订单涨了九倍，估值倍数缩到十二分之一</a></li>
+      <li><a href="#两只-a-股事件怎样改变预期"
+      id="toc-两只-a-股事件怎样改变预期">两只 A
+      股：事件怎样改变预期</a></li>
+      <li><a href="#预期差" id="toc-预期差">预期差</a></li>
+      <li><a href="#定价阶段" id="toc-定价阶段">定价阶段</a></li>
+      <li><a href="#当前价格隐含了什么"
+      id="toc-当前价格隐含了什么">当前价格隐含了什么</a></li>
+      <li><a href="#跟踪指标" id="toc-跟踪指标">跟踪指标</a></li>
+      </ul>
+    </aside>
+      </div>
+</body>
+
+</html>
