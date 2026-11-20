@@ -1,0 +1,117 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 882" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect x="0" y="0" width="900" height="882" rx="12" fill="#ffffff"/>
+<text x="30.0" y="34.0" font-size="20" fill="#212529" font-weight="700" text-anchor="start">利润先翻倍，市值后追上；2026 年利润再翻倍，市值却腰斩</text>
+<text x="30.0" y="56.0" font-size="13" fill="#868e96" text-anchor="start">世纪华通 002602.SZ。上：月末总市值；中：单季归母净利润；下：单季销售费用率。来源：东方财富估值序列与利润表，2026-11-20 提取</text>
+<rect x="189.8" y="126.0" width="251.7" height="594.0" rx="0" fill="#f1f3f5" opacity="0.6"/>
+<text x="315.6" y="88.0" font-size="11.5" fill="#495057" font-weight="700" text-anchor="middle">立案调查</text>
+<rect x="441.5" y="126.0" width="197.1" height="594.0" rx="0" fill="#fff5f5" opacity="0.6"/>
+<text x="540.0" y="88.0" font-size="11.5" fill="#c92a2a" font-weight="700" text-anchor="middle">ST 期间</text>
+<rect x="675.4" y="126.0" width="168.3" height="594.0" rx="0" fill="#fff4e6" opacity="0.6"/>
+<text x="759.6" y="88.0" font-size="11.5" fill="#e8590c" font-weight="700" text-anchor="middle">利润升、估值降</text>
+<text x="80.0" y="116.0" font-size="12.5" fill="#3b5bdb" font-weight="700" text-anchor="start">月末总市值（亿元）</text>
+<line x1="80.0" y1="316.0" x2="860.0" y2="316.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="320.0" font-size="11" fill="#868e96" text-anchor="end">0</text>
+<line x1="80.0" y1="268.5" x2="860.0" y2="268.5" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="272.5" font-size="11" fill="#868e96" text-anchor="end">500</text>
+<line x1="80.0" y1="221.0" x2="860.0" y2="221.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="225.0" font-size="11" fill="#868e96" text-anchor="end">1,000</text>
+<line x1="80.0" y1="173.5" x2="860.0" y2="173.5" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="177.5" font-size="11" fill="#868e96" text-anchor="end">1,500</text>
+<line x1="80.0" y1="126.0" x2="860.0" y2="126.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="130.0" font-size="11" fill="#868e96" text-anchor="end">2,000</text>
+<line x1="80.0" y1="126.0" x2="80.0" y2="316.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="275.0" y1="126.0" x2="275.0" y2="316.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="470.0" y1="126.0" x2="470.0" y2="316.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="665.0" y1="126.0" x2="665.0" y2="316.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<path d="M88.1 287.9 L104.4 284.8 L120.6 273.3 L136.9 267.5 L153.1 271.9 L169.4 262.2 L185.6 278.6 L201.9 277.6 L218.1 281.8 L234.4 274.5 L250.6 276.5 L266.9 279.4 L283.1 286.3 L299.4 281.4 L315.6 282.6 L331.9 282.8 L348.1 287.6 L364.4 291.7 L380.6 292.8 L396.9 292.8 L413.1 286.5 L429.4 282.6 L445.6 284.9 L461.9 279.6 L478.1 280.3 L494.4 272.2 L510.6 270.5 L526.9 263.4 L543.1 251.0 L559.4 237.5 L575.6 226.0 L591.9 206.4 L608.1 169.9 L624.4 192.0 L640.6 189.1 L656.9 196.6 L673.1 177.7 L689.4 187.1 L705.6 204.3 L721.9 203.9 L738.1 213.9 L754.4 217.3 L770.6 221.2 L786.9 217.0 L803.1 219.4 L819.4 235.3 L835.6 240.4" fill="none" stroke="#4c6ef5" stroke-width="2" stroke-linejoin="round"/>
+<circle cx="835.6" cy="240.4" r="5" fill="#4c6ef5"/>
+<text x="829.6" y="230.4" font-size="12.5" fill="#212529" font-weight="700" text-anchor="end">796</text>
+<text x="80.0" y="368.0" font-size="12.5" fill="#0b7285" font-weight="700" text-anchor="start">单季归母净利润（亿元）</text>
+<line x1="80.0" y1="538.0" x2="860.0" y2="538.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="542.0" font-size="11" fill="#868e96" text-anchor="end">-10</text>
+<line x1="80.0" y1="498.0" x2="860.0" y2="498.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="502.0" font-size="11" fill="#868e96" text-anchor="end">0</text>
+<line x1="80.0" y1="458.0" x2="860.0" y2="458.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="462.0" font-size="11" fill="#868e96" text-anchor="end">10</text>
+<line x1="80.0" y1="418.0" x2="860.0" y2="418.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="422.0" font-size="11" fill="#868e96" text-anchor="end">20</text>
+<line x1="80.0" y1="378.0" x2="860.0" y2="378.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="382.0" font-size="11" fill="#868e96" text-anchor="end">30</text>
+<line x1="80.0" y1="378.0" x2="80.0" y2="538.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="275.0" y1="378.0" x2="275.0" y2="538.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="470.0" y1="378.0" x2="470.0" y2="538.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="665.0" y1="378.0" x2="665.0" y2="538.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="80.0" y1="498.0" x2="860.0" y2="498.0" stroke="#adb5bd" stroke-width="1"/>
+<rect x="91.0" y="480.7" width="26.8" height="17.3" rx="3" fill="#0ca678"/>
+<rect x="139.7" y="480.6" width="26.8" height="17.4" rx="3" fill="#0ca678"/>
+<rect x="188.5" y="475.6" width="26.8" height="22.4" rx="3" fill="#0ca678"/>
+<rect x="237.2" y="498.0" width="26.8" height="36.2" rx="3" fill="#0ca678"/>
+<text x="250.6" y="549.2" font-size="11" fill="#495057" text-anchor="middle">-9.05</text>
+<rect x="286.0" y="471.9" width="26.8" height="26.1" rx="3" fill="#0ca678"/>
+<rect x="334.7" y="477.7" width="26.8" height="20.3" rx="3" fill="#0ca678"/>
+<rect x="383.5" y="472.2" width="26.8" height="25.8" rx="3" fill="#0ca678"/>
+<rect x="432.2" y="498.0" width="26.8" height="23.6" rx="3" fill="#0ca678"/>
+<text x="445.6" y="536.6" font-size="11" fill="#495057" text-anchor="middle">-5.9</text>
+<rect x="481.0" y="444.0" width="26.8" height="54.0" rx="3" fill="#0ca678"/>
+<rect x="529.7" y="445.8" width="26.8" height="52.2" rx="3" fill="#0ca678"/>
+<rect x="578.5" y="430.0" width="26.8" height="68.0" rx="3" fill="#0ca678"/>
+<text x="591.9" y="423.0" font-size="11" fill="#495057" text-anchor="middle">17.0</text>
+<rect x="627.2" y="448.1" width="26.8" height="49.9" rx="3" fill="#0ca678"/>
+<text x="640.6" y="441.1" font-size="11" fill="#495057" text-anchor="middle">12.5</text>
+<rect x="676.0" y="416.9" width="26.8" height="81.1" rx="3" fill="#0ca678"/>
+<rect x="724.7" y="399.0" width="26.8" height="99.0" rx="3" fill="#0ca678"/>
+<text x="738.1" y="392.0" font-size="11" fill="#495057" text-anchor="middle">24.8</text>
+<rect x="773.5" y="424.7" width="26.8" height="73.3" rx="3" fill="#0ca678"/>
+<text x="786.9" y="417.7" font-size="11" fill="#495057" text-anchor="middle">18.3</text>
+<text x="80.0" y="590.0" font-size="12.5" fill="#e8590c" font-weight="700" text-anchor="start">单季销售费用率</text>
+<line x1="80.0" y1="720.0" x2="860.0" y2="720.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="724.0" font-size="11" fill="#868e96" text-anchor="end">10%</text>
+<line x1="80.0" y1="690.0" x2="860.0" y2="690.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="694.0" font-size="11" fill="#868e96" text-anchor="end">20%</text>
+<line x1="80.0" y1="660.0" x2="860.0" y2="660.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="664.0" font-size="11" fill="#868e96" text-anchor="end">30%</text>
+<line x1="80.0" y1="630.0" x2="860.0" y2="630.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="634.0" font-size="11" fill="#868e96" text-anchor="end">40%</text>
+<line x1="80.0" y1="600.0" x2="860.0" y2="600.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="604.0" font-size="11" fill="#868e96" text-anchor="end">50%</text>
+<line x1="80.0" y1="600.0" x2="80.0" y2="720.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="275.0" y1="600.0" x2="275.0" y2="720.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="470.0" y1="600.0" x2="470.0" y2="720.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="665.0" y1="600.0" x2="665.0" y2="720.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<path d="M104.4 690.9 L153.1 684.6 L201.9 665.4 L250.6 658.8 L299.4 667.8 L348.1 642.9 L396.9 642.6 L445.6 642.3 L494.4 642.3 L543.1 629.4 L591.9 630.0 L640.6 639.3 L689.4 618.3 L738.1 628.2 L786.9 623.4" fill="none" stroke="#f08c00" stroke-width="2" stroke-linejoin="round"/>
+<circle cx="104.4" cy="690.9" r="3" fill="#f08c00"/>
+<circle cx="153.1" cy="684.6" r="3" fill="#f08c00"/>
+<circle cx="201.9" cy="665.4" r="3" fill="#f08c00"/>
+<circle cx="250.6" cy="658.8" r="3" fill="#f08c00"/>
+<circle cx="299.4" cy="667.8" r="3" fill="#f08c00"/>
+<circle cx="348.1" cy="642.9" r="3" fill="#f08c00"/>
+<circle cx="396.9" cy="642.6" r="3" fill="#f08c00"/>
+<circle cx="445.6" cy="642.3" r="3" fill="#f08c00"/>
+<circle cx="494.4" cy="642.3" r="3" fill="#f08c00"/>
+<circle cx="543.1" cy="629.4" r="3" fill="#f08c00"/>
+<circle cx="591.9" cy="630.0" r="3" fill="#f08c00"/>
+<circle cx="640.6" cy="639.3" r="3" fill="#f08c00"/>
+<circle cx="689.4" cy="618.3" r="3" fill="#f08c00"/>
+<circle cx="738.1" cy="628.2" r="3" fill="#f08c00"/>
+<circle cx="786.9" cy="623.4" r="3" fill="#f08c00"/>
+<line x1="384.5" y1="126.0" x2="384.5" y2="720.0" stroke="#495057" stroke-width="1.5" stroke-dasharray="5 4"/>
+<text x="379.5" y="140.0" font-size="12" fill="#495057" font-weight="700" text-anchor="end">07-24 低点 226 亿</text>
+<line x1="612.9" y1="126.0" x2="612.9" y2="720.0" stroke="#3b5bdb" stroke-width="1.5" stroke-dasharray="5 4"/>
+<text x="607.9" y="140.0" font-size="12" fill="#3b5bdb" font-weight="700" text-anchor="end">09-25 高点 1,632 亿</text>
+<text x="84.0" y="740.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="start">2023</text>
+<text x="279.0" y="740.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="start">2024</text>
+<text x="474.0" y="740.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="start">2025</text>
+<text x="669.0" y="740.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="start">2026</text>
+<line x1="80.0" y1="762.0" x2="104.0" y2="762.0" stroke="#4c6ef5" stroke-width="2"/>
+<circle cx="92.0" cy="762.0" r="3.5" fill="#4c6ef5"/>
+<text x="112.0" y="766.0" font-size="12" fill="#495057" text-anchor="start">总市值</text>
+<rect x="180.0" y="755.0" width="16.0" height="12.0" rx="2" fill="#0ca678" stroke="#0ca678"/>
+<text x="208.0" y="766.0" font-size="12" fill="#495057" text-anchor="start">单季归母净利润</text>
+<line x1="320.0" y1="762.0" x2="344.0" y2="762.0" stroke="#f08c00" stroke-width="2"/>
+<circle cx="332.0" cy="762.0" r="3.5" fill="#f08c00"/>
+<text x="352.0" y="766.0" font-size="12" fill="#495057" text-anchor="start">销售费用率</text>
+<rect x="30.0" y="792.0" width="840.0" height="74.0" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+<text x="48.0" y="816.0" font-size="12" fill="#495057" text-anchor="start">2024 年买量费用前置，销售费用率从 27% 升到 36%，Q4 亏损，TTM 利润只有约 7 亿；2025 年利润兑现后市值上涨 7.2 倍。2026 年单季利润仍在 18</text>
+<text x="48.0" y="834.0" font-size="12" fill="#495057" text-anchor="start">–25 亿，但销售费用率回到 42%–44%，营收停在约 111 亿，市值从 1,507 亿跌到 796 亿。</text>
+<text x="48.0" y="852.0" font-size="12" fill="#495057" text-anchor="start">市值按东方财富 TOTAL_MARKET_CAP；利润与费用率来自单季利润表，2022 年及以前未画。</text>
+</svg>

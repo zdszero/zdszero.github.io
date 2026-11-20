@@ -145,6 +145,7 @@
     - [紫金矿业](./zijin.md)
     - [中国海油](./cnooc.md)
     - [腾讯控股](./tencent.md)
+    - [游戏股](./century_huatong.md)
     - [先进封装](./advanced_packaging.md)
     - [Blackwell 产业链](./blackwell_supply_chain.md)
     - [ODM](./2026-ODM.md)
@@ -152,6 +153,7 @@
     - [算力租赁股](./gpu_rent_stocks.md)
     - [存储周期](./storage_cicle.md)
     - [网红公司的泡沫](./china_hype_bubbles.md)
+    - [中国出口](./china_export_industry.md)
 - 随笔
     - [A 股特性](./stock_feature.md)
     - [感受市场温度](./market_temperature.md)

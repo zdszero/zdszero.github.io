@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 632" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect x="0" y="0" width="900" height="632" rx="12" fill="#ffffff"/>
+<text x="30.0" y="34.0" font-size="20" fill="#212529" font-weight="700" text-anchor="start">劳动密集型行业利润率不到 5.5%，2025 年利润全部下滑</text>
+<text x="30.0" y="56.0" font-size="13" fill="#868e96" text-anchor="start">2025 年规模以上工业企业营业收入利润率 = 利润总额 ÷ 营业收入；右侧为利润总额同比。来源：国家统计局 2026-01-27</text>
+<line x1="372.8" y1="84.0" x2="372.8" y2="516.0" stroke="#fa5252" stroke-width="1.2" stroke-dasharray="4 3"/>
+<text x="200.0" y="100.0" font-size="12" fill="#495057" text-anchor="end">医药制造业</text>
+<rect x="210.0" y="88.6" width="430.3" height="14.9" rx="2" fill="#0ca678" stroke="#0ca678"/>
+<text x="680.0" y="100.0" font-size="12" fill="#0b7285" font-weight="600" text-anchor="start">14.0%  利润 +2.7%</text>
+<text x="200.0" y="124.0" font-size="12" fill="#495057" text-anchor="end">仪器仪表</text>
+<rect x="210.0" y="112.6" width="314.0" height="14.9" rx="2" fill="#0ca678" stroke="#0ca678"/>
+<text x="680.0" y="124.0" font-size="12" fill="#0b7285" font-weight="600" text-anchor="start">10.2%  利润 +3.1%</text>
+<text x="200.0" y="148.0" font-size="12" fill="#495057" text-anchor="end">铁路、船舶、航空航天</text>
+<rect x="210.0" y="136.6" width="250.9" height="14.9" rx="2" fill="#0ca678" stroke="#0ca678"/>
+<text x="680.0" y="148.0" font-size="12" fill="#0b7285" font-weight="600" text-anchor="start">8.2%  利润 +31.2%</text>
+<text x="200.0" y="172.0" font-size="12" fill="#495057" text-anchor="end">专用设备</text>
+<rect x="210.0" y="160.6" width="234.9" height="14.9" rx="2" fill="#0ca678" stroke="#0ca678"/>
+<text x="680.0" y="172.0" font-size="12" fill="#0b7285" font-weight="600" text-anchor="start">7.7%  利润 +5.7%</text>
+<text x="200.0" y="196.0" font-size="12" fill="#495057" text-anchor="end">通用设备</text>
+<rect x="210.0" y="184.6" width="214.1" height="14.9" rx="2" fill="#0ca678" stroke="#0ca678"/>
+<text x="680.0" y="196.0" font-size="12" fill="#0b7285" font-weight="600" text-anchor="start">7.0%  利润 +4.2%</text>
+<text x="200.0" y="220.0" font-size="12" fill="#495057" text-anchor="end">电气机械和器材</text>
+<rect x="210.0" y="208.6" width="166.8" height="14.9" rx="2" fill="#0ca678" stroke="#0ca678"/>
+<text x="680.0" y="220.0" font-size="12" fill="#0b7285" font-weight="600" text-anchor="start">5.4%  利润 +4.9%</text>
+<text x="200.0" y="244.0" font-size="12" fill="#495057" text-anchor="end">家具</text>
+<rect x="210.0" y="232.6" width="164.4" height="14.9" rx="2" fill="#f08c00" stroke="#f08c00"/>
+<text x="680.0" y="244.0" font-size="12" fill="#e8590c" font-weight="600" text-anchor="start">5.4%  利润 −12.1%</text>
+<text x="200.0" y="268.0" font-size="12" fill="#495057" text-anchor="end">橡胶和塑料制品</text>
+<rect x="210.0" y="256.6" width="162.5" height="14.9" rx="2" fill="#f08c00" stroke="#f08c00"/>
+<text x="680.0" y="268.0" font-size="12" fill="#e8590c" font-weight="600" text-anchor="start">5.3%  利润 −5.9%</text>
+<text x="200.0" y="292.0" font-size="12" fill="#495057" text-anchor="end">皮革、毛皮和制鞋</text>
+<rect x="210.0" y="280.6" width="153.3" height="14.9" rx="2" fill="#f08c00" stroke="#f08c00"/>
+<text x="680.0" y="292.0" font-size="12" fill="#e8590c" font-weight="600" text-anchor="start">5.0%  利润 −17.9%</text>
+<text x="200.0" y="316.0" font-size="12" fill="#495057" text-anchor="end">计算机、通信和电子</text>
+<rect x="210.0" y="304.6" width="132.2" height="14.9" rx="2" fill="#4c6ef5" stroke="#4c6ef5"/>
+<text x="680.0" y="316.0" font-size="12" fill="#3b5bdb" font-weight="600" text-anchor="start">4.3%  利润 +19.5%</text>
+<text x="200.0" y="340.0" font-size="12" fill="#495057" text-anchor="end">化学原料和化学制品</text>
+<rect x="210.0" y="328.6" width="127.9" height="14.9" rx="2" fill="#adb5bd" stroke="#adb5bd"/>
+<text x="680.0" y="340.0" font-size="12" fill="#495057" font-weight="600" text-anchor="start">4.2%  利润 −7.3%</text>
+<text x="200.0" y="364.0" font-size="12" fill="#495057" text-anchor="end">有色金属冶炼</text>
+<rect x="210.0" y="352.6" width="126.7" height="14.9" rx="2" fill="#adb5bd" stroke="#adb5bd"/>
+<text x="680.0" y="364.0" font-size="12" fill="#495057" font-weight="600" text-anchor="start">4.1%  利润 +22.6%</text>
+<text x="200.0" y="388.0" font-size="12" fill="#495057" text-anchor="end">汽车</text>
+<rect x="210.0" y="376.6" width="126.3" height="14.9" rx="2" fill="#0ca678" stroke="#0ca678"/>
+<text x="680.0" y="388.0" font-size="12" fill="#0b7285" font-weight="600" text-anchor="start">4.1%  利润 +0.6%</text>
+<text x="200.0" y="412.0" font-size="12" fill="#495057" text-anchor="end">纺织服装、服饰</text>
+<rect x="210.0" y="400.6" width="124.2" height="14.9" rx="2" fill="#f08c00" stroke="#f08c00"/>
+<text x="680.0" y="412.0" font-size="12" fill="#e8590c" font-weight="600" text-anchor="start">4.1%  利润 −27.3%</text>
+<text x="200.0" y="436.0" font-size="12" fill="#495057" text-anchor="end">文教工美体育娱乐</text>
+<rect x="210.0" y="424.6" width="115.3" height="14.9" rx="2" fill="#f08c00" stroke="#f08c00"/>
+<text x="680.0" y="436.0" font-size="12" fill="#e8590c" font-weight="600" text-anchor="start">3.8%  利润 −20.2%</text>
+<text x="200.0" y="460.0" font-size="12" fill="#495057" text-anchor="end">金属制品</text>
+<rect x="210.0" y="448.6" width="114.4" height="14.9" rx="2" fill="#adb5bd" stroke="#adb5bd"/>
+<text x="680.0" y="460.0" font-size="12" fill="#495057" font-weight="600" text-anchor="start">3.7%  利润 −7.5%</text>
+<text x="200.0" y="484.0" font-size="12" fill="#495057" text-anchor="end">纺织业</text>
+<rect x="210.0" y="472.6" width="101.5" height="14.9" rx="2" fill="#f08c00" stroke="#f08c00"/>
+<text x="680.0" y="484.0" font-size="12" fill="#e8590c" font-weight="600" text-anchor="start">3.3%  利润 −12.0%</text>
+<text x="200.0" y="508.0" font-size="12" fill="#495057" text-anchor="end">黑色金属冶炼</text>
+<rect x="210.0" y="496.6" width="43.5" height="14.9" rx="2" fill="#adb5bd" stroke="#adb5bd"/>
+<text x="680.0" y="508.0" font-size="12" fill="#495057" font-weight="600" text-anchor="start">1.4%  利润 +299.2%</text>
+<text x="376.8" y="82.0" font-size="11" fill="#c92a2a" text-anchor="start">全部规上工业 5.31%</text>
+<rect x="84.0" y="523.0" width="16.0" height="12.0" rx="2" fill="#f08c00" stroke="#f08c00"/>
+<text x="112.0" y="534.0" font-size="12" fill="#495057" text-anchor="start">劳动密集型</text>
+<rect x="204.0" y="523.0" width="16.0" height="12.0" rx="2" fill="#4c6ef5" stroke="#4c6ef5"/>
+<text x="232.0" y="534.0" font-size="12" fill="#495057" text-anchor="start">电子</text>
+<rect x="288.0" y="523.0" width="16.0" height="12.0" rx="2" fill="#0ca678" stroke="#0ca678"/>
+<text x="316.0" y="534.0" font-size="12" fill="#495057" text-anchor="start">设备、汽车、医药</text>
+<rect x="444.0" y="523.0" width="16.0" height="12.0" rx="2" fill="#adb5bd" stroke="#adb5bd"/>
+<text x="472.0" y="534.0" font-size="12" fill="#495057" text-anchor="start">材料</text>
+<rect x="30.0" y="560.0" width="840.0" height="56.0" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+<text x="48.0" y="584.0" font-size="12" fill="#495057" text-anchor="start">利润率是行业全部规上企业的平均，内销与出口合在一起；本文未取得分行业出口交货值。制造业整体为 4.70%。</text>
+<text x="48.0" y="602.0" font-size="12" fill="#495057" text-anchor="start">黑色金属冶炼利润增长 299% 来自 2024 年的极低基数，利润率仍只有 1.4%。</text>
+</svg>
