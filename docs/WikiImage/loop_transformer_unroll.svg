@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 520" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="520" rx="12" fill="#ffffff"/>
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#868e96"/>
+    </marker>
+    <marker id="arb" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#4c6ef5"/>
+    </marker>
+    <marker id="art" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#0ca678"/>
+    </marker>
+  </defs>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">物理层与逻辑层：L = 4，loop_num K = 2</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">权重只有 4 层，前向展开成 8 个逻辑层；每个逻辑层有自己的 layer_id，也就有自己的 KV 槽</text>
+
+  <!-- Left: physical layers -->
+  <rect x="30" y="76" width="250" height="360" rx="10" fill="#f8f9fa" stroke="#adb5bd"/>
+  <rect x="30" y="76" width="250" height="28" rx="10" fill="#495057"/>
+  <text x="44" y="95" font-size="14" font-weight="700" fill="#ffffff">物理层：权重（各一份）</text>
+  <g font-size="12">
+    <rect x="48" y="118" width="214" height="62" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+    <text x="60" y="138" font-weight="700" fill="#495057">layers[0]</text>
+    <text x="60" y="156" font-size="11" fill="#868e96">qkv_proj · o_proj · mlp · norm</text>
+    <text x="60" y="171" font-size="11" fill="#e8590c">gate_projections[0]</text>
+    <rect x="48" y="190" width="214" height="62" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+    <text x="60" y="210" font-weight="700" fill="#495057">layers[1]</text>
+    <text x="60" y="228" font-size="11" fill="#868e96">qkv_proj · o_proj · mlp · norm</text>
+    <text x="60" y="243" font-size="11" fill="#e8590c">gate_projections[1]</text>
+    <rect x="48" y="262" width="214" height="62" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+    <text x="60" y="282" font-weight="700" fill="#495057">layers[2]</text>
+    <text x="60" y="300" font-size="11" fill="#868e96">qkv_proj · o_proj · mlp · norm</text>
+    <text x="60" y="315" font-size="11" fill="#e8590c">gate_projections[2]</text>
+    <rect x="48" y="334" width="214" height="62" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+    <text x="60" y="354" font-weight="700" fill="#495057">layers[3]</text>
+    <text x="60" y="372" font-size="11" fill="#868e96">qkv_proj · o_proj · mlp · norm</text>
+    <text x="60" y="387" font-size="11" fill="#e8590c">gate_projections[3]</text>
+  </g>
+  <text x="155" y="424" text-anchor="middle" font-size="11" fill="#868e96">gate 只在 loop ≥ 1 使用</text>
+  <!-- Middle: loop 0 -->
+  <rect x="330" y="76" width="240" height="360" rx="10" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="330" y="76" width="240" height="28" rx="10" fill="#4c6ef5"/>
+  <text x="344" y="95" font-size="14" font-weight="700" fill="#ffffff">逻辑层 · loop 0</text>
+  <g font-size="12">
+    <rect x="346" y="118" width="208" height="62" rx="8" fill="#ffffff" stroke="#4c6ef5"/>
+    <text x="358" y="138" font-weight="700" fill="#3b5bdb">layers[0] 的第 1 次执行</text>
+    <text x="358" y="157" font-family="monospace" font-size="11.5" fill="#3b5bdb">attn[0]  layer_id = 0</text>
+    <text x="358" y="173" font-size="11" fill="#868e96">全长 causal，写 KV</text>
+    <rect x="346" y="190" width="208" height="62" rx="8" fill="#ffffff" stroke="#4c6ef5"/>
+    <text x="358" y="210" font-weight="700" fill="#3b5bdb">layers[1] 的第 1 次执行</text>
+    <text x="358" y="229" font-family="monospace" font-size="11.5" fill="#3b5bdb">attn[0]  layer_id = 1</text>
+    <text x="358" y="245" font-size="11" fill="#868e96">全长 causal，写 KV</text>
+    <rect x="346" y="262" width="208" height="62" rx="8" fill="#ffffff" stroke="#4c6ef5"/>
+    <text x="358" y="282" font-weight="700" fill="#3b5bdb">layers[2] 的第 1 次执行</text>
+    <text x="358" y="301" font-family="monospace" font-size="11.5" fill="#3b5bdb">attn[0]  layer_id = 2</text>
+    <text x="358" y="317" font-size="11" fill="#868e96">全长 causal，写 KV</text>
+    <rect x="346" y="334" width="208" height="62" rx="8" fill="#ffffff" stroke="#4c6ef5"/>
+    <text x="358" y="354" font-weight="700" fill="#3b5bdb">layers[3] 的第 1 次执行</text>
+    <text x="358" y="373" font-family="monospace" font-size="11.5" fill="#3b5bdb">attn[0]  layer_id = 3</text>
+    <text x="358" y="389" font-size="11" fill="#868e96">全长 causal，写 KV</text>
+  </g>
+
+  <!-- Right: loop 1 -->
+  <rect x="630" y="76" width="240" height="360" rx="10" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="630" y="76" width="240" height="28" rx="10" fill="#0ca678"/>
+  <text x="644" y="95" font-size="14" font-weight="700" fill="#ffffff">逻辑层 · loop 1</text>
+  <g font-size="12">
+    <rect x="646" y="118" width="208" height="62" rx="8" fill="#ffffff" stroke="#0ca678"/>
+    <text x="658" y="138" font-weight="700" fill="#0b7285">layers[0] 的第 2 次执行</text>
+    <text x="658" y="157" font-family="monospace" font-size="11.5" fill="#0b7285">attn[1]  layer_id = 4</text>
+    <text x="658" y="173" font-size="11" fill="#868e96">读 id 0 的 KV + 窗口 W，写 KV</text>
+    <rect x="646" y="190" width="208" height="62" rx="8" fill="#ffffff" stroke="#0ca678"/>
+    <text x="658" y="210" font-weight="700" fill="#0b7285">layers[1] 的第 2 次执行</text>
+    <text x="658" y="229" font-family="monospace" font-size="11.5" fill="#0b7285">attn[1]  layer_id = 5</text>
+    <text x="658" y="245" font-size="11" fill="#868e96">读 id 1 的 KV + 窗口 W，写 KV</text>
+    <rect x="646" y="262" width="208" height="62" rx="8" fill="#ffffff" stroke="#0ca678"/>
+    <text x="658" y="282" font-weight="700" fill="#0b7285">layers[2] 的第 2 次执行</text>
+    <text x="658" y="301" font-family="monospace" font-size="11.5" fill="#0b7285">attn[1]  layer_id = 6</text>
+    <text x="658" y="317" font-size="11" fill="#868e96">读 id 2 的 KV + 窗口 W，写 KV</text>
+    <rect x="646" y="334" width="208" height="62" rx="8" fill="#ffffff" stroke="#0ca678"/>
+    <text x="658" y="354" font-weight="700" fill="#0b7285">layers[3] 的第 2 次执行</text>
+    <text x="658" y="373" font-family="monospace" font-size="11.5" fill="#0b7285">attn[1]  layer_id = 7</text>
+    <text x="658" y="389" font-size="11" fill="#868e96">读 id 3 的 KV + 窗口 W，写 KV</text>
+  </g>
+
+  <!-- weight sharing connectors -->
+  <g fill="none" stroke="#adb5bd" stroke-width="1.5" stroke-dasharray="4 3">
+    <path d="M262 149 L346 149"/><path d="M262 221 L346 221"/><path d="M262 293 L346 293"/><path d="M262 365 L346 365"/>
+  </g>
+  <text x="304" y="140" text-anchor="middle" font-size="10" fill="#868e96">同权重</text>
+  <!-- hidden state handoff loop0 -> loop1 -->
+  <path d="M554 380 C600 380 600 134 642 134" fill="none" stroke="#f08c00" stroke-width="2" marker-end="url(#ar)"/>
+  <rect x="590" y="248" width="20" height="18" rx="4" fill="#ffffff"/>
+  <text x="600" y="262" text-anchor="middle" font-size="13" font-weight="700" fill="#e8590c">h</text>
+  <text x="450" y="424" text-anchor="middle" font-size="11" fill="#868e96">橙线：最后一层输出 h 进入下一轮</text>
+  <text x="750" y="424" text-anchor="middle" font-size="11" fill="#868e96">同一行的两个逻辑层共用左侧权重</text>
+
+  <!-- note -->
+  <rect x="30" y="452" width="840" height="50" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="46" y="474" font-size="12" fill="#495057"><tspan font-weight="700" fill="#212529">关键：</tspan>layer_id = loop_idx × num_hidden_layers + layer。权重按物理层索引（4 份），</text>
+  <text x="46" y="492" font-size="12" fill="#495057">KV Cache 按 layer_id 索引（8 份）；KV Pool、Attention Backend、Radix Cache 只看 layer_id，看不到循环。</text>
+</svg>

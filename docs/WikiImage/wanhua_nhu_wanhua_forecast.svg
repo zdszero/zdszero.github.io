@@ -1,0 +1,124 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 604" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect x="0" y="0" width="900" height="604" rx="12" fill="#ffffff"/>
+<text x="30.0" y="34.0" font-size="20" fill="#212529" font-weight="700" text-anchor="start">万华化学：股价两次见顶时，研报还在上修利润</text>
+<text x="30.0" y="56.0" font-size="13" fill="#868e96" text-anchor="start">国金证券（2021E、2022E、2024E）与国信证券（2026E）历次归母净利润预测，亿元；横轴为报告发布日。据研报摘要整理</text>
+<text x="80.0" y="94.0" font-size="12.5" fill="#3b5bdb" font-weight="700" text-anchor="start">归母净利润预测（亿元）</text>
+<line x1="80.0" y1="424.0" x2="860.0" y2="424.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="428.0" font-size="11" fill="#868e96" text-anchor="end">100</text>
+<line x1="80.0" y1="344.0" x2="860.0" y2="344.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="348.0" font-size="11" fill="#868e96" text-anchor="end">150</text>
+<line x1="80.0" y1="264.0" x2="860.0" y2="264.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="268.0" font-size="11" fill="#868e96" text-anchor="end">200</text>
+<line x1="80.0" y1="184.0" x2="860.0" y2="184.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="188.0" font-size="11" fill="#868e96" text-anchor="end">250</text>
+<line x1="80.0" y1="104.0" x2="860.0" y2="104.0" stroke="#e9ecef" stroke-width="1"/>
+<text x="72.0" y="108.0" font-size="11" fill="#868e96" text-anchor="end">300</text>
+<line x1="140.0" y1="104.0" x2="140.0" y2="424.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="260.0" y1="104.0" x2="260.0" y2="424.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="380.0" y1="104.0" x2="380.0" y2="424.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="500.0" y1="104.0" x2="500.0" y2="424.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="620.0" y1="104.0" x2="620.0" y2="424.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="740.0" y1="104.0" x2="740.0" y2="424.0" stroke="#e9ecef" stroke-width="1" stroke-dasharray="3 3"/>
+<path d="M117.2 403.6 L142.1 356.3 L164.8 274.7 L209.2 217.6 L236.5 190.2 L266.4 192.8" fill="none" stroke="#4c6ef5" stroke-width="2" stroke-linejoin="round"/>
+<path d="M266.4 192.8 L284.2 189.6" fill="none" stroke="#4c6ef5" stroke-width="1.5" stroke-linejoin="round" stroke-dasharray="4 3"/>
+<rect x="278.2" y="183.6" width="12" height="12" fill="#ffffff" stroke="#4c6ef5" stroke-width="2"/>
+<text x="274.2" y="219.6" font-size="11.5" fill="#495057" text-anchor="end">实际 246.5</text>
+<circle cx="117.2" cy="403.6" r="4.5" fill="#4c6ef5"/>
+<text x="125.2" y="395.6" font-size="11.5" fill="#495057" text-anchor="start">112.7</text>
+<circle cx="142.1" cy="356.3" r="4.5" fill="#4c6ef5"/>
+<text x="150.1" y="348.3" font-size="11.5" fill="#495057" text-anchor="start">142.3</text>
+<circle cx="164.8" cy="274.7" r="4.5" fill="#4c6ef5"/>
+<text x="172.8" y="266.7" font-size="11.5" fill="#495057" text-anchor="start"></text>
+<circle cx="209.2" cy="217.6" r="4.5" fill="#4c6ef5"/>
+<text x="217.2" y="209.6" font-size="11.5" fill="#495057" text-anchor="start"></text>
+<circle cx="236.5" cy="190.2" r="4.5" fill="#4c6ef5"/>
+<text x="244.5" y="182.2" font-size="11.5" fill="#495057" text-anchor="start"></text>
+<circle cx="266.4" cy="192.8" r="4.5" fill="#4c6ef5"/>
+<text x="274.4" y="184.8" font-size="11.5" fill="#495057" text-anchor="start"></text>
+<path d="M117.2 391.8 L142.1 315.0 L164.8 241.1 L209.2 177.4 L236.5 153.4 L266.4 158.8 L298.0 198.4 L328.9 246.4 L357.8 302.4" fill="none" stroke="#0ca678" stroke-width="2" stroke-linejoin="round"/>
+<path d="M357.8 302.4 L406.1 324.3" fill="none" stroke="#0ca678" stroke-width="1.5" stroke-linejoin="round" stroke-dasharray="4 3"/>
+<rect x="400.1" y="318.3" width="12" height="12" fill="#ffffff" stroke="#0ca678" stroke-width="2"/>
+<text x="406.1" y="342.3" font-size="11.5" fill="#495057" text-anchor="middle">2022 实际 162.3</text>
+<circle cx="117.2" cy="391.8" r="4.5" fill="#0ca678"/>
+<text x="125.2" y="383.8" font-size="11.5" fill="#495057" text-anchor="start"></text>
+<circle cx="142.1" cy="315.0" r="4.5" fill="#0ca678"/>
+<text x="150.1" y="307.0" font-size="11.5" fill="#495057" text-anchor="start"></text>
+<circle cx="164.8" cy="241.1" r="4.5" fill="#0ca678"/>
+<text x="172.8" y="233.1" font-size="11.5" fill="#495057" text-anchor="start"></text>
+<circle cx="209.2" cy="177.4" r="4.5" fill="#0ca678"/>
+<text x="217.2" y="169.4" font-size="11.5" fill="#495057" text-anchor="start"></text>
+<circle cx="236.5" cy="153.4" r="4.5" fill="#0ca678"/>
+<text x="244.5" y="145.4" font-size="11.5" fill="#495057" text-anchor="start"></text>
+<circle cx="266.4" cy="158.8" r="4.5" fill="#0ca678"/>
+<text x="274.4" y="150.8" font-size="11.5" fill="#495057" text-anchor="start"></text>
+<circle cx="298.0" cy="198.4" r="4.5" fill="#0ca678"/>
+<text x="306.0" y="190.4" font-size="11.5" fill="#495057" text-anchor="start"></text>
+<circle cx="328.9" cy="246.4" r="4.5" fill="#0ca678"/>
+<text x="336.9" y="238.4" font-size="11.5" fill="#495057" text-anchor="start"></text>
+<circle cx="357.8" cy="302.4" r="4.5" fill="#0ca678"/>
+<text x="365.8" y="294.4" font-size="11.5" fill="#495057" text-anchor="start"></text>
+<path d="M298.0 136.0 L328.9 160.0 L357.8 163.2 L406.1 203.8 L474.8 268.3 L525.7 295.0 L599.5 324.7" fill="none" stroke="#f08c00" stroke-width="2" stroke-linejoin="round"/>
+<path d="M599.5 324.7 L654.4 375.5" fill="none" stroke="#f08c00" stroke-width="1.5" stroke-linejoin="round" stroke-dasharray="4 3"/>
+<rect x="648.4" y="369.5" width="12" height="12" fill="#ffffff" stroke="#f08c00" stroke-width="2"/>
+<text x="642.4" y="379.5" font-size="11.5" fill="#495057" text-anchor="end">2024 实际 130.3</text>
+<circle cx="298.0" cy="136.0" r="4.5" fill="#f08c00"/>
+<text x="306.0" y="128.0" font-size="11.5" fill="#495057" text-anchor="start">280</text>
+<circle cx="328.9" cy="160.0" r="4.5" fill="#f08c00"/>
+<text x="336.9" y="152.0" font-size="11.5" fill="#495057" text-anchor="start"></text>
+<circle cx="357.8" cy="163.2" r="4.5" fill="#f08c00"/>
+<text x="365.8" y="155.2" font-size="11.5" fill="#495057" text-anchor="start"></text>
+<circle cx="406.1" cy="203.8" r="4.5" fill="#f08c00"/>
+<text x="414.1" y="195.8" font-size="11.5" fill="#495057" text-anchor="start"></text>
+<circle cx="474.8" cy="268.3" r="4.5" fill="#f08c00"/>
+<text x="482.8" y="260.3" font-size="11.5" fill="#495057" text-anchor="start"></text>
+<circle cx="525.7" cy="295.0" r="4.5" fill="#f08c00"/>
+<text x="533.7" y="287.0" font-size="11.5" fill="#495057" text-anchor="start"></text>
+<circle cx="599.5" cy="324.7" r="4.5" fill="#f08c00"/>
+<text x="607.5" y="316.7" font-size="11.5" fill="#495057" text-anchor="start"></text>
+<path d="M599.2 280.9 L654.4 359.0 L718.5 359.1 L735.9 330.1 L776.3 303.7 L801.6 303.7 L838.5 260.3" fill="none" stroke="#7048e8" stroke-width="2" stroke-linejoin="round"/>
+<circle cx="599.2" cy="280.9" r="4.5" fill="#7048e8"/>
+<text x="607.2" y="272.9" font-size="11.5" fill="#495057" text-anchor="start">189.4</text>
+<circle cx="654.4" cy="359.0" r="4.5" fill="#7048e8"/>
+<text x="662.4" y="351.0" font-size="11.5" fill="#495057" text-anchor="start"></text>
+<circle cx="718.5" cy="359.1" r="4.5" fill="#7048e8"/>
+<text x="718.5" y="379.1" font-size="11.5" fill="#495057" text-anchor="middle">140.6</text>
+<circle cx="735.9" cy="330.1" r="4.5" fill="#7048e8"/>
+<text x="743.9" y="322.1" font-size="11.5" fill="#495057" text-anchor="start"></text>
+<circle cx="776.3" cy="303.7" r="4.5" fill="#7048e8"/>
+<text x="784.3" y="295.7" font-size="11.5" fill="#495057" text-anchor="start"></text>
+<circle cx="801.6" cy="303.7" r="4.5" fill="#7048e8"/>
+<text x="809.6" y="295.7" font-size="11.5" fill="#495057" text-anchor="start"></text>
+<circle cx="838.5" cy="260.3" r="4.5" fill="#7048e8"/>
+<text x="846.5" y="252.3" font-size="11.5" fill="#495057" text-anchor="start">202.3</text>
+<line x1="155.9" y1="104.0" x2="155.9" y2="424.0" stroke="#c92a2a" stroke-width="1.5" stroke-dasharray="5 4"/>
+<text x="160.9" y="118.0" font-size="12" fill="#c92a2a" font-weight="700" text-anchor="start">股价顶 2021-02-18</text>
+<line x1="677.0" y1="104.0" x2="677.0" y2="424.0" stroke="#495057" stroke-width="1.5" stroke-dasharray="5 4"/>
+<text x="672.0" y="118.0" font-size="12" fill="#495057" font-weight="700" text-anchor="end">股价底 2025-06-23</text>
+<line x1="759.9" y1="104.0" x2="759.9" y2="424.0" stroke="#c92a2a" stroke-width="1.5" stroke-dasharray="5 4"/>
+<text x="764.9" y="134.0" font-size="12" fill="#c92a2a" font-weight="700" text-anchor="start">股价顶 2026-03-02</text>
+<text x="144.0" y="444.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="start">2021</text>
+<text x="264.0" y="444.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="start">2022</text>
+<text x="384.0" y="444.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="start">2023</text>
+<text x="504.0" y="444.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="start">2024</text>
+<text x="624.0" y="444.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="start">2025</text>
+<text x="744.0" y="444.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="start">2026</text>
+<line x1="80.0" y1="466.0" x2="104.0" y2="466.0" stroke="#4c6ef5" stroke-width="2"/>
+<circle cx="92.0" cy="466.0" r="3.5" fill="#4c6ef5"/>
+<text x="112.0" y="470.0" font-size="12" fill="#495057" text-anchor="start">2021E</text>
+<line x1="173.6" y1="466.0" x2="197.6" y2="466.0" stroke="#0ca678" stroke-width="2"/>
+<circle cx="185.6" cy="466.0" r="3.5" fill="#0ca678"/>
+<text x="205.6" y="470.0" font-size="12" fill="#495057" text-anchor="start">2022E</text>
+<line x1="267.2" y1="466.0" x2="291.2" y2="466.0" stroke="#f08c00" stroke-width="2"/>
+<circle cx="279.2" cy="466.0" r="3.5" fill="#f08c00"/>
+<text x="299.2" y="470.0" font-size="12" fill="#495057" text-anchor="start">2024E</text>
+<line x1="360.8" y1="466.0" x2="384.8" y2="466.0" stroke="#7048e8" stroke-width="2"/>
+<circle cx="372.8" cy="466.0" r="3.5" fill="#7048e8"/>
+<text x="392.8" y="470.0" font-size="12" fill="#495057" text-anchor="start">2026E（国信）</text>
+<rect x="506.4" y="459.0" width="16.0" height="12.0" rx="2" fill="#f1f3f5" stroke="#adb5bd"/>
+<text x="534.4" y="470.0" font-size="12" fill="#495057" text-anchor="start">实际值（披露日）</text>
+<rect x="30.0" y="496.0" width="840.0" height="92.0" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+<text x="48.0" y="520.0" font-size="12" fill="#495057" text-anchor="start">2021-02-18 股价见顶时，国金对 2021 年的预测是 142.3 亿，之后上修到 246 亿；2026-03-02 见顶后，国信把 2026E 从 158.7 亿上修到 202.3 亿，</text>
+<text x="48.0" y="538.0" font-size="12" fill="#495057" text-anchor="start">股价却比顶点低 27%。</text>
+<text x="48.0" y="556.0" font-size="12" fill="#495057" text-anchor="start">2024E 从 2022-04 的 280 亿一路下修，实际 130.3 亿。2026 年尚无年度实际值，前三季度为 156.6 亿。</text>
+<text x="48.0" y="574.0" font-size="12" fill="#495057" text-anchor="start">来源：东方财富研报中心报告摘要；实际值为公司年报，画在年报披露日。</text>
+</svg>

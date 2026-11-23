@@ -1,0 +1,139 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 770" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect x="0" y="0" width="900" height="770" rx="12" fill="#ffffff"/>
+<text x="30.0" y="34.0" font-size="20" fill="#212529" font-weight="700" text-anchor="start">两家公司的预期差：顶部常出现在利润还在上修时</text>
+<text x="30.0" y="56.0" font-size="13" fill="#868e96" text-anchor="start">万华化学 600309 与新和成 002001 关键节点。研报据摘要整理；散户一栏为股东户数与股吧样本，不代表全部投资者</text>
+<line x1="132" y1="116" x2="132" y2="600" stroke="#dee2e6" stroke-width="2"/>
+<text x="118.0" y="86.0" font-size="12.5" fill="#212529" font-weight="700" text-anchor="end">时间</text>
+<text x="160.0" y="86.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="start">事件 / 外部条件</text>
+<text x="366.0" y="86.0" font-size="12.5" fill="#3b5bdb" font-weight="700" text-anchor="start">机构研报</text>
+<text x="562.0" y="86.0" font-size="12.5" fill="#5f3dc4" font-weight="700" text-anchor="start">散户与媒体</text>
+<text x="738.0" y="86.0" font-size="12.5" fill="#e8590c" font-weight="700" text-anchor="start">预期差</text>
+<text x="118.0" y="120.0" font-size="12" fill="#212529" font-weight="700" text-anchor="end">2018-01-16</text>
+<text x="118.0" y="136.0" font-size="11" fill="#868e96" text-anchor="end">新和成股价顶</text>
+<circle cx="132.0" cy="116.0" r="5" fill="#f08c00"/>
+<rect x="150.0" y="100.0" width="200.0" height="66.0" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+<text x="160.0" y="120.0" font-size="11.5" fill="#495057" text-anchor="start">巴斯夫柠檬醛装置 2017-10-31 起</text>
+<text x="160.0" y="136.0" font-size="11.5" fill="#495057" text-anchor="start">火，VE 现货价涨三倍以上</text>
+<rect x="356.0" y="100.0" width="190.0" height="66.0" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+<text x="366.0" y="120.0" font-size="11.5" fill="#495057" text-anchor="start">按当时 TTM 的 PE 为 45 倍</text>
+<rect x="552.0" y="100.0" width="170.0" height="66.0" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+<text x="562.0" y="120.0" font-size="11.5" fill="#495057" text-anchor="start">股东户数 2.7 万（2017-10）</text>
+<text x="562.0" y="136.0" font-size="11.5" fill="#495057" text-anchor="start">升到 8.7 万（2018-09）</text>
+<rect x="728.0" y="100.0" width="132.0" height="66.0" rx="8" fill="#fff4e6" stroke="#f08c00"/>
+<text x="738.0" y="120.0" font-size="11.5" fill="#e8590c" font-weight="700" text-anchor="start">关注点切换：利润</text>
+<text x="738.0" y="136.0" font-size="11.5" fill="#e8590c" text-anchor="start">2018Q1 才到 14.9 亿，</text>
+<text x="738.0" y="152.0" font-size="11.5" fill="#e8590c" text-anchor="start">Q2 回落到 5.7 亿</text>
+<text x="118.0" y="196.0" font-size="12" fill="#212529" font-weight="700" text-anchor="end">2021-02-18</text>
+<text x="118.0" y="212.0" font-size="11" fill="#868e96" text-anchor="end">万华股价顶</text>
+<circle cx="132.0" cy="192.0" r="5" fill="#fa5252"/>
+<rect x="150.0" y="176.0" width="200.0" height="82.0" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+<text x="160.0" y="196.0" font-size="11.5" fill="#495057" text-anchor="start">烟台 MDI 扩到 110 万吨；核心资产</text>
+<text x="160.0" y="212.0" font-size="11.5" fill="#495057" text-anchor="start">行情</text>
+<rect x="356.0" y="176.0" width="190.0" height="82.0" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+<text x="366.0" y="196.0" font-size="11.5" fill="#495057" text-anchor="start">国金 2021E 142.3 亿，隐含 PE</text>
+<text x="366.0" y="212.0" font-size="11.5" fill="#495057" text-anchor="start">31.8 倍</text>
+<rect x="552.0" y="176.0" width="170.0" height="82.0" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+<text x="562.0" y="196.0" font-size="11.5" fill="#495057" text-anchor="start">股东户数约 10 万（2020-12）</text>
+<rect x="728.0" y="176.0" width="132.0" height="82.0" rx="8" fill="#fff5f5" stroke="#fa5252"/>
+<text x="738.0" y="196.0" font-size="11.5" fill="#c92a2a" font-weight="700" text-anchor="start">利润低估：实际</text>
+<text x="738.0" y="212.0" font-size="11.5" fill="#c92a2a" text-anchor="start">246.5 亿，股价却在</text>
+<text x="738.0" y="228.0" font-size="11.5" fill="#c92a2a" text-anchor="start">高位转为按估值回归</text>
+<text x="738.0" y="244.0" font-size="11.5" fill="#c92a2a" text-anchor="start">定价</text>
+<text x="118.0" y="288.0" font-size="12" fill="#212529" font-weight="700" text-anchor="end">2022-04-25</text>
+<text x="118.0" y="304.0" font-size="11" fill="#868e96" text-anchor="end">万华 PE 9.6</text>
+<circle cx="132.0" cy="284.0" r="5" fill="#0ca678"/>
+<rect x="150.0" y="268.0" width="200.0" height="50.0" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+<text x="160.0" y="288.0" font-size="11.5" fill="#495057" text-anchor="start">石化与 MDI 价差收窄</text>
+<rect x="356.0" y="268.0" width="190.0" height="50.0" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+<text x="366.0" y="288.0" font-size="11.5" fill="#495057" text-anchor="start">国金 2022E 241 亿，隐含 PE 9.8</text>
+<text x="366.0" y="304.0" font-size="11.5" fill="#495057" text-anchor="start">倍</text>
+<rect x="552.0" y="268.0" width="170.0" height="50.0" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+<text x="562.0" y="288.0" font-size="11.5" fill="#495057" text-anchor="start">户数 19.3 万（2022-03）</text>
+<rect x="728.0" y="268.0" width="132.0" height="50.0" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+<text x="738.0" y="288.0" font-size="11.5" fill="#0b7285" font-weight="700" text-anchor="start">高估：实际 162.3 亿，</text>
+<text x="738.0" y="304.0" font-size="11.5" fill="#0b7285" text-anchor="start">按实际 PE 14.6 倍</text>
+<text x="118.0" y="348.0" font-size="12" fill="#212529" font-weight="700" text-anchor="end">2023-05-31</text>
+<text x="118.0" y="364.0" font-size="11" fill="#868e96" text-anchor="end">新和成股价底</text>
+<circle cx="132.0" cy="344.0" r="5" fill="#0ca678"/>
+<rect x="150.0" y="328.0" width="200.0" height="50.0" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+<text x="160.0" y="348.0" font-size="11.5" fill="#495057" text-anchor="start">维生素价格低谷；帝斯曼重组维生</text>
+<text x="160.0" y="364.0" font-size="11.5" fill="#495057" text-anchor="start">素业务</text>
+<rect x="356.0" y="328.0" width="190.0" height="50.0" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+<text x="366.0" y="348.0" font-size="11.5" fill="#495057" text-anchor="start">国金 2023E 42 亿，10 月下调到</text>
+<text x="366.0" y="364.0" font-size="11.5" fill="#495057" text-anchor="start">28.6 亿</text>
+<rect x="552.0" y="328.0" width="170.0" height="50.0" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+<text x="562.0" y="348.0" font-size="11.5" fill="#495057" text-anchor="start">户数 11.9 万，为十年高点</text>
+<rect x="728.0" y="328.0" width="132.0" height="50.0" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+<text x="738.0" y="348.0" font-size="11.5" fill="#0b7285" font-weight="700" text-anchor="start">高估：实际 27.0 亿，</text>
+<text x="738.0" y="364.0" font-size="11.5" fill="#0b7285" text-anchor="start">按实际 PE 17.3 倍</text>
+<text x="118.0" y="408.0" font-size="12" fill="#212529" font-weight="700" text-anchor="end">2024-07-29</text>
+<text x="118.0" y="424.0" font-size="11" fill="#868e96" text-anchor="end">新和成</text>
+<circle cx="132.0" cy="404.0" r="5" fill="#fa5252"/>
+<rect x="150.0" y="388.0" width="200.0" height="50.0" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+<text x="160.0" y="408.0" font-size="11.5" fill="#495057" text-anchor="start">巴斯夫第二次起火，VA/VE 涨价</text>
+<rect x="356.0" y="388.0" width="190.0" height="50.0" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+<text x="366.0" y="408.0" font-size="11.5" fill="#495057" text-anchor="start">国金 2024E 由 37.1 亿上修到</text>
+<text x="366.0" y="424.0" font-size="11.5" fill="#495057" text-anchor="start">58.7 亿</text>
+<rect x="552.0" y="388.0" width="170.0" height="50.0" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+<text x="562.0" y="408.0" font-size="11.5" fill="#495057" text-anchor="start">—</text>
+<rect x="728.0" y="388.0" width="132.0" height="50.0" rx="8" fill="#fff5f5" stroke="#fa5252"/>
+<text x="738.0" y="408.0" font-size="11.5" fill="#c92a2a" font-weight="700" text-anchor="start">低估：实际 58.7 亿，</text>
+<text x="738.0" y="424.0" font-size="11.5" fill="#c92a2a" text-anchor="start">与上修后一致</text>
+<text x="118.0" y="468.0" font-size="12" fill="#212529" font-weight="700" text-anchor="end">2025-06-23</text>
+<text x="118.0" y="484.0" font-size="11" fill="#868e96" text-anchor="end">万华股价底</text>
+<circle cx="132.0" cy="464.0" r="5" fill="#adb5bd"/>
+<rect x="150.0" y="448.0" width="200.0" height="50.0" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+<text x="160.0" y="468.0" font-size="11.5" fill="#495057" text-anchor="start">美国对华 MDI 反倾销；乙烯一期停</text>
+<text x="160.0" y="484.0" font-size="11.5" fill="#495057" text-anchor="start">车改造</text>
+<rect x="356.0" y="448.0" width="190.0" height="50.0" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+<text x="366.0" y="468.0" font-size="11.5" fill="#495057" text-anchor="start">国金 2025E 139.7 亿，隐含 PE</text>
+<text x="366.0" y="484.0" font-size="11.5" fill="#495057" text-anchor="start">11.8 倍</text>
+<rect x="552.0" y="448.0" width="170.0" height="50.0" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+<text x="562.0" y="468.0" font-size="11.5" fill="#495057" text-anchor="start">户数 26.9 万为高点；样本“</text>
+<text x="562.0" y="484.0" font-size="11.5" fill="#495057" text-anchor="start">加仓只为快速回本”</text>
+<rect x="728.0" y="448.0" width="132.0" height="50.0" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+<text x="738.0" y="468.0" font-size="11.5" fill="#495057" font-weight="700" text-anchor="start">基本符合：实际</text>
+<text x="738.0" y="484.0" font-size="11.5" fill="#495057" text-anchor="start">125.3 亿，略低 10%</text>
+<text x="118.0" y="528.0" font-size="12" fill="#212529" font-weight="700" text-anchor="end">2026-03-02</text>
+<text x="118.0" y="544.0" font-size="11" fill="#868e96" text-anchor="end">万华股价顶</text>
+<circle cx="132.0" cy="524.0" r="5" fill="#f08c00"/>
+<rect x="150.0" y="508.0" width="200.0" height="66.0" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+<text x="160.0" y="528.0" font-size="11.5" fill="#495057" text-anchor="start">2026-02-28 美伊开战，霍尔木兹</text>
+<text x="160.0" y="544.0" font-size="11.5" fill="#495057" text-anchor="start">受阻，海外不可抗力</text>
+<rect x="356.0" y="508.0" width="190.0" height="66.0" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+<text x="366.0" y="528.0" font-size="11.5" fill="#495057" text-anchor="start">国信 2026E 158.7 亿，隐含 PE</text>
+<text x="366.0" y="544.0" font-size="11.5" fill="#495057" text-anchor="start">约 18.6 倍</text>
+<rect x="552.0" y="508.0" width="170.0" height="66.0" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+<text x="562.0" y="528.0" font-size="11.5" fill="#495057" text-anchor="start">股吧热帖：TDI 产能受限、“</text>
+<text x="562.0" y="544.0" font-size="11.5" fill="#495057" text-anchor="start">五重共振”</text>
+<rect x="728.0" y="508.0" width="132.0" height="66.0" rx="8" fill="#fff4e6" stroke="#f08c00"/>
+<text x="738.0" y="528.0" font-size="11.5" fill="#e8590c" font-weight="700" text-anchor="start">关注点切换：2026E</text>
+<text x="738.0" y="544.0" font-size="11.5" fill="#e8590c" text-anchor="start">上修到 202 亿，股价</text>
+<text x="738.0" y="560.0" font-size="11.5" fill="#e8590c" text-anchor="start">比顶点低 27%</text>
+<text x="118.0" y="604.0" font-size="12" fill="#212529" font-weight="700" text-anchor="end">2026-03-12</text>
+<text x="118.0" y="620.0" font-size="11" fill="#868e96" text-anchor="end">新和成股价顶</text>
+<circle cx="132.0" cy="600.0" r="5" fill="#0ca678"/>
+<rect x="150.0" y="584.0" width="200.0" height="66.0" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+<text x="160.0" y="604.0" font-size="11.5" fill="#495057" text-anchor="start">蛋氨酸、VE 涨价</text>
+<rect x="356.0" y="584.0" width="190.0" height="66.0" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+<text x="366.0" y="604.0" font-size="11.5" fill="#495057" text-anchor="start">国信 2026E 72.5 亿，4 月上调</text>
+<text x="366.0" y="620.0" font-size="11.5" fill="#495057" text-anchor="start">到 85.7 亿</text>
+<rect x="552.0" y="584.0" width="170.0" height="66.0" rx="8" fill="#f3f0ff" stroke="#7048e8"/>
+<text x="562.0" y="604.0" font-size="11.5" fill="#495057" text-anchor="start">户数 7.8 万（2025-12）升</text>
+<text x="562.0" y="620.0" font-size="11.5" fill="#495057" text-anchor="start">到 9.5 万（2026-09）</text>
+<rect x="728.0" y="584.0" width="132.0" height="66.0" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+<text x="738.0" y="604.0" font-size="11.5" fill="#0b7285" font-weight="700" text-anchor="start">高估：8 月下调到</text>
+<text x="738.0" y="620.0" font-size="11.5" fill="#0b7285" text-anchor="start">76.3 亿，蛋氨酸价格</text>
+<text x="738.0" y="636.0" font-size="11.5" fill="#0b7285" text-anchor="start">比 4 月高点低 43%</text>
+<rect x="84.0" y="661.0" width="16.0" height="12.0" rx="2" fill="#fff5f5" stroke="#fa5252"/>
+<text x="112.0" y="672.0" font-size="12" fill="#495057" text-anchor="start">当时低估，后来上修</text>
+<rect x="252.0" y="661.0" width="16.0" height="12.0" rx="2" fill="#e6fcf5" stroke="#0ca678"/>
+<text x="280.0" y="672.0" font-size="12" fill="#495057" text-anchor="start">当时高估，后来下修</text>
+<rect x="420.0" y="661.0" width="16.0" height="12.0" rx="2" fill="#fff4e6" stroke="#f08c00"/>
+<text x="448.0" y="672.0" font-size="12" fill="#495057" text-anchor="start">关注点切换</text>
+<rect x="540.0" y="661.0" width="16.0" height="12.0" rx="2" fill="#f1f3f5" stroke="#adb5bd"/>
+<text x="568.0" y="672.0" font-size="12" fill="#495057" text-anchor="start">基本符合</text>
+<rect x="30.0" y="698.0" width="840.0" height="56.0" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+<text x="48.0" y="722.0" font-size="12" fill="#495057" text-anchor="start">低估 = 当时预测偏低、后来上修；高估 = 当时预测偏高、后来下修；关注点切换 = 预测仍在上修，股价已按冲击消退后的利润定价。</text>
+<text x="48.0" y="740.0" font-size="12" fill="#495057" text-anchor="start">隐含 PE = 当日市值 ÷ 当时对目标年度的预测利润，由本文计算。来源：东方财富研报中心、F10 股东户数、东方财富股吧。</text>
+</svg>

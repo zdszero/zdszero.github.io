@@ -1,0 +1,146 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 540" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="540" rx="12" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">KV Pool 布局：层维度 × K，token slot 共享</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">示意：L = 4，K = 2，一个请求 12 个 token，窗口 W = 4，此刻正在 decode 第 12 个 token</text>
+  <text x="30" y="110" font-size="12" font-weight="700" fill="#495057">req_to_token → slot</text>
+  <text x="223" y="110" text-anchor="middle" font-family="monospace" font-size="12" fill="#e8590c">57</text>
+  <text x="275" y="110" text-anchor="middle" font-family="monospace" font-size="12" fill="#e8590c">58</text>
+  <text x="327" y="110" text-anchor="middle" font-family="monospace" font-size="12" fill="#e8590c">59</text>
+  <text x="379" y="110" text-anchor="middle" font-family="monospace" font-size="12" fill="#e8590c">12</text>
+  <text x="431" y="110" text-anchor="middle" font-family="monospace" font-size="12" fill="#e8590c">13</text>
+  <text x="483" y="110" text-anchor="middle" font-family="monospace" font-size="12" fill="#e8590c">14</text>
+  <text x="535" y="110" text-anchor="middle" font-family="monospace" font-size="12" fill="#e8590c">15</text>
+  <text x="587" y="110" text-anchor="middle" font-family="monospace" font-size="12" fill="#e8590c">90</text>
+  <text x="639" y="110" text-anchor="middle" font-family="monospace" font-size="12" fill="#e8590c">91</text>
+  <text x="691" y="110" text-anchor="middle" font-family="monospace" font-size="12" fill="#e8590c">92</text>
+  <text x="743" y="110" text-anchor="middle" font-family="monospace" font-size="12" fill="#e8590c">93</text>
+  <text x="795" y="110" text-anchor="middle" font-family="monospace" font-size="12" fill="#e8590c">31</text>
+  <path d="M200 118 L818 118" stroke="#dee2e6" stroke-width="1"/>
+  <text x="30" y="152" font-family="monospace" font-size="12" font-weight="700" fill="#3b5bdb">layer_id 0</text>
+  <text x="118" y="152" font-size="11" fill="#868e96">loop 0 · L0</text>
+  <rect x="200" y="134" width="46" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="252" y="134" width="46" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="304" y="134" width="46" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="356" y="134" width="46" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="408" y="134" width="46" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="460" y="134" width="46" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="512" y="134" width="46" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="564" y="134" width="46" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="616" y="134" width="46" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="668" y="134" width="46" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="720" y="134" width="46" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="772" y="134" width="46" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="30" y="184" font-family="monospace" font-size="12" font-weight="700" fill="#3b5bdb">layer_id 1</text>
+  <text x="118" y="184" font-size="11" fill="#868e96">loop 0 · L1</text>
+  <rect x="200" y="166" width="46" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="252" y="166" width="46" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="304" y="166" width="46" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="356" y="166" width="46" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="408" y="166" width="46" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="460" y="166" width="46" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="512" y="166" width="46" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="564" y="166" width="46" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="616" y="166" width="46" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="668" y="166" width="46" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="720" y="166" width="46" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="772" y="166" width="46" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="30" y="216" font-family="monospace" font-size="12" font-weight="700" fill="#3b5bdb">layer_id 2</text>
+  <text x="118" y="216" font-size="11" fill="#868e96">loop 0 · L2</text>
+  <rect x="200" y="198" width="46" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="252" y="198" width="46" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="304" y="198" width="46" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="356" y="198" width="46" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="408" y="198" width="46" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="460" y="198" width="46" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="512" y="198" width="46" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="564" y="198" width="46" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="616" y="198" width="46" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="668" y="198" width="46" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="720" y="198" width="46" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="772" y="198" width="46" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="30" y="248" font-family="monospace" font-size="12" font-weight="700" fill="#3b5bdb">layer_id 3</text>
+  <text x="118" y="248" font-size="11" fill="#868e96">loop 0 · L3</text>
+  <rect x="200" y="230" width="46" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="252" y="230" width="46" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="304" y="230" width="46" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="356" y="230" width="46" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="408" y="230" width="46" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="460" y="230" width="46" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="512" y="230" width="46" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="564" y="230" width="46" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="616" y="230" width="46" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="668" y="230" width="46" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="720" y="230" width="46" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <rect x="772" y="230" width="46" height="26" rx="4" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="30" y="292" font-family="monospace" font-size="12" font-weight="700" fill="#0b7285">layer_id 4</text>
+  <text x="118" y="292" font-size="11" fill="#868e96">loop 1 · L0</text>
+  <rect x="200" y="274" width="46" height="26" rx="4" fill="#f8f9fa" stroke="#adb5bd" stroke-dasharray="3 3"/>
+  <rect x="252" y="274" width="46" height="26" rx="4" fill="#f8f9fa" stroke="#adb5bd" stroke-dasharray="3 3"/>
+  <rect x="304" y="274" width="46" height="26" rx="4" fill="#f8f9fa" stroke="#adb5bd" stroke-dasharray="3 3"/>
+  <rect x="356" y="274" width="46" height="26" rx="4" fill="#f8f9fa" stroke="#adb5bd" stroke-dasharray="3 3"/>
+  <rect x="408" y="274" width="46" height="26" rx="4" fill="#f8f9fa" stroke="#adb5bd" stroke-dasharray="3 3"/>
+  <rect x="460" y="274" width="46" height="26" rx="4" fill="#f8f9fa" stroke="#adb5bd" stroke-dasharray="3 3"/>
+  <rect x="512" y="274" width="46" height="26" rx="4" fill="#f8f9fa" stroke="#adb5bd" stroke-dasharray="3 3"/>
+  <rect x="564" y="274" width="46" height="26" rx="4" fill="#f8f9fa" stroke="#adb5bd" stroke-dasharray="3 3"/>
+  <rect x="616" y="274" width="46" height="26" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="668" y="274" width="46" height="26" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="720" y="274" width="46" height="26" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="772" y="274" width="46" height="26" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="30" y="324" font-family="monospace" font-size="12" font-weight="700" fill="#0b7285">layer_id 5</text>
+  <text x="118" y="324" font-size="11" fill="#868e96">loop 1 · L1</text>
+  <rect x="200" y="306" width="46" height="26" rx="4" fill="#f8f9fa" stroke="#adb5bd" stroke-dasharray="3 3"/>
+  <rect x="252" y="306" width="46" height="26" rx="4" fill="#f8f9fa" stroke="#adb5bd" stroke-dasharray="3 3"/>
+  <rect x="304" y="306" width="46" height="26" rx="4" fill="#f8f9fa" stroke="#adb5bd" stroke-dasharray="3 3"/>
+  <rect x="356" y="306" width="46" height="26" rx="4" fill="#f8f9fa" stroke="#adb5bd" stroke-dasharray="3 3"/>
+  <rect x="408" y="306" width="46" height="26" rx="4" fill="#f8f9fa" stroke="#adb5bd" stroke-dasharray="3 3"/>
+  <rect x="460" y="306" width="46" height="26" rx="4" fill="#f8f9fa" stroke="#adb5bd" stroke-dasharray="3 3"/>
+  <rect x="512" y="306" width="46" height="26" rx="4" fill="#f8f9fa" stroke="#adb5bd" stroke-dasharray="3 3"/>
+  <rect x="564" y="306" width="46" height="26" rx="4" fill="#f8f9fa" stroke="#adb5bd" stroke-dasharray="3 3"/>
+  <rect x="616" y="306" width="46" height="26" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="668" y="306" width="46" height="26" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="720" y="306" width="46" height="26" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="772" y="306" width="46" height="26" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="30" y="356" font-family="monospace" font-size="12" font-weight="700" fill="#0b7285">layer_id 6</text>
+  <text x="118" y="356" font-size="11" fill="#868e96">loop 1 · L2</text>
+  <rect x="200" y="338" width="46" height="26" rx="4" fill="#f8f9fa" stroke="#adb5bd" stroke-dasharray="3 3"/>
+  <rect x="252" y="338" width="46" height="26" rx="4" fill="#f8f9fa" stroke="#adb5bd" stroke-dasharray="3 3"/>
+  <rect x="304" y="338" width="46" height="26" rx="4" fill="#f8f9fa" stroke="#adb5bd" stroke-dasharray="3 3"/>
+  <rect x="356" y="338" width="46" height="26" rx="4" fill="#f8f9fa" stroke="#adb5bd" stroke-dasharray="3 3"/>
+  <rect x="408" y="338" width="46" height="26" rx="4" fill="#f8f9fa" stroke="#adb5bd" stroke-dasharray="3 3"/>
+  <rect x="460" y="338" width="46" height="26" rx="4" fill="#f8f9fa" stroke="#adb5bd" stroke-dasharray="3 3"/>
+  <rect x="512" y="338" width="46" height="26" rx="4" fill="#f8f9fa" stroke="#adb5bd" stroke-dasharray="3 3"/>
+  <rect x="564" y="338" width="46" height="26" rx="4" fill="#f8f9fa" stroke="#adb5bd" stroke-dasharray="3 3"/>
+  <rect x="616" y="338" width="46" height="26" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="668" y="338" width="46" height="26" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="720" y="338" width="46" height="26" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="772" y="338" width="46" height="26" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="30" y="388" font-family="monospace" font-size="12" font-weight="700" fill="#0b7285">layer_id 7</text>
+  <text x="118" y="388" font-size="11" fill="#868e96">loop 1 · L3</text>
+  <rect x="200" y="370" width="46" height="26" rx="4" fill="#f8f9fa" stroke="#adb5bd" stroke-dasharray="3 3"/>
+  <rect x="252" y="370" width="46" height="26" rx="4" fill="#f8f9fa" stroke="#adb5bd" stroke-dasharray="3 3"/>
+  <rect x="304" y="370" width="46" height="26" rx="4" fill="#f8f9fa" stroke="#adb5bd" stroke-dasharray="3 3"/>
+  <rect x="356" y="370" width="46" height="26" rx="4" fill="#f8f9fa" stroke="#adb5bd" stroke-dasharray="3 3"/>
+  <rect x="408" y="370" width="46" height="26" rx="4" fill="#f8f9fa" stroke="#adb5bd" stroke-dasharray="3 3"/>
+  <rect x="460" y="370" width="46" height="26" rx="4" fill="#f8f9fa" stroke="#adb5bd" stroke-dasharray="3 3"/>
+  <rect x="512" y="370" width="46" height="26" rx="4" fill="#f8f9fa" stroke="#adb5bd" stroke-dasharray="3 3"/>
+  <rect x="564" y="370" width="46" height="26" rx="4" fill="#f8f9fa" stroke="#adb5bd" stroke-dasharray="3 3"/>
+  <rect x="616" y="370" width="46" height="26" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="668" y="370" width="46" height="26" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="720" y="370" width="46" height="26" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="772" y="370" width="46" height="26" rx="4" fill="#e6fcf5" stroke="#0ca678"/>
+  <rect x="769" y="130" width="52" height="270" rx="6" fill="none" stroke="#f08c00" stroke-width="2"/>
+  <path d="M616 404 L616 410 L818 410 L818 404" fill="none" stroke="#0ca678" stroke-width="1.5"/>
+  <text x="717" y="426" text-anchor="middle" font-size="11" font-weight="700" fill="#0b7285">局部窗口 W</text>
+  <text x="795" y="126" text-anchor="middle" font-size="10.5" font-weight="700" fill="#e8590c">当前</text>
+  <text x="834" y="194" font-size="11" fill="#3b5bdb">每轮</text>
+  <text x="834" y="210" font-size="11" fill="#3b5bdb">全局读</text>
+  <rect x="30" y="446" width="22" height="14" rx="3" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="60" y="458" font-size="11.5" fill="#495057">loop 0：后续每轮的全局路径都读全长</text>
+  <rect x="310" y="446" width="22" height="14" rx="3" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="340" y="458" font-size="11.5" fill="#495057">loop ≥ 1：只有窗口内被读</text>
+  <rect x="590" y="446" width="22" height="14" rx="3" fill="#f8f9fa" stroke="#adb5bd" stroke-dasharray="3 3"/>
+  <text x="620" y="458" font-size="11.5" fill="#495057">loop ≥ 1：已分配，滑出窗口后不再读</text>
+  <rect x="30" y="476" width="840" height="56" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="46" y="499" font-size="12" fill="#495057"><tspan font-weight="700" fill="#212529">要点：</tspan>一列是一个 token slot，8 个逻辑层用同一个下标；Radix Cache 命中前缀就命中了全部 K×L 层的 KV。</text>
+  <text x="46" y="518" font-size="12" fill="#495057">每 token 的 KV 字节数是普通模型的 K 倍；当前实现所有逻辑层都按全长分配，灰色虚线部分没有被窗口省下来。</text>
+</svg>

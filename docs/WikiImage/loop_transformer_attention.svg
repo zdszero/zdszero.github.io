@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 530" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="530" rx="12" fill="#ffffff"/>
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#868e96"/>
+    </marker>
+    <marker id="arb" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#4c6ef5"/>
+    </marker>
+    <marker id="art" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#0ca678"/>
+    </marker>
+  </defs>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#212529">loop t ≥ 1：一个物理层 i 内的 Attention</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#868e96">同一个 q 走全局和局部两条路径，再由 query 决定的门控 g 混合</text>
+
+  <!-- input + qkv -->
+  <rect x="30" y="226" width="110" height="60" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="85" y="252" text-anchor="middle" font-size="14" font-weight="700" fill="#495057">h⁽ᵗ⁾</text>
+  <text x="85" y="272" text-anchor="middle" font-size="11" fill="#868e96">loop t 的输入</text>
+  <rect x="170" y="226" width="130" height="60" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="235" y="252" text-anchor="middle" font-size="13" font-weight="700" fill="#495057">qkv_proj + RoPE</text>
+  <text x="235" y="272" text-anchor="middle" font-size="11" fill="#868e96">共享权重</text>
+  <path d="M140 256 L166 256" fill="none" stroke="#868e96" stroke-width="2" marker-end="url(#ar)"/>
+  <!-- bus -->
+  <g fill="none" stroke="#868e96" stroke-width="2">
+    <path d="M300 256 L325 256"/>
+    <path d="M325 175 L325 337"/>
+    <path d="M325 175 L346 175" marker-end="url(#ar)"/>
+    <path d="M325 256 L346 256" marker-end="url(#ar)"/>
+    <path d="M325 337 L346 337" marker-end="url(#ar)"/>
+  </g>
+
+  <!-- KV of loop 0 (read only) -->
+  <rect x="350" y="76" width="230" height="46" rx="8" fill="#ffffff" stroke="#4c6ef5" stroke-dasharray="5 3"/>
+  <text x="465" y="96" text-anchor="middle" font-family="monospace" font-size="12" font-weight="700" fill="#3b5bdb">KV[layer_id = i]</text>
+  <text x="465" y="113" text-anchor="middle" font-size="11" fill="#868e96">loop 0 写入的全长 KV</text>
+  <path d="M465 122 L465 137" fill="none" stroke="#4c6ef5" stroke-width="2" marker-end="url(#arb)"/>
+  <text x="474" y="134" font-size="10.5" font-weight="700" fill="#3b5bdb">只读</text>
+
+  <!-- global attn -->
+  <rect x="350" y="140" width="230" height="70" rx="8" fill="#edf2ff" stroke="#4c6ef5"/>
+  <text x="362" y="160" font-size="13" font-weight="700" fill="#3b5bdb">attn[0]：全局 Attention</text>
+  <text x="362" y="180" font-family="monospace" font-size="11" fill="#3b5bdb">q, k=None, v=None</text>
+  <text x="362" y="198" font-family="monospace" font-size="11" fill="#868e96">save_kv_cache=False</text>
+
+  <!-- gate -->
+  <rect x="350" y="228" width="230" height="56" rx="8" fill="#fff9db" stroke="#f08c00"/>
+  <text x="362" y="249" font-size="13" font-weight="700" fill="#e8590c">gate_projections[i]</text>
+  <text x="362" y="270" font-size="11" fill="#495057">g_h = σ(w_hᵀ q_h + b_h)</text>
+
+  <!-- local attn -->
+  <rect x="350" y="302" width="230" height="70" rx="8" fill="#e6fcf5" stroke="#0ca678"/>
+  <text x="362" y="322" font-size="13" font-weight="700" fill="#0b7285">attn[t]：局部 Attention</text>
+  <text x="362" y="342" font-family="monospace" font-size="11" fill="#0b7285">q, k, v（本轮算出）</text>
+  <text x="362" y="360" font-size="11" fill="#868e96">sliding window W（默认 64）</text>
+  <path d="M465 372 L465 387" fill="none" stroke="#0ca678" stroke-width="2" marker-end="url(#art)"/>
+  <text x="474" y="384" font-size="10.5" font-weight="700" fill="#0b7285">写入</text>
+
+  <!-- KV of loop t -->
+  <rect x="350" y="390" width="230" height="46" rx="8" fill="#ffffff" stroke="#0ca678" stroke-dasharray="5 3"/>
+  <text x="465" y="410" text-anchor="middle" font-family="monospace" font-size="12" font-weight="700" fill="#0b7285">KV[layer_id = t·L + i]</text>
+  <text x="465" y="427" text-anchor="middle" font-size="11" fill="#868e96">本轮 KV，窗口内被读</text>
+  <!-- mix + o_proj -->
+  <rect x="636" y="200" width="150" height="112" rx="10" fill="#f3f0ff" stroke="#7048e8"/>
+  <text x="711" y="224" text-anchor="middle" font-size="13" font-weight="700" fill="#5f3dc4">门控混合</text>
+  <text x="711" y="250" text-anchor="middle" font-family="monospace" font-size="11.5" fill="#3b5bdb">g ⊙ o_global</text>
+  <text x="711" y="272" text-anchor="middle" font-family="monospace" font-size="11.5" fill="#0b7285">+ (1 − g) ⊙ o_local</text>
+  <text x="711" y="296" text-anchor="middle" font-size="10.5" fill="#868e96">g 广播到 head_dim</text>
+  <rect x="810" y="226" width="64" height="60" rx="8" fill="#f1f3f5" stroke="#adb5bd"/>
+  <text x="842" y="261" text-anchor="middle" font-size="12.5" font-weight="700" fill="#495057">o_proj</text>
+  <g fill="none" stroke-width="2">
+    <path d="M580 175 C612 175 610 236 632 236" stroke="#4c6ef5" marker-end="url(#arb)"/>
+    <path d="M580 256 L632 256" stroke="#f08c00" marker-end="url(#ar)"/>
+    <path d="M580 337 C612 337 610 276 632 276" stroke="#0ca678" marker-end="url(#art)"/>
+    <path d="M786 256 L806 256" stroke="#868e96" marker-end="url(#ar)"/>
+  </g>
+  <text x="608" y="166" text-anchor="middle" font-size="10.5" fill="#3b5bdb">o_global</text>
+  <text x="608" y="356" text-anchor="middle" font-size="10.5" fill="#0b7285">o_local</text>
+
+  <!-- note -->
+  <rect x="30" y="456" width="840" height="56" rx="8" fill="#f8f9fa" stroke="#e9ecef"/>
+  <text x="46" y="479" font-size="12" fill="#495057"><tspan font-weight="700" fill="#212529">要点：</tspan>本轮的 k, v 只进入局部路径；全局路径用本轮 q 去查 loop 0 的 KV，不重算也不覆盖。</text>
+  <text x="46" y="498" font-size="12" fill="#495057">存储是复用的，带宽不是：每一轮的全局路径都要把这一层的整段 KV 从显存再读一遍。</text>
+</svg>

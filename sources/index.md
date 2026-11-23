@@ -37,6 +37,7 @@
     - Residual
         - [Attention Residuals](./attention_residuals.md)
         - [mHC](./mhc.md)
+    - [Loop Transformer](./loop_transformer.md)
     - [Communication](./communication.md)
         - [Topology](./topology.md)
         - [SBO](./sbo.md)
@@ -154,6 +155,7 @@
     - [存储周期](./storage_cicle.md)
     - [网红公司的泡沫](./china_hype_bubbles.md)
     - [中国出口](./china_export_industry.md)
+    - [万华与新和成](./wanhua_nhu.md)
 - 随笔
     - [A 股特性](./stock_feature.md)
     - [感受市场温度](./market_temperature.md)

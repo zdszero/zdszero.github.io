@@ -1,0 +1,564 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    Loop Transformer
+  </title>
+    <link rel="stylesheet" href="./WikiTheme/theme/bootstrap.css"  />
+        <script defer=""
+        src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+        <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+        </script>
+        <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+      <style type="text/css">
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+      <!-- wiki three-column layout styles/behavior, kept external so the ~5KB
+       block isn't duplicated into every generated page -->
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/wiki-layout.css" />
+  <script defer src="./WikiTheme/wiki-layout.js"></script>
+</head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">Loop Transformer</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="wiki-layout">
+    <nav class="wiki-sidebar" id="wiki-sidebar" hidden></nav>
+    <main class="wiki-main">
+            <p>Loop Transformer 把同一组 Decoder Layer
+            重复执行多次：参数只有 <span class="math inline">L</span>
+            层，前向却走了 <span class="math inline">K\times L</span>
+            层。本文以 SGLang 中的 IQuest
+            LoopCoder（<code>python/sglang/srt/models/iquest_loopcoder.py</code>）为主线，说明推理引擎如何处理循环层的计算、权重存储和
+            KV Cache 存储；最后用
+            HRM-Text（<code>python/sglang/srt/models/hrm_text.py</code>）说明同一套做法如何推广到嵌套循环。</p>
+            <h3
+            id="问题想要更深但不想要更多参数">问题：想要更深，但不想要更多参数</h3>
+            <p>模型的有效深度和参数量通常绑定在一起：多一层就多一份
+            Attention 和 MLP 权重。Loop Transformer 解开这个绑定，让
+            <span class="math inline">L</span> 层权重循环 <span
+            class="math inline">K</span> 次（LoopCoder 的配置项是
+            <code>loop_num</code>，默认 2）：</p>
+            <p><span class="math display"> h^{(t+1)} =
+            F_{\theta}\big(h^{(t)}\big),\qquad t=0,\ldots,K-1
+            </span></p>
+            <p>其中 <span class="math inline">F_\theta</span> 是完整的
+            <span class="math inline">L</span> 层堆叠，<span
+            class="math inline">\theta</span>
+            在每次循环中相同。它用计算换参数：FLOPs
+            约是同参数量普通模型的 <span class="math inline">K</span>
+            倍，权重显存不变。</p>
+            <p>推理引擎里有一个默认假设：<strong>一个
+            <code>layer_id</code> 对应一份权重，也对应一份 KV
+            Cache。</strong> Loop 打破了这个假设。同一层权重被执行 <span
+            class="math inline">K</span> 次，每次的输入 hidden state
+            不同，算出的 K/V 也不同。于是有三个问题：</p>
+            <table>
+            <colgroup>
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>问题</th>
+            <th>普通 Transformer</th>
+            <th>Loop Transformer</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>怎么算</td>
+            <td>每层执行一次</td>
+            <td>每层执行 <span class="math inline">K</span>
+            次，后续循环如何利用前一次的结果</td>
+            </tr>
+            <tr>
+            <td>权重存几份</td>
+            <td>每层一份</td>
+            <td>仍然每层一份，所有循环共享</td>
+            </tr>
+            <tr>
+            <td>KV 存几份</td>
+            <td>每层一份</td>
+            <td>每次执行都产生新的 K/V，不能互相覆盖</td>
+            </tr>
+            </tbody>
+            </table>
+            <h3 id="抽象物理层与逻辑层">抽象：物理层与逻辑层</h3>
+            <p>把“层”拆成两个概念就能回答上面三个问题：</p>
+            <ul>
+            <li><strong>物理层</strong>：一份权重。LoopCoder 有 <span
+            class="math inline">L</span>
+            个物理层（<code>num_hidden_layers</code>）。</li>
+            <li><strong>逻辑层</strong>：物理层的一次执行，用 <span
+            class="math inline">(\text{loop}, \text{layer})</span>
+            标识，共 <span class="math inline">K\times L</span>
+            个。</li>
+            </ul>
+            <p>权重按物理层索引，KV Cache
+            按逻辑层索引。逻辑层的编号就是展开后的位置：</p>
+            <p><span class="math display"> \text{layer\_id} =
+            \text{loop}\times L + \text{layer} </span></p>
+            <figure>
+            <img src="./WikiImage/loop_transformer_unroll.svg"
+            alt="物理层与逻辑层" />
+            <figcaption aria-hidden="true">物理层与逻辑层</figcaption>
+            </figure>
+            <p>这个编号是整个实现的关键。SGLang 的 KV Pool、Attention
+            Backend 和 Radix Cache 只认
+            <code>layer_id</code>，不知道循环的存在。只要每个逻辑层拿到一个不重复的
+            <code>layer_id</code>，并且 KV Pool 按 <span
+            class="math inline">K\times L</span>
+            层分配，下游组件不需要任何改动就能工作。在模型里，权重放在物理层模块上，<code>layer_id</code>
+            放在不带权重的 <code>RadixAttention</code>
+            上，每个物理层持有 <span class="math inline">K</span>
+            个这样的 Attention 对象，一个循环用一个。</p>
+            <h3 id="layer-计算loop-在外layer-在内">Layer 计算：loop
+            在外，layer 在内</h3>
+            <p><code>IQuestLoopCoderModel.forward</code>
+            的执行顺序是两层循环，外层是 loop，内层是物理层：</p>
+            <div class="sourceCode" id="cb1"><pre
+            class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> loop_idx <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.loop_num):</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> layer_idx <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.start_layer, <span class="va">self</span>.end_layer):</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>        gate_proj <span class="op">=</span> <span class="va">self</span>.gate_projections[layer_idx] <span class="cf">if</span> loop_idx <span class="op">&gt;</span> <span class="dv">0</span> <span class="cf">else</span> <span class="va">None</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>        hidden_states <span class="op">=</span> layer(positions, hidden_states, forward_batch, loop_idx, gate_proj)</span></code></pre></div>
+            <p>外层是 loop，意味着整个 <span
+            class="math inline">L</span>
+            层堆叠先完整走一遍，最后一层的输出再作为下一轮第 0
+            层的输入。这个顺序还保证了一件事：进入 loop 1 时，loop 0
+            所有层的 K/V 已经写进 KV Pool，loop 1 可以直接读。</p>
+            <h4 id="loop-0普通的全局-attention">loop 0：普通的全局
+            Attention</h4>
+            <p>第一轮和标准 Llama 层完全一样：QKV 投影、RoPE、全长
+            causal Attention、写 KV Cache、MLP。</p>
+            <h4 id="loop-1全局读-局部写再用门控混合">loop ≥ 1：全局读 +
+            局部写，再用门控混合</h4>
+            <p>后续循环的每个 Attention 用同一个 <span
+            class="math inline">q^{(t)}</span> 走两条路径：</p>
+            <p><span class="math display">
+            o = g\odot \underbrace{\operatorname{Attn}\big(q^{(t)},
+            K^{(0)}, V^{(0)}\big)}_{\text{全局：读 loop 0 的 KV}}
+            + (1-g)\odot
+            \underbrace{\operatorname{Attn}_{W}\big(q^{(t)}, K^{(t)},
+            V^{(t)}\big)}_{\text{局部：本轮 KV，窗口 }W}
+            </span></p>
+            <figure>
+            <img src="./WikiImage/loop_transformer_attention.svg"
+            alt="loop ≥ 1 的 Attention 数据流" />
+            <figcaption aria-hidden="true">loop ≥ 1 的 Attention
+            数据流</figcaption>
+            </figure>
+            <ul>
+            <li><strong>全局路径</strong>：调用
+            <code>self.attn[0](q, None, None, forward_batch, save_kv_cache=False)</code>。<code>k</code>、<code>v</code>
+            传 <code>None</code>，Backend 改从 KV Pool 里取 loop 0
+            这一层的 K/V；<code>save_kv_cache=False</code>
+            保证不覆盖它们。本轮算出的 <span
+            class="math inline">k^{(t)}</span> 不参与全局路径。</li>
+            <li><strong>局部路径</strong>：调用
+            <code>self.attn[loop_idx](q, k, v, forward_batch)</code>，这个
+            <code>RadixAttention</code> 的
+            <code>sliding_window_size</code> 是
+            <code>loop_window_size</code>（默认 64），只看最近 <span
+            class="math inline">W</span> 个 token，并把本轮 K/V
+            写入自己的 KV 槽。</li>
+            <li><strong>门控</strong>：<code>LoopGateProjection</code>
+            对每个 head 算一个标量 <span
+            class="math inline">g_h=\sigma(w_h^\top
+            q_h+b_h)</span>，广播到该 head 的 <code>head_dim</code>
+            个通道。<span class="math inline">g</span> 由 query
+            决定，所以每个 token、每个 head
+            都可以自己选择更依赖全局上下文还是局部细节。</li>
+            </ul>
+            <p>可以这样理解：loop 0
+            负责从完整上下文建立表示，后续循环在这份全局 K/V
+            上反复“重读”，只为最近的窗口额外生成新的 K/V。</p>
+            <h4 id="计算量">计算量</h4>
+            <p>每个 token 的 QKV 投影、o_proj、MLP 都执行 <span
+            class="math inline">K</span> 次。Attention
+            部分，设上下文长度为 <span
+            class="math inline">S</span>，每个物理层在 Decode 时读取的
+            KV 行数为：</p>
+            <p><span class="math display"> \underbrace{S}_{\text{loop
+            0}} + (K-1)\big(\underbrace{S}_{\text{全局}} +
+            \underbrace{\min(S, W)}_{\text{局部}}\big) \approx K\cdot S
+            </span></p>
+            <p>全局路径虽然复用了 loop 0 的 KV 存储，但每一轮都要把这份
+            KV 从 HBM 再读一遍。因此长上下文 Decode 的 KV
+            访存也约是普通模型的 <span class="math inline">K</span>
+            倍，存储共享并不等于带宽共享。</p>
+            <h3 id="weight-存储每个物理层只存一份">Weight
+            存储：每个物理层只存一份</h3>
+            <p>LoopCoder 只用
+            <code>make_layers(config.num_hidden_layers, ...)</code> 构造
+            <span class="math inline">L</span> 个
+            <code>LoopCoderDecoderLayer</code>，没有任何按 loop
+            复制的权重。每层的组成：</p>
+            <table>
+            <colgroup>
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>组件</th>
+            <th>数量</th>
+            <th>是否随 loop 复制</th>
+            <th>说明</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td><code>qkv_proj</code> / <code>o_proj</code> /
+            <code>mlp</code> / 两个 RMSNorm</td>
+            <td><span class="math inline">L</span> 份</td>
+            <td>否</td>
+            <td>所有循环共享，MLP 直接复用 <code>LlamaMLP</code></td>
+            </tr>
+            <tr>
+            <td><code>self_attn.attn</code>（<code>RadixAttention</code>）</td>
+            <td><span class="math inline">K\times L</span> 个</td>
+            <td>是，但没有参数</td>
+            <td>只携带 <code>layer_id</code> 和
+            <code>sliding_window_size</code></td>
+            </tr>
+            <tr>
+            <td><code>gate_projections[i]</code>（<code>LoopGateProjection</code>）</td>
+            <td><span class="math inline">L</span> 份</td>
+            <td>否</td>
+            <td>loop 1 到 loop <span class="math inline">K-1</span>
+            共用同一份</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>关键在第二行：“每个循环一个 Attention 对象”是必须的，因为
+            KV 槽要按逻辑层区分；但这个对象只是 KV
+            的地址，不是权重。权重和 KV
+            地址分离以后，循环只增加地址，不增加参数。</p>
+            <p>门控权重的形状是 <code>[num_heads, head_dim]</code>（加
+            <code>[num_heads]</code> 的 bias），用
+            <code>ColumnParallelLinear(head_dim, num_heads)</code> 按
+            head 维切到各 TP rank。forward 里先让每个 head 的 <span
+            class="math inline">q_h</span> 和本 rank 所有 head
+            的权重相乘，再用 <code>torch.diagonal</code> 取出 head <span
+            class="math inline">h</span> 对应的第 <span
+            class="math inline">h</span> 列。这样多算了
+            <code>num_heads</code> 倍，但这部分计算量远小于 QKV
+            投影，换来的是可以直接复用标准的并行线性层。</p>
+            <p>加载时 checkpoint 里的
+            <code>gate_projections.{i}.weight</code> /
+            <code>.bias</code> 被改名为
+            <code>gate_projections.{i}.gate_proj.weight</code> /
+            <code>.bias</code>。其余权重名与 Llama
+            相同，<code>q/k/v_proj</code> 合并成
+            <code>qkv_proj</code>，<code>gate/up_proj</code> 合并成
+            <code>gate_up_proj</code>。</p>
+            <h3 id="kv-cache-存储每个逻辑层一份-kv">KV Cache
+            存储：每个逻辑层一份 KV</h3>
+            <h4 id="为什么不能共用">为什么不能共用</h4>
+            <p>同一个物理层在 loop 0 和 loop 1 的输入不同，所以 <span
+            class="math inline">k^{(0)}\ne k^{(1)}</span>。两者在后续
+            Decode 中都还会被读：loop 0 的 K/V
+            供所有后续循环的全局路径使用，loop <span
+            class="math inline">t</span> 的 K/V
+            供本轮局部路径使用。任何一份被覆盖，后面的 token
+            都会读到错误的历史。</p>
+            <h4 id="布局层维度乘以-ktoken-slot-共享">布局：层维度乘以
+            K，token slot 共享</h4>
+            <p><code>LoopCoderAttention.__init__</code>
+            为每个循环创建一个
+            <code>RadixAttention</code>，<code>layer_id = loop_idx * num_hidden_layers + layer_id</code>。引擎侧有两处配合，把
+            KV Pool 的层数扩成 <span class="math inline">K\times
+            L</span>：</p>
+            <ul>
+            <li><code>configs/model_config.py</code>：架构为
+            <code>IQuestLoopCoderForCausalLM</code>
+            时，<code>num_attention_layers = num_hidden_layers * loop_num</code>。</li>
+            <li><code>model_executor/model_runner_components/layer_setup.py</code>：<code>loop_num &gt; 1</code>
+            时
+            <code>num_effective_layers *= loop_num</code>。<code>pool_configurator.py</code>
+            用它计算每 token 的
+            <code>cell_size</code>，<code>kv_cache_configurator.py</code>
+            用它作为 KV Pool 的 <code>layer_num</code>。</li>
+            </ul>
+            <figure>
+            <img src="./WikiImage/loop_transformer_kv_layout.svg"
+            alt="KV Pool 布局" />
+            <figcaption aria-hidden="true">KV Pool 布局</figcaption>
+            </figure>
+            <p>token 维度不变。<code>req_to_token</code> 给每个 token
+            分配一个 slot 下标，<span class="math inline">K\times
+            L</span> 个逻辑层的 buffer
+            都用同一个下标。这带来两个直接结果：</p>
+            <ul>
+            <li><strong>容量按 <span class="math inline">K</span>
+            倍缩小</strong>。每 token 的 KV 字节数是 <span
+            class="math inline">2\times n_{kv}\times d_{head}\times
+            \text{dtype}\times L\times K</span>，同样的显存能放下的
+            token 数是普通模型的 <span
+            class="math inline">1/K</span>。</li>
+            <li><strong>前缀复用不需要改动</strong>。Radix Cache
+            命中一个前缀，就同时命中了这些 token 在所有循环里的
+            KV。LoopCoder 的 Attention 都是 causal 的，一个 token
+            在每个逻辑层的 K/V 只依赖它之前的 token，所以 Chunked
+            Prefill 和 Radix Cache 都可以照常开启。</li>
+            </ul>
+            <h4 id="只读访问">只读访问</h4>
+            <p>全局路径的
+            <code>k=None, v=None, save_kv_cache=False</code> 需要
+            Attention Backend 支持“只读、不写”。以 Triton Backend
+            为例，<code>forward_extend</code> 发现
+            <code>k</code>、<code>v</code> 为 <code>None</code> 时，用
+            <code>forward_batch.out_cache_loc</code> 从
+            <code>layer_id</code> 对应的 buffer 里取出本批 token
+            刚写入的 K/V，再与前缀一起计算；Decode 和 paged prefill
+            本来就从 KV Pool 读，只需跳过写入。FlashInfer 的 ragged
+            prefill 分支对 <code>k is None</code>
+            有单独处理（取该层的整块
+            buffer），使用这条路径时值得单独验证正确性。</p>
+            <h4 id="窗口没有转化为显存节省">窗口没有转化为显存节省</h4>
+            <p>loop ≥ 1 的局部 Attention 只读最近 <span
+            class="math inline">W</span> 个 token，理论上每个物理层只需
+            <span class="math inline">S+(K-1)W</span> 行 KV。但
+            <code>IQuestLoopCoderForCausalLM</code> 不在
+            <code>is_hybrid_swa_model</code> 的列表里，所有 <span
+            class="math inline">K\times L</span>
+            个逻辑层都按全长分配，实际占用 <span
+            class="math inline">K\cdot S</span> 行。<span
+            class="math inline">W=64</span> 时，loop ≥ 1 的 KV
+            几乎全部是“已分配、不再被读”的空间。如果要省这部分显存，方向是让
+            loop ≥ 1 的逻辑层走 SWA Pool（参考 <a
+            href="./swa.html">SWA</a>），代价是要处理 hybrid SWA
+            的层号映射。</p>
+            <h4 id="一个约束pipeline-parallelism">一个约束：Pipeline
+            Parallelism</h4>
+            <p><code>layer_id</code> 的公式用的是全局层号和全部层数
+            <code>num_hidden_layers</code>，而 KV Pool 按
+            <code>layer_id - start_layer</code> 寻址，大小为 <span
+            class="math inline">(\text{end\_layer}-\text{start\_layer})\times
+            K</span>。只有 <code>start_layer = 0</code> 且
+            <code>end_layer = L</code>（即 PP = 1）时两者一致；PP &gt; 1
+            时 loop ≥ 1 的 <code>layer_id</code> 会超出本 stage 的 Pool
+            范围。</p>
+            <h3 id="推广hrm-text-的嵌套循环">推广：HRM-Text
+            的嵌套循环</h3>
+            <p>HRM-Text（Hierarchical Reasoning
+            Model）用同一套“物理层/逻辑层”做法处理更复杂的循环。它有两个
+            Transformer 堆叠：快的 <code>L_module</code> 和慢的
+            <code>H_module</code>，每个堆叠
+            <code>num_layers_per_stack</code> 层。前向是嵌套循环：每个 H
+            cycle 里先跑 <code>L_cycles</code>（记 <span
+            class="math inline">L_c</span>）次 L 堆叠，再跑一次 H
+            堆叠，共 <code>H_cycles</code>（记 <span
+            class="math inline">H</span>）个 H
+            cycle。每跑一次堆叠记为一个 step。</p>
+            <table>
+            <colgroup>
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>维度</th>
+            <th>LoopCoder</th>
+            <th>HRM-Text</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>物理层</td>
+            <td><span class="math inline">L</span> 层，一个堆叠</td>
+            <td>两个堆叠，各 <span class="math inline">n</span> 层</td>
+            </tr>
+            <tr>
+            <td>循环结构</td>
+            <td>单层循环，<span class="math inline">K</span> 次</td>
+            <td>嵌套循环，共 <span
+            class="math inline">H\times(L_c+1)</span> 个 step</td>
+            </tr>
+            <tr>
+            <td>逻辑层编号</td>
+            <td><code>loop * L + layer</code></td>
+            <td><code>step * n + layer</code>，L 用 step <span
+            class="math inline">h(L_c+1)+l</span>，H 用 <span
+            class="math inline">h(L_c+1)+L_c</span></td>
+            </tr>
+            <tr>
+            <td>Attention 对象</td>
+            <td><code>nn.ModuleList</code>，按 loop 下标</td>
+            <td><code>nn.ModuleDict</code>，只为本堆叠用到的 step
+            创建</td>
+            </tr>
+            <tr>
+            <td>KV 层数来源</td>
+            <td><code>ModelConfig</code> 和 <code>layer_setup.py</code>
+            里乘 <code>loop_num</code></td>
+            <td>HF config 的 <code>__post_init__</code> 已把
+            <code>num_hidden_layers</code> 改成总 slot 数</td>
+            </tr>
+            <tr>
+            <td>后续循环如何读历史</td>
+            <td>门控混合 loop 0 全局 KV 与本轮窗口 KV</td>
+            <td>每个 step 只读自己的 KV</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>L 和 H 的 step 编号互不重叠，所以每个 <span
+            class="math inline">(\text{step}, \text{layer})</span>
+            对应唯一的 KV 槽。</p>
+            <p>HRM-Text 多了一个约束：Prompt 部分用双向
+            Attention（<code>AttentionType.DECODER_BIDIRECTIONAL</code>）。在双向
+            Attention 下，一个 token 的 K/V 依赖它后面的
+            token，前缀不再能被别的请求复用。<code>server_args.py</code>
+            的 <code>_handle_model_capability_adjustments</code>
+            因此对这个模型强制使用 Triton Backend，并关闭 Radix
+            Cache、Chunked Prefill 和 CUDA Graph。LoopCoder 是纯 causal
+            的，没有这些限制。</p>
+            <h3 id="小结">小结</h3>
+            <p>Loop Transformer
+            在推理引擎里的处理可以归结为一句话：<strong>权重按物理层存，KV
+            按逻辑层存。</strong> 把同一层的每次执行展开成一个独立的
+            <code>layer_id</code>，再把 KV Pool 的层数乘以循环次数，KV
+            Pool、Attention Backend 和 Radix Cache 就都能像处理一个
+            <span class="math inline">K\times L</span>
+            层的普通模型一样工作；权重则只挂在 <span
+            class="math inline">L</span>
+            个物理层上，被所有循环共享。代价同样直接：计算量、KV 显存和
+            Decode 时的 KV 访存都约为同参数量普通模型的 <span
+            class="math inline">K</span> 倍。LoopCoder 用“后续循环读
+            loop 0 全局 KV、只为窗口内 token 写新
+            KV”降低了后续循环对长上下文的依赖，但在当前实现里，窗口还没有转化为显存节省。</p>
+          </main>
+        <aside class="wiki-toc">
+      <ul>
+      <li><a href="#问题想要更深但不想要更多参数"
+      id="toc-问题想要更深但不想要更多参数">问题：想要更深，但不想要更多参数</a></li>
+      <li><a href="#抽象物理层与逻辑层"
+      id="toc-抽象物理层与逻辑层">抽象：物理层与逻辑层</a></li>
+      <li><a href="#layer-计算loop-在外layer-在内"
+      id="toc-layer-计算loop-在外layer-在内">Layer 计算：loop
+      在外，layer 在内</a></li>
+      <li><a href="#weight-存储每个物理层只存一份"
+      id="toc-weight-存储每个物理层只存一份">Weight
+      存储：每个物理层只存一份</a></li>
+      <li><a href="#kv-cache-存储每个逻辑层一份-kv"
+      id="toc-kv-cache-存储每个逻辑层一份-kv">KV Cache
+      存储：每个逻辑层一份 KV</a></li>
+      <li><a href="#推广hrm-text-的嵌套循环"
+      id="toc-推广hrm-text-的嵌套循环">推广：HRM-Text
+      的嵌套循环</a></li>
+      <li><a href="#小结" id="toc-小结">小结</a></li>
+      </ul>
+    </aside>
+      </div>
+</body>
+
+</html>
