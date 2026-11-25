@@ -156,6 +156,7 @@
     - [网红公司的泡沫](./china_hype_bubbles.md)
     - [中国出口](./china_export_industry.md)
     - [万华与新和成](./wanhua_nhu.md)
+    - [现金牛生意](./cash_cow_business.md)
 - 随笔
     - [A 股特性](./stock_feature.md)
     - [感受市场温度](./market_temperature.md)
