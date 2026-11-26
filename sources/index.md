@@ -137,6 +137,8 @@
     - [2024](./2024.md)
         - [924](./2024-924.md)
     - [2025-2026](./2025-2026.md)
+- 板块
+    - [游戏板块](./game_sector.md)
 - 个股研究
     - [CATL](./CATL.md)
     - [GYFL](./gyfl.md)
@@ -158,6 +160,7 @@
     - [万华与新和成](./wanhua_nhu.md)
     - [现金牛生意](./cash_cow_business.md)
 - 随笔
+    - [非对称投资](./非对称投资.md)
     - [A 股特性](./stock_feature.md)
     - [感受市场温度](./market_temperature.md)
     - [读书学习投资有用么](./should_i_learn_by_books.md)
