@@ -1,0 +1,289 @@
+<!doctype html>
+<html >
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/template.css" />
+
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.cookie.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.hoverIntent.minified.js"></script>
+  <script type='text/javascript' src="./WikiTheme/menu/js/jquery.dcjqaccordion.2.7.min.js"></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/jquery.sticky-kit.js "></script>
+  <script type="text/javascript" src="./WikiTheme/menu/js/sticky_menu.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/blue.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/graphite.css"/>
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/menu/css/skins/grey.css"/>
+
+  <meta name="generator" content="pandoc" />
+      <title>
+    基础 K 线分析
+  </title>
+    <link rel="stylesheet" href="./WikiTheme/theme/bootstrap.css"  />
+          <!-- wiki three-column layout styles/behavior, kept external so the ~5KB
+       block isn't duplicated into every generated page -->
+  <link rel="stylesheet" type="text/css" href="./WikiTheme/wiki-layout.css" />
+  <script defer src="./WikiTheme/wiki-layout.js"></script>
+</head>
+
+<body>
+    <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <span class="doc-title">基础 K 线分析</span>
+        <ul class="nav pull-right doc-info">
+          <p class="navbar-text">
+                                                      </p>
+                  </ul>
+      </div>
+    </div>
+  </div>
+    <div class="wiki-layout">
+    <nav class="wiki-sidebar" id="wiki-sidebar" hidden></nav>
+    <main class="wiki-main">
+            <p>一天的交易里有成千上万笔成交，价格上下来回走。如果只看收盘价，“今天涨了
+            2%”
+            这句话丢掉了大部分信息：可能是开盘就一路上涨，也可能是先跌
+            5%
+            再被拉回来。这两种走势的收盘价一样，背后的买卖力量完全不同。</p>
+            <p>K
+            线要做的事，是把一个周期内的博弈过程压缩成一个可以快速比较的图形。读
+            K 线的难点不在认图，而在于：</p>
+            <ul>
+            <li><strong>同一个形状在不同位置意义相反。</strong>
+            下跌末端的长下影线是承接，上涨末端的长下影线可能是出货。</li>
+            <li><strong>单根 K 线噪音很大。</strong> 多数 K
+            线不携带任何信号，只是随机波动。</li>
+            <li><strong>口诀很多，范式很少。</strong>
+            “锤子线看涨”“吞没看反转”之类的规则背得再多，如果不知道什么时候该读、什么时候该忽略，就只能事后解释。</li>
+            </ul>
+            <p>所以这一页不追求列全形态，而是建立一套固定的读法：先看结构，再看位置，然后看组合，最后等确认。</p>
+            <h3 id="一根-k-线记录的是哪些价格被接受哪些被拒绝">一根 K
+            线记录的是”哪些价格被接受、哪些被拒绝”</h3>
+            <p>一根 K
+            线由开、高、低、收四个价格画成。把它理解成一份博弈记录，比记形状有用得多：</p>
+            <ul>
+            <li><strong>实体（开到收）</strong>：这一周期结束时，多空双方最终认可的价格区间。实体越长，单边共识越强。</li>
+            <li><strong>影线（实体之外）</strong>：盘中有人把价格推到那里，但没能守住。上影线说明高价被卖方打回，下影线说明低价被买方接住。</li>
+            <li><strong>收盘位置</strong>：收盘落在当日高低区间的哪里，回答了”这一周期最后谁赢”。可以用一个数量化：<code>(收 − 低) ÷ (高 − 低)</code>，接近
+            100% 是买方完胜，接近 0 是卖方完胜。</li>
+            </ul>
+            <figure>
+            <img src="./WikiImage/kline_analyze_anatomy.svg"
+            alt="K 线结构与收盘位置" />
+            <figcaption aria-hidden="true">K
+            线结构与收盘位置</figcaption>
+            </figure>
+            <p>有了这个抽象，常见单根形态就不用死记，都可以从”实体长短 +
+            影线方向 + 收盘位置”推出来：</p>
+            <table>
+            <colgroup>
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>形态</th>
+            <th>结构特征</th>
+            <th>背后的市场行为</th>
+            <th>底部参考意义</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>长下影线（锤子线）</td>
+            <td>小实体在上端，下影线 ≥ 实体 2 倍</td>
+            <td>盘中遭遇抛售，但低位有承接</td>
+            <td>潜在止跌</td>
+            </tr>
+            <tr>
+            <td>倒锤子线</td>
+            <td>小实体在下端，长上影线</td>
+            <td>买方尝试向上突破，但未能维持涨幅</td>
+            <td>需要后续确认</td>
+            </tr>
+            <tr>
+            <td>十字星</td>
+            <td>开收几乎相同</td>
+            <td>多空暂时达到平衡</td>
+            <td>趋势可能变盘</td>
+            </tr>
+            <tr>
+            <td>大阳线</td>
+            <td>长实体，收在高点附近</td>
+            <td>买方明显占据优势</td>
+            <td>可能启动反弹</td>
+            </tr>
+            <tr>
+            <td>大阴线</td>
+            <td>长实体，收在低点附近</td>
+            <td>卖方明显占据优势</td>
+            <td>可能加速下跌</td>
+            </tr>
+            <tr>
+            <td>长上影线</td>
+            <td>收盘远离最高价</td>
+            <td>上方存在较强抛压</td>
+            <td>上涨受阻</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>表里最后一列写的是”参考意义”，因为单根 K
+            线本身没有方向，方向来自它所处的位置。</p>
+            <h3 id="范式一位置决定含义">范式一：位置决定含义</h3>
+            <p>同一根锤子形状的 K
+            线，放在三个位置上会得出三个不同结论：</p>
+            <figure>
+            <img src="./WikiImage/kline_analyze_context.svg"
+            alt="同一根长下影线在不同位置的含义" />
+            <figcaption
+            aria-hidden="true">同一根长下影线在不同位置的含义</figcaption>
+            </figure>
+            <ul>
+            <li><strong>连续下跌之后</strong>叫锤子线。空头一路推进，这一天第一次推不动，低价被大量买入。它是止跌的候选信号，还不是反转。</li>
+            <li><strong>连续上涨之后</strong>同样的形状叫上吊线。它说明盘中已经有大笔抛售，只是收盘前被拉了回来。如果次日跌破它的实体，就是见顶确认。</li>
+            <li><strong>震荡区间中部</strong>没有趋势可以反转，也不在关键价位上，这根
+            K 线基本可以忽略。</li>
+            </ul>
+            <p>“关键价位”一般指这几类地方：前期高点和低点、长时间横盘形成的密集成交区、未回补的跳空缺口、重要均线。K
+            线信号落在这些位置，才说明多空在一个双方都在意的价格上交过手。</p>
+            <p><strong>形态的名字由形状决定，含义由位置决定。</strong>
+            脱离趋势和位置去套口诀，是 K 线分析最常见的错误。</p>
+            <h3
+            id="范式二多根组合看力量转移">范式二：多根组合看力量转移</h3>
+            <p>单根 K
+            线只记录一个周期。多根组合记录的是力量从一方转到另一方的过程，所以信号比单根强。常见组合可以归成三类，每一类在顶部都有一个镜像：</p>
+            <figure>
+            <img src="./WikiImage/kline_analyze_combos.svg"
+            alt="常见多根 K 线组合" />
+            <figcaption aria-hidden="true">常见多根 K
+            线组合</figcaption>
+            </figure>
+            <table>
+            <colgroup>
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            <col style="width: 25%" />
+            </colgroup>
+            <thead>
+            <tr>
+            <th>类别</th>
+            <th>底部形态</th>
+            <th>顶部镜像</th>
+            <th>判定要点</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>吞没类</td>
+            <td>看涨吞没</td>
+            <td>看跌吞没</td>
+            <td>后一根的实体完全覆盖前一根的实体，方向相反</td>
+            </tr>
+            <tr>
+            <td>刺透类</td>
+            <td>刺透形态</td>
+            <td>乌云盖顶</td>
+            <td>跳空开盘后反向运行，收进前一根实体的一半以上，但没有完全吞没</td>
+            </tr>
+            <tr>
+            <td>星线类</td>
+            <td>启明星</td>
+            <td>黄昏星</td>
+            <td>长实体 → 小实体（停顿）→
+            反向长实体，第三根收复第一根实体过半</td>
+            </tr>
+            <tr>
+            <td>连续类</td>
+            <td>红三兵</td>
+            <td>三只乌鸦</td>
+            <td>三根同向实体，开盘和收盘依次抬高或压低</td>
+            </tr>
+            </tbody>
+            </table>
+            <p>这些名字背后只有一个判断：<strong>前一方的力量被后一方吞掉了多少。</strong>
+            吞没比刺透强，因为收复的失地更多；三根组合比两根强，因为反方向的力量持续了更久。连续类形态出现时趋势往往已经走出一段，它更适合确认方向，不适合当作入场点。</p>
+            <h3
+            id="范式三确认以及量价配合">范式三：确认，以及量价配合</h3>
+            <p>K
+            线形态只是假设，需要后续走势来检验。常用的确认方式有三种：</p>
+            <ul>
+            <li><strong>次日方向</strong>：锤子线之后的阳线收盘高于锤子线最高点；上吊线之后的阴线跌破上吊线实体。</li>
+            <li><strong>成交量</strong>：反转形态附近明显放量，说明有新的资金参与，而不只是卖盘暂时枯竭。缩量的反弹更容易失败。</li>
+            <li><strong>失效价位</strong>：每个形态都有一个”被证伪”的价格。锤子线的失效价是它的最低点，看涨吞没的失效价是吞没阳线的最低点。价格跌破这里，形态就作废。</li>
+            </ul>
+            <p>量价关系可以单独记成一张表：</p>
+            <table>
+            <thead>
+            <tr>
+            <th>价格</th>
+            <th>成交量</th>
+            <th>常见含义</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>上涨</td>
+            <td>放量</td>
+            <td>买方主动，趋势健康</td>
+            </tr>
+            <tr>
+            <td>上涨</td>
+            <td>缩量</td>
+            <td>跟风不足，上涨可能接近尾声</td>
+            </tr>
+            <tr>
+            <td>下跌</td>
+            <td>放量</td>
+            <td>恐慌或主动抛售，可能还没跌完；在低位也可能是最后一跌</td>
+            </tr>
+            <tr>
+            <td>下跌</td>
+            <td>缩量</td>
+            <td>卖盘衰竭，下跌动能减弱</td>
+            </tr>
+            </tbody>
+            </table>
+            <h3 id="把范式串起来四步读法">把范式串起来：四步读法</h3>
+            <p>把上面的范式按顺序排好，就是一套固定的读法。形态排在第三步，前两步决定这根
+            K 线值不值得读，最后一步决定要不要动手：</p>
+            <figure>
+            <img src="./WikiImage/kline_analyze_workflow.svg"
+            alt="读 K 线的四步" />
+            <figcaption aria-hidden="true">读 K 线的四步</figcaption>
+            </figure>
+            <ol type="1">
+            <li><strong>趋势</strong>：之前在涨还是在跌？看高低点是否依次抬高或降低。没有趋势就不谈反转。</li>
+            <li><strong>位置</strong>：现在是否站在关键价位上？不在关键位的形态当作噪音。</li>
+            <li><strong>形态</strong>：最后几根 K
+            线说了什么？用实体、影线、收盘位置去读，而不是对照名字。</li>
+            <li><strong>确认</strong>：市场是否认同？等次日方向和成交量，并在入场前写下失效价。</li>
+            </ol>
+            <p>图中的例子：价格从前高回落，回踩到前低附近，出现一根盘中跌破前低、收盘又收回的锤子线；次日放量阳线收复锤子线高点，四步都满足。失效价放在锤子线最低点，跌破就离场。</p>
+          </main>
+        <aside class="wiki-toc">
+      <ul>
+      <li><a href="#一根-k-线记录的是哪些价格被接受哪些被拒绝"
+      id="toc-一根-k-线记录的是哪些价格被接受哪些被拒绝">一根 K
+      线记录的是”哪些价格被接受、哪些被拒绝”</a></li>
+      <li><a href="#范式一位置决定含义"
+      id="toc-范式一位置决定含义">范式一：位置决定含义</a></li>
+      <li><a href="#范式二多根组合看力量转移"
+      id="toc-范式二多根组合看力量转移">范式二：多根组合看力量转移</a></li>
+      <li><a href="#范式三确认以及量价配合"
+      id="toc-范式三确认以及量价配合">范式三：确认，以及量价配合</a></li>
+      <li><a href="#把范式串起来四步读法"
+      id="toc-把范式串起来四步读法">把范式串起来：四步读法</a></li>
+      </ul>
+    </aside>
+      </div>
+</body>
+
+</html>

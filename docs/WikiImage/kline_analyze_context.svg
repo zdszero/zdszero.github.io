@@ -1,0 +1,127 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 500" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<defs><marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#868e96"/></marker><marker id="ar-amber" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#f08c00"/></marker></defs>
+<rect x="0" y="0" width="900" height="500" rx="12" fill="#ffffff"/>
+<text x="30.0" y="34.0" font-size="20" fill="#212529" font-weight="700" text-anchor="start">同一根长下影线，位置不同，含义相反</text>
+<text x="30.0" y="56.0" font-size="13" fill="#868e96" text-anchor="start">示意数据。三根高亮 K 线形状几乎相同：短上影、小实体、下影线约为实体的 6 倍以上</text>
+<rect x="30.0" y="78.0" width="260.0" height="332.0" rx="10" fill="#f8f9fa" stroke="#e9ecef" stroke-width="1.0"/>
+<text x="46.0" y="102.0" font-size="13.5" fill="#212529" font-weight="700" text-anchor="start">连续下跌之后</text>
+<path d="M54.0 124.0 L236.0 236.0" fill="none" stroke="#ced4da" stroke-width="2" stroke-linejoin="round" stroke-dasharray="6 5"/>
+<line x1="62.0" y1="134.7" x2="62.0" y2="139.8" stroke="#0ca678" stroke-width="1.5"/>
+<line x1="62.0" y1="150.0" x2="62.0" y2="155.1" stroke="#0ca678" stroke-width="1.5"/>
+<rect x="56.0" y="139.8" width="12.0" height="10.2" rx="1" fill="#0ca678" stroke="#0ca678" stroke-width="1.5"/>
+<line x1="84.0" y1="144.9" x2="84.0" y2="150.0" stroke="#0ca678" stroke-width="1.5"/>
+<line x1="84.0" y1="165.2" x2="84.0" y2="167.8" stroke="#0ca678" stroke-width="1.5"/>
+<rect x="78.0" y="150.0" width="12.0" height="15.3" rx="1" fill="#0ca678" stroke="#0ca678" stroke-width="1.5"/>
+<line x1="106.0" y1="160.1" x2="106.0" y2="165.2" stroke="#0ca678" stroke-width="1.5"/>
+<line x1="106.0" y1="177.9" x2="106.0" y2="180.5" stroke="#0ca678" stroke-width="1.5"/>
+<rect x="100.0" y="165.2" width="12.0" height="12.7" rx="1" fill="#0ca678" stroke="#0ca678" stroke-width="1.5"/>
+<line x1="128.0" y1="170.3" x2="128.0" y2="177.9" stroke="#0ca678" stroke-width="1.5"/>
+<line x1="128.0" y1="193.2" x2="128.0" y2="195.7" stroke="#0ca678" stroke-width="1.5"/>
+<rect x="122.0" y="177.9" width="12.0" height="15.3" rx="1" fill="#0ca678" stroke="#0ca678" stroke-width="1.5"/>
+<line x1="150.0" y1="188.1" x2="150.0" y2="193.2" stroke="#0ca678" stroke-width="1.5"/>
+<line x1="150.0" y1="208.5" x2="150.0" y2="211.0" stroke="#0ca678" stroke-width="1.5"/>
+<rect x="144.0" y="193.2" width="12.0" height="15.3" rx="1" fill="#0ca678" stroke="#0ca678" stroke-width="1.5"/>
+<line x1="172.0" y1="203.4" x2="172.0" y2="208.5" stroke="#0ca678" stroke-width="1.5"/>
+<line x1="172.0" y1="223.7" x2="172.0" y2="226.3" stroke="#0ca678" stroke-width="1.5"/>
+<rect x="166.0" y="208.5" width="12.0" height="15.3" rx="1" fill="#0ca678" stroke="#0ca678" stroke-width="1.5"/>
+<line x1="194.0" y1="218.6" x2="194.0" y2="223.7" stroke="#0ca678" stroke-width="1.5"/>
+<line x1="194.0" y1="239.0" x2="194.0" y2="241.5" stroke="#0ca678" stroke-width="1.5"/>
+<rect x="188.0" y="223.7" width="12.0" height="15.3" rx="1" fill="#0ca678" stroke="#0ca678" stroke-width="1.5"/>
+<line x1="216.0" y1="233.9" x2="216.0" y2="239.0" stroke="#0ca678" stroke-width="1.5"/>
+<line x1="216.0" y1="251.7" x2="216.0" y2="254.2" stroke="#0ca678" stroke-width="1.5"/>
+<rect x="210.0" y="239.0" width="12.0" height="12.7" rx="1" fill="#0ca678" stroke="#0ca678" stroke-width="1.5"/>
+<rect x="225.0" y="243.7" width="26.0" height="51.6" rx="6" fill="#fff9db" stroke="#f08c00" stroke-width="1.0" stroke-dasharray="4 3"/>
+<line x1="238.0" y1="251.7" x2="238.0" y2="254.2" stroke="#fa5252" stroke-width="1.5"/>
+<line x1="238.0" y1="256.8" x2="238.0" y2="287.3" stroke="#fa5252" stroke-width="1.5"/>
+<rect x="232.0" y="254.2" width="12.0" height="2.5" rx="1" fill="#fff5f5" stroke="#fa5252" stroke-width="1.5"/>
+<line x1="260.0" y1="228.8" x2="260.0" y2="231.3" stroke="#fa5252" stroke-width="1.5"/>
+<line x1="260.0" y1="254.2" x2="260.0" y2="256.8" stroke="#fa5252" stroke-width="1.5"/>
+<rect x="254.0" y="231.3" width="12.0" height="22.9" rx="1" fill="#fff5f5" stroke="#fa5252" stroke-width="1.5"/>
+<text x="260.0" y="316.0" font-size="11" fill="#868e96" text-anchor="middle">次日</text>
+<rect x="44.0" y="330.0" width="232.0" height="66.0" rx="8" fill="#edf2ff" stroke="#3b5bdb" stroke-width="1.0"/>
+<text x="58.0" y="352.0" font-size="12.5" fill="#3b5bdb" font-weight="700" text-anchor="start">锤子线：止跌信号，等次日确认</text>
+<text x="58.0" y="371.0" font-size="11.5" fill="#495057" text-anchor="start">下方出现承接，空头第一次</text>
+<text x="58.0" y="388.0" font-size="11.5" fill="#495057" text-anchor="start">推不动价格</text>
+<rect x="320.0" y="78.0" width="260.0" height="332.0" rx="10" fill="#f8f9fa" stroke="#e9ecef" stroke-width="1.0"/>
+<text x="336.0" y="102.0" font-size="13.5" fill="#212529" font-weight="700" text-anchor="start">震荡区间中部</text>
+<rect x="334.0" y="203.4" width="232.0" height="33.1" rx="4" fill="#e9ecef" opacity="0.7"/>
+<text x="562.0" y="197.4" font-size="11" fill="#868e96" text-anchor="end">震荡区间</text>
+<line x1="352.0" y1="211.0" x2="352.0" y2="216.1" stroke="#fa5252" stroke-width="1.5"/>
+<line x1="352.0" y1="223.7" x2="352.0" y2="231.3" stroke="#fa5252" stroke-width="1.5"/>
+<rect x="346.0" y="216.1" width="12.0" height="7.6" rx="1" fill="#fff5f5" stroke="#fa5252" stroke-width="1.5"/>
+<line x1="374.0" y1="205.9" x2="374.0" y2="216.1" stroke="#0ca678" stroke-width="1.5"/>
+<line x1="374.0" y1="223.7" x2="374.0" y2="226.3" stroke="#0ca678" stroke-width="1.5"/>
+<rect x="368.0" y="216.1" width="12.0" height="7.6" rx="1" fill="#0ca678" stroke="#0ca678" stroke-width="1.5"/>
+<line x1="396.0" y1="213.5" x2="396.0" y2="218.6" stroke="#fa5252" stroke-width="1.5"/>
+<line x1="396.0" y1="223.7" x2="396.0" y2="233.9" stroke="#fa5252" stroke-width="1.5"/>
+<rect x="390.0" y="218.6" width="12.0" height="5.1" rx="1" fill="#fff5f5" stroke="#fa5252" stroke-width="1.5"/>
+<line x1="418.0" y1="203.4" x2="418.0" y2="208.5" stroke="#fa5252" stroke-width="1.5"/>
+<line x1="418.0" y1="218.6" x2="418.0" y2="223.7" stroke="#fa5252" stroke-width="1.5"/>
+<rect x="412.0" y="208.5" width="12.0" height="10.2" rx="1" fill="#fff5f5" stroke="#fa5252" stroke-width="1.5"/>
+<line x1="440.0" y1="205.9" x2="440.0" y2="208.5" stroke="#0ca678" stroke-width="1.5"/>
+<line x1="440.0" y1="226.3" x2="440.0" y2="228.8" stroke="#0ca678" stroke-width="1.5"/>
+<rect x="434.0" y="208.5" width="12.0" height="17.8" rx="1" fill="#0ca678" stroke="#0ca678" stroke-width="1.5"/>
+<line x1="462.0" y1="216.1" x2="462.0" y2="221.2" stroke="#fa5252" stroke-width="1.5"/>
+<line x1="462.0" y1="226.3" x2="462.0" y2="236.4" stroke="#fa5252" stroke-width="1.5"/>
+<rect x="456.0" y="221.2" width="12.0" height="5.1" rx="1" fill="#fff5f5" stroke="#fa5252" stroke-width="1.5"/>
+<line x1="484.0" y1="208.5" x2="484.0" y2="213.5" stroke="#fa5252" stroke-width="1.5"/>
+<line x1="484.0" y1="221.2" x2="484.0" y2="226.3" stroke="#fa5252" stroke-width="1.5"/>
+<rect x="478.0" y="213.5" width="12.0" height="7.6" rx="1" fill="#fff5f5" stroke="#fa5252" stroke-width="1.5"/>
+<line x1="506.0" y1="205.9" x2="506.0" y2="213.5" stroke="#0ca678" stroke-width="1.5"/>
+<line x1="506.0" y1="221.2" x2="506.0" y2="223.7" stroke="#0ca678" stroke-width="1.5"/>
+<rect x="500.0" y="213.5" width="12.0" height="7.6" rx="1" fill="#0ca678" stroke="#0ca678" stroke-width="1.5"/>
+<rect x="515.0" y="208.1" width="26.0" height="51.6" rx="6" fill="#fff9db" stroke="#f08c00" stroke-width="1.0" stroke-dasharray="4 3"/>
+<line x1="528.0" y1="216.1" x2="528.0" y2="218.6" stroke="#fa5252" stroke-width="1.5"/>
+<line x1="528.0" y1="221.2" x2="528.0" y2="251.7" stroke="#fa5252" stroke-width="1.5"/>
+<rect x="522.0" y="218.6" width="12.0" height="2.5" rx="1" fill="#fff5f5" stroke="#fa5252" stroke-width="1.5"/>
+<line x1="550.0" y1="211.0" x2="550.0" y2="218.6" stroke="#0ca678" stroke-width="1.5"/>
+<line x1="550.0" y1="223.7" x2="550.0" y2="228.8" stroke="#0ca678" stroke-width="1.5"/>
+<rect x="544.0" y="218.6" width="12.0" height="5.1" rx="1" fill="#0ca678" stroke="#0ca678" stroke-width="1.5"/>
+<text x="550.0" y="316.0" font-size="11" fill="#868e96" text-anchor="middle">次日</text>
+<rect x="334.0" y="330.0" width="232.0" height="66.0" rx="8" fill="#f1f3f5" stroke="#495057" stroke-width="1.0"/>
+<text x="348.0" y="352.0" font-size="12.5" fill="#495057" font-weight="700" text-anchor="start">长下影：大概率是噪音</text>
+<text x="348.0" y="371.0" font-size="11.5" fill="#495057" text-anchor="start">没有趋势可反转，也不在</text>
+<text x="348.0" y="388.0" font-size="11.5" fill="#495057" text-anchor="start">关键价位上，信息量很低</text>
+<rect x="610.0" y="78.0" width="260.0" height="332.0" rx="10" fill="#f8f9fa" stroke="#e9ecef" stroke-width="1.0"/>
+<text x="626.0" y="102.0" font-size="13.5" fill="#212529" font-weight="700" text-anchor="start">连续上涨之后</text>
+<path d="M630.0 306.0 L816.0 196.0" fill="none" stroke="#ced4da" stroke-width="2" stroke-linejoin="round" stroke-dasharray="6 5"/>
+<line x1="642.0" y1="277.1" x2="642.0" y2="279.7" stroke="#fa5252" stroke-width="1.5"/>
+<line x1="642.0" y1="287.3" x2="642.0" y2="292.4" stroke="#fa5252" stroke-width="1.5"/>
+<rect x="636.0" y="279.7" width="12.0" height="7.6" rx="1" fill="#fff5f5" stroke="#fa5252" stroke-width="1.5"/>
+<line x1="664.0" y1="264.4" x2="664.0" y2="266.9" stroke="#fa5252" stroke-width="1.5"/>
+<line x1="664.0" y1="279.7" x2="664.0" y2="282.2" stroke="#fa5252" stroke-width="1.5"/>
+<rect x="658.0" y="266.9" width="12.0" height="12.7" rx="1" fill="#fff5f5" stroke="#fa5252" stroke-width="1.5"/>
+<line x1="686.0" y1="251.7" x2="686.0" y2="254.2" stroke="#fa5252" stroke-width="1.5"/>
+<line x1="686.0" y1="266.9" x2="686.0" y2="269.5" stroke="#fa5252" stroke-width="1.5"/>
+<rect x="680.0" y="254.2" width="12.0" height="12.7" rx="1" fill="#fff5f5" stroke="#fa5252" stroke-width="1.5"/>
+<line x1="708.0" y1="239.0" x2="708.0" y2="241.5" stroke="#fa5252" stroke-width="1.5"/>
+<line x1="708.0" y1="254.2" x2="708.0" y2="256.8" stroke="#fa5252" stroke-width="1.5"/>
+<rect x="702.0" y="241.5" width="12.0" height="12.7" rx="1" fill="#fff5f5" stroke="#fa5252" stroke-width="1.5"/>
+<line x1="730.0" y1="223.7" x2="730.0" y2="226.3" stroke="#fa5252" stroke-width="1.5"/>
+<line x1="730.0" y1="241.5" x2="730.0" y2="244.1" stroke="#fa5252" stroke-width="1.5"/>
+<rect x="724.0" y="226.3" width="12.0" height="15.3" rx="1" fill="#fff5f5" stroke="#fa5252" stroke-width="1.5"/>
+<line x1="752.0" y1="208.5" x2="752.0" y2="211.0" stroke="#fa5252" stroke-width="1.5"/>
+<line x1="752.0" y1="226.3" x2="752.0" y2="228.8" stroke="#fa5252" stroke-width="1.5"/>
+<rect x="746.0" y="211.0" width="12.0" height="15.3" rx="1" fill="#fff5f5" stroke="#fa5252" stroke-width="1.5"/>
+<line x1="774.0" y1="193.2" x2="774.0" y2="195.7" stroke="#fa5252" stroke-width="1.5"/>
+<line x1="774.0" y1="211.0" x2="774.0" y2="213.5" stroke="#fa5252" stroke-width="1.5"/>
+<rect x="768.0" y="195.7" width="12.0" height="15.3" rx="1" fill="#fff5f5" stroke="#fa5252" stroke-width="1.5"/>
+<line x1="796.0" y1="177.9" x2="796.0" y2="180.5" stroke="#fa5252" stroke-width="1.5"/>
+<line x1="796.0" y1="195.7" x2="796.0" y2="198.3" stroke="#fa5252" stroke-width="1.5"/>
+<rect x="790.0" y="180.5" width="12.0" height="15.3" rx="1" fill="#fff5f5" stroke="#fa5252" stroke-width="1.5"/>
+<rect x="805.0" y="167.4" width="26.0" height="51.6" rx="6" fill="#fff9db" stroke="#f08c00" stroke-width="1.0" stroke-dasharray="4 3"/>
+<line x1="818.0" y1="175.4" x2="818.0" y2="177.9" stroke="#fa5252" stroke-width="1.5"/>
+<line x1="818.0" y1="180.5" x2="818.0" y2="211.0" stroke="#fa5252" stroke-width="1.5"/>
+<rect x="812.0" y="177.9" width="12.0" height="2.5" rx="1" fill="#fff5f5" stroke="#fa5252" stroke-width="1.5"/>
+<line x1="840.0" y1="175.4" x2="840.0" y2="177.9" stroke="#0ca678" stroke-width="1.5"/>
+<line x1="840.0" y1="203.4" x2="840.0" y2="205.9" stroke="#0ca678" stroke-width="1.5"/>
+<rect x="834.0" y="177.9" width="12.0" height="25.4" rx="1" fill="#0ca678" stroke="#0ca678" stroke-width="1.5"/>
+<text x="840.0" y="316.0" font-size="11" fill="#868e96" text-anchor="middle">次日</text>
+<rect x="624.0" y="330.0" width="232.0" height="66.0" rx="8" fill="#fff4e6" stroke="#e8590c" stroke-width="1.0"/>
+<text x="638.0" y="352.0" font-size="12.5" fill="#e8590c" font-weight="700" text-anchor="start">上吊线：见顶警示，跌破实体即确认</text>
+<text x="638.0" y="371.0" font-size="11.5" fill="#495057" text-anchor="start">盘中已出现大笔抛售，只是</text>
+<text x="638.0" y="388.0" font-size="11.5" fill="#495057" text-anchor="start">收盘前被拉回</text>
+<rect x="30.0" y="426.0" width="840.0" height="58.0" rx="8" fill="#f8f9fa" stroke="#e9ecef" stroke-width="1.0"/>
+<text x="46.0" y="448.0" font-size="12" fill="#495057" text-anchor="start">形态的名字由形状决定，含义由位置决定。脱离位置背口诀，是 K 线分析最常见的错误。</text>
+<text x="46.0" y="467.0" font-size="12" fill="#495057" text-anchor="start">读任何一根 K 线之前先回答：之前是什么趋势？现在是否站在关键价位上？</text>
+</svg>

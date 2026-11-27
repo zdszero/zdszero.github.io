@@ -1,0 +1,138 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 690" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<defs><marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#868e96"/></marker><marker id="ar-amber" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#f08c00"/></marker></defs>
+<rect x="0" y="0" width="900" height="690" rx="12" fill="#ffffff"/>
+<text x="30.0" y="34.0" font-size="20" fill="#212529" font-weight="700" text-anchor="start">读 K 线的四步：趋势 → 位置 → 形态 → 确认</text>
+<text x="30.0" y="56.0" font-size="13" fill="#868e96" text-anchor="start">形态排在第三步。前两步决定这根 K 线值不值得读，最后一步决定要不要动手</text>
+<rect x="30.0" y="78.0" width="192.0" height="86.0" rx="10" fill="#edf2ff" stroke="#4c6ef5" stroke-width="1.0"/>
+<text x="44.0" y="102.0" font-size="14" fill="#3b5bdb" font-weight="700" text-anchor="start">① 趋势</text>
+<text x="44.0" y="126.0" font-size="12" fill="#495057" text-anchor="start">之前在涨还是在跌？</text>
+<text x="44.0" y="148.0" font-size="11" fill="#868e96" text-anchor="start">高低点是否依次抬高 / 降低</text>
+<path d="M225.0 121.0 L243.0 121.0" fill="none" stroke="#868e96" stroke-width="2" stroke-linejoin="round" marker-end="url(#ar)"/>
+<rect x="246.0" y="78.0" width="192.0" height="86.0" rx="10" fill="#e6fcf5" stroke="#0ca678" stroke-width="1.0"/>
+<text x="260.0" y="102.0" font-size="14" fill="#0b7285" font-weight="700" text-anchor="start">② 位置</text>
+<text x="260.0" y="126.0" font-size="12" fill="#495057" text-anchor="start">是否站在关键价位？</text>
+<text x="260.0" y="148.0" font-size="11" fill="#868e96" text-anchor="start">前高前低、密集成交区、缺口</text>
+<path d="M441.0 121.0 L459.0 121.0" fill="none" stroke="#868e96" stroke-width="2" stroke-linejoin="round" marker-end="url(#ar)"/>
+<rect x="462.0" y="78.0" width="192.0" height="86.0" rx="10" fill="#fff4e6" stroke="#f08c00" stroke-width="1.0"/>
+<text x="476.0" y="102.0" font-size="14" fill="#e8590c" font-weight="700" text-anchor="start">③ 形态</text>
+<text x="476.0" y="126.0" font-size="12" fill="#495057" text-anchor="start">最后几根 K 线说了什么？</text>
+<text x="476.0" y="148.0" font-size="11" fill="#868e96" text-anchor="start">影线、实体、吞没 / 星线</text>
+<path d="M657.0 121.0 L675.0 121.0" fill="none" stroke="#868e96" stroke-width="2" stroke-linejoin="round" marker-end="url(#ar)"/>
+<rect x="678.0" y="78.0" width="192.0" height="86.0" rx="10" fill="#f3f0ff" stroke="#7048e8" stroke-width="1.0"/>
+<text x="692.0" y="102.0" font-size="14" fill="#5f3dc4" font-weight="700" text-anchor="start">④ 确认</text>
+<text x="692.0" y="126.0" font-size="12" fill="#495057" text-anchor="start">市场是否认同？</text>
+<text x="692.0" y="148.0" font-size="11" fill="#868e96" text-anchor="start">放量、次日方向、失效价位</text>
+<rect x="30.0" y="182.0" width="840.0" height="418.0" rx="10" fill="#f8f9fa" stroke="#e9ecef" stroke-width="1.0"/>
+<text x="46.0" y="206.0" font-size="13.5" fill="#212529" font-weight="700" text-anchor="start">走查一个例子（示意数据）：回踩前低出现锤子线</text>
+<line x1="148.0" y1="399.9" x2="810.0" y2="399.9" stroke="#0ca678" stroke-width="1.5" stroke-dasharray="6 4"/>
+<text x="812.0" y="403.9" font-size="11" fill="#0b7285" font-weight="700" text-anchor="start">前低</text>
+<line x1="318.0" y1="258.3" x2="810.0" y2="258.3" stroke="#fa5252" stroke-width="1.5" stroke-dasharray="6 4"/>
+<text x="812.0" y="262.3" font-size="11" fill="#c92a2a" font-weight="700" text-anchor="start">前高</text>
+<path d="M318 252.3 L590 367.8" fill="none" stroke="#4c6ef5" stroke-width="1.5" stroke-linejoin="round" stroke-dasharray="5 4"/>
+<line x1="80.0" y1="273.2" x2="80.0" y2="280.7" stroke="#0ca678" stroke-width="1.5"/>
+<line x1="80.0" y1="310.5" x2="80.0" y2="317.9" stroke="#0ca678" stroke-width="1.5"/>
+<rect x="72.0" y="280.7" width="16.0" height="29.8" rx="1" fill="#0ca678" stroke="#0ca678" stroke-width="1.5"/>
+<line x1="114.0" y1="303.0" x2="114.0" y2="310.5" stroke="#0ca678" stroke-width="1.5"/>
+<line x1="114.0" y1="347.7" x2="114.0" y2="355.2" stroke="#0ca678" stroke-width="1.5"/>
+<rect x="106.0" y="310.5" width="16.0" height="37.2" rx="1" fill="#0ca678" stroke="#0ca678" stroke-width="1.5"/>
+<line x1="148.0" y1="340.3" x2="148.0" y2="347.7" stroke="#0ca678" stroke-width="1.5"/>
+<line x1="148.0" y1="377.5" x2="148.0" y2="385.0" stroke="#0ca678" stroke-width="1.5"/>
+<rect x="140.0" y="347.7" width="16.0" height="29.8" rx="1" fill="#0ca678" stroke="#0ca678" stroke-width="1.5"/>
+<line x1="182.0" y1="370.1" x2="182.0" y2="377.5" stroke="#0ca678" stroke-width="1.5"/>
+<line x1="182.0" y1="392.4" x2="182.0" y2="407.3" stroke="#0ca678" stroke-width="1.5"/>
+<rect x="174.0" y="377.5" width="16.0" height="14.9" rx="1" fill="#0ca678" stroke="#0ca678" stroke-width="1.5"/>
+<line x1="216.0" y1="362.6" x2="216.0" y2="370.1" stroke="#fa5252" stroke-width="1.5"/>
+<line x1="216.0" y1="392.4" x2="216.0" y2="399.9" stroke="#fa5252" stroke-width="1.5"/>
+<rect x="208.0" y="370.1" width="16.0" height="22.3" rx="1" fill="#fff5f5" stroke="#fa5252" stroke-width="1.5"/>
+<line x1="250.0" y1="325.4" x2="250.0" y2="332.8" stroke="#fa5252" stroke-width="1.5"/>
+<line x1="250.0" y1="370.1" x2="250.0" y2="377.5" stroke="#fa5252" stroke-width="1.5"/>
+<rect x="242.0" y="332.8" width="16.0" height="37.2" rx="1" fill="#fff5f5" stroke="#fa5252" stroke-width="1.5"/>
+<line x1="284.0" y1="288.1" x2="284.0" y2="295.6" stroke="#fa5252" stroke-width="1.5"/>
+<line x1="284.0" y1="332.8" x2="284.0" y2="340.3" stroke="#fa5252" stroke-width="1.5"/>
+<rect x="276.0" y="295.6" width="16.0" height="37.2" rx="1" fill="#fff5f5" stroke="#fa5252" stroke-width="1.5"/>
+<line x1="318.0" y1="258.3" x2="318.0" y2="265.8" stroke="#fa5252" stroke-width="1.5"/>
+<line x1="318.0" y1="295.6" x2="318.0" y2="303.0" stroke="#fa5252" stroke-width="1.5"/>
+<rect x="310.0" y="265.8" width="16.0" height="29.8" rx="1" fill="#fff5f5" stroke="#fa5252" stroke-width="1.5"/>
+<line x1="352.0" y1="258.3" x2="352.0" y2="265.8" stroke="#0ca678" stroke-width="1.5"/>
+<line x1="352.0" y1="288.1" x2="352.0" y2="295.6" stroke="#0ca678" stroke-width="1.5"/>
+<rect x="344.0" y="265.8" width="16.0" height="22.3" rx="1" fill="#0ca678" stroke="#0ca678" stroke-width="1.5"/>
+<line x1="386.0" y1="280.7" x2="386.0" y2="288.1" stroke="#0ca678" stroke-width="1.5"/>
+<line x1="386.0" y1="310.5" x2="386.0" y2="317.9" stroke="#0ca678" stroke-width="1.5"/>
+<rect x="378.0" y="288.1" width="16.0" height="22.3" rx="1" fill="#0ca678" stroke="#0ca678" stroke-width="1.5"/>
+<line x1="420.0" y1="303.0" x2="420.0" y2="310.5" stroke="#0ca678" stroke-width="1.5"/>
+<line x1="420.0" y1="332.8" x2="420.0" y2="340.3" stroke="#0ca678" stroke-width="1.5"/>
+<rect x="412.0" y="310.5" width="16.0" height="22.3" rx="1" fill="#0ca678" stroke="#0ca678" stroke-width="1.5"/>
+<line x1="454.0" y1="325.4" x2="454.0" y2="332.8" stroke="#0ca678" stroke-width="1.5"/>
+<line x1="454.0" y1="355.2" x2="454.0" y2="362.6" stroke="#0ca678" stroke-width="1.5"/>
+<rect x="446.0" y="332.8" width="16.0" height="22.3" rx="1" fill="#0ca678" stroke="#0ca678" stroke-width="1.5"/>
+<line x1="488.0" y1="340.3" x2="488.0" y2="347.7" stroke="#fa5252" stroke-width="1.5"/>
+<line x1="488.0" y1="355.2" x2="488.0" y2="370.1" stroke="#fa5252" stroke-width="1.5"/>
+<rect x="480.0" y="347.7" width="16.0" height="7.4" rx="1" fill="#fff5f5" stroke="#fa5252" stroke-width="1.5"/>
+<line x1="522.0" y1="344.0" x2="522.0" y2="347.7" stroke="#0ca678" stroke-width="1.5"/>
+<line x1="522.0" y1="370.1" x2="522.0" y2="377.5" stroke="#0ca678" stroke-width="1.5"/>
+<rect x="514.0" y="347.7" width="16.0" height="22.3" rx="1" fill="#0ca678" stroke="#0ca678" stroke-width="1.5"/>
+<line x1="556.0" y1="362.6" x2="556.0" y2="370.1" stroke="#0ca678" stroke-width="1.5"/>
+<line x1="556.0" y1="385.0" x2="556.0" y2="392.4" stroke="#0ca678" stroke-width="1.5"/>
+<rect x="548.0" y="370.1" width="16.0" height="14.9" rx="1" fill="#0ca678" stroke="#0ca678" stroke-width="1.5"/>
+<rect x="575.0" y="377.0" width="30.0" height="64.4" rx="6" fill="#fff9db" stroke="#f08c00" stroke-width="1.0" stroke-dasharray="4 3"/>
+<line x1="590.0" y1="385.0" x2="590.0" y2="386.5" stroke="#fa5252" stroke-width="1.5"/>
+<line x1="590.0" y1="395.4" x2="590.0" y2="433.4" stroke="#fa5252" stroke-width="1.5"/>
+<rect x="582.0" y="386.5" width="16.0" height="8.9" rx="1" fill="#fff5f5" stroke="#fa5252" stroke-width="1.5"/>
+<line x1="624.0" y1="332.8" x2="624.0" y2="336.6" stroke="#fa5252" stroke-width="1.5"/>
+<line x1="624.0" y1="385.0" x2="624.0" y2="388.7" stroke="#fa5252" stroke-width="1.5"/>
+<rect x="616.0" y="336.6" width="16.0" height="48.4" rx="1" fill="#fff5f5" stroke="#fa5252" stroke-width="1.5"/>
+<line x1="658.0" y1="310.5" x2="658.0" y2="314.2" stroke="#fa5252" stroke-width="1.5"/>
+<line x1="658.0" y1="336.6" x2="658.0" y2="340.3" stroke="#fa5252" stroke-width="1.5"/>
+<rect x="650.0" y="314.2" width="16.0" height="22.3" rx="1" fill="#fff5f5" stroke="#fa5252" stroke-width="1.5"/>
+<line x1="692.0" y1="295.6" x2="692.0" y2="303.0" stroke="#fa5252" stroke-width="1.5"/>
+<line x1="692.0" y1="314.2" x2="692.0" y2="325.4" stroke="#fa5252" stroke-width="1.5"/>
+<rect x="684.0" y="303.0" width="16.0" height="11.2" rx="1" fill="#fff5f5" stroke="#fa5252" stroke-width="1.5"/>
+<line x1="726.0" y1="273.2" x2="726.0" y2="280.7" stroke="#fa5252" stroke-width="1.5"/>
+<line x1="726.0" y1="303.0" x2="726.0" y2="306.8" stroke="#fa5252" stroke-width="1.5"/>
+<rect x="718.0" y="280.7" width="16.0" height="22.3" rx="1" fill="#fff5f5" stroke="#fa5252" stroke-width="1.5"/>
+<line x1="760.0" y1="253.9" x2="760.0" y2="261.3" stroke="#fa5252" stroke-width="1.5"/>
+<line x1="760.0" y1="280.7" x2="760.0" y2="288.1" stroke="#fa5252" stroke-width="1.5"/>
+<rect x="752.0" y="261.3" width="16.0" height="19.4" rx="1" fill="#fff5f5" stroke="#fa5252" stroke-width="1.5"/>
+<line x1="794.0" y1="250.9" x2="794.0" y2="261.3" stroke="#0ca678" stroke-width="1.5"/>
+<line x1="794.0" y1="273.2" x2="794.0" y2="277.0" stroke="#0ca678" stroke-width="1.5"/>
+<rect x="786.0" y="261.3" width="16.0" height="11.9" rx="1" fill="#0ca678" stroke="#0ca678" stroke-width="1.5"/>
+<line x1="66.0" y1="584.0" x2="808.0" y2="584.0" stroke="#dee2e6" stroke-width="1"/>
+<text x="62.0" y="528.0" font-size="11" fill="#868e96" text-anchor="end">量</text>
+<rect x="72.0" y="555.4" width="16.0" height="28.6" rx="1" fill="#0ca678" stroke="#0ca678" stroke-width="1.2" opacity="0.85"/>
+<rect x="106.0" y="552.6" width="16.0" height="31.4" rx="1" fill="#0ca678" stroke="#0ca678" stroke-width="1.2" opacity="0.85"/>
+<rect x="140.0" y="549.7" width="16.0" height="34.3" rx="1" fill="#0ca678" stroke="#0ca678" stroke-width="1.2" opacity="0.85"/>
+<rect x="174.0" y="544.0" width="16.0" height="40.0" rx="1" fill="#0ca678" stroke="#0ca678" stroke-width="1.2" opacity="0.85"/>
+<rect x="208.0" y="558.3" width="16.0" height="25.7" rx="1" fill="#fff5f5" stroke="#fa5252" stroke-width="1.2"/>
+<rect x="242.0" y="552.6" width="16.0" height="31.4" rx="1" fill="#fff5f5" stroke="#fa5252" stroke-width="1.2"/>
+<rect x="276.0" y="549.7" width="16.0" height="34.3" rx="1" fill="#fff5f5" stroke="#fa5252" stroke-width="1.2"/>
+<rect x="310.0" y="550.9" width="16.0" height="33.1" rx="1" fill="#fff5f5" stroke="#fa5252" stroke-width="1.2"/>
+<rect x="344.0" y="561.1" width="16.0" height="22.9" rx="1" fill="#0ca678" stroke="#0ca678" stroke-width="1.2" opacity="0.85"/>
+<rect x="378.0" y="560.0" width="16.0" height="24.0" rx="1" fill="#0ca678" stroke="#0ca678" stroke-width="1.2" opacity="0.85"/>
+<rect x="412.0" y="558.3" width="16.0" height="25.7" rx="1" fill="#0ca678" stroke="#0ca678" stroke-width="1.2" opacity="0.85"/>
+<rect x="446.0" y="556.6" width="16.0" height="27.4" rx="1" fill="#0ca678" stroke="#0ca678" stroke-width="1.2" opacity="0.85"/>
+<rect x="480.0" y="564.0" width="16.0" height="20.0" rx="1" fill="#fff5f5" stroke="#fa5252" stroke-width="1.2"/>
+<rect x="514.0" y="561.1" width="16.0" height="22.9" rx="1" fill="#0ca678" stroke="#0ca678" stroke-width="1.2" opacity="0.85"/>
+<rect x="548.0" y="558.3" width="16.0" height="25.7" rx="1" fill="#0ca678" stroke="#0ca678" stroke-width="1.2" opacity="0.85"/>
+<rect x="582.0" y="529.7" width="16.0" height="54.3" rx="1" fill="#fff5f5" stroke="#fa5252" stroke-width="1.2"/>
+<rect x="616.0" y="520.0" width="16.0" height="64.0" rx="1" fill="#fff5f5" stroke="#fa5252" stroke-width="1.2"/>
+<rect x="650.0" y="538.3" width="16.0" height="45.7" rx="1" fill="#fff5f5" stroke="#fa5252" stroke-width="1.2"/>
+<rect x="684.0" y="544.0" width="16.0" height="40.0" rx="1" fill="#fff5f5" stroke="#fa5252" stroke-width="1.2"/>
+<rect x="718.0" y="541.1" width="16.0" height="42.9" rx="1" fill="#fff5f5" stroke="#fa5252" stroke-width="1.2"/>
+<rect x="752.0" y="542.9" width="16.0" height="41.1" rx="1" fill="#fff5f5" stroke="#fa5252" stroke-width="1.2"/>
+<rect x="786.0" y="555.4" width="16.0" height="28.6" rx="1" fill="#0ca678" stroke="#0ca678" stroke-width="1.2" opacity="0.85"/>
+<line x1="556.0" y1="433.4" x2="810.0" y2="433.4" stroke="#7048e8" stroke-width="1.2" stroke-dasharray="2 3"/>
+<text x="812.0" y="437.4" font-size="11" fill="#5f3dc4" font-weight="700" text-anchor="start">失效价</text>
+<rect x="380.0" y="241.7" width="150.0" height="22.0" rx="11" fill="#edf2ff" stroke="#4c6ef5" stroke-width="1.0"/>
+<text x="455.0" y="257.7" font-size="11.5" fill="#3b5bdb" font-weight="700" text-anchor="middle">① 前高回落，短期下跌</text>
+<rect x="416.0" y="406.6" width="114.0" height="22.0" rx="11" fill="#e6fcf5" stroke="#0ca678" stroke-width="1.0"/>
+<text x="473.0" y="422.6" font-size="11.5" fill="#0b7285" font-weight="700" text-anchor="middle">② 回踩前低支撑</text>
+<rect x="628.0" y="406.6" width="174.0" height="22.0" rx="11" fill="#fff4e6" stroke="#f08c00" stroke-width="1.0"/>
+<text x="715.0" y="422.6" font-size="11.5" fill="#e8590c" font-weight="700" text-anchor="middle">③ 锤子线，跌破前低又收回</text>
+<path d="M626.0 417.6 L602.0 417.6" fill="none" stroke="#868e96" stroke-width="2" stroke-linejoin="round" marker-end="url(#ar)"/>
+<rect x="644.0" y="503.0" width="174.0" height="22.0" rx="11" fill="#f3f0ff" stroke="#7048e8" stroke-width="1.0"/>
+<text x="731.0" y="519.0" font-size="11.5" fill="#5f3dc4" font-weight="700" text-anchor="middle">④ 放量阳线收复锤子线高点</text>
+<path d="M642.0 514.0 L633.0 528.0" fill="none" stroke="#868e96" stroke-width="2" stroke-linejoin="round" marker-end="url(#ar)"/>
+<rect x="30.0" y="616.0" width="840.0" height="58.0" rx="8" fill="#f8f9fa" stroke="#e9ecef" stroke-width="1.0"/>
+<text x="46.0" y="638.0" font-size="12" fill="#495057" text-anchor="start">每一步都在排除：没有趋势就不谈反转，不在关键位就当噪音，没有确认就继续等。</text>
+<text x="46.0" y="657.0" font-size="12" fill="#495057" text-anchor="start">入场之前先写下失效价（这里是锤子线最低点）。形态被打破就离场，这比形态本身更重要。</text>
+</svg>

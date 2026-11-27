@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 500" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<defs><marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#868e96"/></marker><marker id="ar-amber" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#f08c00"/></marker></defs>
+<rect x="0" y="0" width="900" height="500" rx="12" fill="#ffffff"/>
+<text x="30.0" y="34.0" font-size="20" fill="#212529" font-weight="700" text-anchor="start">一根 K 线 = 一个周期内多空博弈的记录</text>
+<text x="30.0" y="56.0" font-size="13" fill="#868e96" text-anchor="start">实体是市场最终接受的价格区间，影线是盘中被试探、随后被拒绝的价格</text>
+<rect x="30.0" y="78.0" width="410.0" height="330.0" rx="10" fill="#f8f9fa" stroke="#e9ecef" stroke-width="1.0"/>
+<text x="50.0" y="104.0" font-size="13.5" fill="#212529" font-weight="700" text-anchor="start">结构：四个价格，三段含义</text>
+<line x1="150.0" y1="151.2" x2="150.0" y2="199.2" stroke="#fa5252" stroke-width="1.5"/>
+<line x1="150.0" y1="288.0" x2="150.0" y2="343.2" stroke="#fa5252" stroke-width="1.5"/>
+<rect x="130.0" y="199.2" width="40.0" height="88.8" rx="1" fill="#fff5f5" stroke="#fa5252" stroke-width="1.5"/>
+<line x1="112.0" y1="151.2" x2="128.0" y2="151.2" stroke="#868e96" stroke-width="1" stroke-dasharray="2 2"/>
+<text x="108.0" y="155.2" font-size="11.5" fill="#495057" text-anchor="end">最高价</text>
+<line x1="112.0" y1="199.2" x2="128.0" y2="199.2" stroke="#868e96" stroke-width="1" stroke-dasharray="2 2"/>
+<text x="108.0" y="203.2" font-size="11.5" fill="#495057" text-anchor="end">收盘价</text>
+<line x1="112.0" y1="288.0" x2="128.0" y2="288.0" stroke="#868e96" stroke-width="1" stroke-dasharray="2 2"/>
+<text x="108.0" y="292.0" font-size="11.5" fill="#495057" text-anchor="end">开盘价</text>
+<line x1="112.0" y1="343.2" x2="128.0" y2="343.2" stroke="#868e96" stroke-width="1" stroke-dasharray="2 2"/>
+<text x="108.0" y="347.2" font-size="11.5" fill="#495057" text-anchor="end">最低价</text>
+<path d="M176 151.2 L182 151.2 L182 196.8 L176 196.8" fill="none" stroke="#e8590c" stroke-width="1.5" stroke-linejoin="round"/>
+<text x="190.0" y="172.0" font-size="12" fill="#e8590c" font-weight="700" text-anchor="start">上影线</text>
+<text x="190.0" y="188.0" font-size="11" fill="#868e96" text-anchor="start">高价被卖方拒绝</text>
+<path d="M176 201.6 L182 201.6 L182 285.6 L176 285.6" fill="none" stroke="#3b5bdb" stroke-width="1.5" stroke-linejoin="round"/>
+<text x="190.0" y="241.6" font-size="12" fill="#3b5bdb" font-weight="700" text-anchor="start">实体</text>
+<text x="190.0" y="257.6" font-size="11" fill="#868e96" text-anchor="start">多空最终认可的区间</text>
+<path d="M176 290.4 L182 290.4 L182 343.2 L176 343.2" fill="none" stroke="#e8590c" stroke-width="1.5" stroke-linejoin="round"/>
+<text x="190.0" y="314.8" font-size="12" fill="#e8590c" font-weight="700" text-anchor="start">下影线</text>
+<text x="190.0" y="330.8" font-size="11" fill="#868e96" text-anchor="start">低价被买方拒绝</text>
+<text x="150.0" y="396.0" font-size="12.5" fill="#fa5252" font-weight="700" text-anchor="middle">阳线：收 &gt; 开</text>
+<line x1="355.0" y1="151.2" x2="355.0" y2="199.2" stroke="#0ca678" stroke-width="1.5"/>
+<line x1="355.0" y1="288.0" x2="355.0" y2="343.2" stroke="#0ca678" stroke-width="1.5"/>
+<rect x="335.0" y="199.2" width="40.0" height="88.8" rx="1" fill="#0ca678" stroke="#0ca678" stroke-width="1.5"/>
+<line x1="377.0" y1="151.2" x2="386.0" y2="151.2" stroke="#868e96" stroke-width="1" stroke-dasharray="2 2"/>
+<text x="389.0" y="155.2" font-size="11.5" fill="#495057" text-anchor="start">最高价</text>
+<line x1="377.0" y1="199.2" x2="386.0" y2="199.2" stroke="#868e96" stroke-width="1" stroke-dasharray="2 2"/>
+<text x="389.0" y="203.2" font-size="11.5" fill="#495057" text-anchor="start">开盘价</text>
+<line x1="377.0" y1="288.0" x2="386.0" y2="288.0" stroke="#868e96" stroke-width="1" stroke-dasharray="2 2"/>
+<text x="389.0" y="292.0" font-size="11.5" fill="#495057" text-anchor="start">收盘价</text>
+<line x1="377.0" y1="343.2" x2="386.0" y2="343.2" stroke="#868e96" stroke-width="1" stroke-dasharray="2 2"/>
+<text x="389.0" y="347.2" font-size="11.5" fill="#495057" text-anchor="start">最低价</text>
+<text x="355.0" y="396.0" font-size="12.5" fill="#0ca678" font-weight="700" text-anchor="middle">阴线：收 &lt; 开</text>
+<rect x="460.0" y="78.0" width="410.0" height="330.0" rx="10" fill="#f8f9fa" stroke="#e9ecef" stroke-width="1.0"/>
+<text x="480.0" y="104.0" font-size="13.5" fill="#212529" font-weight="700" text-anchor="start">读法：同样的高低区间，收盘落在哪里</text>
+<line x1="505.0" y1="159.0" x2="505.0" y2="166.6" stroke="#fa5252" stroke-width="1.5"/>
+<line x1="505.0" y1="282.5" x2="505.0" y2="311.0" stroke="#fa5252" stroke-width="1.5"/>
+<rect x="494.0" y="166.6" width="22.0" height="115.9" rx="1" fill="#fff5f5" stroke="#fa5252" stroke-width="1.5"/>
+<path d="M520 166.6 l8 -5 l0 10 z" fill="#f08c00" stroke="#f08c00" stroke-width="1" stroke-linejoin="round"/>
+<text x="505.0" y="352.0" font-size="12" fill="#e8590c" font-weight="700" font-family="monospace" text-anchor="middle">95%</text>
+<text x="505.0" y="372.0" font-size="12" fill="#212529" font-weight="700" text-anchor="middle">大阳线</text>
+<text x="505.0" y="390.0" font-size="11" fill="#868e96" text-anchor="middle">买方全程主导</text>
+<line x1="585.0" y1="159.0" x2="585.0" y2="174.2" stroke="#fa5252" stroke-width="1.5"/>
+<line x1="585.0" y1="178.0" x2="585.0" y2="311.0" stroke="#fa5252" stroke-width="1.5"/>
+<rect x="574.0" y="174.2" width="22.0" height="3.8" rx="1" fill="#fff5f5" stroke="#fa5252" stroke-width="1.5"/>
+<path d="M600 174.2 l8 -5 l0 10 z" fill="#f08c00" stroke="#f08c00" stroke-width="1" stroke-linejoin="round"/>
+<text x="585.0" y="352.0" font-size="12" fill="#e8590c" font-weight="700" font-family="monospace" text-anchor="middle">90%</text>
+<text x="585.0" y="372.0" font-size="12" fill="#212529" font-weight="700" text-anchor="middle">锤子线</text>
+<text x="585.0" y="390.0" font-size="11" fill="#868e96" text-anchor="middle">低位被承接</text>
+<line x1="665.0" y1="159.0" x2="665.0" y2="233.1" stroke="#fa5252" stroke-width="1.5"/>
+<line x1="665.0" y1="235.0" x2="665.0" y2="311.0" stroke="#fa5252" stroke-width="1.5"/>
+<rect x="654.0" y="233.1" width="22.0" height="1.9" rx="1" fill="#fff5f5" stroke="#fa5252" stroke-width="1.5"/>
+<path d="M680 233.1 l8 -5 l0 10 z" fill="#f08c00" stroke="#f08c00" stroke-width="1" stroke-linejoin="round"/>
+<text x="665.0" y="352.0" font-size="12" fill="#e8590c" font-weight="700" font-family="monospace" text-anchor="middle">51%</text>
+<text x="665.0" y="372.0" font-size="12" fill="#212529" font-weight="700" text-anchor="middle">十字星</text>
+<text x="665.0" y="390.0" font-size="11" fill="#868e96" text-anchor="middle">多空平衡</text>
+<line x1="745.0" y1="159.0" x2="745.0" y2="295.8" stroke="#0ca678" stroke-width="1.5"/>
+<line x1="745.0" y1="301.5" x2="745.0" y2="311.0" stroke="#0ca678" stroke-width="1.5"/>
+<rect x="734.0" y="295.8" width="22.0" height="5.7" rx="1" fill="#0ca678" stroke="#0ca678" stroke-width="1.5"/>
+<path d="M760 301.5 l8 -5 l0 10 z" fill="#f08c00" stroke="#f08c00" stroke-width="1" stroke-linejoin="round"/>
+<text x="745.0" y="352.0" font-size="12" fill="#e8590c" font-weight="700" font-family="monospace" text-anchor="middle">6%</text>
+<text x="745.0" y="372.0" font-size="12" fill="#212529" font-weight="700" text-anchor="middle">长上影</text>
+<text x="745.0" y="390.0" font-size="11" fill="#868e96" text-anchor="middle">高位被抛压</text>
+<line x1="825.0" y1="159.0" x2="825.0" y2="168.5" stroke="#0ca678" stroke-width="1.5"/>
+<line x1="825.0" y1="303.4" x2="825.0" y2="311.0" stroke="#0ca678" stroke-width="1.5"/>
+<rect x="814.0" y="168.5" width="22.0" height="134.9" rx="1" fill="#0ca678" stroke="#0ca678" stroke-width="1.5"/>
+<path d="M840 303.4 l8 -5 l0 10 z" fill="#f08c00" stroke="#f08c00" stroke-width="1" stroke-linejoin="round"/>
+<text x="825.0" y="352.0" font-size="12" fill="#e8590c" font-weight="700" font-family="monospace" text-anchor="middle">5%</text>
+<text x="825.0" y="372.0" font-size="12" fill="#212529" font-weight="700" text-anchor="middle">大阴线</text>
+<text x="825.0" y="390.0" font-size="11" fill="#868e96" text-anchor="middle">卖方全程主导</text>
+<text x="480.0" y="126.0" font-size="11" fill="#868e96" text-anchor="start">▶ = 收盘价；数字 = (收 − 低) ÷ (高 − 低)</text>
+<rect x="30.0" y="424.0" width="840.0" height="58.0" rx="8" fill="#f8f9fa" stroke="#e9ecef" stroke-width="1.0"/>
+<text x="46.0" y="446.0" font-size="12" fill="#495057" text-anchor="start">先看两件事：实体有多长（共识有多强），收盘落在区间的哪里（这一周期最终谁赢）。</text>
+<text x="46.0" y="465.0" font-size="12" fill="#495057" text-anchor="start">影线越长，说明那一侧在盘中推过去的价格被反击得越彻底。颜色沿用 A 股习惯：红涨绿跌。</text>
+</svg>
