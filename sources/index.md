@@ -137,6 +137,7 @@
     - [2024](./2024.md)
         - [924](./2024-924.md)
     - [2025-2026](./2025-2026.md)
+- [基础 K 线分析](./kline_analyze.md)
 - 板块
     - [游戏板块](./game_sector.md)
 - 个股研究
@@ -160,11 +161,11 @@
     - [万华与新和成](./wanhua_nhu.md)
     - [现金牛生意](./cash_cow_business.md)
 - 随笔
+    - [深刻教训](./painful_lesson.md)
     - [非对称投资](./非对称投资.md)
-    - [A 股特性](./stock_feature.md)
     - [感受市场温度](./market_temperature.md)
+    - [A 股特性](./stock_feature.md)
     - [读书学习投资有用么](./should_i_learn_by_books.md)
-    - [谈一谈历史的失真](./wrong_history_record.md)
     - [A 股中的博弈势力](./stock_investor_types.md)
     - [A 股的价值投资](./value_investment.md)
     - [财务与技术分析基础](./concepts.md)
@@ -173,3 +174,4 @@
     - [中国国家机器](./china_system.md)
     - [人类的自我欺骗](./everyone_is_a_hypocrite.md)
     - [秦晖历史观念](./qinhui_viewpoint.md)
+    - [谈一谈历史的失真](./wrong_history_record.md)

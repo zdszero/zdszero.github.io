@@ -37,6 +37,10 @@
   max-width: 820px;
   padding: 10px 0 40px;
 }
+.wiki-main li > ul,
+.wiki-main li > ol {
+  margin-top: 0;
+}
 /* never let wide content push the page sideways (applies at all widths).
    the bundled theme sets inline `code{white-space:nowrap}` and
    `pre code{white-space:pre}`, so long code/URLs overflow unless tamed. */
